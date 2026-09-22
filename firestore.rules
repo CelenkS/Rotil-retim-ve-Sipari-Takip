@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Herhangi bir (anonim de olsa) oturumu olan istemci okuyup yazabilir.
+    // Asıl güvenlik: bu adresi (ve firebase-config.js içindeki anahtarları)
+    // sadece güvendiğin kişilerle paylaşman. Daha sıkı bir kontrol istersen
+    // (örn. e-posta ile giriş zorunlu kılmak) ileride ekleyebiliriz.
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
