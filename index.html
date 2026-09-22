@@ -444,6 +444,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .impnote.err{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad)}
 .impnote.ok{background:color-mix(in srgb,var(--good) 14%,var(--surface));color:var(--good)}
 .status{font:600 12px var(--font-ui);color:var(--ink2);text-align:center}
+#loginGate{position:fixed;inset:0;z-index:9999;background:var(--bg);background-image:linear-gradient(180deg,var(--bg2),var(--bg) 380px);background-repeat:no-repeat;display:flex;align-items:center;justify-content:center;padding:16px}
+#loginGate .lgcard{width:100%;max-width:360px;background:var(--surface);border-radius:24px;padding:26px 22px;box-shadow:var(--shadow)}
+#loginGate .lgeyebrow{font:700 13px var(--font-ui);color:var(--ink2);letter-spacing:.02em;text-transform:uppercase}
+#loginGate h1{font:700 24px/1.15 var(--font-head);margin:6px 0 18px;text-align:left;min-width:0}
+#loginGate .search{margin-bottom:12px}
+#loginGate .btn{width:100%;height:46px;font-size:14px}
+#loginGate .impnote{display:none}
+#loginGate .impnote.show{display:block}
+.logoutrow{display:flex;justify-content:center;margin-top:18px}
+.logoutrow button{background:none;border:0;color:var(--ink2);font:600 12.5px var(--font-ui);text-decoration:underline}
 @media (max-width:420px){
   h1{font-size:23px;min-width:8ch}
   th,td{padding-inline:4px}
@@ -455,6 +465,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 </head>
 <body>
 
+<div id="loginGate">
+  <div class="lgcard">
+    <div class="lgeyebrow">Üretim Defteri</div>
+    <h1>Giriş yap</h1>
+    <input class="search" id="lgEmail" type="email" autocomplete="username" placeholder="E-posta" aria-label="E-posta">
+    <input class="search" id="lgPass" type="password" autocomplete="current-password" placeholder="Şifre" aria-label="Şifre">
+    <button class="btn" id="lgSubmit">Giriş yap</button>
+    <div class="impnote err" id="lgNote"></div>
+  </div>
+</div>
 
 <div class="wrap" id="home">
   <div class="homehead"><div class="eyebrow">Günlük adet ve ciro defteri</div><h1>Bölüm seç</h1><p>Hangi bölümün kaydını gireceksin?</p></div>
@@ -465,6 +485,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   </div>
   <input type="file" id="bkImportf" accept=".json,application/json" hidden>
   <div class="impnote" id="bknote" hidden></div>
+  <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -582,23 +603,63 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 <script>
 (function(){
   var firebaseConfig = window.__FIREBASE_CONFIG__ || null;
-  var dbPromise = null;
+  var dbResolve, dbReject;
+  var dbPromise = new Promise(function(res,rej){dbResolve=res;dbReject=rej});
+  var gate = document.getElementById("loginGate");
+  var lgEmail = document.getElementById("lgEmail");
+  var lgPass = document.getElementById("lgPass");
+  var lgSubmit = document.getElementById("lgSubmit");
+  var lgNote = document.getElementById("lgNote");
+  function showGateErr(msg){lgNote.textContent=msg;lgNote.className="impnote err show"}
+  function hideGate(){if(gate)gate.hidden=true}
+  function loginErrTr(code){
+    if(code==="auth/invalid-email")return "E-posta adresi geçersiz.";
+    if(code==="auth/user-not-found"||code==="auth/invalid-credential"||code==="auth/wrong-password")return "E-posta veya şifre hatalı.";
+    if(code==="auth/too-many-requests")return "Çok fazla deneme yapıldı, birkaç dakika sonra tekrar dene.";
+    if(code==="auth/network-request-failed")return "Bağlantı sorunu, internetini kontrol edip tekrar dene.";
+    return "Giriş yapılamadı, bilgileri kontrol edip tekrar dene.";
+  }
+  function doLogin(){
+    var email=(lgEmail.value||"").trim(), pass=lgPass.value||"";
+    if(!email||!pass){showGateErr("E-posta ve şifreni gir.");return}
+    lgSubmit.disabled=true; lgSubmit.textContent="Giriş yapılıyor…"; lgNote.className="impnote";
+    firebase.auth().signInWithEmailAndPassword(email,pass).catch(function(err){
+      lgSubmit.disabled=false; lgSubmit.textContent="Giriş yap";
+      showGateErr(loginErrTr(err&&err.code));
+    });
+  }
+  if(lgSubmit)lgSubmit.addEventListener("click",doLogin);
+  if(lgPass)lgPass.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin()});
+  if(lgEmail)lgEmail.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin()});
+  window.rotilLogout = function(){
+    if(window.firebase&&firebase.auth)firebase.auth().signOut().then(function(){location.reload()});
+  };
+  var logoutBtn = document.getElementById("logoutBtn");
+  if(logoutBtn)logoutBtn.addEventListener("click",window.rotilLogout);
   if(firebaseConfig && window.firebase){
     try{
       firebase.initializeApp(firebaseConfig);
-      // Sessiz, arayüzsüz "anonim" oturum açma: kullanıcı hiçbir şey görmez/yapmaz,
-      // ama veritabanı kuralları (firestore.rules) sadece oturumu olanlara izin verir.
-      // Gerçek güvenlik burada değil, linkin kiminle paylaşıldığında.
-      dbPromise = firebase.auth().signInAnonymously()
-        .then(function(){ return firebase.firestore(); })
-        .catch(function(){ return firebase.firestore(); }); // auth kapalıysa bile db'yi dene
-    }catch(e){ dbPromise = null; }
+      // Gerçek giriş: her çalışan kendi e-posta/şifresiyle giriyor. Firebase Authentication
+      // oturumu tarayıcıda kalıcı olarak saklar (varsayılan "local" kalıcılık), yani bir kez
+      // giriş yapınca tarayıcı kapansa bile tekrar sormaz — açıkça "Çıkış yap" denene kadar.
+      // Veritabanı kuralları (firestore.rules) sadece oturum açmış kullanıcılara izin verir.
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          hideGate();
+          dbResolve(firebase.firestore());
+        }else{
+          if(gate)gate.hidden=false;
+          if(lgSubmit){lgSubmit.disabled=false;lgSubmit.textContent="Giriş yap"}
+        }
+      });
+    }catch(e){ if(gate)gate.hidden=false; }
+  }else{
+    if(gate)gate.hidden=false;
   }
   window.claude = window.claude || {};
   window.claude.use = function(name){
     if(name === "db"){
-      if(dbPromise) return dbPromise;
-      return Promise.resolve(null);
+      return dbPromise;
     }
     if(name === "downloads"){
       return Promise.resolve({
