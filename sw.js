@@ -7,7 +7,7 @@
 // yoksa (veya istek başarısız olursa) önbellekteki en son bilinen sürüm
 // gösterilir. Böylece yeni bir yayın yapıldığında kullanıcı bir dahaki
 // açılışta otomatik günceli görür, eski sürümde takılı kalmaz.
-var CACHE = "montaj-defteri-shell-v2";
+var CACHE = "montaj-defteri-shell-v3";
 var SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", function(e){

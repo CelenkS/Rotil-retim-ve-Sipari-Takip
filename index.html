@@ -2882,7 +2882,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 <script>
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js").catch(function(){});
+    navigator.serviceWorker.register("sw.js").then(function(reg){
+      // Yeni bir sürüm yayınlandığında bunu hemen kontrol et ve devreye
+      // girince sayfayı bir kere otomatik yenile, kullanıcı eski sürümde
+      // takılı kalmasın (elle önbellek temizlemesine gerek kalmaz).
+      reg.update().catch(function(){});
+      setInterval(function(){reg.update().catch(function(){})},60000);
+      var refreshing=false;
+      navigator.serviceWorker.addEventListener("controllerchange",function(){
+        if(refreshing)return; refreshing=true; location.reload();
+      });
+    }).catch(function(){});
   });
 }
 </script>
