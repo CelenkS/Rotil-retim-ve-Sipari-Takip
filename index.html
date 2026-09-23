@@ -2483,23 +2483,49 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       });
     });
   }
-  function importOrderImages(list){
-    list.forEach(function(o){
-      var raw=o._rawImg; delete o._rawImg; if(!raw)return;
-      var blob=new Blob([raw.bytes],{type:raw.mime});
-      resizeImg(blob,720,.72,function(full){
-        if(!full)return;
-        resizeImg(blob,160,.7,function(th){
-          th=th||full;
-          var idx=orders.findIndex(function(x){return x.id===o.id});
-          if(idx>-1){orders[idx].th=th; lsOrdersSet(); renderOrders(); paintOrdersHome();}
-          imgCache[o.id]=full;
-          if(db){
-            db.doc("orders/"+o.id).update({th:th}).catch(function(){});
-            db.doc("oimg/"+o.id).set({d:full}).catch(function(){});
-          }
+  // Onlarca/yüzlerce ürün görselini AYNI ANDA işlemeye çalışmak (hepsini paralel
+  // resize edip Firestore'a yazmak) tarayıcıyı ve bağlantıyı zorluyor; birçoğu
+  // sessizce başarısız oluyordu. Bunun yerine aynı anda en fazla birkaç tanesi
+  // işlenir (kuyruk), ve kaç tanesinin gerçekten eklendiği/eklenemediği sayılıp
+  // geri bildirilir.
+  function importOrderImages(list,onProgress){
+    return new Promise(function(resolveAll){
+      var total=list.length;
+      if(!total){resolveAll({ok:0,fail:0,total:0});return}
+      var ok=0, fail=0, i=0, active=0, CONC=3;
+      function settle(){
+        lsOrdersSet(); renderOrders(); paintOrdersHome();
+        resolveAll({ok:ok,fail:fail,total:total});
+      }
+      function tick(){
+        if(onProgress)onProgress(ok+fail,total);
+        active--;
+        if(i>=total&&active<=0){settle();return}
+        pump();
+      }
+      function run(o){
+        var raw=o._rawImg; delete o._rawImg;
+        if(!raw){fail++; tick(); return}
+        var blob=new Blob([raw.bytes],{type:raw.mime});
+        resizeImg(blob,720,.72,function(full){
+          if(!full){fail++; tick(); return}
+          resizeImg(blob,160,.7,function(th){
+            th=th||full;
+            var idx=orders.findIndex(function(x){return x.id===o.id});
+            if(idx>-1)orders[idx].th=th;
+            imgCache[o.id]=full;
+            if(db){
+              db.doc("orders/"+o.id).update({th:th}).catch(function(){});
+              db.doc("oimg/"+o.id).set({d:full}).catch(function(){});
+            }
+            ok++; tick();
+          });
         });
-      });
+      }
+      function pump(){
+        while(active<CONC&&i<total){var o=list[i++]; active++; run(o)}
+      }
+      pump();
     });
   }
   function doImportFile(file){
@@ -2508,15 +2534,27 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(res.errors&&res.errors.length){
         note.hidden=false; note.className="impnote err"; note.textContent=res.errors[0]; return;
       }
+      var baseMsg=res.added+" sipariş eklendi"+(res.skipped?", "+res.skipped+" satır atlandı (kod ya da adet eksik)":"")+".";
       if(res.added){
         orders=orders.concat(res.newOrders); lsOrdersSet();
         if(db)res.newOrders.forEach(function(o){var d=Object.assign({},o); delete d.id; delete d._rawImg; db.doc("orders/"+o.id).set(d).catch(function(){})});
         renderOrders(); paintOrdersHome();
         var withImg=res.newOrders.filter(function(o){return o._rawImg});
-        if(withImg.length)importOrderImages(withImg);
+        if(withImg.length){
+          note.hidden=false; note.className="impnote ok";
+          note.textContent=baseMsg+" Görseller ekleniyor (0/"+withImg.length+")…";
+          importOrderImages(withImg,function(done,total){
+            note.textContent=baseMsg+" Görseller ekleniyor ("+done+"/"+total+")…";
+          }).then(function(r){
+            note.className="impnote"+(r.fail?" err":" ok");
+            note.textContent=baseMsg+" "+r.ok+"/"+r.total+" ürünün görseli eklendi"+
+              (r.fail?", "+r.fail+" ürünün görseli eklenemedi (dosya bozuk olabilir ya da tarayıcı çok fazla görseli aynı anda işleyemedi) — o ürünlere sipariş detayından elle fotoğraf ekleyebilirsin.":".");
+          });
+          return;
+        }
       }
       note.hidden=false; note.className="impnote"+(res.added?" ok":"");
-      note.textContent=res.added+" sipariş eklendi"+(res.skipped?", "+res.skipped+" satır atlandı (kod ya da adet eksik)":"")+".";
+      note.textContent=baseMsg;
     }
     var name=(file.name||"").toLowerCase();
     var isXlsx=/\.xlsx$/.test(name)||file.type==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
