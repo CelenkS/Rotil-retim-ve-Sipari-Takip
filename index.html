@@ -641,10 +641,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   if(firebaseConfig && window.firebase){
     try{
       firebase.initializeApp(firebaseConfig);
-      // Gerçek giriş: her çalışan kendi e-posta/şifresiyle giriyor. Firebase Authentication
-      // oturumu tarayıcıda kalıcı olarak saklar (varsayılan "local" kalıcılık), yani bir kez
-      // giriş yapınca tarayıcı kapansa bile tekrar sormaz — açıkça "Çıkış yap" denene kadar.
+      // Gerçek giriş: her çalışan kendi e-posta/şifresiyle giriyor. "Beni hatırla" davranışı
+      // için oturum kalıcılığı açıkça LOCAL yapılıyor: bir kez giriş yapınca tarayıcı kapansa,
+      // bilgisayar yeniden başlasa bile tekrar sormaz — açıkça "Çıkış yap" denene kadar.
       // Veritabanı kuralları (firestore.rules) sadece oturum açmış kullanıcılara izin verir.
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
       firebase.auth().onAuthStateChanged(function(user){
         if(user){
           hideGate();
