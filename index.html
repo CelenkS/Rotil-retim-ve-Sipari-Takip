@@ -1614,7 +1614,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(!cc){renderSheet();return}
       t.disabled=true; t.textContent="Ekleniyor…";
       var job=cc.scope==="order"?addCatchupAll(cc.oid,dateIso):addCatchupEntry(cc.oid,cc.i,dateIso);
-      job.then(afterCatchup).catch(function(){$("ostatus")&&($("ostatus").textContent="Eklenemedi, tekrar dene");renderSheet()});
+      job.then(function(res){
+        return afterCatchup().then(function(){
+          if(res&&res.fail)$("ostatus")&&($("ostatus").textContent=res.fail+" aşama eklenemedi, tekrar dene");
+        });
+      }).catch(function(){$("ostatus")&&($("ostatus").textContent="Eklenemedi, tekrar dene");renderSheet()});
       return;
     }
     if(t.dataset.ocat!==undefined){
@@ -1749,8 +1753,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   });
   function stageIdx(secId){for(var i=0;i<STAGES.length;i++)if(STAGES[i].sec===secId)return i;return -1}
   function catIndex(name){
-    var low=name.toLowerCase(),i;
-    for(i=0;i<COLS.length;i++)if(COLS[i].toLowerCase()===low)return i;
+    var i=findCatIdx(COLS,name);
+    if(i>-1)return i;
     if(COLS.length<8){COLS.push(name);catsSaved=true;saveCatalog();return COLS.length-1}
     return 0;
   }
@@ -1943,17 +1947,20 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return db.doc(secCol(secId)+"/"+mk).set(patch,{merge:true});
   }
   function findCatIdx(cats,name){
-    var low=(name||"").toLowerCase();
-    for(var i=0;i<cats.length;i++)if((cats[i]||"").toLowerCase()===low)return i;
-    // Tam eşleşme yoksa: bölümler kendi ürünlerini "Rotil Gövde", "Z-Rot Aşık" gibi
-    // sipariş kategorisinin (ORDER_CATS) SONUNA bir ek getirerek adlandırmış olabilir.
-    // Böyle bir bölümde "Rotil" için ayrı, boş, tekrarlı bir kategori açmak yerine
-    // zaten var olan "Rotil Gövde" kategorisini kullan.
-    for(var j=0;j<cats.length;j++){
-      var c=(cats[j]||"").toLowerCase();
-      if(c.indexOf(low)===0&&(c.length===low.length||c.charAt(low.length)===" "))return j;
+    // Bölümler kendi ürünlerini "Rotil Gövde", "Z-Rot Aşık" gibi sipariş
+    // kategorisinin (ORDER_CATS) SONUNA bir ek getirerek adlandırmış olabilir.
+    // Hem tam eşleşmeyi hem de bu uzatılmış adları tek geçişte tara ve
+    // EN UZUN (en özel) eşleşen adı seç — yoksa örn. "Rotil" adında sonradan
+    // (hatalı onarımla) açılmış boş bir kategori, doğru "Rotil Gövde"
+    // kategorisinin önüne geçip onu gölgede bırakabiliyordu.
+    var low=(name||"").toLowerCase(), best=-1, bestLen=-1;
+    for(var i=0;i<cats.length;i++){
+      var c=(cats[i]||"").toLowerCase();
+      if(c.indexOf(low)===0&&(c.length===low.length||c.charAt(low.length)===" ")){
+        if(c.length>bestLen){bestLen=c.length; best=i}
+      }
     }
-    return -1;
+    return best;
   }
   var secCatsCache={};
   // Tamamlama, o an ekranda açık olan bölümden BAŞKA bir bölüme de üretim satırı
@@ -1993,10 +2000,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
   }
   function addCatchupAll(oid,dateIso){
-    var o=orders.filter(function(x){return x.id===oid})[0]; if(!o)return Promise.resolve();
+    var o=orders.filter(function(x){return x.id===oid})[0]; if(!o)return Promise.resolve({fail:0});
     var jobs=[];
     STAGES.forEach(function(sg,i){if((o.st||[])[i])jobs.push(addCatchupEntry(oid,i,dateIso))});
-    return Promise.all(jobs);
+    // Aşamalardan biri (ör. tek bir Firestore yazımı) başarısız olsa bile
+    // diğerleri kaybolmasın ve arayüz onları yansıtsın diye Promise.all yerine
+    // her işi ayrı ayrı yakalayıp toplam başarısız sayısını döndürüyoruz.
+    var fails=0;
+    return Promise.all(jobs.map(function(p){return p.catch(function(){fails++})})).then(function(){return {fail:fails}});
   }
   function afterCatchup(){
     return loadProgress(true).then(function(){
