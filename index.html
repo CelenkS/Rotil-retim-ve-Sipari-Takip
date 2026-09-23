@@ -283,6 +283,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .needrow.tot{border-top:2px solid var(--line)}
 .needrow.click{width:100%;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:inherit}
 .needrow .nchev{margin-left:auto;font-size:11px;color:var(--ink2)}
+.needcustsum{background:var(--soft);border-radius:14px;padding:4px 14px;margin-bottom:12px}
+.needcustsum .ncrow{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-top:1px dashed var(--line);gap:10px}
+.needcustsum .ncrow:first-child{border-top:0}
+.needcustsum .ncrow span{font:600 12.5px var(--font-ui);color:var(--ink2)}
+.needcustsum .ncrow b{font:800 15px var(--font-num);color:var(--ink);text-align:right}
 .needsplit{padding:2px 0 10px 4px;display:flex;flex-direction:column;gap:8px}
 .needcatrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
 .needcatrow .nn2{font:700 13px var(--font-ui);display:flex;align-items:center;gap:7px;color:var(--ink2)}
@@ -541,6 +546,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       <div class="dtotal"><span class="pill"><b id="etotal">0</b><span class="tgt" id="etg"></span> adet</span><span class="pill m"><b id="erev">0 ₺</b><span class="tgt" id="erg"></span></span></div>
     </div>
     <div class="sec"><h3>Yapılan ürünler</h3><button class="btn" id="addItem">+ Ürün ekle</button></div>
+    <div class="osearch" id="lsearchwrap" hidden style="margin-bottom:10px"><input class="search" id="lsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod veya müşteri ara…" aria-label="Yapılan üründe ara"></div>
     <div id="lines"></div>
     <details class="manual" id="manual"><summary>Koda bağlı olmayan toplu giriş</summary>
       <p class="hint">Ürün kodu girmeden doğrudan adet ve tutar yazmak istersen buraya yaz; günlük toplama eklenir.</p>
@@ -581,7 +587,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   </section>
   <section class="card" id="needcard" hidden>
     <h2 style="margin:0 0 4px;font:700 17px var(--font-head)">Yapmamız gereken adetler</h2>
-    <p style="margin:0 0 10px;font:600 12.5px var(--font-ui);color:var(--ink2)">Bölüm bölüm, açık siparişlerden gelen toplam iş</p>
+    <p style="margin:0 0 10px;font:600 12.5px var(--font-ui);color:var(--ink2)">Bölüm bölüm, açık siparişlerden gelen toplam iş — istersen tek bir müşteriye göre süz</p>
     <div id="needlist"></div>
   </section>
   <section class="card" id="osumcard" hidden>
@@ -755,7 +761,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var now=new Date();
   var todayIso=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
   var Y=now.getFullYear(), M=now.getMonth();
-  var selected=todayIso, brkTab="urun";
+  var selected=todayIso, brkTab="urun", lineQ="", lineQFor=null;
   try{brkTab=localStorage.getItem("montaj:brk")==="mus"?"mus":"urun"}catch(e){}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
   var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={};   // catalog [{id,code,k,p}], customers [{id,name}]
@@ -1105,15 +1111,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<option value=""'+(sel===""?" selected":"")+'>Müşteri yok</option>'+
       names.map(function(n){return '<option value="'+esc(n)+'"'+(n===sel?" selected":"")+'>'+esc(n)+'</option>'}).join("");
   }
+  function lineVisible(l){
+    if(!lineQ)return true;
+    var q=lineQ.trim().toLowerCase(); if(!q)return true;
+    return (l.c||"").toLowerCase().indexOf(q)>-1||(l.u||"").toLowerCase().indexOf(q)>-1;
+  }
   function renderLines(){
     var ls=lines(selected), html="";
+    var wrap=$("lsearchwrap"); if(wrap)wrap.hidden=!ls.length;
     if(!ls.length){
       html='<button type="button" class="empty" id="emptyAdd">+ Bu güne ürün ekle</button>';
     }else{
+      var any=false;
       for(var k=0;k<COLS.length;k++){
         var idxs=[];
-        ls.forEach(function(l,i){if(l.k===k)idxs.push(i)});
+        ls.forEach(function(l,i){if(l.k===k&&lineVisible(l))idxs.push(i)});
         if(!idxs.length)continue;
+        any=true;
         html+='<div class="ghead d'+k+'"><span class="dot"></span>'+COLS[k]+'<span class="gsum" id="gs'+k+'"></span></div>';
         idxs.forEach(function(i){
           var l=ls[i];
@@ -1131,6 +1145,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             '<button type="button" class="rm" data-act="rm" aria-label="'+esc(l.c)+' satırını sil">×</button></div></div>';
         });
       }
+      if(!any)html='<div class="empty">Aramayla eşleşen ürün yok.</div>';
     }
     $("lines").innerHTML=html;
     refreshLineTotals();
@@ -1141,6 +1156,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function refreshLineTotals(){
     var ls=lines(selected), a=zero(), r=zero();
     ls.forEach(function(l,i){
+      if(!lineVisible(l))return;
       a[l.k]+=l.q; r[l.k]+=l.q*l.p;
       var el=$("la"+i); if(el)el.textContent=money(l.q*l.p)+" ₺";
       var te=$("lt"+i); if(te)te.textContent=fmtTime(l.t);
@@ -1187,6 +1203,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var el=e.target; if(el.tagName!=="INPUT")return;
     var l=lines(selected)[+el.closest(".line").dataset.idx]; if(l)el.value=l[el.dataset.f];
   });
+  $("lsearch").addEventListener("input",function(e){lineQ=e.target.value;renderLines()});
 
   /* ---------- manual (toplu) fields ---------- */
   function renderFields(){
@@ -1210,7 +1227,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(b&&document.activeElement!==b)b.value=r[i]||"";
     }
   }
-  function renderDay(){renderRows();renderEditorHead();renderLines();renderFields()}
+  function renderDay(){
+    if(lineQFor!==selected){lineQ="";lineQFor=selected;var ls0=$("lsearch");if(ls0)ls0.value=""}
+    renderRows();renderEditorHead();renderLines();renderFields();
+  }
   function renderAll(){
     $("mtitle").textContent=AY[M]+" "+Y;
     $("hi").textContent=greeting();
@@ -1917,19 +1937,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // gidiyordu ve yüzde hiç artmıyormuş gibi görünüyordu. Artık bitmiş işler de
   // hem "gereken" hem "yapılan" tarafına dahil ediliyor (aşırı üretim yüzdeyi
   // %100'ün üstüne taşırmasın diye yapılan, gereken ile sınırlanıyor).
-  function stageNeed(secId){
+  function stageNeed(secId,cust){
     var si=stageIdx(secId), req=0, done=0;
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
+      if(cust&&(o.cust||"")!==cust)return;
       var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
       req+=nd; done+=dn;
     });
     return {req:req,done:done,rem:req-done};
   }
-  function stageNeedByCat(secId){
+  function stageNeedByCat(secId,cust){
     var si=stageIdx(secId), gs=ORDER_CATS.map(function(){return {req:0,done:0}});
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
+      if(cust&&(o.cust||"")!==cust)return;
       var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
       var g=gs[o.cat]||gs[0]; g.req+=nd; g.done+=dn;
     });
@@ -2032,7 +2054,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(n===0)return '<span class="due warn">Termin bugün</span>';
     return '<span class="due '+(n<=3?'warn':'ok')+'">Termin '+fmtD(o.dd)+' · '+n+' gün kaldı</span>';
   }
-  var catDel=null, addQ={}, sumTab="cat", sumAll=false, sumCust=null, sumCat=null, needOpen=null, needBoxOpen=false, imgCache={}, oImgTh="", oImgFull=null, oImgDirty=false;
+  var catDel=null, addQ={}, sumTab="cat", sumAll=false, sumCust=null, sumCat=null, needOpen=null, needBoxOpen=false, needCust="", imgCache={}, oImgTh="", oImgFull=null, oImgDirty=false;
   function resizeImg(file,max,q,cb){
     var r=new FileReader();
     r.onload=function(){var im=new Image(); im.onload=function(){
@@ -2064,14 +2086,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function renderStageNeeds(){
     var card=$("needcard"); if(!card)return;
+    card.hidden=!orders.length;
+    if(!orders.length)return;
+    // Müşteri süzgeci: dropdown'da hangi müşteriler var, sipariş listesinden çıkar.
+    var custList=[], seenC={};
+    orders.forEach(function(o){var cn=o.cust||""; if(cn&&!seenC[cn.toLowerCase()]){seenC[cn.toLowerCase()]=1;custList.push(cn)}});
+    custList.sort(function(a,b){return a.localeCompare(b,"tr")});
+    var cust=(needCust&&custList.indexOf(needCust)>-1)?needCust:"";
+    needCust=cust;
     var srows="", stot={req:0,done:0};
     STAGES.forEach(function(sg){
-      var n=stageNeed(sg.sec); if(!n.req)return;
+      var n=stageNeed(sg.sec,cust||null); if(!n.req)return;
       var so=SECTIONS.filter(function(z){return z.id===sg.sec})[0], pc=Math.round(n.done/n.req*100), open=needOpen===sg.sec;
       stot.req+=n.req; stot.done+=n.done;
       srows+='<button type="button" class="needrow click" data-stage="'+sg.sec+'" style="--c:'+so.h1+'"><span class="nn"><span class="dot" style="background:'+so.h1+'"></span>'+esc(sg.name)+'<span class="nchev">'+(open?'▾':'▸')+'</span></span><span class="nv">'+nf.format(n.done)+' / '+nf.format(n.req)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı · kalan '+nf.format(n.rem)+' adet</div></button>';
       if(open){
-        var bycat=stageNeedByCat(sg.sec);
+        var bycat=stageNeedByCat(sg.sec,cust||null);
         srows+='<div class="needsplit">'+bycat.map(function(g,i){
           if(!g.req)return '';
           var cpc=Math.round(g.done/g.req*100);
@@ -2079,9 +2109,25 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         }).join("")+'</div>';
       }
     });
-    card.hidden=!srows;
-    if(!srows)return;
-    $("needlist").innerHTML=srows+'<div class="needrow tot"><span class="nn">Toplam</span><span class="nv">'+nf.format(stot.done)+' / '+nf.format(stot.req)+'</span></div>';
+    var selHtml=custList.length?('<select class="fin" id="needcustf" style="margin-bottom:12px;height:44px;font-size:14px">'+
+      '<option value="">Tüm müşteriler</option>'+
+      custList.map(function(n){return '<option value="'+esc(n)+'"'+(cust===n?" selected":"")+'>'+esc(n)+'</option>'}).join("")+
+      '</select>'):"";
+    var sumHtml="";
+    if(cust){
+      var os=orders.filter(function(o){return (o.cust||"")===cust});
+      var amt=0, qtyAll=0, qtyDone=0;
+      os.forEach(function(o){amt+=orderTotal(o); qtyAll+=o.qty; if(isComplete(o))qtyDone+=o.qty});
+      var qpc=qtyAll?Math.round(qtyDone/qtyAll*100):0;
+      sumHtml='<div class="needcustsum">'+
+        '<div class="ncrow"><span>Toplam ciro</span><b>'+money(amt)+' ₺</b></div>'+
+        '<div class="ncrow"><span>Sipariş sayısı</span><b>'+os.length+'</b></div>'+
+        '<div class="ncrow"><span>Sipariş bazında yapılan</span><b>'+nf.format(qtyDone)+' / '+nf.format(qtyAll)+' adet · %'+qpc+'</b></div>'+
+        '</div>';
+    }
+    var listHtml=srows?(srows+'<div class="needrow tot"><span class="nn">Toplam</span><span class="nv">'+nf.format(stot.done)+' / '+nf.format(stot.req)+'</span></div>'):
+      '<div class="empty">'+(cust?"Bu müşteri için şu an bir aşama bulunmuyor.":"Şu an yapılacak iş yok.")+'</div>';
+    $("needlist").innerHTML=selHtml+sumHtml+listHtml;
   }
   function ocardHtml(x){
     var o=x.o, tot=orderTotal(o);
@@ -3007,6 +3053,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var b=e.target.closest("[data-stage]"); if(!b)return;
     needOpen=needOpen===b.dataset.stage?null:b.dataset.stage;
     renderStageNeeds();
+  });
+  $("needcard").addEventListener("change",function(e){
+    if(e.target.id!=="needcustf")return;
+    needCust=e.target.value||""; renderStageNeeds();
   });
   $("sheet").addEventListener("input",function(e){
     var id=e.target.dataset&&e.target.dataset.oq; if(!id)return;
