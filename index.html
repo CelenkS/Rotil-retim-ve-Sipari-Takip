@@ -434,6 +434,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .dst details{margin-top:6px}
 .dst summary{cursor:pointer;font:700 12px var(--font-ui);color:var(--ink2)}
 .dst .ent{display:flex;justify-content:space-between;font:600 13px var(--font-ui);padding:5px 0;border-top:1px dashed var(--line)}
+.stgman{display:flex;align-items:center;gap:8px;margin-top:8px;font:600 13px var(--font-ui);color:var(--ink2)}
+.stgman input{width:18px;height:18px;accent-color:var(--sc)}
+.stgman b{color:var(--good)}
 .strow{display:grid;grid-template-columns:auto 1fr 54px 104px;gap:10px;align-items:center;padding:8px 0;border-top:1px dashed var(--line)}
 .strow input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
 .strow .sn{font:700 14px var(--font-ui)}
@@ -1257,13 +1260,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         STAGES.forEach(function(sg,i){
           if(!(od.st||[])[i])return;
           var nd=od.qty*muOf(od,i), mu=muOf(od,i), dn=doneOf(od.id,sg.sec), pc=nd?Math.round(dn.q/nd*100):0, so=SECTIONS.filter(function(x){return x.id===sg.sec})[0];
+          var manual=stageIsManual(od,i), done=manual||dn.q>=nd;
           var ents=dn.e.slice().sort(function(a,b){return a.d<b.d?1:-1});
-          html+='<div class="dst'+(dn.q>=nd?' done':'')+'" style="--sc:'+so.h1+'"><div class="h"><b>'+sg.name+(mu>1?' <small style="font:700 12px var(--font-ui);color:var(--ink2)">×'+mu+'</small>':'')+'</b><span class="n">'+(dn.q>=nd?'✓ ':'')+nf.format(dn.q)+' / '+nf.format(nd)+'</span></div>'+
+          html+='<div class="dst'+(done?' done':'')+'" style="--sc:'+so.h1+'"><div class="h"><b>'+sg.name+(mu>1?' <small style="font:700 12px var(--font-ui);color:var(--ink2)">×'+mu+'</small>':'')+'</b><span class="n">'+(done?'✓ ':'')+nf.format(dn.q)+' / '+nf.format(nd)+'</span></div>'+
             '<div class="bar2"><i style="width:'+Math.min(100,pc)+'%"></i></div>'+
-            '<div class="m">%'+pc+' tamamlandı'+(dn.q?' · ciro '+money(dn.r)+' ₺ · ort. '+money(dn.r/dn.q)+' ₺':'')+(dn.q<nd?' · kalan '+nf.format(nd-dn.q):'')+'</div>'+
+            '<div class="m">%'+pc+' tamamlandı'+(dn.q?' · ciro '+money(dn.r)+' ₺ · ort. '+money(dn.r/dn.q)+' ₺':'')+(dn.q<nd&&!manual?' · kalan '+nf.format(nd-dn.q):'')+'</div>'+
+            '<label class="stgman"><input type="checkbox" data-stman="'+i+'" data-oid="'+od.id+'"'+(manual?' checked':'')+'> Elle tamamlandı olarak işaretle'+(manual&&dn.q<nd?' <b>· aktif</b>':'')+'</label>'+
             (ents.length?'<details><summary>Günlük girişler ('+ents.length+')</summary>'+ents.map(function(e){var pp=e.d.split("-");return '<div class="ent"><span>'+(+pp[2])+' '+AY[+pp[1]-1]+' '+pp[0]+'</span><span>'+nf.format(e.q)+' adet</span></div>'}).join("")+'</details>':'')+'</div>';
         });
-        html+='<div class="frow"><button class="btn ghost" id="odedit">Siparişi düzenle</button></div>';
+        var anyManual=STAGES.some(function(sg,i){return (od.st||[])[i]&&stageIsManual(od,i)});
+        html+='<div class="frow">'+(ocomp?(anyManual?'<button class="btn ghost" id="odunmark">Elle tamamlandı işaretini kaldır</button>':''):'<button class="btn" id="odmarkdone">✓ Tamamlandı olarak işaretle</button>')+'<button class="btn ghost" id="odedit">Siparişi düzenle</button></div>'+
+          (ocomp&&!anyManual?'<div class="note">Bu sipariş tüm bölümlerde girilen üretim sayılarıyla tamamlandı.</div>':'');
         if(!imgCache[od.id]&&od.th){var oid0=od.id; loadFullImg(oid0,function(u){var e=$("odimg"); if(e&&curOid===oid0&&sheetMode==="odetail")e.src=u})}
       }
     }else if(sheetMode==="oform"){
@@ -1313,7 +1320,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var si2=stageIdx(sec.id);
       var plistAll=orders.filter(function(o){return (o.st||[])[si2]}).map(function(o){
         var dn2=doneOf(o.id,sec.id).q, nd2=need(o,sec.id), price2=+((o.pr||[])[si2])||0;
-        return {o:o,dn:dn2,nd:nd2,fin:dn2>=nd2,pq:pmap[o.id]||0,price:price2};
+        return {o:o,dn:dn2,nd:nd2,fin:dn2>=nd2||stageIsManual(o,si2),pq:pmap[o.id]||0,price:price2};
       });
       var plCustList=[], seenPc={};
       plistAll.forEach(function(x){var cn=x.o.cust||""; if(cn&&!seenPc[cn.toLowerCase()]){seenPc[cn.toLowerCase()]=1;plCustList.push(cn)}});
@@ -1385,7 +1392,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         var si=stageIdx(sec.id);
         var ol=orders.filter(function(o){
           return (o.st||[])[si]&&(!q||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(q)>-1);
-        }).map(function(o){var d=doneOf(o.id,sec.id).q;return {o:o,d:d,nd:need(o,sec.id),fin:d>=need(o,sec.id)}})
+        }).map(function(o){var d=doneOf(o.id,sec.id).q;return {o:o,d:d,nd:need(o,sec.id),fin:d>=need(o,sec.id)||stageIsManual(o,si)}})
           .sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))});
         html+=head+srch+'<div class="items">'+(ol.length?ol.map(function(x){
           var o=x.o, t=0; lines(selected).forEach(function(l){if(l.o===o.id)t+=l.q});
@@ -1565,6 +1572,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(t.id==="odclose"){closeSheet();return}
     if(t.id==="oimgrm"){oImgTh="";oImgFull=null;oImgDirty=true;$("opv").innerHTML="Görsel yok";$("opv").style.background="";t.hidden=true;return}
     if(t.id==="odedit"){openOrderForm(curOid);return}
+    if(t.id==="odmarkdone"){markOrderComplete(curOid);return}
+    if(t.id==="odunmark"){unmarkOrderComplete(curOid);return}
     if(t.dataset.ocat!==undefined){
       ordCat=+t.dataset.ocat;
       [].forEach.call($("sheet").querySelectorAll(".cats button"),function(b){b.setAttribute("aria-pressed",+b.dataset.ocat===ordCat)});
@@ -1848,7 +1857,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function stageNeed(secId){
     var si=stageIdx(secId), req=0, done=0;
     orders.forEach(function(o){
-      if(si<0||!(o.st||[])[si])return;
+      if(si<0||!(o.st||[])[si]||stageIsManual(o,si))return;
       var nd=need(o,secId), dn=doneOf(o.id,secId).q;
       if(dn>=nd)return;
       req+=nd; done+=dn;
@@ -1858,19 +1867,47 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function stageNeedByCat(secId){
     var si=stageIdx(secId), gs=ORDER_CATS.map(function(){return {req:0,done:0}});
     orders.forEach(function(o){
-      if(si<0||!(o.st||[])[si])return;
+      if(si<0||!(o.st||[])[si]||stageIsManual(o,si))return;
       var nd=need(o,secId), dn=doneOf(o.id,secId).q;
       if(dn>=nd)return;
       var g=gs[o.cat]||gs[0]; g.req+=nd; g.done+=dn;
     });
     return gs;
   }
+  function stageIsManual(o,i){return !!(o.ms||[])[i]}
+  function stageIsDone(o,i){if(stageIsManual(o,i))return true; var sg=STAGES[i]; return doneOf(o.id,sg.sec).q>=o.qty*muOf(o,i)}
+  function setStageManual(oid,i,val){
+    var o=orders.filter(function(x){return x.id===oid})[0]; if(!o)return;
+    var ms=(o.ms||[]).slice(); while(ms.length<5)ms.push(0); ms[i]=val?1:0;
+    o.ms=ms; lsOrdersSet();
+    if(db)db.doc("orders/"+oid).set({ms:ms},{merge:true}).catch(function(){});
+    renderOrders(); paintOrdersHome(); renderStageNeeds();
+    if(sheetMode==="odetail"&&curOid===oid)renderSheet();
+  }
+  function toggleStageManual(oid,i){setStageManual(oid,i,!stageIsManual(orders.filter(function(x){return x.id===oid})[0]||{},i))}
+  function markOrderComplete(oid){
+    var o=orders.filter(function(x){return x.id===oid})[0]; if(!o)return;
+    var ms=(o.ms||[]).slice(); while(ms.length<5)ms.push(0);
+    STAGES.forEach(function(sg,i){if((o.st||[])[i])ms[i]=1});
+    o.ms=ms; lsOrdersSet();
+    if(db)db.doc("orders/"+oid).set({ms:ms},{merge:true}).catch(function(){});
+    renderOrders(); paintOrdersHome(); renderStageNeeds();
+    if(sheetMode==="odetail"&&curOid===oid)renderSheet();
+  }
+  function unmarkOrderComplete(oid){
+    var o=orders.filter(function(x){return x.id===oid})[0]; if(!o)return;
+    var ms=(o.st||[]).map(function(){return 0});
+    o.ms=ms; lsOrdersSet();
+    if(db)db.doc("orders/"+oid).set({ms:ms},{merge:true}).catch(function(){});
+    renderOrders(); paintOrdersHome(); renderStageNeeds();
+    if(sheetMode==="odetail"&&curOid===oid)renderSheet();
+  }
   function isComplete(o){
     var any=false, ok=true;
-    STAGES.forEach(function(sg,i){if((o.st||[])[i]){any=true; if(doneOf(o.id,sg.sec).q<o.qty*muOf(o,i))ok=false}});
+    STAGES.forEach(function(sg,i){if((o.st||[])[i]){any=true; if(!stageIsDone(o,i))ok=false}});
     return any&&ok;
   }
-  function normOrder(o){o.cat=o.cat||0; o.st=(o.st||[1,1,1,1]).slice(); while(o.st.length<5)o.st.push(0); o.pr=(o.pr||[]).slice(); while(o.pr.length<5)o.pr.push(0); o.mu=(o.mu&&o.mu.length?o.mu.slice():defMu(o.cat)); while(o.mu.length<5)o.mu.push(1); o.qty=+o.qty||0; o.od=o.od||""; o.dd=o.dd||""; o.th=o.th||""; o.up=+o.up||0; return o}
+  function normOrder(o){o.cat=o.cat||0; o.st=(o.st||[1,1,1,1]).slice(); while(o.st.length<5)o.st.push(0); o.pr=(o.pr||[]).slice(); while(o.pr.length<5)o.pr.push(0); o.mu=(o.mu&&o.mu.length?o.mu.slice():defMu(o.cat)); while(o.mu.length<5)o.mu.push(1); o.ms=(o.ms||[]).slice(); while(o.ms.length<5)o.ms.push(0); o.qty=+o.qty||0; o.od=o.od||""; o.dd=o.dd||""; o.th=o.th||""; o.up=+o.up||0; return o}
   function orderTotal(o){return o.qty*(+o.up||0)}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
   function daysTo(iso){if(!iso)return null; var a=iso.split("-"); return Math.round((new Date(+a[0],+a[1]-1,+a[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
@@ -1944,8 +1981,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       '<div class="stages" style="grid-template-columns:repeat('+STAGES.filter(function(sg,i){return shownStage(o,i)}).length+',1fr)">'+
       STAGES.map(function(sg,i){
         if(!shownStage(o,i))return '';
-        var on=(o.st||[])[i], nd=o.qty*muOf(o,i), d=on?doneOf(o.id,sg.sec).q:0, pc=nd?Math.round(d/nd*100):0, so=SECTIONS.filter(function(z){return z.id===sg.sec})[0];
-        return '<div class="stg'+(on?'':' off')+(on&&d>=nd?' done':'')+'" style="--sc:'+so.h1+'"><div class="sl">'+sg.short+'</div><div class="sb"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="sp">'+(on?'%'+pc:'—')+'</div></div>';
+        var on=(o.st||[])[i], nd=o.qty*muOf(o,i), d=on?doneOf(o.id,sg.sec).q:0, pc=nd?Math.round(d/nd*100):0, done=!!(on&&stageIsDone(o,i)), so=SECTIONS.filter(function(z){return z.id===sg.sec})[0];
+        return '<div class="stg'+(on?'':' off')+(done?' done':'')+'" style="--sc:'+so.h1+'"><div class="sl">'+sg.short+'</div><div class="sb"><i style="width:'+(done?100:Math.min(100,pc))+'%"></i></div><div class="sp">'+(on?(done?'✓':'%'+pc):'—')+'</div></div>';
       }).join("")+'</div></button>';
   }
   function renderOrders(){
@@ -2620,6 +2657,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     d.addEventListener("click",function(){d.remove()}); document.body.appendChild(d);
   });
   $("sheet").addEventListener("change",function(e){
+    if(e.target.dataset&&e.target.dataset.stman!==undefined){toggleStageManual(e.target.dataset.oid,+e.target.dataset.stman);return}
     if(e.target.id!=="oimgf"||!e.target.files||!e.target.files[0])return;
     var f=e.target.files[0]; e.target.value="";
     resizeImg(f,720,.72,function(full){
