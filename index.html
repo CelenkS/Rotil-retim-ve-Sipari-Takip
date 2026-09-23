@@ -614,6 +614,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="impnote" id="fillimgnote" hidden></div>
     <button class="btn ghost" id="ofixcat" style="width:100%;margin-top:8px">🛠 Tamamlama kayıtlarındaki kategori hatasını düzelt</button>
     <div class="impnote" id="fixcatnote" hidden></div>
+    <button class="btn ghost" id="odupscan" style="width:100%;margin-top:8px">🔍 Aynı koddan tekrarlanan (kopya) sipariş var mı tara</button>
+    <div class="impnote" id="odupnote" hidden></div>
     <button class="btn ghost" id="odelall" style="width:100%;margin-top:8px;color:var(--bad)">🗑 Tüm siparişleri sil</button>
     <div class="impnote" id="odelnote" hidden></div>
     <div class="ocards" id="ocards"></div>
@@ -2380,12 +2382,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     };
     if(ix.kod<0||ix.adet<0)return {added:0,skipped:0,errors:['Başlık satırında "kod" ve "adet" sütunları bulunamadı. Sütun adlarını kontrol et.']};
     var stIx=STAGE_SLUGS.map(function(s){return {acik:header.indexOf(s+"_acik"),carpan:header.indexOf(s+"_carpan"),fiyat:header.indexOf(s+"_fiyat")}});
-    var added=0, skipped=0, newOrders=[];
+    // ÖNEMLİ: aynı Excel/CSV dosyası yanlışlıkla (ya da "sadece görselleri güncellesin"
+    // sanılarak) tekrar yüklenirse, kodu zaten var olan bir sipariş için YENİDEN sipariş
+    // OLUŞTURMUYORUZ. Aksi halde o kodun birikmiş üretim geçmişi eski (artık ekranda
+    // görünmeyen ya da farklı) siparişte kalır, yeni kopya sipariş "üretim hiç
+    // yapılmamış" gibi sıfırdan görünür — adet/ciro silinmiş gibi bir görüntü çıkar.
+    var existing={}; orders.forEach(function(o){var k=(o.code||"").trim().toLowerCase(); if(k)existing[k]=1});
+    var added=0, skipped=0, dup=0, newOrders=[];
     for(var r=1;r<rows.length;r++){
       var row=rows[r]; if(!row||!row.length)continue;
       var code=(row[ix.kod]||"").toString().trim();
       var qty=+String(row[ix.adet]||"").replace(",",".");
       if(!code||!qty){skipped++;continue}
+      var ck=code.toLowerCase();
+      if(existing[ck]){dup++;continue}
+      existing[ck]=1; // aynı dosya içinde tekrarlanan satırları da atla
       var catName=(ix.kategori>-1?(row[ix.kategori]||""):"").toString().trim().toLowerCase();
       var cat=1;
       for(var ci=0;ci<ORDER_CATS.length;ci++)if(ORDER_CATS[ci].toLowerCase()===catName){cat=ci;break}
@@ -2405,7 +2416,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(images&&images[r])o._rawImg=images[r];
       newOrders.push(normOrder(o)); added++;
     }
-    return {added:added,skipped:skipped,errors:[],newOrders:newOrders};
+    return {added:added,skipped:skipped,dup:dup,errors:[],newOrders:newOrders};
   }
   function importOrdersCsv(text){
     var rows=parseCsv(text);
@@ -2787,7 +2798,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(res.errors&&res.errors.length){
         note.hidden=false; note.className="impnote err"; note.textContent=res.errors[0]; return;
       }
-      var baseMsg=res.added+" sipariş eklendi"+(res.skipped?", "+res.skipped+" satır atlandı (kod ya da adet eksik)":"")+".";
+      var baseMsg=res.added+" sipariş eklendi"+(res.skipped?", "+res.skipped+" satır atlandı (kod ya da adet eksik)":"")+(res.dup?", "+res.dup+" satır atlandı (bu kod zaten kayıtlı — tekrar sipariş oluşturulmadı)":"")+".";
       if(res.added){
         orders=orders.concat(res.newOrders); lsOrdersSet();
         if(db)res.newOrders.forEach(function(o){var d=Object.assign({},o); delete d.id; delete d._rawImg; db.doc("orders/"+o.id).set(d).catch(function(){})});
@@ -2966,6 +2977,47 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         note.className="impnote err"; note.textContent="Düzeltme sırasında bir hata oldu, tekrar dene.";
       });
     }
+  });
+  /* ---------- kopya (aynı koddan birden fazla) sipariş tarayıcı — SADECE OKUR, hiçbir
+     şeyi silmez/değiştirmez. Aynı Excel dosyası yanlışlıkla iki kez içe aktarılırsa,
+     aynı kod için birden fazla sipariş kaydı oluşabiliyordu (üretim geçmişi eski
+     kayıtta kalıp yeni kopya "hiç üretim yapılmamış" gibi görünüyordu) — bu araç
+     böyle kopyaları bulup listeler, hangisinin silineceğine kullanıcı karar verir. */
+  function scanDuplicateOrders(){
+    var groups={};
+    orders.forEach(function(o){
+      var k=(o.code||"").trim().toLowerCase(); if(!k)return;
+      (groups[k]=groups[k]||[]).push(o);
+    });
+    return Object.keys(groups).filter(function(k){return groups[k].length>1}).map(function(k){return groups[k]});
+  }
+  function orderProdTotal(o){
+    var q=0;
+    STAGES.forEach(function(sg,i){if((o.st||[])[i])q+=doneOf(o.id,sg.sec).q});
+    return q;
+  }
+  $("odupscan").addEventListener("click",function(){
+    var note=$("odupnote");
+    note.hidden=false; note.className="impnote"; note.textContent="Taranıyor…";
+    loadProgress(false).then(function(){
+      var dups=scanDuplicateOrders();
+      if(!dups.length){
+        note.className="impnote ok"; note.textContent="Kopya sipariş bulunamadı — her ürün kodu tek sipariş olarak kayıtlı.";
+        return;
+      }
+      var html=dups.length+' koda ait birden fazla sipariş kaydı var (muhtemelen aynı dosya birden fazla kez içe aktarılmış). Üretimi 0 görünenler muhtemelen yanlışlıkla oluşan kopyalar — hiçbirini otomatik silmiyorum, hangisini silmemi istediğini söyle:<br><br>'+
+        dups.map(function(g){
+          return '<div style="margin-bottom:10px"><b>'+esc(g[0].code)+'</b> · '+g.length+' kayıt<br>'+
+            g.map(function(o){
+              var p=orderProdTotal(o);
+              return '&nbsp;&nbsp;— '+esc(o.cust||"Müşteri yok")+' · '+nf.format(o.qty)+' adet sipariş · üretim: <b>'+nf.format(p)+' adet</b>'+(o.ts?(' · eklenme '+new Date(o.ts).toLocaleDateString("tr-TR")):"")+' · id '+esc(o.id.slice(0,8));
+            }).join("<br>")+
+            '</div>';
+        }).join("");
+      note.className="impnote err"; note.innerHTML=html;
+    }).catch(function(){
+      note.className="impnote err"; note.textContent="Tarama sırasında bir hata oldu, tekrar dene.";
+    });
   });
   /* ---------- tüm siparişleri sil ---------- */
   function askDeleteAllOrders(){
