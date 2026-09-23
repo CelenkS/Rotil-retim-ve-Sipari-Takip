@@ -1945,6 +1945,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function findCatIdx(cats,name){
     var low=(name||"").toLowerCase();
     for(var i=0;i<cats.length;i++)if((cats[i]||"").toLowerCase()===low)return i;
+    // Tam eşleşme yoksa: bölümler kendi ürünlerini "Rotil Gövde", "Z-Rot Aşık" gibi
+    // sipariş kategorisinin (ORDER_CATS) SONUNA bir ek getirerek adlandırmış olabilir.
+    // Böyle bir bölümde "Rotil" için ayrı, boş, tekrarlı bir kategori açmak yerine
+    // zaten var olan "Rotil Gövde" kategorisini kullan.
+    for(var j=0;j<cats.length;j++){
+      var c=(cats[j]||"").toLowerCase();
+      if(c.indexOf(low)===0&&(c.length===low.length||c.charAt(low.length)===" "))return j;
+    }
     return -1;
   }
   var secCatsCache={};
