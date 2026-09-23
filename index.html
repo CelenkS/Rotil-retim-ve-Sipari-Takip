@@ -371,6 +371,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .ohero .obl{font:700 13px var(--font-ui);color:rgba(255,255,255,.72)}
 .ohero .obig b{font:800 clamp(34px,10vw,46px)/1.05 var(--font-head);letter-spacing:-.01em;color:#fff}
 .ohero .obs{font:600 12.5px var(--font-ui);color:rgba(255,255,255,.6)}
+.ohero .obig.sm{padding:0 0 10px}
+.ohero .obig.sm b{font:800 22px/1.15 var(--font-head);letter-spacing:-.01em;color:#fff}
+.oprog{display:flex;flex-direction:column;gap:8px;margin:12px 0 0;padding:12px;border-radius:16px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12)}
+.oprow{display:flex;align-items:baseline;gap:6px;font:700 12.5px var(--font-ui);color:rgba(255,255,255,.75)}
+.oprow b{font:800 13px var(--font-num);color:#fff;margin-left:auto;white-space:nowrap}
+.oprow .opc{font:800 12.5px var(--font-ui);color:#fff;min-width:40px;text-align:right}
+.opbar{height:7px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:-2px}
+.opbar:last-child{margin-bottom:2px}
+.opbar i{display:block;height:100%;border-radius:99px;background:#fff}
 .ostats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);overflow:hidden}
 .ost{padding:12px 8px;text-align:center;border-left:1px solid rgba(255,255,255,.1)}
 .ost:first-child{border-left:0}
@@ -555,10 +564,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <section class="hero ohero">
     <div class="hirow"><div class="oeyebrow">Sipariş takibi</div><button class="tbtn" id="oback">‹ Bölümler</button></div>
     <div class="obig"><span class="obl">Açık sipariş tutarı</span><b id="oamt">0 ₺</b><span class="obs" id="oamtsub"></span></div>
+    <div class="obig sm"><span class="obl">Tamamlanan sipariş cirosu</span><b id="oamtdone">0 ₺</b><span class="obs" id="oamtdonesub"></span></div>
     <div class="ostats">
       <div class="ost"><b id="oopen">0</b><span>Açık</span></div>
       <div class="ost" id="olatebox"><b id="olate">0</b><span>Termini geçen</span></div>
       <div class="ost"><b id="odone">0</b><span>Tamamlanan</span></div>
+    </div>
+    <div class="oprog" id="oprog" hidden>
+      <div class="oprow"><span>Sipariş bazında</span><b id="opq"></b><span class="opc" id="opqc"></span></div>
+      <div class="opbar"><i id="opqb" style="width:0%"></i></div>
+      <div class="oprow"><span>Aşama bazında</span><b id="ops"></b><span class="opc" id="opsc"></span></div>
+      <div class="opbar"><i id="opsb" style="width:0%"></i></div>
     </div>
     <button class="btn onewbtn" id="onew">+ Yeni sipariş</button>
   </section>
@@ -1889,12 +1905,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(live&&!seenLive){var x2=extractSums(lns)[oid]; if(x2){q+=x2.q;r+=x2.r;e=e.concat(x2.e)}}
     return {q:q,r:r,e:e};
   }
+  // Not: daha önce burada tamamen bitmiş (dn>=nd) sipariş/aşama çiftleri toplama hiç
+  // katılmıyordu — bu yüzden bir aşamayı tamamladığında o iş toplamdan silinip
+  // gidiyordu ve yüzde hiç artmıyormuş gibi görünüyordu. Artık bitmiş işler de
+  // hem "gereken" hem "yapılan" tarafına dahil ediliyor (aşırı üretim yüzdeyi
+  // %100'ün üstüne taşırmasın diye yapılan, gereken ile sınırlanıyor).
   function stageNeed(secId){
     var si=stageIdx(secId), req=0, done=0;
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
-      var nd=need(o,secId), dn=doneOf(o.id,secId).q;
-      if(dn>=nd)return;
+      var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
       req+=nd; done+=dn;
     });
     return {req:req,done:done,rem:req-done};
@@ -1903,11 +1923,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var si=stageIdx(secId), gs=ORDER_CATS.map(function(){return {req:0,done:0}});
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
-      var nd=need(o,secId), dn=doneOf(o.id,secId).q;
-      if(dn>=nd)return;
+      var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
       var g=gs[o.cat]||gs[0]; g.req+=nd; g.done+=dn;
     });
     return gs;
+  }
+  function stageTotals(){
+    var req=0,done=0;
+    STAGES.forEach(function(sg){var n=stageNeed(sg.sec); req+=n.req; done+=n.done});
+    return {req:req,done:done};
   }
   /* ---------- elle tamamlama: kalan adedi gerçek üretim girişi olarak ekler ---------- */
   function writeCatchupLine(secId,dateIso,line){
@@ -2019,10 +2043,27 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       }).join("")+'</div></button>';
   }
   function renderOrders(){
-    var q=ordQ.trim().toLowerCase(), open=0, done=0, cards="", amt=0, late=0;
+    var q=ordQ.trim().toLowerCase(), open=0, done=0, cards="", amt=0, doneAmt=0, late=0, qtyAll=0, qtyDone=0;
     var list=orders.map(function(o){return {o:o,c:isComplete(o)}});
-    list.forEach(function(x){if(x.c)done++; else{open++; amt+=orderTotal(x.o); var n=daysTo(x.o.dd); if(n!==null&&n<0)late++}});
+    list.forEach(function(x){
+      qtyAll+=x.o.qty;
+      if(x.c){done++; doneAmt+=orderTotal(x.o); qtyDone+=x.o.qty}
+      else{open++; amt+=orderTotal(x.o); var n=daysTo(x.o.dd); if(n!==null&&n<0)late++}
+    });
     $("oopen").textContent=open; $("odone").textContent=done; $("oamt").textContent=money(amt)+" ₺"; $("olate").textContent=late; $("olatebox").classList.toggle("late",late>0); $("oamtsub").textContent=open?open+" açık siparişin toplamı":"Açık sipariş yok";
+    $("oamtdone").textContent=money(doneAmt)+" ₺"; $("oamtdonesub").textContent=done?done+" tamamlanan siparişin toplamı":"Henüz tamamlanan yok";
+    // Sipariş bazında (tüm siparişlerin adedi içinde tamamlanan pay) ve aşama bazında
+    // (bölümlerdeki gerçek üretim girişlerine göre) ilerleme — ikisi de büyüyerek gider,
+    // "tamamlama" yapıldığında sipariş toplamdan silinmez, tamamlanan tarafa eklenir.
+    $("oprog").hidden=!orders.length;
+    if(orders.length){
+      var qpc=qtyAll?Math.round(qtyDone/qtyAll*100):0;
+      $("opq").textContent=nf.format(qtyDone)+" / "+nf.format(qtyAll)+" adet";
+      $("opqc").textContent="%"+qpc; $("opqb").style.width=Math.min(100,qpc)+"%";
+      var st=stageTotals(), spc=st.req?Math.round(st.done/st.req*100):0;
+      $("ops").textContent=nf.format(st.done)+" / "+nf.format(st.req)+" adet";
+      $("opsc").textContent="%"+spc; $("opsb").style.width=Math.min(100,spc)+"%";
+    }
     var sl=list.filter(function(x){return sumAll||!x.c}), grp=function(arr){
       var gs=ORDER_CATS.map(function(){return {n:0,q:0,t:0}}), gt={n:0,q:0,t:0};
       arr.forEach(function(x){var g=gs[x.o.cat]||gs[0]; [g,gt].forEach(function(z){z.n++;z.q+=x.o.qty;z.t+=orderTotal(x.o)})});
