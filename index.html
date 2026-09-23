@@ -149,6 +149,10 @@ tr.grand td.a,tr.grand td.c{color:#fff;font-weight:800}
 .code{font:600 15px var(--font-num);overflow-wrap:anywhere;flex:1;min-width:0}
 .amt{font:600 15px var(--font-num);color:var(--money);white-space:nowrap}
 .ltime{font:600 11px var(--font-ui);color:var(--ink2);white-space:nowrap}
+.gline{display:block;width:100%;border:0;border-left:5px solid var(--c);border-radius:16px;background:var(--soft);padding:10px 10px 10px 12px;margin-bottom:8px;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.gsub{font:600 12px var(--font-ui);color:var(--ink2);margin-top:4px}
+.gcat{font-weight:800;color:var(--c)}
+.gnote{text-align:center;font:600 12px var(--font-ui);color:var(--ink2);margin-top:4px}
 .rm{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--ink2);font-size:20px;line-height:1;padding:0}
 .rm:hover{background:color-mix(in srgb,var(--p2) 25%,transparent)}
 .lbot{display:flex;align-items:center;gap:8px;margin-top:8px}
@@ -546,7 +550,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       <div class="dtotal"><span class="pill"><b id="etotal">0</b><span class="tgt" id="etg"></span> adet</span><span class="pill m"><b id="erev">0 ₺</b><span class="tgt" id="erg"></span></span></div>
     </div>
     <div class="sec"><h3>Yapılan ürünler</h3><button class="btn" id="addItem">+ Ürün ekle</button></div>
-    <div class="osearch" id="lsearchwrap" hidden style="margin-bottom:10px"><input class="search" id="lsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod veya müşteri ara…" aria-label="Yapılan üründe ara"></div>
+    <div class="osearch" id="lsearchwrap" style="margin-bottom:10px"><input class="search" id="lsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara (tüm günler)…" aria-label="Yapılan üründe ara"></div>
     <div id="lines"></div>
     <details class="manual" id="manual"><summary>Koda bağlı olmayan toplu giriş</summary>
       <p class="hint">Ürün kodu girmeden doğrudan adet ve tutar yazmak istersen buraya yaz; günlük toplama eklenir.</p>
@@ -1111,23 +1115,79 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<option value=""'+(sel===""?" selected":"")+'>Müşteri yok</option>'+
       names.map(function(n){return '<option value="'+esc(n)+'"'+(n===sel?" selected":"")+'>'+esc(n)+'</option>'}).join("");
   }
-  function lineVisible(l){
-    if(!lineQ)return true;
-    var q=lineQ.trim().toLowerCase(); if(!q)return true;
-    return (l.c||"").toLowerCase().indexOf(q)>-1||(l.u||"").toLowerCase().indexOf(q)>-1;
+  // Arama kutusuna bir şey yazılınca artık sadece seçili günün/haftanın içinde değil,
+  // TÜM bölüm geçmişinde (kod, müşteri veya kategori adına göre) arıyoruz — sonuçlara
+  // tıklayınca o güne gidilir. Geçmiş aylar Firestore'dan bir kez çekilip önbelleğe alınır.
+  var gsCache={sec:null,data:null,promise:null}, gsToken=0;
+  function lineMatchesQ(l,ql){
+    var catName=(COLS[l.k]||"").toLowerCase();
+    return (l.c||"").toLowerCase().indexOf(ql)>-1||(l.u||"").toLowerCase().indexOf(ql)>-1||catName.indexOf(ql)>-1;
+  }
+  function loadAllSectionLines(){
+    if(gsCache.sec===sec.id&&gsCache.data)return Promise.resolve(gsCache.data);
+    if(gsCache.promise&&gsCache.sec===sec.id)return gsCache.promise;
+    if(!db){gsCache={sec:sec.id,data:{},promise:null}; return Promise.resolve({})}
+    var curKey=key();
+    var p=db.collection(secCol(sec.id)).get().then(function(snap){
+      var byDate={};
+      snap.forEach(function(doc){
+        if(doc.id===curKey)return; // güncel ay: canlı hali zaten lns içinde, tekrar kullan
+        var d=doc.data()||{}, lm=d.lines||{};
+        Object.keys(lm).forEach(function(iso){byDate[iso]=lm[iso]});
+      });
+      gsCache={sec:sec.id,data:byDate,promise:null};
+      return byDate;
+    }).catch(function(){gsCache={sec:null,data:null,promise:null}; return {}});
+    gsCache={sec:sec.id,data:null,promise:p};
+    return p;
+  }
+  function renderGlobalSearch(q){
+    var ql=q.trim().toLowerCase(), tok=++gsToken;
+    $("lines").innerHTML='<div class="empty">Aranıyor…</div>';
+    loadAllSectionLines().then(function(hist){
+      // Bu arada yeni bir arama başlamış ya da kutu temizlenip gün görünümüne dönülmüş olabilir —
+      // ikisinde de bu eski sonucu ekrana basma.
+      if(tok!==gsToken||lineQ.trim()!==q)return;
+      var all=Object.assign({},hist,lns);
+      var matches=[];
+      Object.keys(all).forEach(function(iso){
+        (all[iso]||[]).forEach(function(l){if(lineMatchesQ(l,ql))matches.push({iso:iso,l:l})});
+      });
+      matches.sort(function(a,b){return a.iso!==b.iso?(a.iso<b.iso?1:-1):((b.l.t||0)-(a.l.t||0))});
+      if(!matches.length){$("lines").innerHTML='<div class="empty">Aramayla eşleşen ürün yok.</div>';return}
+      var html=matches.map(function(m){
+        var l=m.l, catName=COLS[l.k]||"";
+        return '<button type="button" class="gline d'+l.k+'" data-date="'+m.iso+'">'+
+          '<div class="ltop"><span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="ltime">'+fmtD(m.iso)+' · '+fmtTime(l.t)+'</span><span class="amt">'+money(l.q*l.p)+' ₺</span></div>'+
+          '<div class="gsub"><span class="gcat">'+esc(catName)+'</span> · '+esc(l.u||"Müşteri yok")+' · '+nf.format(l.q)+' adet</div>'+
+          '</button>';
+      }).join("");
+      $("lines").innerHTML=html+'<div class="gnote">'+matches.length+' sonuç · bir satıra dokunup o güne gidebilirsin</div>';
+    });
+  }
+  function jumpToDate(iso){
+    lineQ=""; var ls0=$("lsearch"); if(ls0)ls0.value="";
+    var y=+iso.slice(0,4), m=+iso.slice(5,7)-1, changed=(y!==Y||m!==M);
+    Y=y; M=m; selected=iso; lineQFor=iso;
+    if(changed)loadMonth();
+    setPeriod("gun");
+    if(!changed)renderDay();
+    window.scrollTo({top:0,behavior:"smooth"});
   }
   function renderLines(){
+    var q=lineQ.trim();
+    if(q){
+      renderGlobalSearch(q);
+      return;
+    }
     var ls=lines(selected), html="";
-    var wrap=$("lsearchwrap"); if(wrap)wrap.hidden=!ls.length;
     if(!ls.length){
       html='<button type="button" class="empty" id="emptyAdd">+ Bu güne ürün ekle</button>';
     }else{
-      var any=false;
       for(var k=0;k<COLS.length;k++){
         var idxs=[];
-        ls.forEach(function(l,i){if(l.k===k&&lineVisible(l))idxs.push(i)});
+        ls.forEach(function(l,i){if(l.k===k)idxs.push(i)});
         if(!idxs.length)continue;
-        any=true;
         html+='<div class="ghead d'+k+'"><span class="dot"></span>'+COLS[k]+'<span class="gsum" id="gs'+k+'"></span></div>';
         idxs.forEach(function(i){
           var l=ls[i];
@@ -1145,7 +1205,6 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             '<button type="button" class="rm" data-act="rm" aria-label="'+esc(l.c)+' satırını sil">×</button></div></div>';
         });
       }
-      if(!any)html='<div class="empty">Aramayla eşleşen ürün yok.</div>';
     }
     $("lines").innerHTML=html;
     refreshLineTotals();
@@ -1154,9 +1213,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // böylece o ürünün üretim adedinin günün hangi saatinde işlendiği belli olur.
   function fmtTime(t){if(!t)return ""; var d=new Date(t); return pad(d.getHours())+":"+pad(d.getMinutes())}
   function refreshLineTotals(){
+    if(lineQ.trim())return; // arama modundayken bu liste ayrı bir yolla (renderGlobalSearch) çiziliyor
     var ls=lines(selected), a=zero(), r=zero();
     ls.forEach(function(l,i){
-      if(!lineVisible(l))return;
       a[l.k]+=l.q; r[l.k]+=l.q*l.p;
       var el=$("la"+i); if(el)el.textContent=money(l.q*l.p)+" ₺";
       var te=$("lt"+i); if(te)te.textContent=fmtTime(l.t);
@@ -1180,6 +1239,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     arr[i]=l; lns[selected]=arr; touch(); refreshLineTotals();
   }
   $("lines").addEventListener("click",function(e){
+    var g=e.target.closest(".gline"); if(g){jumpToDate(g.dataset.date);return}
     if(e.target.closest("#emptyAdd")){openSheet();return}
     if(e.target.classList.contains("lthumb")){
       var d=document.createElement("div"); d.className="lbx"; d.innerHTML='<img alt="" src="'+e.target.src+'">';
@@ -2116,11 +2176,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var sumHtml="";
     if(cust){
       var os=orders.filter(function(o){return (o.cust||"")===cust});
-      var amt=0, qtyAll=0, qtyDone=0;
-      os.forEach(function(o){amt+=orderTotal(o); qtyAll+=o.qty; if(isComplete(o))qtyDone+=o.qty});
-      var qpc=qtyAll?Math.round(qtyDone/qtyAll*100):0;
+      var amtTotal=0, amtDone=0, qtyAll=0, qtyDone=0;
+      os.forEach(function(o){
+        var t=orderTotal(o); amtTotal+=t; qtyAll+=o.qty;
+        if(isComplete(o)){amtDone+=t; qtyDone+=o.qty}
+      });
+      var amtOpen=amtTotal-amtDone, qpc=qtyAll?Math.round(qtyDone/qtyAll*100):0;
       sumHtml='<div class="needcustsum">'+
-        '<div class="ncrow"><span>Toplam ciro</span><b>'+money(amt)+' ₺</b></div>'+
+        '<div class="ncrow"><span>Toplam ciro</span><b>'+money(amtTotal)+' ₺</b></div>'+
+        '<div class="ncrow"><span>Kalan ciro (açık)</span><b>'+money(amtOpen)+' ₺</b></div>'+
+        '<div class="ncrow"><span>Yapılan ciro (tamamlanan)</span><b>'+money(amtDone)+' ₺</b></div>'+
         '<div class="ncrow"><span>Sipariş sayısı</span><b>'+os.length+'</b></div>'+
         '<div class="ncrow"><span>Sipariş bazında yapılan</span><b>'+nf.format(qtyDone)+' / '+nf.format(qtyAll)+' adet · %'+qpc+'</b></div>'+
         '</div>';
@@ -3116,6 +3181,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       setCats(saved?cg.cats:sec.cats);
       try{curCust=localStorage.getItem(secPrefix(sec.id)+"cust")||""}catch(e){curCust=""}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
+      gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
       $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
