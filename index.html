@@ -576,6 +576,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     </div>
     <input type="file" id="oimportf" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
     <div class="impnote" id="impnote" hidden></div>
+    <button class="btn ghost" id="odelall" style="width:100%;margin-top:8px;color:var(--bad)">🗑 Tüm siparişleri sil</button>
+    <div class="impnote" id="odelnote" hidden></div>
     <div class="ocards" id="ocards"></div>
   </section>
   <div class="status" id="ostatus"></div>
@@ -2479,6 +2481,40 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     doImportFile(f); e.target.value="";
   });
   $("oexport").addEventListener("click",function(){downloadCsv(exportOrdersCsv(),"siparisler-"+todayIso+".csv")});
+  /* ---------- tüm siparişleri sil ---------- */
+  function askDeleteAllOrders(){
+    var note=$("odelnote");
+    note.hidden=false;
+    if(!orders.length){note.className="impnote"; note.textContent="Silinecek sipariş yok."; return}
+    note.className="impnote err";
+    note.innerHTML="<b>"+orders.length+" sipariş</b> kalıcı olarak silinecek, bu işlem geri alınamaz. Emin misin?"+
+      '<div class="frow" style="margin-top:8px"><button type="button" class="btn danger" id="odelyes">Evet, hepsini sil</button><button type="button" class="btn ghost" id="odelno">Vazgeç</button></div>';
+  }
+  function doDeleteAllOrders(){
+    var note=$("odelnote");
+    note.className="impnote"; note.innerHTML="Siliniyor…";
+    var ids=orders.map(function(o){return o.id});
+    var jobs=[];
+    if(db){
+      ids.forEach(function(id){
+        jobs.push(db.doc("orders/"+id).delete().catch(function(){}));
+        jobs.push(db.doc("oimg/"+id).delete().catch(function(){}));
+      });
+    }
+    orders=[]; lsOrdersSet();
+    Promise.all(jobs).then(function(){
+      note.className="impnote ok"; note.textContent="Tüm siparişler silindi.";
+      renderOrders();
+    }).catch(function(){
+      note.className="impnote err"; note.textContent="Silme sırasında bir hata oldu, sayfayı yenileyip kontrol et.";
+      renderOrders();
+    });
+  }
+  $("odelall").addEventListener("click",askDeleteAllOrders);
+  $("odelnote").addEventListener("click",function(e){
+    if(e.target.id==="odelyes")doDeleteAllOrders();
+    else if(e.target.id==="odelno"){$("odelnote").hidden=true}
+  });
   /* ---------- plans overview (ayrı bir yer: gün + hafta planlarını topluca kontrol) ---------- */
   function openPlansScreen(){
     dbP.then(function(){
