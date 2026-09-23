@@ -148,6 +148,7 @@ tr.grand td.a,tr.grand td.c{color:#fff;font-weight:800}
 .ltop{display:flex;align-items:center;gap:8px}
 .code{font:600 15px var(--font-num);overflow-wrap:anywhere;flex:1;min-width:0}
 .amt{font:600 15px var(--font-num);color:var(--money);white-space:nowrap}
+.ltime{font:600 11px var(--font-ui);color:var(--ink2);white-space:nowrap}
 .rm{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--ink2);font-size:20px;line-height:1;padding:0}
 .rm:hover{background:color-mix(in srgb,var(--p2) 25%,transparent)}
 .lbot{display:flex;align-items:center;gap:8px;margin-top:8px}
@@ -1099,7 +1100,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           var l=ls[i];
           var lod=l.o?orders.filter(function(x){return x.id===l.o})[0]:null;
           html+='<div class="line d'+k+'" data-idx="'+i+'">'+
-            '<div class="ltop">'+((lod&&lod.th)?'<img class="lthumb" alt="" src="'+lod.th+'">':'')+'<span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="amt" id="la'+i+'"></span></div>'+
+            '<div class="ltop">'+((lod&&lod.th)?'<img class="lthumb" alt="" src="'+lod.th+'">':'')+'<span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="ltime" id="lt'+i+'">'+fmtTime(l.t)+'</span><span class="amt" id="la'+i+'"></span></div>'+
             (l.o?'<div class="lord" id="lo'+i+'"></div>':'')+
             '<select class="lsel" data-f="u" aria-label="'+esc(l.c)+' müşteri">'+custOptions(l.u||"")+'</select>'+
             '<div class="lbot"><div class="step">'+
@@ -1115,11 +1116,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("lines").innerHTML=html;
     refreshLineTotals();
   }
+  // Bir satırın en son ne zaman girildiğini/değiştirildiğini gösterir (saat:dakika),
+  // böylece o ürünün üretim adedinin günün hangi saatinde işlendiği belli olur.
+  function fmtTime(t){if(!t)return ""; var d=new Date(t); return pad(d.getHours())+":"+pad(d.getMinutes())}
   function refreshLineTotals(){
     var ls=lines(selected), a=zero(), r=zero();
     ls.forEach(function(l,i){
       a[l.k]+=l.q; r[l.k]+=l.q*l.p;
       var el=$("la"+i); if(el)el.textContent=money(l.q*l.p)+" ₺";
+      var te=$("lt"+i); if(te)te.textContent=fmtTime(l.t);
       var lo=$("lo"+i);
       if(lo){
         var od=orders.filter(function(x){return x.id===l.o})[0];
@@ -1136,7 +1141,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function changeLine(i,f,val){
     var arr=lines(selected).slice(), l=Object.assign({},arr[i]);
-    if(f==="q")l.q=cleanNum(val,99999,true); else if(f==="u")l.u=String(val); else l.p=cleanNum(val,99999999,false);
+    if(f==="q"){l.q=cleanNum(val,99999,true); l.t=Date.now()} else if(f==="u")l.u=String(val); else l.p=cleanNum(val,99999999,false);
     arr[i]=l; lns[selected]=arr; touch(); refreshLineTotals();
   }
   $("lines").addEventListener("click",function(e){
@@ -1734,16 +1739,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var si=stageIdx(sec.id), before=COLS.length, k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), price=+((o.pr||[])[si])||0;
     var arr=lines(selected).slice(), hit=-1;
     arr.forEach(function(l,i){if(hit<0&&l.o===o.id&&l.p===price&&l.k===k)hit=i});
-    if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=n;arr[hit]=l}
-    else arr.push({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id});
+    if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=n;l.t=Date.now();arr[hit]=l}
+    else arr.push({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,t:Date.now()});
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
   }
   function addLine(it){
     var arr=lines(selected).slice(), hit=-1;
     arr.forEach(function(l,i){if(hit<0&&l.c===it.code&&l.k===it.k&&l.p===it.p&&(l.u||"")===curCust)hit=i});
-    if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=1;arr[hit]=l}
-    else arr.push({c:it.code,k:it.k,q:1,p:it.p,u:curCust});
+    if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=1;l.t=Date.now();arr[hit]=l}
+    else arr.push({c:it.code,k:it.k,q:1,p:it.p,u:curCust,t:Date.now()});
     lns[selected]=arr; touch(); renderLines();
   }
 
@@ -1915,7 +1920,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var sg=STAGES[i], nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, rem=nd-dn;
     if(rem<=0)return Promise.resolve();
     var price=+((o.pr||[])[i])||0;
-    var line={c:o.code,k:0,q:rem,p:price,u:o.cust||"",o:o.id,mc:1};
+    var line={c:o.code,k:0,q:rem,p:price,u:o.cust||"",o:o.id,mc:1,t:Date.now()};
     return writeCatchupLine(sg.sec,dateIso,line);
   }
   function addCatchupAll(oid,dateIso){
