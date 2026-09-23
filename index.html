@@ -1186,15 +1186,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!ls.length){
       html='<button type="button" class="empty" id="emptyAdd">+ Bu güne ürün ekle</button>';
     }else{
-      for(var k=0;k<COLS.length;k++){
+      // Bir satırın kategori indeksi (l.k), o an cihazda yüklü olan kategori listesinin
+      // (COLS) dışında kalırsa (ör. başka bir ekrandan yazılan bir kayıt, kategori
+      // listesi henüz senkronize olmadan önce görüntülenirse) daha önce bu döngü o
+      // satırı TAMAMEN atlıyordu — ciro/adet toplamlarına sayılıyor ama listede hiç
+      // görünmüyordu. Artık aralık dışı kalan satırlar da "Kategori dışı" başlığı
+      // altında gösteriliyor, hiçbir üretim kaydı görünmez olmuyor.
+      for(var k=-1;k<COLS.length;k++){
         var idxs=[];
-        ls.forEach(function(l,i){if(l.k===k)idxs.push(i)});
+        if(k===-1)ls.forEach(function(l,i){if(!(l.k>=0&&l.k<COLS.length))idxs.push(i)});
+        else ls.forEach(function(l,i){if(l.k===k)idxs.push(i)});
         if(!idxs.length)continue;
-        html+='<div class="ghead d'+k+'"><span class="dot"></span>'+COLS[k]+'<span class="gsum" id="gs'+k+'"></span></div>';
+        var headLabel=k===-1?"Kategori dışı":COLS[k], headClass=k===-1?"d0":("d"+k);
+        html+='<div class="ghead '+headClass+'"><span class="dot"></span>'+esc(headLabel)+(k>-1?'<span class="gsum" id="gs'+k+'"></span>':'')+'</div>';
         idxs.forEach(function(i){
           var l=ls[i];
           var lod=l.o?orders.filter(function(x){return x.id===l.o})[0]:null;
-          html+='<div class="line d'+k+'" data-idx="'+i+'">'+
+          html+='<div class="line '+headClass+'" data-idx="'+i+'">'+
             '<div class="ltop">'+((lod&&lod.th)?'<img class="lthumb" alt="" src="'+lod.th+'">':'')+'<span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="ltime" id="lt'+i+'">'+fmtTime(l.t)+'</span><span class="amt" id="la'+i+'"></span></div>'+
             (l.o?'<div class="lord" id="lo'+i+'"></div>':'')+
             '<select class="lsel" data-f="u" aria-label="'+esc(l.c)+' müşteri">'+custOptions(l.u||"")+'</select>'+
