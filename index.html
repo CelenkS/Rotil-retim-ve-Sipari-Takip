@@ -581,6 +581,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     </div>
     <input type="file" id="oimportf" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
     <div class="impnote" id="impnote" hidden></div>
+    <button class="btn ghost" id="ofillimg" style="width:100%;margin-top:8px">🖼 Eksik görselleri tamamla (Excel)</button>
+    <input type="file" id="ofillimgf" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+    <div class="impnote" id="fillimgnote" hidden></div>
     <button class="btn ghost" id="odelall" style="width:100%;margin-top:8px;color:var(--bad)">🗑 Tüm siparişleri sil</button>
     <div class="impnote" id="odelnote" hidden></div>
     <div class="ocards" id="ocards"></div>
@@ -2185,6 +2188,33 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var rows=parseCsv(text);
     return importOrderRows(rows);
   }
+  // Daha önce içe aktarılmış ama görseli eksik kalmış ürünler için: aynı excel dosyasını
+  // tekrar okuyup, sadece görsel içeren satırları kod üzerinden görseli EKSİK olan mevcut
+  // siparişlerle eşleştirir. Yeni sipariş oluşturmaz, mevcut görseli olan siparişlere dokunmaz.
+  function matchMissingImages(rows,images){
+    if(!rows||rows.length<2)return {matched:[],rowsWithImg:0,err:"Dosya boş görünüyor."};
+    var header=rows[0].map(normHead);
+    var kodIx=-1;
+    for(var i=0;i<header.length;i++)if(HEAD_ALIASES.kod.indexOf(header[i])>-1){kodIx=i;break}
+    if(kodIx<0)return {matched:[],rowsWithImg:0,err:'Başlık satırında "kod" sütunu bulunamadı.'};
+    var byCode={};
+    orders.forEach(function(o){
+      if(o.th)return; // zaten görseli var, dokunma
+      var k=(o.code||"").trim().toLowerCase(); if(!k)return;
+      (byCode[k]=byCode[k]||[]).push(o);
+    });
+    var matched=[], rowsWithImg=0;
+    for(var r=1;r<rows.length;r++){
+      if(!images||!images[r])continue;
+      rowsWithImg++;
+      var row=rows[r]; if(!row||!row.length)continue;
+      var code=(row[kodIx]||"").toString().trim().toLowerCase(); if(!code)continue;
+      var list=byCode[code]; if(!list||!list.length)continue;
+      var o=list.shift();
+      matched.push({id:o.id,_rawImg:images[r]});
+    }
+    return {matched:matched,rowsWithImg:rowsWithImg};
+  }
   /* ---------- xlsx (Excel) okuma: ZIP + XML, tarayıcının kendi araçlarıyla ---------- */
   function readZipEntries(buf){
     var view=new DataView(buf), bytes=new Uint8Array(buf), n=bytes.length;
@@ -2582,6 +2612,44 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     doImportFile(f); e.target.value="";
   });
   $("oexport").addEventListener("click",function(){downloadCsv(exportOrdersCsv(),"siparisler-"+todayIso+".csv")});
+  $("ofillimg").addEventListener("click",function(){$("fillimgnote").hidden=true; $("ofillimgf").click()});
+  $("ofillimgf").addEventListener("change",function(e){
+    var f=e.target.files&&e.target.files[0]; e.target.value=""; if(!f)return;
+    var note=$("fillimgnote");
+    note.hidden=false; note.className="impnote"; note.textContent="Excel okunuyor…";
+    var name=(f.name||"").toLowerCase();
+    var isXlsx=/\.xlsx$/.test(name)||f.type==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    if(!isXlsx){note.className="impnote err"; note.textContent="Bu özellik sadece Excel (.xlsx) dosyalarıyla çalışır, çünkü görseller CSV'de olmaz."; return}
+    var reader=new FileReader();
+    reader.onload=function(){
+      xlsxToRows(reader.result).then(function(res){
+        var m=matchMissingImages(res.rows,res.images);
+        if(m.err){note.className="impnote err"; note.textContent=m.err; return}
+        if(!m.matched.length){
+          note.className="impnote";
+          note.textContent=m.rowsWithImg
+            ? "Eşleşen ürün bulunamadı ("+m.rowsWithImg+" satırda görsel vardı ama kodlar uymadı ya da o ürünlerde zaten görsel var)."
+            : "Bu dosyada görsel bulunamadı.";
+          return;
+        }
+        note.className="impnote ok"; note.textContent="0/"+m.matched.length+" görsel ekleniyor…";
+        importOrderImages(m.matched,function(done,total){
+          note.textContent=done+"/"+total+" görsel ekleniyor…";
+        }).then(function(r){
+          note.className="impnote"+(r.fail?" err":" ok");
+          note.textContent=r.ok+"/"+r.total+" ürüne görsel eklendi"+
+            (r.fail?", "+r.fail+" tanesi yine eklenemedi (tekrar dene, ya da o ürüne sipariş detayından elle ekle).":".");
+        });
+      }).catch(function(err){
+        note.className="impnote err";
+        note.textContent=(err&&err.code==="decompression_unsupported")
+          ? "Bu tarayıcı Excel dosyasını okuyamıyor."
+          : "Excel dosyası okunamadı. Dosyanın bozuk olmadığından emin ol.";
+      });
+    };
+    reader.onerror=function(){note.className="impnote err"; note.textContent="Dosya okunamadı."};
+    reader.readAsArrayBuffer(f);
+  });
   /* ---------- tüm siparişleri sil ---------- */
   function askDeleteAllOrders(){
     var note=$("odelnote");
