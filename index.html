@@ -2933,7 +2933,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   $("ofixcat").addEventListener("click",function(){
     var note=$("fixcatnote");
-    note.hidden=false; note.className="impnote"; note.textContent="Kontrol ediliyor…";
+    // GÜVENLİK: üretim verisiyle ilgili bir tutarsızlık bildirimi araştırılırken bu
+    // araç geçici olarak devre dışı bırakıldı — yanlışlıkla veri kaybına yol açmasın diye.
+    note.hidden=false; note.className="impnote err";
+    note.textContent="Bu araç şu an geçici olarak kapalı (bir veri sorunu araştırılıyor). Lütfen kullanma, Yusuf'a haber verildi.";
+    return;
+    /* eslint-disable no-unreachable */
     fixcatPlan=null;
     scanCatchupCats().then(function(res){
       if(!res.bad){
