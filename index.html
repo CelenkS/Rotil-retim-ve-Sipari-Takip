@@ -206,6 +206,16 @@ details.manual .hint{font:400 12px var(--font-ui);color:var(--ink2);margin:4px 0
 .bk .sub{grid-column:2;font:400 11.5px var(--font-num);color:rgba(255,255,255,.82)}
 .bk .pc{grid-column:3;grid-row:1/3;font:600 16px var(--font-num)}
 .bk.none{color:rgba(255,255,255,.75);font:600 13px var(--font-ui)}
+.bkcat{border:0;background:none;padding:0;margin:0;width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.bkcat:active{opacity:.8}
+.chevmini{font-style:normal;opacity:.65;margin-left:3px}
+.catback{display:inline-block;border:0;background:rgba(255,255,255,.16);border-radius:99px;padding:8px 14px;font:700 13px var(--font-head);color:#fff;margin-bottom:10px;cursor:pointer}
+.catback:active{opacity:.8}
+.drow{background:rgba(255,255,255,.12);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.drow .ltop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.drow .code{font:700 14px var(--font-num);color:#fff;overflow-wrap:anywhere}
+.drow .amt{font:700 14px var(--font-num);color:#fff;white-space:nowrap}
+.dsub{font:400 11.5px var(--font-num);color:rgba(255,255,255,.82);margin-top:2px}
 tr.week,tr.grand{cursor:pointer}
 .lc{margin-top:8px}
 .lc select{width:100%;height:38px;border:0;border-radius:10px;background:var(--surface);color:var(--ink);font:600 13px var(--font-ui);padding:0 10px}
@@ -510,6 +520,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   </div>
   <input type="file" id="bkImportf" accept=".json,application/json" hidden>
   <div class="impnote" id="bknote" hidden></div>
+  <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
+  <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
 </div>
 <div class="wrap" id="app" hidden>
@@ -765,7 +777,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var now=new Date();
   var todayIso=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
   var Y=now.getFullYear(), M=now.getMonth();
-  var selected=todayIso, brkTab="urun", lineQ="", lineQFor=null;
+  var selected=todayIso, brkTab="urun", lineQ="", lineQFor=null, catDrill=null;
   try{brkTab=localStorage.getItem("montaj:brk")==="mus"?"mus":"urun"}catch(e){}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
   var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={};   // catalog [{id,code,k,p}], customers [{id,name}]
@@ -859,6 +871,39 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<div class="bk"><span class="dot" style="background:'+color+'"></span><span class="nm">'+esc(name)+'</span>'+
       '<span class="sub">'+nf.format(a)+' adet · '+money(r)+' ₺</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(a?'<small>ort. '+money(r/a)+' ₺</small>':'')+'</span></div>';
   }
+  // Kategoriye göre dağılımdaki her satır tıklanabilir bir buton: tıklayınca o
+  // kategoride, seçili dönemde (gün/hafta/ay) hangi ürün kodlarından ne kadar
+  // üretilmiş olduğunun dökümünü gösterir (catDrillHtml).
+  function bkRowCat(i,color,name,a,r,pct,t){
+    return '<button type="button" class="bk bkcat" data-cat="'+i+'"><span class="dot" style="background:'+color+'"></span><span class="nm">'+esc(name)+'</span>'+
+      '<span class="sub">'+nf.format(a)+' adet · '+money(r)+' ₺</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(a?'<small>ort. '+money(r/a)+' ₺</small>':'')+'<i class="chevmini">›</i></span></button>';
+  }
+  function catDrillHtml(i,ds,ca,cr,t){
+    var pct=t?ca[i]/t*100:0;
+    var byCode={}, order=[], manQ=0, manR=0;
+    ds.forEach(function(iso){
+      var mv=mvals(iso)[i]||0, mr=mrvals(iso)[i]||0;
+      manQ+=mv; manR+=mr;
+      lines(iso).forEach(function(l){
+        if(l.k!==i)return;
+        if(!byCode[l.c]){byCode[l.c]={q:0,r:0,custs:{}};order.push(l.c)}
+        var e=byCode[l.c]; e.q+=l.q; e.r+=l.q*l.p;
+        var cn=l.u||"Müşteri yok"; e.custs[cn]=(e.custs[cn]||0)+l.q;
+      });
+    });
+    order.sort(function(x,y){return byCode[y].q-byCode[x].q});
+    var rows=order.map(function(code){
+      var e=byCode[code], cns=Object.keys(e.custs).sort(function(x,y){return e.custs[y]-e.custs[x]});
+      var custTxt=cns.length>1?(cns[0]+" +"+(cns.length-1)+" diğer"):(cns[0]||"Müşteri yok");
+      return '<div class="drow"><div class="ltop"><span class="code">'+esc(code)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
+        '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺</div></div>';
+    }).join("");
+    if(manQ)rows+='<div class="drow"><div class="ltop"><span class="code">Elle girilen toplam</span><span class="amt">'+money(manR)+' ₺</span></div><div class="dsub">'+nf.format(manQ)+' adet · ürün bazında detay yok</div></div>';
+    var head='<button type="button" class="catback" id="catDrillBack">‹ Tüm kategoriler</button>'+
+      '<div class="bk"><span class="dot" style="background:var(--p'+i+')"></span><span class="nm">'+esc(COLS[i])+'</span>'+
+      '<span class="sub">'+nf.format(ca[i])+' adet · '+money(cr[i])+' ₺</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(ca[i]?'<small>ort. '+money(cr[i]/ca[i])+' ₺</small>':'')+'</span></div>';
+    return head+(rows||'<div class="empty" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)">Bu dönemde bu kategoride üretim kaydı yok.</div>');
+  }
   function bar(el,items,t){
     el.innerHTML=t?items.map(function(x){return '<i style="width:'+(x.v/t*100)+'%;background:'+x.c+'"></i>'}).join(""):"";
   }
@@ -894,9 +939,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     for(var i=0;i<COLS.length;i++){
       var val=byR?cr[i]:ca[i];
       items.push({v:val,c:"var(--p"+i+")"});
-      html+=bkRow("var(--p"+i+")",COLS[i],ca[i],cr[i],t?val/t*100:0,t);
     }
-    bar($("bar"),items,t); $("legend").innerHTML=html;
+    bar($("bar"),items,t);
+    if(catDrill!==null&&catDrill<COLS.length){
+      $("legend").innerHTML=catDrillHtml(catDrill,ds,ca,cr,t);
+    }else{
+      for(var i2=0;i2<COLS.length;i2++){
+        var val2=byR?cr[i2]:ca[i2];
+        html+=bkRowCat(i2,"var(--p"+i2+")",COLS[i2],ca[i2],cr[i2],t?val2/t*100:0,t);
+      }
+      $("legend").innerHTML=html;
+    }
     // by customer
     order.sort(function(x,y){return byR?cu[y].r-cu[x].r:cu[y].a-cu[x].a});
     var citems=[], chtml="";
@@ -997,7 +1050,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
   }
   function setBrk(t){
-    brkTab=t;
+    brkTab=t; catDrill=null;
     $("tUrun").setAttribute("aria-pressed",t==="urun"); $("tMus").setAttribute("aria-pressed",t==="mus");
     $("bUrun").hidden=(t!=="urun"); $("bMus").hidden=(t!=="mus");
     try{localStorage.setItem("montaj:brk",t)}catch(e){}
@@ -1014,6 +1067,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("pGun").addEventListener("click",function(){setPeriod("gun")});
   $("pHafta").addEventListener("click",function(){setPeriod("hafta")});
   $("pAy").addEventListener("click",function(){setPeriod("ay")});
+  $("legend").addEventListener("click",function(e){
+    var back=e.target.closest("#catDrillBack");
+    if(back){catDrill=null; renderHero(); return}
+    var b=e.target.closest(".bkcat"); if(!b)return;
+    catDrill=+b.dataset.cat; renderHero();
+  });
 
   function mixBar(v){
     var t=sum(v); if(!t)return '<div class="mix"></div>';
@@ -3215,7 +3274,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       setCats(saved?cg.cats:sec.cats);
       try{curCust=localStorage.getItem(secPrefix(sec.id)+"cust")||""}catch(e){curCust=""}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
-      gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null;
+      gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
       $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
@@ -3332,6 +3391,63 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("bknote").addEventListener("click",function(e){
     if(e.target.id==="bkyes")applyRestore();
     else if(e.target.id==="bkno"){pendingRestore=null; $("bknote").hidden=true;}
+  });
+
+  /* ---------- tüm bölümlerdeki üretim kayıtlarını (adet/ciro) sıfırla ----------
+     Siparişleri silmek üretim geçmişini SİLMEZ, ikisi ayrı veri: üretim, hangi
+     günde ne kadar ürün girildiğinin kaydı, siparişe bağlı olmak zorunda değil.
+     Baştan başlamak isteyen kullanıcı için: her bölümün her aylık üretim
+     dokümanını (adet, ciro, hedefler, planlar) kalıcı olarak siler. Sipariş
+     kayıtlarına ve ürün/müşteri kataloğuna dokunmaz. */
+  function askWipeProduction(){
+    var note=$("wipenote");
+    note.hidden=false;
+    if(!db){note.className="impnote err"; note.textContent="Veritabanına bağlanılamadı, önce bağlantını kontrol et."; return}
+    note.className="impnote"; note.textContent="Kontrol ediliyor…";
+    Promise.all(SECTIONS.map(function(s){
+      return db.collection(secCol(s.id)).get().then(function(snap){return {name:s.name,n:snap.size}});
+    })).then(function(res){
+      var total=res.reduce(function(a,x){return a+x.n},0);
+      if(!total){note.className="impnote"; note.textContent="Silinecek üretim kaydı yok, zaten boş."; return}
+      var detail=res.filter(function(x){return x.n}).map(function(x){return esc(x.name)+": "+x.n+" aylık kayıt"}).join(", ");
+      note.className="impnote err";
+      note.innerHTML="<b>Tüm bölümlerdeki tüm günlerin üretim adedi, cirosu, hedefleri ve planları</b> kalıcı olarak silinecek ("+detail+"). Siparişlere ve ürün/müşteri listesine dokunulmaz. Bu işlem GERİ ALINAMAZ. Emin misin?"+
+        '<div class="frow" style="margin-top:8px"><button type="button" class="btn danger" id="wipeyes">Evet, hepsini sil</button><button type="button" class="btn ghost" id="wipeno">Vazgeç</button></div>';
+    }).catch(function(){note.className="impnote err"; note.textContent="Kontrol sırasında hata oldu, tekrar dene."});
+  }
+  function doWipeProduction(){
+    var note=$("wipenote");
+    note.className="impnote"; note.innerHTML="Siliniyor…";
+    Promise.all(SECTIONS.map(function(s){
+      return db.collection(secCol(s.id)).get().then(function(snap){
+        return Promise.all(snap.docs.map(function(d){return d.ref.delete().catch(function(){})}));
+      });
+    })).then(function(){
+      try{
+        var rm=[];
+        for(var i=0;i<localStorage.length;i++){
+          var k=localStorage.key(i);
+          SECTIONS.forEach(function(s){
+            var pre=secPrefix(s.id);
+            if(k.indexOf(pre)===0&&/^\d{4}-\d{2}$/.test(k.slice(pre.length)))rm.push(k);
+          });
+        }
+        rm.forEach(function(k){localStorage.removeItem(k)});
+      }catch(e){}
+      days={}; rev={}; lns={}; targets={}; plans={day:{},week:{}}; dirty={}; tdirty=false; pdirty=false;
+      pm={}; pmFull=false;
+      if(!$("app").hidden){renderAll(); renderHero()}
+      refreshHome();
+      note.className="impnote ok"; note.textContent="Tüm bölümlerdeki üretim kayıtları silindi. Adet ve ciro sıfırlandı.";
+    }).catch(function(){
+      note.className="impnote err"; note.textContent="Silme sırasında bir hata oldu, bazı kayıtlar silinmemiş olabilir. Tekrar dene.";
+      refreshHome();
+    });
+  }
+  $("bkWipeProd").addEventListener("click",askWipeProduction);
+  $("wipenote").addEventListener("click",function(e){
+    if(e.target.id==="wipeyes")doWipeProduction();
+    else if(e.target.id==="wipeno"){$("wipenote").hidden=true}
   });
 
   setBrk(brkTab);
