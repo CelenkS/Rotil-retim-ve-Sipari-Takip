@@ -399,6 +399,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .oc2 .oadd .step button{width:38px;height:44px;border-radius:12px;background:var(--soft)}
 .oc2 .oadd .step input{width:74px;height:44px;font-size:18px;background:var(--soft)}
 .oc2 .oadd .rembtn{border:0;border-radius:12px;background:var(--soft);color:var(--ink2);font:700 12px var(--font-ui);height:44px;padding:0 10px}
+.oc2 .planrm{display:block;margin-top:10px;margin-left:auto;border:0;background:none;color:var(--bad);font:700 12px var(--font-ui);text-decoration:underline;padding:4px 0}
 .oc2 .oadd .addbtn{flex:1;height:44px;border-radius:12px;background:var(--sc);color:#fff;font:800 15px var(--font-head)}
 .ltop{gap:8px}
 .lthumb{flex:0 0 34px;width:34px;height:34px;border-radius:9px;object-fit:contain;background:#fff;border:1px solid var(--line);cursor:zoom-in}
@@ -739,7 +740,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var downloadsApi=null;
   var chain=Promise.resolve(), timer=null, catTimer=null;
   var sheetMode="list", editId=null, editCust=null, formCat=0, search="";
-  var planSearch="", planFCat=null, planFCust="", planDraft=null;
+  var planSearch="", planFCat=null, planFCust="", planDraft=null, pvClearOpen=false;
 
   function key(){return Y+"-"+pad(M+1)}
   function normPlans(p){
@@ -929,7 +930,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     plans[planScope][k]=arr; pdirty=true; planDraft=null; lsSet(); scheduleSave(); closeSheet(); renderHero();
   }
   function openPlanView(scope){
-    planScope=scope||planScope||"week";
+    planScope=scope||planScope||"week"; pvClearOpen=false;
     sheetMode="planview"; $("ov").hidden=false; renderSheet();
     loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="planview")renderSheet()});
   }
@@ -1365,9 +1366,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
           '<div class="oq2">planlanan<b>'+nf.format(it.plan)+'</b></div></div>'+
           '<div class="pg"><div class="pgt"><span>yapılan '+nf.format(it.done)+' / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div></div>'+
+          '<button type="button" class="planrm" data-plrm="'+o.id+'">Plandan sil</button>'+
           '</div>';
       }).join(""):'<div class="empty">Henüz plan girilmedi.<br>“+ Plana ekle” ile başla.</div>')+'</div>';
-      html+='<div class="frow" style="margin-top:4px"><button class="btn" id="pvaddmore">+ Plana ekle</button></div>';
+      html+='<div class="frow" style="margin-top:4px"><button class="btn" id="pvaddmore">+ Plana ekle</button>'+(pr6.items.length?'<button type="button" class="btn ghost" id="pvclearask" style="color:var(--bad)">🗑 Planı tamamen temizle</button>':'')+'</div>'+
+        (pvClearOpen?'<div class="impnote err" style="margin-top:8px">Bu '+(planScope==="day"?"günün":"haftanın")+' tüm planı ('+pr6.items.length+' ürün) silinecek, geri alınamaz. Emin misin?<div class="frow" style="margin-top:8px"><button type="button" class="btn danger" id="pvclearyes">Evet, temizle</button><button type="button" class="btn ghost" id="pvclearno">Vazgeç</button></div></div>':'');
     }else if(sheetMode==="cform"){
       var cu=customers.filter(function(x){return x.id===editCust})[0]||{name:""};
       html+='<div class="shead"><div><h2 id="sh-title">'+(editCust?"Müşteriyi düzenle":"Yeni müşteri")+'</h2><small>Ürün eklerken seçeceğin müşteri</small></div></div>'+
@@ -1647,7 +1650,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var pk=planKey(planScope); if(!plans[planScope])plans[planScope]={};
       plans[planScope][pk]=[]; pdirty=true; planDraft=null; lsSet(); scheduleSave(); closeSheet(); renderHero(); return;
     }
-    if(t.id==="pvclose"){closeSheet();return}
+    if(t.dataset.plrm!==undefined){
+      var pk3=planKey(planScope); if(!plans[planScope])plans[planScope]={};
+      plans[planScope][pk3]=(plans[planScope][pk3]||[]).filter(function(pe){return pe.oid!==t.dataset.plrm});
+      pdirty=true; lsSet(); scheduleSave(); renderSheet(); renderHero(); return;
+    }
+    if(t.id==="pvclearask"){pvClearOpen=true;renderSheet();return}
+    if(t.id==="pvclearno"){pvClearOpen=false;renderSheet();return}
+    if(t.id==="pvclearyes"){
+      var pk4=planKey(planScope); if(!plans[planScope])plans[planScope]={};
+      plans[planScope][pk4]=[]; pdirty=true; pvClearOpen=false; lsSet(); scheduleSave(); renderSheet(); renderHero(); return;
+    }
+    if(t.id==="pvclose"){pvClearOpen=false;closeSheet();return}
     if(t.id==="pvaddmore"){openPlanForm(planScope);return}
     if(t.id==="cnew"){sheetMode="cform";editCust=null;renderSheet();return}
     if(t.id==="cedit"){
