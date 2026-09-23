@@ -1997,11 +1997,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // gidiyordu ve yüzde hiç artmıyormuş gibi görünüyordu. Artık bitmiş işler de
   // hem "gereken" hem "yapılan" tarafına dahil ediliyor (aşırı üretim yüzdeyi
   // %100'ün üstüne taşırmasın diye yapılan, gereken ile sınırlanıyor).
+  // Aynı müşterinin farklı parti/siparişleri "İNCEGÜL S5", "İNCEGÜL S6" gibi sonuna
+  // "S<sayı>" eklenerek ayrı ayrı girilmiş olabiliyor — müşteri filtresinde bunların
+  // hepsini TEK müşteri (ör. "İNCEGÜL") altında toplamak için sondaki eki temizliyoruz.
+  function custBaseName(name){
+    return (name||"").replace(/\s+S\d+\s*$/i,"").trim();
+  }
   function stageNeed(secId,cust){
     var si=stageIdx(secId), req=0, done=0;
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
-      if(cust&&(o.cust||"")!==cust)return;
+      if(cust&&custBaseName(o.cust)!==cust)return;
       var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
       req+=nd; done+=dn;
     });
@@ -2011,7 +2017,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var si=stageIdx(secId), gs=ORDER_CATS.map(function(){return {req:0,done:0}});
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
-      if(cust&&(o.cust||"")!==cust)return;
+      if(cust&&custBaseName(o.cust)!==cust)return;
       var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
       var g=gs[o.cat]||gs[0]; g.req+=nd; g.done+=dn;
     });
@@ -2149,8 +2155,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     card.hidden=!orders.length;
     if(!orders.length)return;
     // Müşteri süzgeci: dropdown'da hangi müşteriler var, sipariş listesinden çıkar.
+    // "İNCEGÜL S5", "İNCEGÜL S6" gibi aynı müşterinin farklı parti/sipariş uzantılı
+    // adları tek müşteri (custBaseName) altında birleştirilir.
     var custList=[], seenC={};
-    orders.forEach(function(o){var cn=o.cust||""; if(cn&&!seenC[cn.toLowerCase()]){seenC[cn.toLowerCase()]=1;custList.push(cn)}});
+    orders.forEach(function(o){
+      var cn=custBaseName(o.cust); if(cn&&!seenC[cn.toLowerCase()]){seenC[cn.toLowerCase()]=1;custList.push(cn)}
+    });
     custList.sort(function(a,b){return a.localeCompare(b,"tr")});
     var cust=(needCust&&custList.indexOf(needCust)>-1)?needCust:"";
     needCust=cust;
@@ -2175,7 +2185,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       '</select>'):"";
     var sumHtml="";
     if(cust){
-      var os=orders.filter(function(o){return (o.cust||"")===cust});
+      var os=orders.filter(function(o){return custBaseName(o.cust)===cust});
       var amtTotal=0, amtDone=0, qtyAll=0, qtyDone=0;
       os.forEach(function(o){
         var t=orderTotal(o); amtTotal+=t; qtyAll+=o.qty;
