@@ -391,13 +391,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .chiprow button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .floorwrap{border:2px dashed var(--line);border-radius:16px;padding:14px 14px 32px;position:relative;margin-top:4px;overflow-x:auto}
 .floorwrap .flabel{position:absolute;left:14px;bottom:10px;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
-.floorgrid{display:grid;grid-template-columns:repeat(7,minmax(44px,1fr));grid-auto-rows:50px;gap:6px;min-width:520px}
-.fbox{border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:800 10.5px var(--font-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3px;cursor:pointer;gap:2px;line-height:1.15}
+.floorgrid{display:grid;grid-template-columns:repeat(7,minmax(64px,1fr));grid-auto-rows:96px;gap:6px;min-width:680px}
+.fbox{border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:800 10.5px var(--font-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px;cursor:pointer;gap:2px;line-height:1.15}
 .fbox.vert span{writing-mode:vertical-rl;text-orientation:mixed}
 .fbox.empty{border-style:dashed;color:var(--ink2);opacity:.55;background:none}
 .fbox.busy{background:color-mix(in srgb,var(--accent) 20%,var(--surface));border-color:var(--accent)}
 .fbox small{font:600 9px var(--font-ui);opacity:.85;display:flex;align-items:center;gap:3px;max-width:100%}
 .fbimg{width:15px;height:15px;flex:0 0 15px;object-fit:contain;border-radius:4px;background:#fff}
+.fbstat{font:800 12.5px var(--font-ui);margin-top:1px}
+.fbrem{font:700 9px var(--font-ui);opacity:.8;background:rgba(255,255,255,.5);border-radius:6px;padding:1px 5px}
 .mdrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font:600 14px var(--font-ui)}
 .mdrow span{color:var(--ink2)}
 .mdjob{margin-top:12px;padding:16px;border-radius:16px;background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
@@ -584,7 +586,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 17:15</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 17:45</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -887,6 +889,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   try{brkTab=localStorage.getItem("montaj:brk")==="mus"?"mus":"urun"}catch(e){}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
   var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={}, planWeekKey=null;   // catalog [{id,code,k,p}], customers [{id,name}]; planWeekKey: null=bu hafta, dolu ise ileri/geri seçilen haftanın pazartesi (ISO)
+  var floorDayKey=null;   // Yerleşim (kroki) ekranındaki gün gezinmesi: null=bugün, dolu ise seçilen günün ISO tarihi
   var db=null, unsub=null, unsubCat=null, docExists=false, catExists=false, dirty={}, catDirty=false;
   // Malzeme stoğu / ürün reçetesi: "materials" koleksiyonu her hammadde/yarı mamul için
   // {id,name,unit,stock,crit,note} tutar — bölümlerden bağımsız, TEK ortak havuz (bir ürünün
@@ -1213,10 +1216,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
     el.innerHTML=tq?('Planlanan toplam <b>'+nf.format(tq)+' adet</b>'+(tp?' · <b>'+money(tp)+' ₺</b>':'')):'Henüz plan girilmedi';
   }
-  function openPlanForm(scope,keepWeek){
+  function openPlanForm(scope,keepWeek,presearch){
     planScope=scope||planScope||"week";
     if(!keepWeek)planWeekKey=null; // "Plan" butonuna basınca hep bu haftadan başla
-    planSearch=""; planFCat=null; planFCust=""; planDraft=null;
+    planSearch=presearch||""; planFCat=null; planFCust=""; planDraft=null;
     sheetMode="planform"; $("ov").hidden=false; renderSheet(); refreshPlanFoot();
     // Refresh progress data in the background for NEXT time this form opens —
     // never touch the open sheet's inputs here, that would wipe whatever the
@@ -1352,6 +1355,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var p=mondayIso.split("-").map(Number), d0=new Date(p[0],p[1]-1,p[2]), d6=new Date(p[0],p[1]-1,p[2]+6), sm=d0.getMonth()===d6.getMonth();
     return (sm?(d0.getDate()+"–"+d6.getDate()+" "+AY[d0.getMonth()]):(d0.getDate()+" "+AY[d0.getMonth()]+" – "+d6.getDate()+" "+AY[d6.getMonth()]))+" haftası";
   }
+  function isoDayLabel(iso){
+    var p=iso.split("-").map(Number), d=new Date(p[0],p[1]-1,p[2]);
+    return p[2]+" "+AY[p[1]-1]+" "+GUN[(d.getDay()+6)%7];
+  }
+  function floorDayIso(){return floorDayKey||todayIso}
   function planKey(scope){return scope==="day"?selected:(planWeekKey||curWeekKey())}
   function planLabel(scope){
     if(scope==="day"){var p=selParts(); return p.d+" "+AY[p.m]+" "+GUN[(new Date(p.y,p.m,p.d).getDay()+6)%7]}
@@ -1902,6 +1910,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
              (fmImg?'<img class="mdjimg" alt="" src="'+fmImg+'">':'<div class="mdjimg ph">'+esc((fm.job.code||"?").charAt(0).toUpperCase())+'</div>')+
              '<div style="flex:1;min-width:0"><div class="mdjcode">'+esc(fm.job.code)+'</div><div class="esub" style="font:600 13px var(--font-ui);color:var(--ink2);margin-top:2px">'+esc(secNameOf(fm.job.sec))+(fm.job.cust?' · '+esc(fm.job.cust):'')+'</div></div>'+
              '</div>'+
+             (function(){
+               var mdSt=jobDayStats(fm.job,floorDayIso());
+               if(!mdSt)return "";
+               var mdToday=floorDayIso()===todayIso;
+               return '<div class="mdrow" style="margin-top:10px"><span>'+(mdToday?"Bugün":esc(isoDayLabel(floorDayIso())))+' yapılan</span><b>'+nf.format(mdSt.dayDone)+(mdSt.planQ?' / '+nf.format(mdSt.planQ)+' plan':'')+'</b></div>'+
+                 '<div class="mdrow"><span>Siparişten kalan</span><b>'+nf.format(mdSt.kalan)+'</b></div>'+
+                 '<button type="button" class="btn ghost" data-mdplanedit="1" style="margin-top:8px;width:100%">'+(mdToday?"Bugünün":esc(isoDayLabel(floorDayIso()))+" gününün")+' planını düzenle</button>';
+             })()+
              '<button type="button" class="btn" data-jobenter="1" style="margin-top:14px;width:100%;padding:15px;font-size:16px">Üretim gir</button>'+
              '<button type="button" class="btn ghost" data-jobclear="1" style="margin-top:8px;width:100%">İşi bitir / kaldır</button></div>')
             :'<div class="note">Bu makinede aktif iş yok.</div>')+
@@ -1985,8 +2001,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       // seçtirmiyoruz, sadece bu bölümde çalışan makineleri gösteriyoruz.
       var fsBoxes=FLOOR_CIVATA.filter(function(s){return s.secs.indexOf(sec.id)>-1});
       var fsHtml=fsBoxes.map(floorBoxHtml).join("");
+      var flIso=floorDayIso(), flToday=flIso===todayIso;
       html+='<div class="shead"><div><h2 id="sh-title">Yerleşim</h2><small>'+esc(sec.name)+' · bir makineye dokun, oradan iş ata veya üretim gir</small></div><button class="btn" id="sdone">Kapat</button></div>'+
-        '<div class="form"><div class="floorwrap"><div class="floorgrid">'+fsHtml+'</div><div class="flabel">'+esc(sec.name)+'</div></div></div>';
+        '<div class="form">'+
+        '<div class="mnav" style="margin-top:2px"><button type="button" id="flDayPrev" aria-label="Önceki gün">‹</button><h1 style="font-size:15px">'+(flToday?"Bugün":esc(isoDayLabel(flIso)))+'</h1><button type="button" id="flDayNext" aria-label="Sonraki gün">›</button></div>'+
+        (flToday?'':'<button type="button" class="tbtn" id="flDayToday" style="margin:6px auto 0;display:block">Bugüne dön</button>')+
+        '<div class="note" style="margin-top:8px">Kutucuklarda o güne ait yapılan/planlanan adet ve siparişten kalan görünür.</div>'+
+        '<div class="floorwrap" style="margin-top:8px"><div class="floorgrid">'+fsHtml+'</div><div class="flabel">'+esc(sec.name)+'</div></div></div>';
     }else{
       var q=search.trim().toLowerCase();
       var head='<div class="shead"><div><h2 id="sh-title">Ürün ekle</h2><small>'+title+' · adedi yaz ya da +/− ile ayarla, Ekle’ye bas</small></div><button class="btn" id="sdone">Bitti</button></div>'+
@@ -2126,7 +2147,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("tcat").addEventListener("click",openCats);
   $("addItem").addEventListener("click",openSheet);
   $("tedit").addEventListener("click",function(){sheetMode="tform";$("ov").hidden=false;renderSheet()});
-  $("tfloor").addEventListener("click",function(){floorMacId=null;floorLabel=null;sheetMode="floorsec";$("ov").hidden=false;renderSheet()});
+  $("tfloor").addEventListener("click",function(){floorMacId=null;floorLabel=null;floorDayKey=null;sheetMode="floorsec";$("ov").hidden=false;renderSheet()});
   $("ov").addEventListener("click",function(e){if(e.target===$("ov")&&(sheetMode==="list"||sheetMode==="odetail"||sheetMode==="planview"||sheetMode==="floorsec"))closeSheet()});
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("ov").hidden){if(sheetMode==="form"){sheetMode="list";renderSheet()}else closeSheet()}});
   $("sheet").addEventListener("input",function(e){
@@ -2286,6 +2307,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(t.id==="plwkprev"){planWeekKey=isoAdd(planWeekKey||curWeekKey(),-7); planDraft=null; renderSheet(); if(sheetMode==="planform")refreshPlanFoot(); return}
     if(t.id==="plwknext"){planWeekKey=isoAdd(planWeekKey||curWeekKey(),7); planDraft=null; renderSheet(); if(sheetMode==="planform")refreshPlanFoot(); return}
     if(t.id==="plwktoday"){planWeekKey=null; planDraft=null; renderSheet(); if(sheetMode==="planform")refreshPlanFoot(); return}
+    if(t.id==="flDayPrev"){floorDayKey=isoAdd(floorDayIso(),-1); renderSheet(); return}
+    if(t.id==="flDayNext"){floorDayKey=isoAdd(floorDayIso(),1); renderSheet(); return}
+    if(t.id==="flDayToday"){floorDayKey=null; renderSheet(); return}
     if(t.dataset.plcat!==undefined){
       planDraft=planMergedMap();
       planFCat=t.dataset.plcat===""?null:+t.dataset.plcat;
@@ -2530,6 +2554,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(!$("app").hidden&&sec.id===jsec){landOnEntry();return}
       closeSheet();
       enterSection(jsec,landOnEntry);
+      return;
+    }
+    if(t.dataset.mdplanedit!==undefined){
+      var fmp=floorMacId?machinesList.filter(function(x){return x.id===floorMacId})[0]:null; if(!fmp||!fmp.job||!fmp.job.oid)return;
+      var psec2=fmp.job.sec, pcode2=fmp.job.code||"", pday=floorDayIso();
+      function landOnPlan(){selected=pday; openPlanForm("day",false,pcode2);}
+      if(!$("app").hidden&&sec.id===psec2){landOnPlan();return}
+      closeSheet();
+      enterSection(psec2,landOnPlan);
       return;
     }
     if(t.dataset.jobclear!==undefined){
@@ -3422,12 +3455,29 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     return machinesList.filter(function(m){return !m.floorSlot&&(m.name||"").toLowerCase()===label.toLowerCase()})[0]||null;
   }
+  // Bir makinedeki aktif işin, seçilen gün için plan/yapılan/kalan bilgisi.
+  // Not: üretim kayıtları hangi makinede yapıldığını tutmuyor, bu yüzden "yapılan/kalan"
+  // o işin bağlı olduğu SİPARİŞ ve BÖLÜM bazında hesaplanıyor (aynı gün başka bir makine de
+  // aynı siparişe çalışıyorsa rakam ikisinde de aynı görünür) — makineye atanmış sipariş
+  // sonradan değiştiyse geçmiş günler için de artık yeni siparişin rakamları gösterilir,
+  // o günkü gerçek atamayı ayrıca tutmuyoruz.
+  function jobDayStats(job,dayIso){
+    if(!job||!job.oid)return null;
+    var ord=orders.filter(function(x){return x.id===job.oid})[0]; if(!ord)return null;
+    var secId=job.sec, nd=need(ord,secId), dn=doneOf(ord.id,secId), dayDone=0;
+    (dn.e||[]).forEach(function(en){if(en.d===dayIso)dayDone+=en.q});
+    var P=plansOfSec(secId), dplan=((P.day&&P.day[dayIso])||[]).filter(function(pe){return pe.oid===ord.id})[0];
+    return {planQ:dplan?dplan.q:0,dayDone:dayDone,kalan:Math.max(0,nd-Math.min(dn.q,nd))};
+  }
   function floorBoxHtml(s){
     var m=floorMachine(s.label), busy=m&&m.job;
     var cls="fbox"+(m?"":" empty")+(busy?" busy":"")+(s.vert?" vert":"");
     var style="grid-column:"+s.col+" / span "+s.cs+";grid-row:"+s.row+" / span "+s.rs+";";
-    var img=busy?jobThumb(m.job):"";
-    return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(busy?'<small>'+(img?'<img class="fbimg" alt="" src="'+img+'">':'')+esc(m.job.code||"")+'</small>':(m?'':'<small>+ ekle</small>'))+'</button>';
+    if(!busy)return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
+    var img=jobThumb(m.job);
+    var st=jobDayStats(m.job,floorDayIso());
+    var statsHtml=st?('<b class="fbstat">'+nf.format(st.dayDone)+(st.planQ?'/'+nf.format(st.planQ):'')+' adet</b><small class="fbrem">kalan '+nf.format(st.kalan)+'</small>'):"";
+    return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span><small>'+(img?'<img class="fbimg" alt="" src="'+img+'">':'')+esc(m.job.code||"")+'</small>'+statsHtml+'</button>';
   }
   function renderFloor(){
     var html=FLOOR_CIVATA.map(floorBoxHtml).join("");
@@ -4290,7 +4340,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var pe=e.target.closest("[data-planedit]");
     if(pe){
       var pid=pe.dataset.planedit, psec=pe.dataset.plansec, pcode=(orders.filter(function(x){return x.id===pid})[0]||{}).code||"", ps2=planScope;
-      enterSection(psec,function(){planSearch=pcode; openPlanForm(ps2,false)});
+      enterSection(psec,function(){openPlanForm(ps2,false,pcode)});
       return;
     }
     // Satırın geri kalanı: siparişi görüntüle/düzenle.
