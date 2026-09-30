@@ -7,7 +7,14 @@
 // yoksa (veya istek başarısız olursa) önbellekteki en son bilinen sürüm
 // gösterilir. Böylece yeni bir yayın yapıldığında kullanıcı bir dahaki
 // açılışta otomatik günceli görür, eski sürümde takılı kalmaz.
-var CACHE = "montaj-defteri-shell-v3";
+//
+// ÖNEMLİ: fetch(...,{cache:"no-store"}) kullanılıyor — tarayıcının kendi HTTP
+// önbelleği (service worker'dan bağımsız, ayrı bir katman) index.html'i "hâlâ
+// taze" sayıp ağa hiç gitmeden eski sürümü döndürebiliyordu; bu yüzden yeni bir
+// yayın yapıldığında bazen eski ekran görünmeye devam ediyordu. no-store bu
+// tarayıcı önbelleğini atlayıp her seferinde gerçekten sunucudan (GitHub
+// Pages'ten) taze bir kopya ister.
+var CACHE = "montaj-defteri-shell-v4";
 var SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", function(e){
@@ -36,7 +43,7 @@ self.addEventListener("fetch", function(e){
 
   if(isShellPage(e.request,url)){
     e.respondWith(
-      fetch(e.request).then(function(res){
+      fetch(e.request,{cache:"no-store"}).then(function(res){
         var copy=res.clone();
         caches.open(CACHE).then(function(c){ c.put(e.request,copy); });
         return res;
