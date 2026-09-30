@@ -369,6 +369,27 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.plnc .hk{color:#A78BFA}
 .hcard.ordc.plnc .go{color:#A78BFA}
 .hcard.ordc.plnc .hs b{color:#A78BFA}
+.hcard.ordc.stkc{border-color:rgba(230,145,56,.55)}
+.hcard.ordc.stkc::after{background:rgba(230,145,56,.16)}
+.hcard.ordc.stkc .hk{color:#E69138}
+.hcard.ordc.stkc .go{color:#E69138}
+.hcard.ordc.stkc .hs b{color:#E69138}
+.matrow{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.matrow .mtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.matrow .mn{font:700 15px var(--font-head)}
+.matrow .mu{font:600 12px var(--font-ui);color:var(--ink2)}
+.matrow .mstock{font:800 17px var(--font-num)}
+.matrow .mstock.low{color:var(--bad)}
+.matrow .madj{display:flex;align-items:center;gap:8px;margin-top:10px}
+.matrow .madj input{flex:1;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);padding:0 10px;font:700 15px var(--font-num);color:inherit}
+.matrow .madj button{height:40px;padding:0 14px;border-radius:10px;border:0;font:700 13px var(--font-ui);cursor:pointer}
+.matrow .madj .madd{background:var(--good);color:#fff}
+.matrow .madj .msub{background:var(--bad);color:#fff}
+.matrow .medit{background:none;border:0;color:var(--ink2);font:600 12px var(--font-ui);cursor:pointer;text-decoration:underline;padding:0}
+.recrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.recrow select{flex:1;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:0 10px;font:600 14px var(--font-ui);color:inherit}
+.recrow input{width:84px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:0 10px;font:700 15px var(--font-num);color:inherit;text-align:center}
+.recrow button{height:44px;width:44px;border-radius:12px;border:0;background:rgba(255,90,90,.15);color:var(--bad);font:700 18px var(--font-ui);cursor:pointer}
 .oimg{width:100%;height:auto;max-height:60vh;object-fit:contain;border-radius:16px;display:block;background:#fff;cursor:zoom-in}
 .lbx{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:12px;cursor:zoom-out}
 .lbx img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;background:#fff}
@@ -663,6 +684,20 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div id="nflist"></div>
   <div class="status" id="nfstatus"></div>
 </div>
+<div class="wrap" id="stock" hidden style="--hero1:#B5651D;--hero2:#6E3D10">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Stok · Reçete</div><button class="tbtn" id="stkback">‹ Bölümler</button></div>
+    <div class="obig"><span class="obl">Malzeme sayısı</span><b id="stkcount">0</b><span class="obs" id="stkobs">hammadde ve yarı mamul stoklarını burada takip et</span></div>
+  </section>
+  <input class="search" id="stksearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Malzeme ara…" aria-label="Malzeme ara">
+  <div class="osearch" style="margin-top:8px">
+    <button class="btn ghost" id="stknew" style="flex:1">+ Yeni malzeme</button>
+    <button class="btn ghost" id="stkneedbtn" style="flex:1">📋 Alım ihtiyacı hesapla</button>
+  </div>
+  <div class="impnote" id="stkneednote" hidden></div>
+  <div id="stklist"></div>
+  <div class="status" id="stkstatus"></div>
+</div>
 <div class="ov" id="ov" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title" id="sheet"></div>
 </div>
@@ -804,6 +839,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
   var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={};   // catalog [{id,code,k,p}], customers [{id,name}]
   var db=null, unsub=null, unsubCat=null, docExists=false, catExists=false, dirty={}, catDirty=false;
+  // Malzeme stoğu / ürün reçetesi: "materials" koleksiyonu her hammadde/yarı mamul için
+  // {id,name,unit,stock,crit,note} tutar — bölümlerden bağımsız, TEK ortak havuz (bir ürünün
+  // reçetesi başka bölümde üretilen bir ürünü de (ör. Aşık) malzeme olarak gösterebiliyor).
+  // Her katalog ürününün "rec" alanı [{m:malzemeId,q:1birim için gereken miktar}] listesidir.
+  var materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
   var downloadsApi=null;
   var chain=Promise.resolve(), timer=null, catTimer=null;
   var sheetMode="list", editId=null, editCust=null, formCat=0, search="";
@@ -966,6 +1006,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     editId=it?it.id:null; formCat=it?it.k:(catDrill||0);
     fImgTh=it?(it.img||""):""; fImgFull=null; fImgDirty=false;
     pendingNewCode=it?"":code;
+    recDraft=it?(it.rec||[]).map(function(r){return {m:r.m,q:r.q}}):[];
     sheetMode="form"; $("ov").hidden=false; renderSheet();
   }
   function bar(el,items,t){
@@ -1373,9 +1414,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return int?Math.floor(v):Math.round(v*100)/100;
   }
   function changeLine(i,f,val){
-    var arr=lines(selected).slice(), l=Object.assign({},arr[i]);
+    var arr=lines(selected).slice(), l=Object.assign({},arr[i]), oldQ=l.q;
     if(f==="q"){l.q=cleanNum(val,99999,true); l.t=Date.now()} else if(f==="u")l.u=String(val); else l.p=cleanNum(val,99999999,false);
     arr[i]=l; lns[selected]=arr; touch(); refreshLineTotals();
+    if(f==="q"&&l.q!==oldQ)applyRecipeUsage(l.c,l.q-oldQ);
   }
   $("lines").addEventListener("click",function(e){
     var g=e.target.closest(".gline"); if(g){jumpToDate(g.dataset.date);return}
@@ -1388,6 +1430,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var row=b.closest(".line"), i=+row.dataset.idx, act=b.dataset.act, l=lines(selected)[i];
     if(act==="rm"){
       var arr=lines(selected).slice(); arr.splice(i,1); lns[selected]=arr; touch(); renderLines();
+      applyRecipeUsage(l.c,-l.q);
     }else{
       changeLine(i,"q",l.q+(act==="inc"?1:-1));
       row.querySelector('input[data-f="q"]').value=lines(selected)[i].q;
@@ -1637,9 +1680,29 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="fprice">Birim fiyat (₺)</label><input class="fin" id="fprice" type="number" inputmode="decimal" min="0" step="any" placeholder="ör. 102" value="'+(it.p===""?"":it.p)+'"></div>'+
         '<div><span class="fl">Ürün görseli</span><div class="imgpick"><div class="pv" id="fpv">'+(fImgTh?'<img alt="" src="'+fImgTh+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:16px">':'Görsel yok')+'</div><div style="display:flex;flex-direction:column;gap:6px"><label class="btn ghost" for="fimgf">Fotoğraf seç</label><input id="fimgf" type="file" accept="image/*"><button type="button" class="btn ghost" id="fimgrm"'+(fImgTh?'':' hidden')+'>Görseli kaldır</button></div></div></div>'+
         '<div><label class="fl" for="fnote">Detay / açıklama</label><textarea class="fin" id="fnote" rows="3" placeholder="ör. ölçüler, özel not…">'+esc(it.note||"")+'</textarea></div>'+
+        '<div><span class="fl">Reçete (bu ürünün 1 birimi için gereken malzemeler)</span>'+
+        (materials.length?'':'<div class="note">Henüz malzeme tanımlı değil. Ana ekrandaki “Stok” bölümünden önce malzeme ekle, sonra buraya dön.</div>')+
+        '<div id="recrows">'+(recDraft||[]).map(function(r,ri){
+          return '<div class="recrow"><select data-recm="'+ri+'" aria-label="Malzeme">'+materials.map(function(m){return '<option value="'+m.id+'"'+(m.id===r.m?" selected":"")+'>'+esc(m.name)+' ('+esc(m.unit||"adet")+')</option>'}).join("")+'</select>'+
+            '<input type="number" inputmode="decimal" min="0" step="any" data-recq="'+ri+'" value="'+(r.q||"")+'" placeholder="miktar" aria-label="Miktar">'+
+            '<button type="button" data-recrm="'+ri+'" aria-label="Malzeme satırını sil">×</button></div>';
+        }).join("")+'</div>'+
+        (materials.length?'<button type="button" class="btn ghost" id="recadd" style="width:100%">+ Malzeme ekle</button>':'')+
+        '</div>'+
         '<div class="frow"><button class="btn" id="fsave">Kaydet</button><button class="btn ghost" id="fcancel">Vazgeç</button>'+(editId?'<button class="btn danger" id="fdel">Ürünü sil</button>':"")+'</div>'+
         (editId?'<div class="note">Fiyatı değiştirsen bile geçmiş günlerdeki satırlar eski fiyatıyla kalır.</div>':"")+
         '</div>';
+    }else if(sheetMode==="matform"){
+      var mt=materials.filter(function(x){return x.id===matEditId})[0]||{name:"",unit:"adet",stock:0,crit:"",note:""};
+      html+='<div class="shead"><div><h2 id="sh-title">'+(matEditId?"Malzemeyi düzenle":"Yeni malzeme")+'</h2><small>Hammadde veya yarı mamul — ürün reçetelerinde bu isimle seçilir</small></div></div>'+
+        '<div class="form">'+
+        '<div><label class="fl" for="mtname">Malzeme adı</label><input class="fin" id="mtname" autocomplete="off" placeholder="ör. Dövme, Toz lastik, Somun, Aşık" value="'+esc(mt.name)+'"></div>'+
+        '<div><label class="fl" for="mtunit">Birim</label><input class="fin" id="mtunit" autocomplete="off" placeholder="ör. adet, kg, m" value="'+esc(mt.unit||"adet")+'"></div>'+
+        (matEditId?'':'<div><label class="fl" for="mtstock">Başlangıç stoğu</label><input class="fin" id="mtstock" type="number" inputmode="decimal" min="0" step="any" placeholder="0" value="'+(mt.stock||"")+'"></div>')+
+        '<div><label class="fl" for="mtcrit">Kritik seviye (isteğe bağlı)</label><input class="fin" id="mtcrit" type="number" inputmode="decimal" min="0" step="any" placeholder="Bu seviyenin altına inince uyarı gösterilir" value="'+(mt.crit||"")+'"></div>'+
+        '<div><label class="fl" for="mtnote">Not</label><textarea class="fin" id="mtnote" rows="2" placeholder="ör. tedarikçi, ölçü…">'+esc(mt.note||"")+'</textarea></div>'+
+        (matEditId?'<div class="note">Stok miktarını değiştirmek için listedeki “+ Giriş / − Çıkış” butonlarını kullan — buradan sadece ad/birim/kritik seviye/not düzenlenir.</div>':'')+
+        '<div class="frow"><button class="btn" id="mtsave">Kaydet</button><button class="btn ghost" id="mtcancel">Vazgeç</button>'+(matEditId?'<button class="btn danger" id="mtdel">Malzemeyi sil</button>':"")+'</div></div>';
     }else{
       var q=search.trim().toLowerCase();
       var head='<div class="shead"><div><h2 id="sh-title">Ürün ekle</h2><small>'+title+' · adedi yaz ya da +/− ile ayarla, Ekle’ye bas</small></div><button class="btn" id="sdone">Bitti</button></div>'+
@@ -1704,6 +1767,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     sh.innerHTML=html;
     if(sheetMode==="form"){var f=$("fcode"); if(f&&!editId)f.focus()}
     if(sheetMode==="cform"){var g=$("cname"); if(g&&!editCust)g.focus()}
+    if(sheetMode==="matform"){var mn=$("mtname"); if(mn&&!matEditId)mn.focus()}
   }
   function localMonths(){
     var out=[], pre=secPrefix(sec.id);
@@ -1963,7 +2027,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       saveCatalog(); sheetMode="list"; editCust=null; renderSheet(); renderLines(); renderHero(); return;
     }
     if(t.id==="sdone"){closeSheet();return}
-    if(t.id==="snew"){sheetMode="form";editId=null;formCat=0;fImgTh="";fImgFull=null;fImgDirty=false;pendingNewCode="";renderSheet();return}
+    if(t.id==="snew"){sheetMode="form";editId=null;formCat=0;fImgTh="";fImgFull=null;fImgDirty=false;pendingNewCode="";recDraft=[];renderSheet();return}
     if(t.id==="fcancel"){sheetMode="list";pendingNewCode="";renderSheet();return}
     if(t.dataset.cat!==undefined){
       formCat=+t.dataset.cat;
@@ -1972,7 +2036,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     if(t.dataset.edit){
       var it=catalog.filter(function(x){return x.id===t.dataset.edit})[0]; if(!it)return;
-      sheetMode="form";editId=it.id;formCat=it.k;fImgTh=it.img||"";fImgFull=null;fImgDirty=false;pendingNewCode="";renderSheet();return;
+      sheetMode="form";editId=it.id;formCat=it.k;fImgTh=it.img||"";fImgFull=null;fImgDirty=false;pendingNewCode="";
+      recDraft=(it.rec||[]).map(function(r){return {m:r.m,q:r.q}});
+      renderSheet();return;
     }
     if(t.id==="fimgrm"){fImgTh="";fImgFull=null;fImgDirty=true;$("fpv").innerHTML="Görsel yok";t.hidden=true;return}
     if(t.dataset.add){
@@ -1980,12 +2046,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       addLine(it2);
       var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc; return;
     }
+    if(t.id==="recadd"){
+      recDraft=collectRec(); recDraft.push({m:materials[0]?materials[0].id:"",q:1}); renderSheet(); return;
+    }
+    if(t.dataset.recrm!==undefined){
+      recDraft=collectRec(); recDraft.splice(+t.dataset.recrm,1); renderSheet(); return;
+    }
     if(t.id==="fsave"){
       var code=$("fcode").value.trim(), price=cleanNum($("fprice").value,99999999,false);
       var note=($("fnote")?$("fnote").value.trim():"");
       if(!code){$("fcode").focus();return}
       var iid=editId||uid();
-      var obj={id:iid,code:code,k:formCat,p:price,img:fImgTh||"",note:note};
+      var rec=collectRec().filter(function(r){return r.m&&r.q>0});
+      var obj={id:iid,code:code,k:formCat,p:price,img:fImgTh||"",note:note,rec:rec};
       if(editId)catalog=catalog.map(function(x){return x.id===editId?obj:x});
       else catalog=catalog.concat([obj]);
       if(fImgDirty){
@@ -1993,13 +2066,30 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         if(fImgFull){catImgCache[ckey]=fImgFull; if(db)db.doc("catimg/"+ckey).set({d:fImgFull}).catch(function(){})}
         else{delete catImgCache[ckey]; if(db)db.doc("catimg/"+ckey).delete().catch(function(){})}
       }
-      pendingNewCode=""; saveCatalog(); sheetMode="list"; search=""; renderSheet(); return;
+      pendingNewCode=""; recDraft=null; saveCatalog(); sheetMode="list"; search=""; renderSheet(); return;
     }
     if(t.id==="fdel"){
       catalog=catalog.filter(function(x){return x.id!==editId});
       if(db)db.doc("catimg/"+sec.id+"_"+editId).delete().catch(function(){});
       delete catImgCache[sec.id+"_"+editId];
       saveCatalog(); sheetMode="list"; editId=null; renderSheet(); return;
+    }
+    if(t.id==="mtcancel"){sheetMode="list";matEditId=null;closeSheet();return}
+    if(t.id==="mtsave"){
+      var mname=$("mtname").value.trim(); if(!mname){$("mtname").focus();return}
+      var munit=$("mtunit").value.trim()||"adet", mcrit=$("mtcrit").value?cleanNum($("mtcrit").value,9999999,false):null, mnote=($("mtnote")?$("mtnote").value.trim():"");
+      if(!db){$("stkstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+      if(matEditId){
+        db.doc("materials/"+matEditId).set({name:mname,unit:munit,crit:mcrit,note:mnote},{merge:true}).catch(function(){});
+      }else{
+        var mstock=cleanNum($("mtstock").value,99999999,false)||0;
+        db.collection("materials").add({name:mname,unit:munit,crit:mcrit,note:mnote,stock:mstock}).catch(function(){});
+      }
+      matEditId=null; closeSheet(); return;
+    }
+    if(t.id==="mtdel"){
+      if(db&&matEditId)db.doc("materials/"+matEditId).delete().catch(function(){});
+      matEditId=null; closeSheet(); return;
     }
   });
   $("sheet").addEventListener("change",function(e){
@@ -2029,6 +2119,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     else{arr.push({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,t:Date.now()}); logActivity(sec.name+": "+o.code+" için "+nf.format(n)+" adet üretim girildi (sipariş)","prod")}
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
+    applyRecipeUsage(o.code,n);
   }
   function addLine(it){
     var arr=lines(selected).slice(), hit=-1;
@@ -2036,6 +2127,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=1;l.t=Date.now();arr[hit]=l}
     else{arr.push({c:it.code,k:it.k,q:1,p:it.p,u:curCust,t:Date.now()}); logActivity(sec.name+": "+it.code+" için üretim girildi","prod")}
     lns[selected]=arr; touch(); renderLines();
+    applyRecipeUsage(it.code,1);
   }
 
   /* ---------- storage ---------- */
@@ -2533,7 +2625,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openOrders(){
     dbP.then(function(){
-      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -2586,7 +2678,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }).join(""):'<div class="empty">Henüz bir işlem yok.</div>';
   }
   function openNotifs(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
     renderNotifs(nfCache);
     $("nfstatus").textContent=db?"Güncel":"Bağlantı yok — sadece bu cihazda görülenler";
     try{localStorage.setItem("montaj:nfseen",String(Date.now()))}catch(e){}
@@ -2596,6 +2688,128 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("notifs").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("nfback").addEventListener("click",notifsHome);
+  /* ---------- malzeme stoğu / ürün reçetesi ---------- */
+  // "materials" koleksiyonu bölümlerden bağımsız TEK ortak havuz — bir ürünün reçetesi
+  // başka bir bölümde üretilen bir ürünü de (ör. Aşık) malzeme olarak gösterebiliyor.
+  // Stok miktarı asla toptan set() ile üzerine YAZILMIYOR — sadece FieldValue.increment
+  // ile göreceli olarak artırılıp azaltılıyor (hem elle "+ Giriş/− Çıkış" hem de üretim
+  // girişlerinden otomatik düşüm için), böylece aynı anda iki cihazdan yapılan değişiklik
+  // birbirinin üstüne yazmıyor.
+  function watchMaterials(){
+    if(unsubMat||!db)return;
+    unsubMat=db.collection("materials").onSnapshot(function(snap){
+      materials=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+      materials.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
+      paintStockHome();
+      if(!$("stock").hidden)renderStock();
+    },function(){});
+  }
+  function paintStockHome(){
+    var el=$("hs-stock"); if(!el)return;
+    var low=materials.filter(function(m){return m.crit&&(+m.stock||0)<=+m.crit}).length;
+    el.textContent=materials.length?(materials.length+" malzeme"+(low?" · "+low+" kritik seviyede":"")):"Malzeme stoğu ve ürün reçeteleri";
+  }
+  function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
+  function openStock(){
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
+    watchMaterials(); renderStock();
+    $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
+  }
+  function stockHome(){
+    $("stock").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+  }
+  function matRowHtml(m){
+    var stock=+m.stock||0, low=m.crit&&stock<=+m.crit, needQ=matNeed?(matNeed[m.id]||0):null, deficit=needQ!==null?Math.max(0,needQ-stock):null;
+    return '<div class="matrow" data-mid="'+m.id+'"><div class="mtop"><div><div class="mn">'+esc(m.name)+'</div><div class="mu">'+esc(m.unit||"adet")+(m.crit?' · kritik seviye '+nf.format(+m.crit):'')+'</div></div>'+
+      '<div style="text-align:right"><div class="mstock'+(low?' low':'')+'">'+nf.format(stock)+'</div><button type="button" class="medit" data-matedit="'+m.id+'">düzenle</button></div></div>'+
+      (needQ!==null?('<div class="mu" style="margin-top:6px">Açık siparişler için gereken: <b>'+nf.format(needQ)+'</b>'+(deficit>0?' · <span style="color:var(--bad);font-weight:800">'+nf.format(deficit)+' eksik, almalısın</span>':' · yeterli')+'</div>'):'')+
+      '<div class="madj"><input type="number" inputmode="decimal" step="any" placeholder="Miktar" data-matqty="'+m.id+'" aria-label="'+esc(m.name)+' miktar"><button type="button" class="madd" data-matadd="'+m.id+'">+ Giriş</button><button type="button" class="msub" data-matsub="'+m.id+'">− Çıkış</button></div></div>';
+  }
+  function renderStock(){
+    $("stkcount").textContent=materials.length;
+    var q=matSearch.trim().toLowerCase();
+    var list=materials.filter(function(m){return !q||(m.name||"").toLowerCase().indexOf(q)>-1});
+    $("stklist").innerHTML=list.length?list.map(matRowHtml).join(""):'<div class="empty">'+(materials.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle.")+'</div>';
+  }
+  function adjustMaterialStock(id,delta){
+    if(!db||!delta)return;
+    db.doc("materials/"+id).update({stock:firebase.firestore.FieldValue.increment(delta)}).catch(function(){
+      $("stkstatus").textContent="Kaydedilemedi, tekrar dene";
+    });
+    logActivity((delta>0?"Stok girişi: +":"Stok çıkışı: ")+nf.format(Math.abs(delta))+" "+matNameOf(id),"info");
+  }
+  // Reçeteye göre otomatik tüketim: bir üretim satırının adedi deltaQty kadar değiştiğinde
+  // (yeni satır eklendi, adedi arttı/azaldı, ya da satır tamamen silindi) o ÜRÜNÜN (code)
+  // reçetesindeki her malzemenin stoğu aynı oranda değişir. Ürünün reçetesi geçerli bölümün
+  // (sec.id) katalog listesinde aranır — bu yüzden bu otomatik düşüm normal üretim
+  // girişlerinde (bir bölüm ekranında adet girme) çalışır; "Sipariş tamamlandı" ile toplu
+  // eklenen kalan adetler başka bölümlere de yazabildiği için oraya dahil değildir.
+  function applyRecipeUsage(code,deltaQty){
+    if(!db||!deltaQty||!code)return;
+    var it=catalog.filter(function(x){return (x.code||"").toLowerCase()===code.toLowerCase()})[0];
+    if(!it||!it.rec||!it.rec.length)return;
+    it.rec.forEach(function(r){
+      if(!r.m||!r.q)return;
+      db.doc("materials/"+r.m).update({stock:firebase.firestore.FieldValue.increment(-r.q*deltaQty)}).catch(function(){});
+    });
+  }
+  function collectRec(){
+    var out=[];
+    [].forEach.call($("sheet").querySelectorAll(".recrow"),function(row){
+      var sel=row.querySelector("[data-recm]"), inp=row.querySelector("[data-recq]");
+      out.push({m:sel?sel.value:"",q:inp?cleanNum(inp.value,999999,false):0});
+    });
+    return out;
+  }
+  function computeMaterialNeeds(){
+    if(matNeedBusy)return;
+    var nt=$("stkneednote");
+    if(!orders.length){
+      if(nt){nt.hidden=false; nt.className="impnote"; nt.textContent="Önce ana ekrandan “Siparişler”i bir kez aç (sipariş verisi yüklensin), sonra buraya dönüp tekrar dene."}
+      return;
+    }
+    matNeedBusy=true;
+    var btn=$("stkneedbtn"); if(btn){btn.disabled=true; btn.textContent="Hesaplanıyor…"}
+    if(nt)nt.hidden=true;
+    chain.then(function(){return loadProgress(false)}).then(function(){
+      return Promise.all(SECTIONS.map(function(x){
+        return db?db.doc(catPathOf(x.id)).get().then(function(sn){return {sec:x.id,items:(sn.exists&&sn.data().items)||[]}}).catch(function(){return {sec:x.id,items:[]}}):Promise.resolve({sec:x.id,items:[]});
+      }));
+    }).then(function(results){
+      var catByS={};
+      results.forEach(function(r){catByS[r.sec]={}; r.items.forEach(function(it){catByS[r.sec][(it.code||"").toLowerCase()]=it})});
+      var need={};
+      orders.forEach(function(o){
+        STAGES.forEach(function(sg,i){
+          if(!(o.st||[])[i])return;
+          var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, rem=Math.max(0,nd-dn);
+          if(!rem)return;
+          var it=catByS[sg.sec]&&catByS[sg.sec][(o.code||"").toLowerCase()];
+          if(!it||!it.rec||!it.rec.length)return;
+          it.rec.forEach(function(r){if(r.m&&r.q)need[r.m]=(need[r.m]||0)+r.q*rem});
+        });
+      });
+      matNeed=need;
+      matNeedBusy=false; if(btn){btn.disabled=false; btn.textContent="📋 Alım ihtiyacı hesapla"}
+      renderStock();
+    }).catch(function(){
+      matNeedBusy=false; if(btn){btn.disabled=false; btn.textContent="📋 Alım ihtiyacı hesapla"}
+      if(nt){nt.hidden=false; nt.className="impnote err show"; nt.textContent="Hesaplanamadı, tekrar dene."}
+    });
+  }
+  $("stkback").addEventListener("click",stockHome);
+  $("stksearch").addEventListener("input",function(e){matSearch=e.target.value;renderStock()});
+  $("stknew").addEventListener("click",function(){matEditId=null;sheetMode="matform";$("ov").hidden=false;renderSheet();});
+  $("stkneedbtn").addEventListener("click",computeMaterialNeeds);
+  $("stklist").addEventListener("click",function(e){
+    var eb=e.target.closest("[data-matedit]");
+    if(eb){matEditId=eb.dataset.matedit;sheetMode="matform";$("ov").hidden=false;renderSheet();return}
+    var ab=e.target.closest("[data-matadd],[data-matsub]"); if(!ab)return;
+    var id=ab.dataset.matadd||ab.dataset.matsub, sign=ab.dataset.matadd?1:-1;
+    var row=ab.closest(".matrow"), inp=row.querySelector("[data-matqty]"), v=cleanNum(inp.value,9999999,false);
+    if(!v)return;
+    adjustMaterialStock(id,sign*v); inp.value="";
+  });
   /* ---------- CSV içe/dışa aktar ---------- */
   var STAGE_SLUGS=["govde","pres","cnc_asik","montaj","kaynak"];
   function csvField(v){
@@ -3317,7 +3531,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openPlansScreen(){
     dbP.then(function(){
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso;
-      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
+      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -3496,6 +3710,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("hcards").innerHTML='<button type="button" class="hcard ordc" data-orders="1"><div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc bellc" data-notifs="1"><div><div class="hk">Aktivite</div><div class="hn">Bildirimler<span class="nfbadge" id="nfbadge" hidden></span></div><div class="hs" id="hs-notifs">Yeni sipariş ve üretim girişleri</div></div><span class="go">›</span></button>'+
+      '<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>'+
       SECTIONS.map(function(x){
       return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'"><div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
     }).join("");
@@ -3525,7 +3740,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
       gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
-      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
       if(db)watchCatalog();
       if(!catsSaved&&!db){promptShown=true;openCats()}
@@ -3539,8 +3754,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs]"); if(!b)return;
-    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else enterSection(b.dataset.sec);
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock]"); if(!b)return;
+    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else enterSection(b.dataset.sec);
   });
   $("back").addEventListener("click",goHome);
 
@@ -3701,7 +3916,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 
   setBrk(brkTab);
   orders=lsOrdersGet().map(normOrder);
-  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome()});
+  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchMaterials()});
 })();
 </script>
 
