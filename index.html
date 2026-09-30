@@ -721,6 +721,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="otabs" role="group" aria-label="Elemanlar kapsamı"><button type="button" id="stfTabEmp" aria-pressed="true">Elemanlar</button><button type="button" id="stfTabMac" aria-pressed="false">Makineler</button></div>
   <button class="btn ghost" id="stfnew" style="width:100%;margin-top:10px">+ Yeni eleman</button>
   <button class="btn ghost" id="stfbulk" style="width:100%;margin-top:8px" hidden>⇧ Toplu makine ekle (liste yapıştır)</button>
+  <button class="btn ghost" id="stfperfbtn" style="width:100%;margin-top:8px">⚡ Bugünkü performansı hesapla</button>
   <div id="stflist"></div>
   <div class="status" id="stfstatus"></div>
 </div>
@@ -886,6 +887,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // Eleman/makine üretim girişine bağlanıyor: her bölümün kendi curEmp/curMac'i var (müşteri
   // seçimi curCust gibi), sadece o bölüme atanmış elemanlar/makineler arasından seçiliyor.
   var curEmp="", curMac="";
+  // Günlük performans: 8 saatlik tek vardiya (mola hariç) = 480 dakika baz alınıyor. Bir
+  // elemanın o gün ürettiği her satır, satırın kategorisindeki standart süreyle (dk/adet)
+  // çarpılıp toplanıyor; 480 dakikaya ulaşan/aşan yeşil, altında kalan kırmızı sayılıyor.
+  var SHIFT_MIN=480, empPerf={}, empPerfBusy=false;
   var downloadsApi=null;
   var chain=Promise.resolve(), timer=null, catTimer=null;
   var sheetMode="list", editId=null, editCust=null, formCat=0, search="";
@@ -3014,8 +3019,46 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function machinesInSec(secId){return machinesList.filter(function(m){return (m.secs||[]).indexOf(secId)>-1})}
   function secNameOf(id){var s=SECTIONS.filter(function(x){return x.id===id})[0]; return s?s.name:id}
   function machineNameOf(id){var m=machinesList.filter(function(x){return x.id===id})[0]; return m?m.name:""}
+  function computeEmpPerf(){
+    if(empPerfBusy)return;
+    if(!employees.length)return;
+    empPerfBusy=true;
+    var btn=$("stfperfbtn"); if(btn){btn.disabled=true; btn.textContent="Hesaplanıyor…"}
+    var mk=monthKeyNow();
+    Promise.all(SECTIONS.map(function(x){
+      if(!db)return Promise.resolve({stdTime:[],lines:[]});
+      return Promise.all([
+        db.doc(catPathOf(x.id)).get().catch(function(){return null}),
+        db.doc(secCol(x.id)+"/"+mk).get().catch(function(){return null})
+      ]).then(function(r){
+        var cs=r[0], ps=r[1];
+        var st=(cs&&cs.exists&&cs.data().stdTime)||[];
+        var ls=(ps&&ps.exists&&(ps.data().lines||{})[todayIso])||[];
+        return {stdTime:st,lines:ls};
+      });
+    })).then(function(results){
+      var perf={};
+      results.forEach(function(r){
+        r.lines.forEach(function(l){
+          if(!l.e)return;
+          var mins=(r.stdTime[l.k]||0)*l.q;
+          if(!mins)return;
+          if(!perf[l.e])perf[l.e]={mins:0,qty:0};
+          perf[l.e].mins+=mins; perf[l.e].qty+=l.q;
+        });
+      });
+      empPerf=perf; empPerfBusy=false;
+      if(btn){btn.disabled=false; btn.textContent="⚡ Bugünkü performansı hesapla"}
+      renderStaff();
+    }).catch(function(){
+      empPerfBusy=false;
+      if(btn){btn.disabled=false; btn.textContent="⚡ Bugünkü performansı hesapla"}
+      $("stfstatus").textContent="Performans hesaplanamadı, tekrar dene";
+    });
+  }
   function openStaff(){
     closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
+    empPerf={};
     watchEmployees(); watchMachinesList(); renderStaff();
     $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
@@ -3025,7 +3068,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function empRowHtml(e){
     var secs=(e.secs||[]).map(secNameOf).join(", ")||"Bölüm atanmadı";
     var macs=(e.machines||[]).map(machineNameOf).filter(Boolean).join(", ");
-    return '<div class="emprow"><div class="etop"><div><div class="en">'+esc(e.name)+'</div><div class="esub">'+esc(secs)+(macs?' · '+esc(macs):'')+'</div></div><button type="button" class="eedit" data-empedit="'+e.id+'">düzenle</button></div></div>';
+    var pf=empPerf[e.id], pfHtml="";
+    if(pf){
+      var pct=Math.round(pf.mins/SHIFT_MIN*100), ok=pf.mins>=SHIFT_MIN;
+      pfHtml='<div style="margin-top:6px;font:600 12px var(--font-ui);color:var(--ink2)">Bugün: <b>'+nf.format(Math.round(pf.mins))+' dk</b> / '+SHIFT_MIN+' dk · %'+pct+
+        ' · <span style="color:'+(ok?"var(--good)":"var(--bad)")+';font-weight:800">'+(ok?"✓ Hedefte":"● Düşük")+'</span></div>';
+    }
+    return '<div class="emprow"><div class="etop"><div><div class="en">'+esc(e.name)+'</div><div class="esub">'+esc(secs)+(macs?' · '+esc(macs):'')+'</div>'+pfHtml+'</div><button type="button" class="eedit" data-empedit="'+e.id+'">düzenle</button></div></div>';
   }
   function macRowHtml(m){
     var secs=(m.secs||[]).map(secNameOf).join(" + ")||"Bölüm atanmadı";
@@ -3037,6 +3086,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("stfTabMac").setAttribute("aria-pressed",stfTab==="mac");
     $("stfnew").textContent=stfTab==="emp"?"+ Yeni eleman":"+ Yeni makine";
     $("stfbulk").hidden=stfTab!=="mac";
+    $("stfperfbtn").hidden=stfTab!=="emp";
     if(stfTab==="emp"){
       $("stflist").innerHTML=employees.length?employees.map(empRowHtml).join(""):'<div class="empty">Henüz eleman tanımlı değil.<br>“+ Yeni eleman” ile ilkini ekle.</div>';
     }else{
@@ -3061,6 +3111,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("stfTabEmp").addEventListener("click",function(){stfTab="emp";renderStaff()});
   $("stfTabMac").addEventListener("click",function(){stfTab="mac";renderStaff()});
   $("stfbulk").addEventListener("click",function(){macBulkSecsDraft=[];sheetMode="macbulk";$("ov").hidden=false;renderSheet();});
+  $("stfperfbtn").addEventListener("click",computeEmpPerf);
   $("stfnew").addEventListener("click",function(){
     if(stfTab==="emp"){empEditId=null;empSecsDraft=[];empMacsDraft=[];sheetMode="empform";}
     else{macEditId=null;mcSecsDraft=[];sheetMode="macform";}
