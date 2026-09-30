@@ -908,8 +908,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       manQ+=mv; manR+=mr;
       lines(iso).forEach(function(l){
         if(l.k!==i)return;
-        if(!byCode[l.c]){byCode[l.c]={q:0,r:0,custs:{}};order.push(l.c)}
+        if(!byCode[l.c]){byCode[l.c]={q:0,r:0,custs:{},last:iso};order.push(l.c)}
         var e=byCode[l.c]; e.q+=l.q; e.r+=l.q*l.p;
+        if(iso>e.last)e.last=iso;
         var cn=l.u||"Müşteri yok"; e.custs[cn]=(e.custs[cn]||0)+l.q;
       });
     });
@@ -918,12 +919,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     // Yapılan ürünler listesi sadece TEK GÜNÜ gösterir. Bir kod burada görünüp o
     // günün listesinde görünmeyebilir, çünkü başka bir günde üretilmiş olabilir.
     // Satıra tıklayınca hangi günlerde ne kadar üretildiği ayrı ayrı görülüyor
-    // (codeDrillHtml), kafa karışıklığını önlemek için.
+    // (codeDrillHtml), kafa karışıklığını önlemek için. Ürün listesinde (catalog)
+    // bu koda ait bir görsel varsa burada da gösteriliyor, ve en son hangi günde
+    // üretildiği ("son ...") satırın altında yazıyor.
     var rows=order.map(function(code){
       var e=byCode[code], cns=Object.keys(e.custs).sort(function(x,y){return e.custs[y]-e.custs[x]});
       var custTxt=cns.length>1?(cns[0]+" +"+(cns.length-1)+" diğer"):(cns[0]||"Müşteri yok");
-      return '<button type="button" class="drow" data-code="'+esc(code)+'"><div class="ltop"><span class="code">'+esc(code)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
-        '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺</div></button>';
+      var match=catalog.filter(function(x){return (x.code||"").toLowerCase()===code.toLowerCase()})[0];
+      var img=match&&match.img?'<img class="ithumb" alt="" src="'+match.img+'">':'';
+      return '<button type="button" class="drow" data-code="'+esc(code)+'"><div class="ltop">'+img+'<span class="code">'+esc(code)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
+        '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺'+(e.last?' · son '+fmtD(e.last):'')+'</div></button>';
     }).join("");
     if(manQ)rows+='<div class="drow"><div class="ltop"><span class="code">Elle girilen toplam</span><span class="amt">'+money(manR)+' ₺</span></div><div class="dsub">'+nf.format(manQ)+' adet · ürün bazında detay yok</div></div>';
     var head='<button type="button" class="catback" id="catDrillBack">‹ Tüm kategoriler</button>'+
@@ -944,8 +949,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
     rows.sort(function(a,b){return a.iso!==b.iso?(a.iso<b.iso?1:-1):((b.l.t||0)-(a.l.t||0))});
     var match=catalog.filter(function(x){return (x.code||"").toLowerCase()===code.toLowerCase()})[0];
+    var dotOrImg=(match&&match.img)?'<img class="ithumb" alt="" style="grid-row:1/3;align-self:center" src="'+match.img+'">':'<span class="dot" style="background:var(--p'+catIdx+')"></span>';
     var head='<button type="button" class="catback" id="codeDrillBack">‹ '+esc(COLS[catIdx])+' dökümü</button>'+
-      '<div class="bk"><span class="dot" style="background:var(--p'+catIdx+')"></span><span class="nm">'+esc(code)+'</span>'+
+      '<div class="bk">'+dotOrImg+'<span class="nm">'+esc(code)+'</span>'+
       '<span class="sub">'+nf.format(tQ)+' adet · '+money(tR)+' ₺</span><span class="pc"><b>ort.</b><small>'+money(tR/(tQ||1))+' ₺</small></span></div>'+
       '<button type="button" class="catback" id="drillEditProd" data-code="'+esc(code)+'" style="margin-top:2px">'+(match?'✎ Ürünü düzenle (görsel/detay)':'+ Ürün listesine ekle')+'</button>';
     var body=rows.map(function(r){
@@ -2292,6 +2298,32 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     STAGES.forEach(function(sg,i){if((o.st||[])[i]){any=true; if(doneOf(o.id,sg.sec).q<o.qty*muOf(o,i))ok=false}});
     return any&&ok;
   }
+  // Bir siparişin HANGİ AYDA tamamlandığını bulur. Sipariş dokümanında "tamamlandı"
+  // diye bir tarih alanı YOK — tamamlanma, bölümlerdeki üretim girişleri o siparişin
+  // ihtiyacını karşıladığında kendiliğinden oluşuyor. Bu yüzden her gerekli aşama için
+  // günlük girişler (en eskiden en yeniye) tek tek toplanır, kümülatif toplam o aşamanın
+  // hedefine ulaştığı GÜN bulunur; sipariş ancak TÜM gerekli aşamalar bittiğinde tamam
+  // sayıldığından, aşamaların kendi bitiş tarihlerinin EN GEÇ olanı siparişin gerçek
+  // tamamlanma tarihidir. "Siparişler" sayfasında Aylık filtre artık tamamlanan cироyu
+  // sipariş TARİHİNE göre değil, bu gerçek tamamlanma tarihine göre süzüyor.
+  function completionDateOf(o){
+    var maxD=null, complete=true;
+    STAGES.forEach(function(sg,i){
+      if(!(o.st||[])[i])return;
+      var nd=o.qty*muOf(o,i);
+      if(nd<=0)return;
+      var dn=doneOf(o.id,sg.sec);
+      if(dn.q<nd){complete=false;return}
+      var ents=dn.e.slice().sort(function(a,b){return a.d<b.d?-1:(a.d>b.d?1:0)});
+      var cum=0, hitDate=ents.length?ents[ents.length-1].d:null;
+      for(var j=0;j<ents.length;j++){
+        cum+=ents[j].q;
+        if(cum>=nd){hitDate=ents[j].d; break}
+      }
+      if(hitDate&&(!maxD||hitDate>maxD))maxD=hitDate;
+    });
+    return complete?maxD:null;
+  }
   function normOrder(o){o.cat=o.cat||0; o.st=(o.st||[1,1,1,1]).slice(); while(o.st.length<5)o.st.push(0); o.pr=(o.pr||[]).slice(); while(o.pr.length<5)o.pr.push(0); o.mu=(o.mu&&o.mu.length?o.mu.slice():defMu(o.cat)); while(o.mu.length<5)o.mu.push(1); o.qty=+o.qty||0; o.od=o.od||""; o.dd=o.dd||""; o.th=o.th||""; o.up=+o.up||0; return o}
   function orderTotal(o){return o.qty*(+o.up||0)}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
@@ -2403,11 +2435,6 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         return '<div class="stg'+(on?'':' off')+(on&&d>=nd?' done':'')+'" style="--sc:'+so.h1+'"><div class="sl">'+sg.short+'</div><div class="sb"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="sp">'+(on?'%'+pc:'—')+'</div></div>';
       }).join("")+'</div></button>';
   }
-  function ordersInScope(){
-    if(ordScope!=="month")return orders;
-    var mk=ordY+"-"+pad(ordM+1);
-    return orders.filter(function(o){return ((o.od||o.cr||"").slice(0,7))===mk});
-  }
   function omLabel(){return AY[ordM]+" "+ordY}
   function renderOrdScope(){
     $("osAll").setAttribute("aria-pressed",ordScope==="all");
@@ -2419,23 +2446,40 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var q=ordQ.trim().toLowerCase(), cards="", qtyAll=0, qtyDone=0;
     var list=orders.map(function(o){return {o:o,c:isComplete(o)}});
     list.forEach(function(x){qtyAll+=x.o.qty; if(x.c)qtyDone+=x.o.qty});
-    // Üstteki iki toplam kutusu (açık/tamamlanan tutar) ve açık/termini geçen/tamamlanan
-    // sayıları seçili döneme göre (Toplam ya da tek bir ay, sipariş tarihine göre)
-    // hesaplanır. Aşağıdaki sipariş kartları, "Sipariş bazında"/"Aşama bazında" ilerleme
-    // ve özet listesi HER ZAMAN tüm siparişleri kapsar — dönem seçimi sadece üstteki
-    // tutarları etkiler.
+    // Üstteki üç toplam kutusu seçili döneme göre (Toplam ya da tek bir ay) hesaplanır,
+    // ama HER KUTU KENDİ TARİHİNE göre süzülür — üçü de aynı "sipariş tarihi" alanına göre
+    // süzülürse yanlış olur, çünkü bir sipariş Ağustos'ta girilip Eylül'de tamamlanmış ya da
+    // gönderilmiş olabilir:
+    //  - Açık sipariş tutarı: o AY GİRİLEN (o.od/o.cr) ve hâlâ açık olan siparişler.
+    //  - Tamamlanan sipariş cirosu: o AY TAMAMLANAN siparişler (bkz. completionDateOf —
+    //    sipariş tarihine değil, üretimin gerçekten bittiği tarihe göre).
+    //  - Gönderilen tutar: o AY GÖNDERİLEN siparişler (o.shipDate).
+    // Aşağıdaki sipariş kartları, "Sipariş bazında"/"Aşama bazında" ilerleme ve özet listesi
+    // HER ZAMAN tüm siparişleri kapsar — dönem seçimi sadece üstteki tutarları etkiler.
     renderOrdScope();
-    var scoped=ordersInScope(), open=0, done=0, amt=0, doneAmt=0, late=0, shipped=0, shipAmt=0;
-    scoped.forEach(function(o){
-      var c=isComplete(o);
-      if(c){done++; doneAmt+=orderTotal(o)}
-      else{open++; amt+=orderTotal(o); var n=daysTo(o.dd); if(n!==null&&n<0)late++}
-      if(o.shipped){shipped++; shipAmt+=orderTotal(o)}
+    var mk=ordScope==="month"?(ordY+"-"+pad(ordM+1)):null;
+    var openScoped=mk?orders.filter(function(o){return ((o.od||o.cr||"").slice(0,7))===mk}):orders;
+    var open=0, amt=0, late=0;
+    openScoped.forEach(function(o){
+      if(isComplete(o))return;
+      open++; amt+=orderTotal(o); var n=daysTo(o.dd); if(n!==null&&n<0)late++;
+    });
+    var done=0, doneAmt=0, doneQty=0;
+    orders.forEach(function(o){
+      if(!isComplete(o))return;
+      if(mk){var cd=completionDateOf(o); if(!cd||cd.slice(0,7)!==mk)return}
+      done++; doneAmt+=orderTotal(o); doneQty+=o.qty;
+    });
+    var shipped=0, shipAmt=0, shipQty=0;
+    orders.forEach(function(o){
+      if(!o.shipped)return;
+      if(mk){var sd=o.shipDate||""; if(sd.slice(0,7)!==mk)return}
+      shipped++; shipAmt+=orderTotal(o); shipQty+=o.qty;
     });
     var scopeTxt=ordScope==="month"?(" · "+omLabel()):"";
     $("oopen").textContent=open; $("odone").textContent=done; $("oamt").textContent=money(amt)+" ₺"; $("olate").textContent=late; $("olatebox").classList.toggle("late",late>0); $("oamtsub").textContent=(open?open+" açık siparişin toplamı":"Açık sipariş yok")+scopeTxt;
-    $("oamtdone").textContent=money(doneAmt)+" ₺"; $("oamtdonesub").textContent=(done?done+" tamamlanan siparişin toplamı":"Henüz tamamlanan yok")+scopeTxt;
-    $("oamtship").textContent=money(shipAmt)+" ₺"; $("oamtshipsub").textContent=(shipped?shipped+" gönderilen siparişin toplamı":"Henüz gönderilen yok")+scopeTxt;
+    $("oamtdone").textContent=money(doneAmt)+" ₺"; $("oamtdonesub").textContent=(done?done+" tamamlanan sipariş · "+nf.format(doneQty)+" adet":"Henüz tamamlanan yok")+scopeTxt;
+    $("oamtship").textContent=money(shipAmt)+" ₺"; $("oamtshipsub").textContent=(shipped?shipped+" gönderilen sipariş · "+nf.format(shipQty)+" adet":"Henüz gönderilen yok")+scopeTxt;
     // Sipariş bazında (tüm siparişlerin adedi içinde tamamlanan pay) ve aşama bazında
     // (bölümlerdeki gerçek üretim girişlerine göre) ilerleme — ikisi de büyüyerek gider,
     // "tamamlama" yapıldığında sipariş toplamdan silinmez, tamamlanan tarafa eklenir.
@@ -3284,16 +3328,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function setPvScope(s){
     planScope=s; $("pvDay").setAttribute("aria-pressed",s==="day"); $("pvWeek").setAttribute("aria-pressed",s==="week"); renderPlansScreen();
   }
+  // Her bölüm kartı başta KAPALI: sadece bölüm adı, toplam/yapılan adet ve yüzde
+  // gözükür — tıklanınca içindeki tek tek ürünler açılır. Bu, önce hepsini birden
+  // dökmenin kalabalık görünmesini engellemek için; hangi bölümlerin açık olduğu
+  // plOpenSec'te tutuluyor, ekran değiştirince sıfırlanıyor.
+  var plOpenSec={};
   function renderPlansScreen(){
     $("pvDay").setAttribute("aria-pressed",planScope==="day"); $("pvWeek").setAttribute("aria-pressed",planScope==="week");
     var scope=planScope, k=planKey(scope), rows="", tot={tq:0,dq:0,tp:0,dr:0};
     SECTIONS.forEach(function(x){
       var pr=planProgressFor(x.id,scope,k); if(!pr.tq)return;
       tot.tq+=pr.tq; tot.dq+=pr.dq; tot.tp+=pr.tp; tot.dr+=pr.dr;
-      var pc=Math.round(pr.dq/pr.tq*100);
+      var pc=Math.round(pr.dq/pr.tq*100), open=!!plOpenSec[x.id];
       rows+='<section class="card pvcard">'+
-        '<div class="needrow" style="--c:'+x.h1+'"><span class="nn"><span class="dot" style="background:'+x.h1+'"></span>'+esc(x.name)+'</span><span class="nv">'+nf.format(pr.dq)+' / '+nf.format(pr.tq)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı'+(pr.tp?' · '+money(pr.dr)+' / '+money(pr.tp)+' ₺':'')+'</div></div>'+
-        '<div class="items">'+pr.items.map(function(it){
+        '<button type="button" class="needrow click" data-plsec="'+x.id+'" style="--c:'+x.h1+'"><span class="nn"><span class="dot" style="background:'+x.h1+'"></span>'+esc(x.name)+'</span><span class="nv">'+nf.format(pr.dq)+' / '+nf.format(pr.tq)+'<i class="chevmini">'+(open?'︿':'›')+'</i></span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı'+(pr.tp?' · '+money(pr.dr)+' / '+money(pr.tp)+' ₺':'')+'</div></button>'+
+        (open?('<div class="items">'+pr.items.map(function(it){
           var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
           return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+x.h1+'"><div class="orow">'+
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
@@ -3302,7 +3351,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             '<div class="pg"><div class="pgt"><span>yapılan '+nf.format(it.done)+' / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div></div>'+
             '</div>';
         }).join("")+'</div>'+
-        '<button type="button" class="btn ghost" data-editplan="'+x.id+'" style="margin-top:12px;width:100%">Planı düzenle</button></section>';
+        '<button type="button" class="btn ghost" data-editplan="'+x.id+'" style="margin-top:12px;width:100%">Planı düzenle</button>'):'')+
+        '</section>';
     });
     $("pvlist").innerHTML=rows||'<div class="empty">'+(scope==="day"?"Bugün":"Bu hafta")+' için henüz plan girilmemiş.<br>Bir bölüme gir, “Plan” ile başla.</div>';
     var pc2=tot.tq?Math.round(tot.dq/tot.tq*100):0;
@@ -3313,6 +3363,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("pvWeek").addEventListener("click",function(){setPvScope("week")});
   $("plback").addEventListener("click",plansHome);
   $("pvlist").addEventListener("click",function(e){
+    var s=e.target.closest("[data-plsec]");
+    if(s){plOpenSec[s.dataset.plsec]=!plOpenSec[s.dataset.plsec]; renderPlansScreen(); return}
     var b=e.target.closest("[data-editplan]"); if(!b)return;
     var id=b.dataset.editplan, ps=planScope;
     enterSection(id,function(){openPlanForm(ps)});
