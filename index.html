@@ -924,13 +924,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     out.push({label:"D.PRES 1",col:7,row:2,cs:1,rs:1,secs:["pres"]});
     out.push({label:"D.PRES 2",col:7,row:3,cs:1,rs:1,secs:["pres"]});
     out.push({label:"D.PRES 3",col:7,row:4,cs:1,rs:1,secs:["pres"]});
-    out.push({label:"CN 1",col:4,row:5,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
-    out.push({label:"CN 2",col:5,row:5,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
+    out.push({label:"CNC 17",col:4,row:5,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
+    out.push({label:"CNC 18",col:5,row:5,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
     out.push({label:"TRANSFER 3",col:3,row:7,cs:1,rs:1,secs:["cncg","cnca"]});
     out.push({label:"TRANSFER 2",col:4,row:7,cs:1,rs:1,secs:["cncg","cnca"]});
     out.push({label:"TRANSFER 1",col:5,row:7,cs:1,rs:1,secs:["cncg","cnca"]});
     return out;
   })();
+  // Kroki kutu etiketleri sonradan değişebiliyor (ör. "CN 1"→"CNC 17"); eski etiketle
+  // floorSlot yazılmış makineler yeni etiketle kutuyu bulmaya devam etsin diye eski→yeni
+  // eşlemesi burada tutuluyor.
+  var FLOOR_ALIAS={"CN 1":"CNC 17","CN 2":"CNC 18"};
   var floorMacId=null, floorLabel=null, floorSecsForNew=[], floorFrom="list";
   var jobDraftSec=null, jobCat=[], jobCatBusy=false, jobSearch="", jobCatalogCache={}, opAssignDraft=[];
   var jobTab="order", jobProgBusy=false;
@@ -2432,9 +2436,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       // basınca AYNI İSİMLE İKİNCİ BİR MAKİNE (kopya) oluşuyordu.
       if(macEditId){
         var fmPrev=machinesList.filter(function(x){return x.id===macEditId})[0];
-        if(fmPrev&&!fmPrev.floorSlot){
-          var slotHit=FLOOR_CIVATA.filter(function(s){return s.label.toLowerCase()===(fmPrev.name||"").toLowerCase()})[0];
-          if(slotHit)mcdata.floorSlot=slotHit.label;
+        if(fmPrev){
+          if(!fmPrev.floorSlot){
+            var slotHit=FLOOR_CIVATA.filter(function(s){return s.label.toLowerCase()===(fmPrev.name||"").toLowerCase()})[0];
+            if(slotHit)mcdata.floorSlot=slotHit.label;
+          }else if(FLOOR_ALIAS[fmPrev.floorSlot]){
+            // Kutunun etiketi sonradan değişti (ör. "CN 1"→"CNC 17") — eski etiketle
+            // kaydedilmiş makineyi yeni etiketle güncelliyoruz.
+            mcdata.floorSlot=FLOOR_ALIAS[fmPrev.floorSlot];
+          }
         }
       }
       if(macEditId)db.doc("machines/"+macEditId).set(mcdata,{merge:true}).catch(function(){});
@@ -3388,10 +3398,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function floorMachine(label){
     // Önce kalıcı floorSlot eşleşmesine bak (kutudan oluşturulan makineler) — bu sayede
-    // makinenin adı sonradan değiştirilse bile kutuyla bağı kopmaz. floorSlot'u olmayan
-    // (ör. toplu eklenen CNC 1-18 gibi) makineler için ada göre eşleştirmeye devam et.
+    // makinenin adı sonradan değiştirilse bile kutuyla bağı kopmaz. Kutunun etiketi
+    // sonradan değiştiyse (ör. "CN 1"→"CNC 17") eski etiketle kaydedilmiş makineyi de
+    // FLOOR_ALIAS üzerinden buluyoruz. floorSlot'u olmayan (ör. toplu eklenen CNC 1-18
+    // gibi) makineler için ada göre eşleştirmeye devam et.
     var bySlot=machinesList.filter(function(m){return m.floorSlot===label})[0];
     if(bySlot)return bySlot;
+    var oldLabel=Object.keys(FLOOR_ALIAS).filter(function(k){return FLOOR_ALIAS[k]===label})[0];
+    if(oldLabel){
+      var byOld=machinesList.filter(function(m){return m.floorSlot===oldLabel})[0];
+      if(byOld)return byOld;
+    }
     return machinesList.filter(function(m){return !m.floorSlot&&(m.name||"").toLowerCase()===label.toLowerCase()})[0]||null;
   }
   function floorBoxHtml(s){
