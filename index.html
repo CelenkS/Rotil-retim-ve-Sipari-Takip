@@ -841,7 +841,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
   var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
-  var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null;
+  var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
+  // Her kategorinin (COLS ile aynı sırada) standart üretim süresi — dakika/adet. Kullanıcı
+  // önce kategori bazlı gireceğini söyledi ("rot başı, rotil, z rot gibi"), ürün bazlı olan
+  // sonraki adım. Performans (yeşil/kırmızı) hesaplaması bu süreler üzerinden yapılacak.
+  var stdTime=[];
   var fImgTh="", fImgFull=null, fImgDirty=false, pendingNewCode="", catImgCache={};
   function setCats(a){COLS.length=0;a.forEach(function(c){COLS.push(c)})}
   function zero(){var o=[];for(var i=0;i<COLS.length;i++)o.push(0);return o}
@@ -907,12 +911,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function lsCatGet(){
     try{
       var x=JSON.parse(localStorage.getItem(secPrefix(sec.id)+"catalog")||"null");
-      if(Array.isArray(x))return {items:x,customers:[],cats:null};
-      if(x)return {items:x.items||[],customers:x.customers||[],cats:x.cats||null};
+      if(Array.isArray(x))return {items:x,customers:[],cats:null,stdTime:[]};
+      if(x)return {items:x.items||[],customers:x.customers||[],cats:x.cats||null,stdTime:x.stdTime||[]};
     }catch(e){}
-    return {items:[],customers:[],cats:null};
+    return {items:[],customers:[],cats:null,stdTime:[]};
   }
-  function lsCatSet(){try{localStorage.setItem(secPrefix(sec.id)+"catalog",JSON.stringify({items:catalog,customers:customers,cats:catsSaved?COLS.slice():null}))}catch(e){}}
+  function lsCatSet(){try{localStorage.setItem(secPrefix(sec.id)+"catalog",JSON.stringify({items:catalog,customers:customers,cats:catsSaved?COLS.slice():null,stdTime:stdTime.slice()}))}catch(e){}}
 
   function mvals(iso){return fit(days[iso])}
   function mrvals(iso){return fit(rev[iso])}
@@ -1656,15 +1660,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var ch='';
       for(var ci=0;ci<catRows;ci++){
         var cv=(catDraft&&catDraft[ci]!==undefined)?catDraft[ci]:((catsSaved&&ci<COLS.length)?COLS[ci]:"");
+        var ctv=(catDraftT&&catDraftT[ci]!==undefined)?catDraftT[ci]:((stdTime[ci])||"");
         var canDel=catsSaved&&ci<COLS.length&&COLS.length>1;
         ch+='<div><label class="fl" for="cn'+ci+'"><span class="dot" style="background:var(--p'+ci+')"></span> '+(ci+1)+'. kategori</label><div class="crow"><input class="fin" id="cn'+ci+'" autocomplete="off" placeholder="Kategori adı" value="'+esc(cv)+'">'+(canDel?'<button type="button" class="btn danger" data-cdel="'+ci+'">Sil</button>':'')+'</div>'+
+          '<div class="crow" style="margin-top:6px"><input class="fin" id="ct'+ci+'" type="number" inputmode="decimal" min="0" step="any" placeholder="Standart süre (dk/adet)" value="'+esc(ctv)+'"><span style="white-space:nowrap;font:700 12px var(--font-ui);color:var(--ink2)">dk/adet</span></div>'+
           ((catDel&&catDel.i===ci)?'<div class="cdelbox">'+(catDel.busy?'Siliniyor…':('“'+esc(COLS[ci])+'” kategorisi silinecek. '+(catDel.n||catDel.it?'İçinde <b>'+nf.format(catDel.n)+' adet</b> üretim kaydı'+(catDel.it?' ve <b>'+catDel.it+' ürün</b>':'')+' var, bunlar da silinir ve geri alınamaz.':'İçinde kayıt yok.')+'<div class="frow"><button type="button" class="btn danger" id="cdelyes">Evet, sil</button><button type="button" class="btn ghost" id="cdelno">Vazgeç</button></div>'))+'</div>':'')+'</div>';
       }
       html+='<div class="shead"><div><h2 id="sh-title">Kategoriler</h2><small>'+esc(sec.name)+' · ürünleri gruplayacağın başlıklar</small></div></div>'+
         '<div class="form">'+ch+
         (catRows<8?'<button class="btn ghost" id="caddrow">+ Kategori ekle</button>':'')+
         '<div class="frow"><button class="btn" id="catsave">Kaydet</button><button class="btn ghost" id="catcancel">Vazgeç</button></div>'+
-        '<div class="note">Kategori adını değiştirirsen geçmiş kayıtlarda da yeni adıyla görünür. En fazla 8 kategori.</div></div>';
+        '<div class="note">Kategori adını değiştirirsen geçmiş kayıtlarda da yeni adıyla görünür. En fazla 8 kategori. "dk/adet" bu kategorideki bir ürünün standart üretim süresi — performans hesaplamasında kullanılacak, boş bırakılırsa hesaba katılmaz.</div></div>';
     }else if(sheetMode==="tform"){
       var T=targets;
       function tf(id,label,val){return '<div><label class="fl" for="'+id+'">'+label+'</label><input class="fin" id="'+id+'" type="number" inputmode="decimal" min="0" step="any" placeholder="—" value="'+(val||"")+'"></div>'}
@@ -1916,14 +1922,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var cur=remapCat({days:days,rev:rev,lines:lns},i); days=cur.days; rev=cur.rev; lns=cur.lines; dirty={};
       catalog=catalog.filter(function(x){return x.k!==i}).map(function(x){return x.k>i?{id:x.id,code:x.code,k:x.k-1,p:x.p}:x});
       COLS.splice(i,1); if(formCat>=COLS.length)formCat=0;
+      if(i<stdTime.length)stdTime.splice(i,1);
       lsSet(); saveCatalog(); pm={}; pmFull=false;
-      catDel=null; catDraft=null; catRows=Math.min(8,COLS.length+1);
+      catDel=null; catDraft=null; catDraftT=null; catRows=Math.min(8,COLS.length+1);
       renderAll(); renderSheet(); setStatus("Kategori silindi");
     }).catch(function(){catDel=null;renderSheet();setStatus("Kategori silinemedi — tekrar dene")});
   }
   function collectCats(){var o=[];for(var i=0;i<catRows;i++){var el=$("cn"+i);o.push(el?el.value:"")}return o}
+  function collectCatsT(){var o=[];for(var i=0;i<catRows;i++){var el=$("ct"+i);o.push(el?el.value:"")}return o}
   function openCats(){
-    catRows=catsSaved?Math.min(8,COLS.length+1):3; catDraft=null; catDel=null; sheetMode="catsform"; $("ov").hidden=false; renderSheet();
+    catRows=catsSaved?Math.min(8,COLS.length+1):3; catDraft=null; catDraftT=null; catDel=null; sheetMode="catsform"; $("ov").hidden=false; renderSheet();
   }
   $("tcat").addEventListener("click",openCats);
   $("addItem").addEventListener("click",openSheet);
@@ -2045,18 +2053,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       closeSheet(); renderOrders(); return;
     }
     if(t.dataset.cdel!==undefined){askDelCat(+t.dataset.cdel);return}
-    if(t.id==="cdelno"){catDel=null;catDraft=collectCats();renderSheet();return}
+    if(t.id==="cdelno"){catDel=null;catDraft=collectCats();catDraftT=collectCatsT();renderSheet();return}
     if(t.id==="cdelyes"){doDelCat();return}
-    if(t.id==="catcancel"){catDraft=null;catDel=null;closeSheet();return}
-    if(t.id==="caddrow"){catDraft=collectCats();catRows=Math.min(8,catRows+1);renderSheet();return}
+    if(t.id==="catcancel"){catDraft=null;catDraftT=null;catDel=null;closeSheet();return}
+    if(t.id==="caddrow"){catDraft=collectCats();catDraftT=collectCatsT();catRows=Math.min(8,catRows+1);renderSheet();return}
     if(t.id==="catsave"){
-      var dr=collectCats(), out=[];
+      var dr=collectCats(), drT=collectCatsT(), out=[], outT=[];
       for(var qi=0;qi<catRows;qi++){
         var qv=(dr[qi]||"").trim();
-        if(catsSaved&&qi<COLS.length)out.push(qv||COLS[qi]); else if(qv)out.push(qv);
+        if(catsSaved&&qi<COLS.length){out.push(qv||COLS[qi]);outT.push(cleanNum(drT[qi],9999,false))}
+        else if(qv){out.push(qv);outT.push(cleanNum(drT[qi],9999,false))}
       }
-      if(!out.length)out=["Genel"];
-      setCats(out); catsSaved=true; catDraft=null; saveCatalog(); closeSheet(); renderAll(); return;
+      if(!out.length){out=["Genel"];outT=[0]}
+      setCats(out); stdTime=outT; catsSaved=true; catDraft=null; catDraftT=null; saveCatalog(); closeSheet(); renderAll(); return;
     }
     if(t.id==="tcancel"){closeSheet();return}
     if(t.id==="tsave"){
@@ -2273,7 +2282,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function catIndex(name){
     var i=findCatIdx(COLS,name);
     if(i>-1)return i;
-    if(COLS.length<8){COLS.push(name);catsSaved=true;saveCatalog();return COLS.length-1}
+    if(COLS.length<8){COLS.push(name);stdTime.push(0);catsSaved=true;saveCatalog();return COLS.length-1}
     return 0;
   }
   function addOrderLine(o,n){n=n||1;
@@ -2337,7 +2346,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!db)return;
     clearTimeout(catTimer);
     catTimer=setTimeout(function(){
-      var items=catalog.slice(), cs=customers.slice(), obj={items:items,customers:cs};
+      var items=catalog.slice(), cs=customers.slice(), obj={items:items,customers:cs,stdTime:stdTime.slice()};
       if(catsSaved)obj.cats=COLS.slice();
       chain=chain.then(function(){
         // merge:true: catsSaved bu oturumda kategori listesine dokunulmadıysa false
@@ -2379,6 +2388,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(snap.exists){
         var cd=snap.data(), before=JSON.stringify(COLS); catalog=(cd.items||[]); customers=(cd.customers||[]);
         if(cd.cats&&cd.cats.length){setCats(cd.cats);catsSaved=true}
+        stdTime=cd.stdTime||[];
         lsCatSet();
         if(JSON.stringify(COLS)!==before)renderAll(); else{renderLines(); renderHero()}
       }else if(catalog.length||customers.length){
@@ -3999,6 +4009,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var saved=!!(cg.cats&&cg.cats.length);
       catsSaved=saved||sec.id==="montaj"||sec.id==="kaynak";
       setCats(saved?cg.cats:sec.cats);
+      stdTime=cg.stdTime||[];
       try{curCust=localStorage.getItem(secPrefix(sec.id)+"cust")||""}catch(e){curCust=""}
       try{curEmp=localStorage.getItem(secPrefix(sec.id)+"emp")||""}catch(e){curEmp=""}
       try{curMac=localStorage.getItem(secPrefix(sec.id)+"mac")||""}catch(e){curMac=""}
