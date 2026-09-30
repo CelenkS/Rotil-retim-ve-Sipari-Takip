@@ -610,7 +610,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 18:37</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 19:56</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -885,7 +885,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||o.cat===0||!!(o.st||[])[i]}
   var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
-  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], unsubOrd=null, ccOpen=null, ccDate=null;
+  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
   // Her kategorinin (COLS ile aynı sırada) standart üretim süresi — dakika/adet. Kullanıcı
@@ -1775,6 +1775,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         if(im0)html+='<img class="oimg" id="odimg" alt="" src="'+im0+'">';
         html+='<div class="otot"><div><small>Sipariş tutarı</small><b>'+(otot?money(otot)+' ₺':'—')+'</b></div><div><small>Birim fiyat</small><b>'+(od.up?money(od.up)+' ₺':'—')+'</b></div></div>';
         if(od.od||od.dd)html+='<div class="odates">'+(od.od?'<span>Sipariş '+fmtD(od.od)+'</span>':'')+dueChip(od,ocomp)+'</div>';
+        var mcit=catItemByCode(od.code);
+        if(mcit&&mcit.rec&&mcit.rec.length){
+          html+='<div class="dst" style="--sc:#0F8B8D"><div class="h"><b>Reçete (malzeme ihtiyacı)</b></div>'+
+            mcit.rec.map(function(r){
+              var mm=materials.filter(function(x){return x.id===r.m})[0];
+              var mname=mm?mm.name:"(silinmiş malzeme)";
+              var tot=r.q*od.qty, stock=mm?(+mm.stock||0):null, short=stock!==null&&stock<tot;
+              return '<div class="ent"><span>'+esc(mname)+' ×'+r.q+'</span><span'+(short?' style="color:#E0506A;font-weight:700"':'')+'>'+nf.format(tot)+' adet gerekli'+(stock!==null?' · stok '+nf.format(stock):'')+'</span></div>';
+            }).join("")+'</div>';
+        }
+        html+='<div class="dst" style="--sc:#8460E6"><div class="h"><b>Not</b></div><textarea class="fin" id="odnote" rows="2" placeholder="Bu sipariş için not ekle…" style="margin-top:8px">'+esc(od.not||"")+'</textarea><button type="button" class="btn ghost sm" id="odnotesave" data-oid="'+od.id+'" style="margin-top:8px">Notu kaydet</button></div>';
         STAGES.forEach(function(sg,i){
           if(!(od.st||[])[i])return;
           var nd=od.qty*muOf(od,i), mu=muOf(od,i), dn=doneOf(od.id,sg.sec), pc=nd?Math.round(dn.q/nd*100):0, so=SECTIONS.filter(function(x){return x.id===sg.sec})[0];
@@ -1811,6 +1822,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><span class="fl">Ürün görseli</span><div class="imgpick"><div class="pv" id="opv">'+(oImgTh?'<img alt="" src="'+oImgTh+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:16px">':'Görsel yok')+'</div><div style="display:flex;flex-direction:column;gap:6px"><label class="btn ghost" for="oimgf">Fotoğraf seç</label><input id="oimgf" type="file" accept="image/*"><button type="button" class="btn ghost" id="oimgrm"'+(oImgTh?'':' hidden')+'>Görseli kaldır</button></div></div></div>'+
         '<div><label class="fl" for="oqty">Sipariş adedi</label><input class="fin" id="oqty" type="number" inputmode="numeric" min="0" placeholder="ör. 5000" value="'+(of.qty||"")+'"></div>'+
         '<div><label class="fl" for="oup">Ürün birim fiyatı (₺) · sipariş tutarı = adet × fiyat</label><input class="fin" id="oup" type="number" inputmode="decimal" min="0" step="any" placeholder="ör. 187" value="'+(of.up||"")+'"></div>'+
+        '<div><label class="fl" for="onote">Not (isteğe bağlı)</label><textarea class="fin" id="onote" rows="2" placeholder="Bu siparişle ilgili not…">'+esc(of.not||"")+'</textarea></div>'+
         '<div><span class="fl">Hangi bölümlerden geçecek? (× = 1 üründe kaç işlem · bölüm birim fiyatı ₺, isteğe bağlı)</span>'+
         STAGES.map(function(sg,i){return '<label class="strow" id="ostrow'+i+'"'+((i>=4&&ordCat!==0)?' hidden':'')+'><input type="checkbox" id="ost'+i+'"'+((of.st||[])[i]?" checked":"")+'><span class="sn">'+sg.name+'</span><input class="fin mu" id="omu'+i+'" type="number" inputmode="numeric" min="1" step="1" aria-label="'+sg.name+' çarpan" value="'+muOf(of,i)+'"><input class="fin" id="opr'+i+'" type="number" inputmode="decimal" min="0" step="any" placeholder="₺ / adet" value="'+(((of.pr||[])[i])||"")+'"></label>'}).join("")+'<div class="note">Örn. bir Z-Rot’ta 2 aşık varsa gövde, pres ve CNC aşık için × 2, montaj için × 1 yaz. 1.000 adet sipariş için bu bölümlerde 2.000 adet hedeflenir.</div></div>'+
         '<div class="frow"><button class="btn" id="ofsave">Kaydet</button><button class="btn ghost" id="ofcancel">Vazgeç</button>'+(orderFormId?'<button class="btn danger" id="ofdel">Siparişi sil</button>':"")+'</div>'+
@@ -2392,6 +2404,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       orders=orders.map(function(x){return x.id===uoid?uo6:x}); lsOrdersSet();
       if(db)db.doc("orders/"+uoid).update({shipped:false}).catch(function(){});
       renderSheet(); renderOrders(); return;
+    }
+    if(t.id==="odnotesave"){
+      var noid=t.dataset.oid, nv=($("odnote")&&$("odnote").value||"").trim();
+      var no5=orders.filter(function(x){return x.id===noid})[0]; if(!no5)return;
+      var no6=Object.assign({},no5,{not:nv});
+      orders=orders.map(function(x){return x.id===noid?no6:x}); lsOrdersSet();
+      if(db)db.doc("orders/"+noid).update({not:nv}).catch(function(){t.textContent="Kaydedilemedi, tekrar dene"});
+      t.textContent="Kaydedildi ✓"; setTimeout(function(){var b2=$("odnotesave"); if(b2)b2.textContent="Notu kaydet"},1500);
+      return;
     }
     if(t.dataset.ccopen!==undefined){
       ccOpen={scope:t.dataset.ccopen,oid:t.dataset.oid,i:t.dataset.ci!==undefined?+t.dataset.ci:null}; ccDate=todayIso; renderSheet(); return;
@@ -3131,7 +3152,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
     return complete?maxD:null;
   }
-  function normOrder(o){o.cat=o.cat||0; o.st=(o.st||[1,1,1,1]).slice(); while(o.st.length<5)o.st.push(0); o.pr=(o.pr||[]).slice(); while(o.pr.length<5)o.pr.push(0); o.mu=(o.mu&&o.mu.length?o.mu.slice():defMu(o.cat)); while(o.mu.length<5)o.mu.push(1); o.qty=+o.qty||0; o.od=o.od||""; o.dd=o.dd||""; o.th=o.th||""; o.up=+o.up||0; return o}
+  function normOrder(o){o.cat=o.cat||0; o.st=(o.st||[1,1,1,1]).slice(); while(o.st.length<5)o.st.push(0); o.pr=(o.pr||[]).slice(); while(o.pr.length<5)o.pr.push(0); o.mu=(o.mu&&o.mu.length?o.mu.slice():defMu(o.cat)); while(o.mu.length<5)o.mu.push(1); o.qty=+o.qty||0; o.od=o.od||""; o.dd=o.dd||""; o.th=o.th||""; o.up=+o.up||0; o.not=o.not||""; return o}
   function orderTotal(o){return o.qty*(+o.up||0)}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
   function daysTo(iso){if(!iso)return null; var a=iso.split("-"); return Math.round((new Date(+a[0],+a[1]-1,+a[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
@@ -3341,7 +3362,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openOrders(){
     dbP.then(function(){
       $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
-      watchOrders(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
+      watchOrders(); watchMaterials(); loadMCatalog(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
   }
@@ -4646,6 +4667,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       }
     }).catch(function(){});
   }
+  // Sipariş detayındaki "Reçete" kutusu için: montaj kataloğundaki ürünlerin tam listesi
+  // (rec dahil) — sadece kod/k/p tutan sugCodes'tan farklı olarak burada reçete de var.
+  function loadMCatalog(){
+    if(!db)return;
+    db.doc("catalog/main").get().then(function(sn){
+      if(sn.exists){
+        mCatItems=sn.data().items||[];
+        if(sheetMode==="odetail"&&$("ov")&&!$("ov").hidden)renderSheet();
+      }
+    }).catch(function(){});
+  }
+  function catItemByCode(code){
+    var cd=(code||"").toLowerCase().trim();
+    return mCatItems.filter(function(x){return (x.code||"").toLowerCase().trim()===cd})[0];
+  }
   function openOrderForm(id){
     orderFormId=id||null;
     var o=id?orders.filter(function(x){return x.id===id})[0]:null;
@@ -4661,7 +4697,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!st.some(Boolean))st=[1,1,1,1,0];
     var old=orderFormId?orders.filter(function(x){return x.id===orderFormId})[0]:null;
     var id=orderFormId||uid();
-    var obj={code:code,cat:ordCat,cust:cust,qty:qty,st:st,pr:pr,mu:mu,od:$("ood").value||"",dd:$("odd").value||"",th:oImgTh||"",up:cleanNum($("oup").value,99999999,false),cr:old?(old.cr||monthKeyNow()):monthKeyNow(),ts:old?(old.ts||Date.now()):Date.now()};
+    var obj={code:code,cat:ordCat,cust:cust,qty:qty,st:st,pr:pr,mu:mu,od:$("ood").value||"",dd:$("odd").value||"",th:oImgTh||"",up:cleanNum($("oup").value,99999999,false),not:($("onote")?$("onote").value.trim():(old&&old.not)||""),cr:old?(old.cr||monthKeyNow()):monthKeyNow(),ts:old?(old.ts||Date.now()):Date.now()};
     var full=Object.assign({id:id},obj);
     orders=orders.filter(function(x){return x.id!==id}).concat([full]);
     lsOrdersSet(); paintOrdersHome();
