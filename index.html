@@ -886,7 +886,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   ordY=now.getFullYear(); ordM=now.getMonth();
   try{brkTab=localStorage.getItem("montaj:brk")==="mus"?"mus":"urun"}catch(e){}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
-  var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={};   // catalog [{id,code,k,p}], customers [{id,name}]
+  var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={}, planWeekKey=null;   // catalog [{id,code,k,p}], customers [{id,name}]; planWeekKey: null=bu hafta, dolu ise ileri/geri seçilen haftanın pazartesi (ISO)
   var db=null, unsub=null, unsubCat=null, docExists=false, catExists=false, dirty={}, catDirty=false;
   // Malzeme stoğu / ürün reçetesi: "materials" koleksiyonu her hammadde/yarı mamul için
   // {id,name,unit,stock,crit,note} tutar — bölümlerden bağımsız, TEK ortak havuz (bir ürünün
@@ -1196,8 +1196,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
     el.innerHTML=tq?('Planlanan toplam <b>'+nf.format(tq)+' adet</b>'+(tp?' · <b>'+money(tp)+' ₺</b>':'')):'Henüz plan girilmedi';
   }
-  function openPlanForm(scope){
+  function openPlanForm(scope,keepWeek){
     planScope=scope||planScope||"week";
+    if(!keepWeek)planWeekKey=null; // "Plan" butonuna basınca hep bu haftadan başla
     planSearch=""; planFCat=null; planFCust=""; planDraft=null;
     sheetMode="planform"; $("ov").hidden=false; renderSheet(); refreshPlanFoot();
     // Refresh progress data in the background for NEXT time this form opens —
@@ -1211,8 +1212,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!plans[planScope])plans[planScope]={};
     plans[planScope][k]=arr; pdirty=true; planDraft=null; lsSet(); scheduleSave(); closeSheet(); renderHero();
   }
-  function openPlanView(scope){
+  function openPlanView(scope,keepWeek){
     planScope=scope||planScope||"week"; pvClearOpen=false;
+    if(!keepWeek)planWeekKey=null;
     sheetMode="planview"; $("ov").hidden=false; renderSheet();
     loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="planview")renderSheet()});
   }
@@ -1323,15 +1325,29 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function weekLabelFor(d){var b=weekBounds(d); return (b.first===b.last?b.first:b.first+"–"+b.last)+" "+AY[M]+" haftası"}
   function weekDaysRange(d){var b=weekBounds(d), out=[]; for(var i=b.first;i<=b.last;i++)out.push(isoOf(i)); return out}
   /* ---------- day/week plans (per section, per month) ---------- */
-  function planKey(scope){return scope==="day"?selected:curWeekKey()}
+  // Ay/yıl'a bağlı olmayan, saf ISO tarih yardımcıları — plan haftası ay sınırını
+  // aşsa (ör. ileri hafta bir sonraki aya taşsa) bile doğru çalışsın diye.
+  function isoFmt(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+  function isoAdd(iso,days){var p=iso.split("-").map(Number); return isoFmt(new Date(p[0],p[1]-1,p[2]+days))}
+  function isoWeekMonday(iso){var p=iso.split("-").map(Number), d=new Date(p[0],p[1]-1,p[2]), w=(d.getDay()+6)%7; return isoFmt(new Date(p[0],p[1]-1,p[2]-w))}
+  function isoWeekRange(mondayIso){var out=[]; for(var i=0;i<7;i++)out.push(isoAdd(mondayIso,i)); return out}
+  function isoWeekLabel(mondayIso){
+    var p=mondayIso.split("-").map(Number), d0=new Date(p[0],p[1]-1,p[2]), d6=new Date(p[0],p[1]-1,p[2]+6), sm=d0.getMonth()===d6.getMonth();
+    return (sm?(d0.getDate()+"–"+d6.getDate()+" "+AY[d0.getMonth()]):(d0.getDate()+" "+AY[d0.getMonth()]+" – "+d6.getDate()+" "+AY[d6.getMonth()]))+" haftası";
+  }
+  function planKey(scope){return scope==="day"?selected:(planWeekKey||curWeekKey())}
   function planLabel(scope){
     if(scope==="day"){var p=selParts(); return p.d+" "+AY[p.m]+" "+GUN[(new Date(p.y,p.m,p.d).getDay()+6)%7]}
-    return weekLabelFor(+curWeekKey().slice(8));
+    return isoWeekLabel(planWeekKey||curWeekKey());
   }
-  function planRange(scope,k){return scope==="day"?[k]:weekDaysRange(+k.slice(8))}
+  function planRange(scope,k){return scope==="day"?[k]:isoWeekRange(k)}
   function planFor(scope,k){return (plans[scope]&&plans[scope][k])||[]}
   function weekPlanMap(secId){
-    var wk=planKey("week"), P=plansOfSec(secId), pmap={};
+    // Üretim ekranındaki "Haftalık plandan" ve kroki/iş atamadaki plan sekmesi
+    // her zaman GERÇEK bu haftayı göstermeli — Plan ekranında ileri bir haftaya
+    // geçilmiş olsa bile burası ondan etkilenmesin diye planKey değil doğrudan
+    // curWeekKey kullanılıyor.
+    var wk=curWeekKey(), P=plansOfSec(secId), pmap={};
     ((P.week&&P.week[wk])||[]).forEach(function(pe){pmap[pe.oid]=pe.q});
     return pmap;
   }
@@ -1748,7 +1764,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         return true;
       }).sort(function(a,b){return (b.pq>0?1:0)-(a.pq>0?1:0)||(a.fin?1:0)-(b.fin?1:0)||((b.o.ts||0)-(a.o.ts||0))});
       html+='<div class="shead"><div><h2 id="sh-title">Plan</h2><small>'+esc(planLabel(planScope))+' · '+esc(sec.name)+' · hangi siparişten ne kadar üreteceksin?</small></div></div>';
-      html+='<div class="otabs" role="group" aria-label="Plan kapsamı"><button type="button" data-plsc="day" aria-pressed="'+(planScope==="day")+'">Bugün</button><button type="button" data-plsc="week" aria-pressed="'+(planScope==="week")+'">Bu hafta</button></div>';
+      html+='<div class="otabs" role="group" aria-label="Plan kapsamı"><button type="button" data-plsc="day" aria-pressed="'+(planScope==="day")+'">Bugün</button><button type="button" data-plsc="week" aria-pressed="'+(planScope==="week")+'">Haftalık</button></div>';
+      if(planScope==="week")html+='<div class="mnav" style="margin-top:8px"><button type="button" id="plwkprev" aria-label="Önceki hafta">‹</button><h1 style="font-size:15px">'+esc(isoWeekLabel(planWeekKey||curWeekKey()))+'</h1><button type="button" id="plwknext" aria-label="Sonraki hafta">›</button></div>'+
+        (planWeekKey?'<button type="button" class="tbtn" id="plwktoday" style="margin-top:6px">Bu haftaya dön</button>':'');
       html+='<input class="search" id="plsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu ara…" value="'+esc(planSearch)+'" aria-label="Ürün ara" style="margin-top:10px">';
       html+='<div class="fchips" id="plcatf">'+
         '<button type="button" data-plcat="" aria-pressed="'+(planFCat===null)+'">Tümü</button>'+
@@ -1762,13 +1780,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
           '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b></div></div>'+
           '<div class="pg"><div class="pgt"><span>'+esc(sec.name)+' · yapılan '+nf.format(x.dn)+' / '+nf.format(x.nd)+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':'%'+pc)+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
-          '<div class="plnwrap"><label class="plnlbl" for="pln-'+o.id+'">'+(planScope==="day"?"Bugün planlanan adet":"Bu hafta planlanan adet")+'</label><input id="pln-'+o.id+'" class="plninput" type="number" inputmode="numeric" min="0" data-planq="'+o.id+'" data-plnprice="'+x.price+'" value="'+(x.pq||"")+'" placeholder="0" aria-label="'+esc(o.code)+' planlanan adet"></div>'+
+          '<div class="plnwrap"><label class="plnlbl" for="pln-'+o.id+'">'+(planScope==="day"?"Bugün planlanan adet":"Bu haftaki planlanan adet")+'</label><input id="pln-'+o.id+'" class="plninput" type="number" inputmode="numeric" min="0" data-planq="'+o.id+'" data-plnprice="'+x.price+'" value="'+(x.pq||"")+'" placeholder="0" aria-label="'+esc(o.code)+' planlanan adet"></div>'+
           '</div>';
       }).join(""):'<div class="empty">'+(plistAll.length?"Aramayla eşleşen sipariş yok.":"Bu bölüme bağlı sipariş yok. Önce Siparişler’den sipariş gir.")+'</div>')+'</div>';
       html+='<div class="plfootbar" id="plfootbar"><div class="plfoot" id="plfoot"></div><div class="frow"><button class="btn" id="plsave">Kaydet</button><button class="btn ghost" id="plcancel">Vazgeç</button>'+(planFor(planScope,k).length?'<button class="btn danger" id="plclear">Planı temizle</button>':'')+'</div></div>';
     }else if(sheetMode==="planview"){
       var k6=planKey(planScope), pr6=planProgressFor(sec.id,planScope,k6), pc6=pr6.tq?Math.round(pr6.dq/pr6.tq*100):0;
       html+='<div class="shead"><div><h2 id="sh-title">'+(planScope==="day"?"Günlük plan":"Haftalık plan")+'</h2><small>'+esc(planLabel(planScope))+' · '+esc(sec.name)+'</small></div><button class="btn ghost" id="pvclose">Kapat</button></div>';
+      if(planScope==="week")html+='<div class="mnav" style="margin-top:2px"><button type="button" id="plwkprev" aria-label="Önceki hafta">‹</button><h1 style="font-size:14px;color:var(--ink2)">'+(planWeekKey?'':'bu hafta')+'</h1><button type="button" id="plwknext" aria-label="Sonraki hafta">›</button></div>'+
+        (planWeekKey?'<button type="button" class="tbtn" id="plwktoday" style="margin-top:4px">Bu haftaya dön</button>':'');
       html+='<div class="needrow" style="--c:'+sec.h1+'"><span class="nn"><span class="dot" style="background:'+sec.h1+'"></span>Toplam</span><span class="nv">'+nf.format(pr6.dq)+' / '+nf.format(pr6.tq)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc6)+'%"></i></div><div class="nsub">%'+pc6+' tamamlandı'+(pr6.tp?' · '+money(pr6.dr)+' / '+money(pr6.tp)+' ₺':'')+'</div></div>';
       html+='<div class="items" style="margin-top:12px">'+(pr6.items.length?pr6.items.map(function(it){
         var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
@@ -2246,6 +2266,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       return;
     }
     if(t.dataset.plsc){planScope=t.dataset.plsc; planDraft=null; renderSheet(); refreshPlanFoot(); return}
+    if(t.id==="plwkprev"){planWeekKey=isoAdd(planWeekKey||curWeekKey(),-7); planDraft=null; renderSheet(); if(sheetMode==="planform")refreshPlanFoot(); return}
+    if(t.id==="plwknext"){planWeekKey=isoAdd(planWeekKey||curWeekKey(),7); planDraft=null; renderSheet(); if(sheetMode==="planform")refreshPlanFoot(); return}
+    if(t.id==="plwktoday"){planWeekKey=null; planDraft=null; renderSheet(); if(sheetMode==="planform")refreshPlanFoot(); return}
     if(t.dataset.plcat!==undefined){
       planDraft=planMergedMap();
       planFCat=t.dataset.plcat===""?null:+t.dataset.plcat;
@@ -2269,7 +2292,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       plans[planScope][pk4]=[]; pdirty=true; pvClearOpen=false; lsSet(); scheduleSave(); renderSheet(); renderHero(); return;
     }
     if(t.id==="pvclose"){pvClearOpen=false;closeSheet();return}
-    if(t.id==="pvaddmore"){openPlanForm(planScope);return}
+    if(t.id==="pvaddmore"){openPlanForm(planScope,true);return}
     if(t.id==="cnew"){sheetMode="cform";editCust=null;renderSheet();return}
     if(t.id==="cedit"){
       var c0=customers.filter(function(c){return c.name===curCust})[0]; if(!c0)return;
@@ -2397,14 +2420,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var mcbrand=($("mcbrand")?$("mcbrand").value.trim():""), mcmodel=($("mcmodel")?$("mcmodel").value.trim():""), mcyear=($("mcyear")?$("mcyear").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
       var mcdata={name:mcname,secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
-      // Kroki kutusundan açılmış ama makinede henüz floorSlot yoksa (ör. toplu eklenen eski
-      // CNC 1-18 gibi, ada göre eşleşiyordu) — burada kalıcı floorSlot'u yazıyoruz ki adını
-      // değiştirince kutuyla bağı kopmasın (bu, kartta değişiklik yapınca kutunun "eklenmemiş
-      // gibi" görünmesine sebep olan asıl hataydı).
-      if(macEditId&&floorMacId){
+      // Makinede henüz floorSlot yoksa (ör. toplu eklenen eski CNC 1-18 gibi, hâlâ ada göre
+      // eşleşiyordu) — hangi ekrandan düzenlendiğine bakmaksızın (kroki kartından VEYA düz
+      // Makineler listesinden "düzenle"), eski adı bir kroki kutusu etiketiyle birebir
+      // eşleşiyorsa kalıcı floorSlot'u burada yazıyoruz ki adı değiştirince kutuyla bağı
+      // kopmasın. ÖNCEKİ HATA: bu sadece floorMacId doluyken (yani sadece kroki kartından
+      // açılınca) çalışıyordu — düz listeden düzenlenince floorSlot hiç yazılmıyordu, kutu adı
+      // eşleşmesi bozuluyor, kutu "oluşturulmadı" gibi görünüyor, kullanıcı tekrar "oluştur"a
+      // basınca AYNI İSİMLE İKİNCİ BİR MAKİNE (kopya) oluşuyordu.
+      if(macEditId){
         var fmPrev=machinesList.filter(function(x){return x.id===macEditId})[0];
         if(fmPrev&&!fmPrev.floorSlot){
-          var slotHit=FLOOR_CIVATA.filter(function(s){var fmx=floorMachine(s.label); return fmx&&fmx.id===macEditId})[0];
+          var slotHit=FLOOR_CIVATA.filter(function(s){return s.label.toLowerCase()===(fmPrev.name||"").toLowerCase()})[0];
           if(slotHit)mcdata.floorSlot=slotHit.label;
         }
       }
