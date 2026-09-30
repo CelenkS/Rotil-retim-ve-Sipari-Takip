@@ -584,7 +584,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 16:05</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 17:15</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1027,9 +1027,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // aynı koddaki herhangi bir siparişin yüklenmiş görseline bakılır (birçok kullanıcı
   // resmi sadece siparişe eklemiş oluyor, ayrıca katalog kaydına eklemiyor).
   function codeThumb(code){
-    var match=catalog.filter(function(x){return (x.code||"").toLowerCase()===code.toLowerCase()})[0];
+    var cd=(code||"").toLowerCase().trim();
+    var match=catalog.filter(function(x){return (x.code||"").toLowerCase().trim()===cd})[0];
     if(match&&match.img)return match.img;
-    var om=orders.filter(function(o){return (o.code||"").toLowerCase()===code.toLowerCase()&&o.th})[0];
+    var om=orders.filter(function(o){return (o.code||"").toLowerCase().trim()===cd&&o.th})[0];
     return (om&&om.th)||"";
   }
   function bkRow(color,name,a,r,pct,t){
@@ -4302,20 +4303,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openOrderDetail(id){
     curOid=id; sheetMode="odetail"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0;
   }
-  // Ürün kodu dökümünde bir satıra dokununca: o koda ait TEK sipariş varsa direkt
-  // detayını açar; birden fazla sipariş varsa (aynı kod farklı siparişlerde de
-  // kullanılabiliyor — bu bir hata değil) Siparişler ekranını o koda aranmış halde
-  // açar, kullanıcı hangisini istediğini seçer; hiç sipariş yoksa (sadece katalog/elle
-  // giriş) false döner, çağıran taraf eski gün-dökümü davranışına devam eder.
+  // Ürün kodu dökümünde bir satıra dokununca: o koda ait sipariş(ler) varsa
+  // doğrudan bir sipariş detayına girer (birden fazla sipariş varsa — aynı kod
+  // farklı siparişlerde de kullanılabiliyor, bu bir hata değil — önce açık
+  // (tamamlanmamış) olanların en yenisi, o da yoksa hepsinin en yenisi seçilir);
+  // hiç sipariş yoksa (sadece katalog/elle giriş) false döner, çağıran taraf eski
+  // gün-dökümü davranışına devam eder.
   function jumpToOrderFor(code){
-    var matches=orders.filter(function(o){return (o.code||"").toLowerCase()===code.toLowerCase()});
-    if(matches.length===1){openOrderDetail(matches[0].id); return true}
-    if(matches.length>1){
-      ordQ=code; openOrders();
-      var el=$("osearch"); if(el)el.value=code;
-      return true;
-    }
-    return false;
+    var cd=(code||"").toLowerCase().trim();
+    var matches=orders.filter(function(o){return (o.code||"").toLowerCase().trim()===cd});
+    if(!matches.length)return false;
+    var open=matches.filter(function(o){return !isComplete(o)});
+    var pool=open.length?open:matches;
+    pool.sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+    openOrderDetail(pool[0].id);
+    return true;
   }
   function loadSuggest(){
     var apply=function(cd){
