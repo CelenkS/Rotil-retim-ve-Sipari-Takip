@@ -1162,7 +1162,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var any=false;
     ["day","week"].forEach(function(scope){
       var box=$(scope==="day"?"planboxD":"planboxW"); if(!box)return;
-      var k=planKey(scope), items=planFor(scope,k);
+      // Ana ekrandaki bu kutu HER ZAMAN gerçek bugünü/bu haftayı göstermeli — Plan
+      // ekranında ileri bir haftaya geçilmiş olsa bile (planWeekKey) bu etkilenmesin.
+      var k=scope==="day"?selected:curWeekKey(), items=planFor(scope,k);
       if(!items.length){box.hidden=true;return}
       any=true;
       var pr=planProgressFor(sec.id,scope,k), pc=pr.tq?Math.round(pr.dq/pr.tq*100):0;
@@ -1931,7 +1933,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
               '<button type="button" class="btn" data-jpickorder="'+o.id+'" style="width:100%;margin-top:8px">Bu işi ata</button></div>';
           }).join(""):'<div class="empty">'+(orders.length?"Bu bölüm için eşleşen sipariş yok.":"Henüz sipariş yok.")+'</div>')+'</div>';
         }else if(jobTab==="plan"){
-          var jwk=planKey("week"), jpmap=weekPlanMap(jobDraftSec), jrng=planRange("week",jwk);
+          var jwk=curWeekKey(), jpmap=weekPlanMap(jobDraftSec), jrng=planRange("week",jwk);
           var jpl=orders.filter(function(o){
             return jpmap[o.id]!==undefined&&(!jq||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(jq)>-1);
           }).map(function(o){
@@ -2000,7 +2002,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div></div>';
         }).join(""):'<div class="empty">'+(orders.length?"Bu bölüm için eşleşen sipariş yok.":"Henüz sipariş yok.<br>Ana ekrandaki “Siparişler” bölümünden sipariş gir.")+'</div>')+'</div>';
       }else if(addTab==="plan"){
-        var si3=stageIdx(sec.id), wk3=planKey("week"), pmap3=weekPlanMap(sec.id), rng3=planRange("week",wk3);
+        var si3=stageIdx(sec.id), wk3=curWeekKey(), pmap3=weekPlanMap(sec.id), rng3=planRange("week",wk3);
         var pl=orders.filter(function(o){
           return pmap3[o.id]!==undefined&&(!q||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(q)>-1);
         }).map(function(o){
@@ -2168,7 +2170,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(o3&&inp2){
         var rr;
         if(addTab==="plan"){
-          var wk4=planKey("week"), pmap4=weekPlanMap(sec.id), rng4=planRange("week",wk4), wdone4=0;
+          var wk4=curWeekKey(), pmap4=weekPlanMap(sec.id), rng4=planRange("week",wk4), wdone4=0;
           (doneOf(o3.id,sec.id).e||[]).forEach(function(en){if(rng4.indexOf(en.d)>-1)wdone4+=en.q});
           rr=Math.max(1,(pmap4[o3.id]||0)-wdone4);
         }else{
@@ -4205,7 +4207,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   /* ---------- plans overview (ayrı bir yer: gün + hafta planlarını topluca kontrol) ---------- */
   function openPlansScreen(){
     dbP.then(function(){
-      Y=now.getFullYear(); M=now.getMonth(); selected=todayIso;
+      Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null;
       closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
@@ -4224,7 +4226,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var plOpenSec={};
   function renderPlansScreen(){
     $("pvDay").setAttribute("aria-pressed",planScope==="day"); $("pvWeek").setAttribute("aria-pressed",planScope==="week");
-    var scope=planScope, k=planKey(scope), rows="", tot={tq:0,dq:0,tp:0,dr:0};
+    var scope=planScope, k=scope==="day"?selected:curWeekKey(), rows="", tot={tq:0,dq:0,tp:0,dr:0};
     SECTIONS.forEach(function(x){
       var pr=planProgressFor(x.id,scope,k); if(!pr.tq)return;
       tot.tq+=pr.tq; tot.dq+=pr.dq; tot.tp+=pr.tp; tot.dr+=pr.dr;
@@ -4233,11 +4235,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<button type="button" class="needrow click" data-plsec="'+x.id+'" style="--c:'+x.h1+'"><span class="nn"><span class="dot" style="background:'+x.h1+'"></span>'+esc(x.name)+'</span><span class="nv">'+nf.format(pr.dq)+' / '+nf.format(pr.tq)+'<i class="chevmini">'+(open?'︿':'›')+'</i></span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı'+(pr.tp?' · '+money(pr.dr)+' / '+money(pr.tp)+' ₺':'')+'</div></button>'+
         (open?('<div class="items">'+pr.items.map(function(it){
           var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
-          return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+x.h1+'"><div class="orow">'+
+          return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+x.h1+';cursor:pointer" data-oid="'+o.id+'"><div class="orow">'+
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
             '<div class="obody"><div class="code" style="font:700 15px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+'</div></div>'+
             '<div class="oq2">planlanan<b>'+nf.format(it.plan)+'</b></div></div>'+
             '<div class="pg"><div class="pgt"><span>yapılan '+nf.format(it.done)+' / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div></div>'+
+            '<button type="button" class="edit" data-planedit="'+o.id+'" data-plansec="'+x.id+'" style="margin-top:8px">✎ Planlanan adedi düzenle</button>'+
             '</div>';
         }).join("")+'</div>'+
         '<button type="button" class="btn ghost" data-editplan="'+x.id+'" style="margin-top:12px;width:100%">Planı düzenle</button>'):'')+
@@ -4254,6 +4257,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("pvlist").addEventListener("click",function(e){
     var s=e.target.closest("[data-plsec]");
     if(s){plOpenSec[s.dataset.plsec]=!plOpenSec[s.dataset.plsec]; renderPlansScreen(); return}
+    // "✎ Planlanan adedi düzenle": sadece o ürünün plan miktarını değiştirmek için,
+    // o bölüme girip Plan ekranını doğrudan bu ürüne aranmış halde açıyoruz.
+    var pe=e.target.closest("[data-planedit]");
+    if(pe){
+      var pid=pe.dataset.planedit, psec=pe.dataset.plansec, pcode=(orders.filter(function(x){return x.id===pid})[0]||{}).code||"", ps2=planScope;
+      enterSection(psec,function(){planSearch=pcode; openPlanForm(ps2,false)});
+      return;
+    }
+    // Satırın geri kalanı: siparişi görüntüle/düzenle.
+    var oc=e.target.closest("[data-oid]");
+    if(oc){openOrderDetail(oc.dataset.oid); return}
     var b=e.target.closest("[data-editplan]"); if(!b)return;
     var id=b.dataset.editplan, ps=planScope;
     enterSection(id,function(){openPlanForm(ps)});
