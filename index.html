@@ -610,7 +610,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 18:31</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 18:37</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3708,7 +3708,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var wbusy=!!(m&&(m.job||wst));
       var wcls="fbox"+(m?"":" empty")+(wbusy?" busy":"")+(s.vert?" vert":"");
       if(!wbusy)return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
-      if(!wst)return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m.job.code?'<small class="fbcode">'+esc(m.job.code)+'</small>':'')+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
+      if(!wst){
+        var wjimg=jobThumb(m.job);
+        return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wjimg?'<img class="fbimg" alt="" src="'+wjimg+'">':'')+(m.job.code?'<small class="fbcode">'+esc(m.job.code)+'</small>':'')+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
+      }
       var wf=wst.items[0], wimg=jobThumb({oid:wf.ord.id});
       var wcode=wst.items.length>1?(wf.ord.code+" +"+(wst.items.length-1)):wf.ord.code;
       var wstats='<b class="fbstat">Plan '+nf.format(wst.totalPlan)+' · Yapılan '+nf.format(wst.totalDone)+'</b><small class="fbrem">'+(wst.items.length>1?(wst.items.length+' sipariş'):('Kalan '+nf.format(wf.kalan)))+'</small>';
