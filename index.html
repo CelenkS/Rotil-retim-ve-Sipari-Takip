@@ -374,6 +374,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.stkc .hk{color:#E69138}
 .hcard.ordc.stkc .go{color:#E69138}
 .hcard.ordc.stkc .hs b{color:#E69138}
+.hcard.ordc.stfc{border-color:rgba(94,166,230,.55)}
+.hcard.ordc.stfc::after{background:rgba(94,166,230,.16)}
+.hcard.ordc.stfc .hk{color:#5EA6E6}
+.hcard.ordc.stfc .go{color:#5EA6E6}
+.hcard.ordc.stfc .hs b{color:#5EA6E6}
+.emprow{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.emprow .etop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.emprow .en{font:700 15px var(--font-head)}
+.emprow .esub{font:600 12px var(--font-ui);color:var(--ink2);margin-top:2px}
+.emprow .eedit{background:none;border:0;color:var(--ink2);font:600 12px var(--font-ui);cursor:pointer;text-decoration:underline;padding:0}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chiprow button{border:1px solid var(--line);background:var(--bg2);border-radius:99px;padding:6px 12px;font:700 12px var(--font-ui);cursor:pointer;color:inherit}
+.chiprow button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .matrow{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
 .matrow .mtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .matrow .mn{font:700 15px var(--font-head)}
@@ -698,6 +711,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div id="stklist"></div>
   <div class="status" id="stkstatus"></div>
 </div>
+<div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Elemanlar · Makineler</div><button class="tbtn" id="stfback">‹ Bölümler</button></div>
+    <div class="obig"><span class="obl">Eleman sayısı</span><b id="stfcount">0</b><span class="obs">hangi eleman hangi bölümde/makinede çalışıyor</span></div>
+  </section>
+  <div class="otabs" role="group" aria-label="Elemanlar kapsamı"><button type="button" id="stfTabEmp" aria-pressed="true">Elemanlar</button><button type="button" id="stfTabMac" aria-pressed="false">Makineler</button></div>
+  <button class="btn ghost" id="stfnew" style="width:100%;margin-top:10px">+ Yeni eleman</button>
+  <div id="stflist"></div>
+  <div class="status" id="stfstatus"></div>
+</div>
 <div class="ov" id="ov" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title" id="sheet"></div>
 </div>
@@ -844,6 +867,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // reçetesi başka bölümde üretilen bir ürünü de (ör. Aşık) malzeme olarak gösterebiliyor).
   // Her katalog ürününün "rec" alanı [{m:malzemeId,q:1birim için gereken miktar}] listesidir.
   var materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
+  // Elemanlar (personel) ve makineler — bölümlerden bağımsız iki ortak Firestore koleksiyonu.
+  // Bir eleman birden fazla bölümde/makinede çalışabiliyor (secs/machines birer id listesi).
+  // Bu, makine yerleşim görseline dayalı planlama/performans sisteminin (henüz görsel
+  // gelmediği için) SADECE temel iskeleti: eleman + makine tanımı ve atama. Üretim
+  // girişlerinin hangi elemana/makineye ait olduğunu işaretleme ve buna göre otomatik
+  // hedef/performans (yeşil-kırmızı) hesabı henüz burada değil — o, görsel gelip üretim
+  // girişi akışının nasıl etiketleneceği netleşince eklenecek.
+  var employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
+  var empSecsDraft=[], empMacsDraft=[], mcSecDraft="";
   var downloadsApi=null;
   var chain=Promise.resolve(), timer=null, catTimer=null;
   var sheetMode="list", editId=null, editCust=null, formCat=0, search="";
@@ -1703,6 +1735,24 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="mtnote">Not</label><textarea class="fin" id="mtnote" rows="2" placeholder="ör. tedarikçi, ölçü…">'+esc(mt.note||"")+'</textarea></div>'+
         (matEditId?'<div class="note">Stok miktarını değiştirmek için listedeki “+ Giriş / − Çıkış” butonlarını kullan — buradan sadece ad/birim/kritik seviye/not düzenlenir.</div>':'')+
         '<div class="frow"><button class="btn" id="mtsave">Kaydet</button><button class="btn ghost" id="mtcancel">Vazgeç</button>'+(matEditId?'<button class="btn danger" id="mtdel">Malzemeyi sil</button>':"")+'</div></div>';
+    }else if(sheetMode==="empform"){
+      var em=employees.filter(function(x){return x.id===empEditId})[0]||{name:"",note:""};
+      var empMacOptions=empSecsDraft.reduce(function(acc,sid){return acc.concat(machinesInSec(sid))},[]);
+      html+='<div class="shead"><div><h2 id="sh-title">'+(empEditId?"Elemanı düzenle":"Yeni eleman")+'</h2><small>Ad, çalıştığı bölüm(ler) ve makine(ler)</small></div></div>'+
+        '<div class="form">'+
+        '<div><label class="fl" for="emname">Ad Soyad</label><input class="fin" id="emname" autocomplete="off" value="'+esc(em.name)+'"></div>'+
+        '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
+        (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
+        '<div><label class="fl" for="emnote">Not</label><textarea class="fin" id="emnote" rows="2" placeholder="ör. vardiye, iletişim…">'+esc(em.note||"")+'</textarea></div>'+
+        '<div class="frow"><button class="btn" id="emsave">Kaydet</button><button class="btn ghost" id="emcancel">Vazgeç</button>'+(empEditId?'<button class="btn danger" id="emdel">Elemanı sil</button>':"")+'</div></div>';
+    }else if(sheetMode==="macform"){
+      var mc=machinesList.filter(function(x){return x.id===macEditId})[0]||{name:"",note:""};
+      html+='<div class="shead"><div><h2 id="sh-title">'+(macEditId?"Makineyi düzenle":"Yeni makine")+'</h2><small>Ad ve bölüm</small></div></div>'+
+        '<div class="form">'+
+        '<div><label class="fl" for="mcname">Makine adı</label><input class="fin" id="mcname" autocomplete="off" placeholder="ör. CNC 1" value="'+esc(mc.name)+'"></div>'+
+        '<div><span class="fl">Bölüm</span><div class="cats">'+SECTIONS.map(function(x,i){return '<button type="button" class="d'+(i%8)+'" data-mcsec="'+x.id+'" aria-pressed="'+(mcSecDraft===x.id)+'"><span class="dot"></span>'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
+        '<div><label class="fl" for="mcnote">Not</label><input class="fin" id="mcnote" autocomplete="off" value="'+esc(mc.note||"")+'"></div>'+
+        '<div class="frow"><button class="btn" id="mcsave">Kaydet</button><button class="btn ghost" id="mccancel">Vazgeç</button>'+(macEditId?'<button class="btn danger" id="mcdel">Makineyi sil</button>':"")+'</div></div>';
     }else{
       var q=search.trim().toLowerCase();
       var head='<div class="shead"><div><h2 id="sh-title">Ürün ekle</h2><small>'+title+' · adedi yaz ya da +/− ile ayarla, Ekle’ye bas</small></div><button class="btn" id="sdone">Bitti</button></div>'+
@@ -1768,6 +1818,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(sheetMode==="form"){var f=$("fcode"); if(f&&!editId)f.focus()}
     if(sheetMode==="cform"){var g=$("cname"); if(g&&!editCust)g.focus()}
     if(sheetMode==="matform"){var mn=$("mtname"); if(mn&&!matEditId)mn.focus()}
+    if(sheetMode==="empform"){var en=$("emname"); if(en&&!empEditId)en.focus()}
+    if(sheetMode==="macform"){var mcn=$("mcname"); if(mcn&&!macEditId)mcn.focus()}
   }
   function localMonths(){
     var out=[], pre=secPrefix(sec.id);
@@ -2090,6 +2142,47 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(t.id==="mtdel"){
       if(db&&matEditId)db.doc("materials/"+matEditId).delete().catch(function(){});
       matEditId=null; closeSheet(); return;
+    }
+    if(t.dataset.empsec!==undefined){
+      var esid=t.dataset.empsec, esidx=empSecsDraft.indexOf(esid);
+      if(esidx>-1)empSecsDraft.splice(esidx,1); else empSecsDraft.push(esid);
+      empMacsDraft=empMacsDraft.filter(function(mid){var m=machinesList.filter(function(x){return x.id===mid})[0]; return m&&empSecsDraft.indexOf(m.sec)>-1});
+      renderSheet(); return;
+    }
+    if(t.dataset.empmac!==undefined){
+      var emid=t.dataset.empmac, emidx=empMacsDraft.indexOf(emid);
+      if(emidx>-1)empMacsDraft.splice(emidx,1); else empMacsDraft.push(emid);
+      renderSheet(); return;
+    }
+    if(t.id==="emcancel"){sheetMode="list";empEditId=null;closeSheet();return}
+    if(t.id==="emsave"){
+      var ename=$("emname").value.trim(); if(!ename){$("emname").focus();return}
+      var enote=($("emnote")?$("emnote").value.trim():"");
+      if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+      var edata={name:ename,secs:empSecsDraft.slice(),machines:empMacsDraft.slice(),note:enote};
+      if(empEditId)db.doc("employees/"+empEditId).set(edata).catch(function(){});
+      else db.collection("employees").add(edata).catch(function(){});
+      empEditId=null; closeSheet(); return;
+    }
+    if(t.id==="emdel"){
+      if(db&&empEditId)db.doc("employees/"+empEditId).delete().catch(function(){});
+      empEditId=null; closeSheet(); return;
+    }
+    if(t.dataset.mcsec!==undefined){mcSecDraft=t.dataset.mcsec; renderSheet(); return}
+    if(t.id==="mccancel"){sheetMode="list";macEditId=null;closeSheet();return}
+    if(t.id==="mcsave"){
+      var mcname=$("mcname").value.trim(); if(!mcname){$("mcname").focus();return}
+      var mcnote=($("mcnote")?$("mcnote").value.trim():"");
+      if(!mcSecDraft){var fb=$("sheet").querySelector("[data-mcsec]"); mcSecDraft=fb?fb.dataset.mcsec:SECTIONS[0].id;}
+      if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+      var mcdata={name:mcname,sec:mcSecDraft,note:mcnote};
+      if(macEditId)db.doc("machines/"+macEditId).set(mcdata).catch(function(){});
+      else db.collection("machines").add(mcdata).catch(function(){});
+      macEditId=null; closeSheet(); return;
+    }
+    if(t.id==="mcdel"){
+      if(db&&macEditId)db.doc("machines/"+macEditId).delete().catch(function(){});
+      macEditId=null; closeSheet(); return;
     }
   });
   $("sheet").addEventListener("change",function(e){
@@ -2625,7 +2718,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openOrders(){
     dbP.then(function(){
-      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -2678,7 +2771,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }).join(""):'<div class="empty">Henüz bir işlem yok.</div>';
   }
   function openNotifs(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
     renderNotifs(nfCache);
     $("nfstatus").textContent=db?"Güncel":"Bağlantı yok — sadece bu cihazda görülenler";
     try{localStorage.setItem("montaj:nfseen",String(Date.now()))}catch(e){}
@@ -2711,7 +2804,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
     watchMaterials(); renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
@@ -2809,6 +2902,87 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var row=ab.closest(".matrow"), inp=row.querySelector("[data-matqty]"), v=cleanNum(inp.value,9999999,false);
     if(!v)return;
     adjustMaterialStock(id,sign*v); inp.value="";
+  });
+  /* ---------- elemanlar / makineler ---------- */
+  function watchEmployees(){
+    if(unsubEmp||!db)return;
+    unsubEmp=db.collection("employees").onSnapshot(function(snap){
+      employees=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+      employees.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
+      paintStaffHome();
+      if(!$("staff").hidden)renderStaff();
+    },function(){});
+  }
+  function watchMachinesList(){
+    if(unsubMac||!db)return;
+    unsubMac=db.collection("machines").onSnapshot(function(snap){
+      machinesList=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+      machinesList.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
+      if(!$("staff").hidden)renderStaff();
+    },function(){});
+  }
+  function paintStaffHome(){
+    var el=$("hs-staff"); if(!el)return;
+    el.textContent=employees.length?(employees.length+" eleman"):"Eleman ve makine listesi";
+  }
+  function machinesInSec(secId){return machinesList.filter(function(m){return m.sec===secId})}
+  function secNameOf(id){var s=SECTIONS.filter(function(x){return x.id===id})[0]; return s?s.name:id}
+  function machineNameOf(id){var m=machinesList.filter(function(x){return x.id===id})[0]; return m?m.name:""}
+  function openStaff(){
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
+    watchEmployees(); watchMachinesList(); renderStaff();
+    $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
+  }
+  function staffHome(){
+    $("staff").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+  }
+  function empRowHtml(e){
+    var secs=(e.secs||[]).map(secNameOf).join(", ")||"Bölüm atanmadı";
+    var macs=(e.machines||[]).map(machineNameOf).filter(Boolean).join(", ");
+    return '<div class="emprow"><div class="etop"><div><div class="en">'+esc(e.name)+'</div><div class="esub">'+esc(secs)+(macs?' · '+esc(macs):'')+'</div></div><button type="button" class="eedit" data-empedit="'+e.id+'">düzenle</button></div></div>';
+  }
+  function macRowHtml(m){
+    return '<div class="emprow"><div class="etop"><div><div class="en">'+esc(m.name)+'</div><div class="esub">'+esc(secNameOf(m.sec))+(m.note?' · '+esc(m.note):'')+'</div></div><button type="button" class="eedit" data-macedit="'+m.id+'">düzenle</button></div></div>';
+  }
+  function renderStaff(){
+    $("stfcount").textContent=employees.length;
+    $("stfTabEmp").setAttribute("aria-pressed",stfTab==="emp");
+    $("stfTabMac").setAttribute("aria-pressed",stfTab==="mac");
+    $("stfnew").textContent=stfTab==="emp"?"+ Yeni eleman":"+ Yeni makine";
+    if(stfTab==="emp"){
+      $("stflist").innerHTML=employees.length?employees.map(empRowHtml).join(""):'<div class="empty">Henüz eleman tanımlı değil.<br>“+ Yeni eleman” ile ilkini ekle.</div>';
+    }else{
+      var html="";
+      SECTIONS.forEach(function(x){
+        var ms=machinesInSec(x.id); if(!ms.length)return;
+        html+='<div class="ghead d0" style="margin-top:14px"><span class="dot" style="background:'+x.h1+'"></span>'+esc(x.name)+'</div>'+ms.map(macRowHtml).join("");
+      });
+      $("stflist").innerHTML=html||'<div class="empty">Henüz makine tanımlı değil.<br>“+ Yeni makine” ile ilkini ekle.</div>';
+    }
+  }
+  $("stfback").addEventListener("click",staffHome);
+  $("stfTabEmp").addEventListener("click",function(){stfTab="emp";renderStaff()});
+  $("stfTabMac").addEventListener("click",function(){stfTab="mac";renderStaff()});
+  $("stfnew").addEventListener("click",function(){
+    if(stfTab==="emp"){empEditId=null;empSecsDraft=[];empMacsDraft=[];sheetMode="empform";}
+    else{macEditId=null;mcSecDraft=SECTIONS[0].id;sheetMode="macform";}
+    $("ov").hidden=false; renderSheet();
+  });
+  $("stflist").addEventListener("click",function(e){
+    var eb=e.target.closest("[data-empedit]");
+    if(eb){
+      empEditId=eb.dataset.empedit;
+      var ee=employees.filter(function(x){return x.id===empEditId})[0];
+      empSecsDraft=(ee&&ee.secs)?ee.secs.slice():[]; empMacsDraft=(ee&&ee.machines)?ee.machines.slice():[];
+      sheetMode="empform";$("ov").hidden=false;renderSheet();return;
+    }
+    var mb=e.target.closest("[data-macedit]");
+    if(mb){
+      macEditId=mb.dataset.macedit;
+      var mm=machinesList.filter(function(x){return x.id===macEditId})[0];
+      mcSecDraft=mm?mm.sec:SECTIONS[0].id;
+      sheetMode="macform";$("ov").hidden=false;renderSheet();return;
+    }
   });
   /* ---------- CSV içe/dışa aktar ---------- */
   var STAGE_SLUGS=["govde","pres","cnc_asik","montaj","kaynak"];
@@ -3531,7 +3705,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openPlansScreen(){
     dbP.then(function(){
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso;
-      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
+      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -3711,6 +3885,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc bellc" data-notifs="1"><div><div class="hk">Aktivite</div><div class="hn">Bildirimler<span class="nfbadge" id="nfbadge" hidden></span></div><div class="hs" id="hs-notifs">Yeni sipariş ve üretim girişleri</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>'+
+      '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Elemanlar</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
       SECTIONS.map(function(x){
       return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'"><div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
     }).join("");
@@ -3740,7 +3915,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
       gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
-      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
       if(db)watchCatalog();
       if(!catsSaved&&!db){promptShown=true;openCats()}
@@ -3754,8 +3929,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock]"); if(!b)return;
-    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else enterSection(b.dataset.sec);
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff]"); if(!b)return;
+    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else enterSection(b.dataset.sec);
   });
   $("back").addEventListener("click",goHome);
 
