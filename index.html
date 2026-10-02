@@ -610,7 +610,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 02.10 21:02</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 02.10 21:08</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -733,6 +733,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <button type="button" id="pvWeek" aria-pressed="true">Haftalık</button>
   </div>
   <button type="button" class="btn ghost" id="pvMacPlan" style="width:100%;margin-bottom:14px">🔧 Makine Planı — krokiden planla/görüntüle</button>
+  <input class="search" id="pvsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara…" aria-label="Plandaki ürünlerde ara" style="margin-bottom:14px">
   <div id="pvlist"></div>
   <div class="status" id="pvstatus"></div>
 </div>
@@ -913,7 +914,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   ordY=now.getFullYear(); ordM=now.getMonth();
   try{brkTab=localStorage.getItem("montaj:brk")==="mus"?"mus":"urun"}catch(e){}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
-  var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={}, planWeekKey=null;   // catalog [{id,code,k,p}], customers [{id,name}]; planWeekKey: null=bu hafta, dolu ise ileri/geri seçilen haftanın pazartesi (ISO)
+  var catalog=[], customers=[], curCust="", period="ay", targets={}, tdirty=false, plans={day:{},week:{}}, pdirty=false, planScope="week", pmPlans={}, planWeekKey=null, planVQ="";   // catalog [{id,code,k,p}], customers [{id,name}]; planWeekKey: null=bu hafta, dolu ise ileri/geri seçilen haftanın pazartesi (ISO)
   var floorDayKey=null;   // Yerleşim (kroki) ekranındaki gün gezinmesi: null=bugün, dolu ise seçilen günün ISO tarihi
   var floorScope="day";   // Yerleşim/Makine Planı ekranı Günlük mü Haftalık mı gösteriliyor
   var floorWeekKey=null;  // Haftalık kroki modundaki hafta gezinmesi: null=bu hafta, dolu ise seçilen haftanın pazartesi (ISO)
@@ -4564,7 +4565,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   /* ---------- plans overview (ayrı bir yer: gün + hafta planlarını topluca kontrol) ---------- */
   function openPlansScreen(){
     dbP.then(function(){
-      Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null;
+      Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null; planVQ=""; if($("pvsearch"))$("pvsearch").value="";
       closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
@@ -4586,13 +4587,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var scope=planScope, k=scope==="day"?selected:curWeekKey(), rows="", tot={tq:0,dq:0,tp:0,dr:0};
     var navHtml=scope==="day"?('<div class="mnav" style="margin:-4px 0 14px"><button type="button" id="pvDayPrev" aria-label="Önceki gün">‹</button><h1 style="font-size:15px">'+(selected===todayIso?"Bugün":esc(isoDayLabel(selected)))+'</h1><button type="button" id="pvDayNext" aria-label="Sonraki gün">›</button></div>'+
       (selected!==todayIso?'<button type="button" class="tbtn" id="pvDayToday" style="margin:-8px auto 14px;display:block">Bugüne dön</button>':'')):"";
+    var vq=planVQ.trim().toLowerCase();
     SECTIONS.forEach(function(x){
       var pr=planProgressFor(x.id,scope,k); if(!pr.tq)return;
       tot.tq+=pr.tq; tot.dq+=pr.dq; tot.tp+=pr.tp; tot.dr+=pr.dr;
-      var pc=Math.round(pr.dq/pr.tq*100), open=!!plOpenSec[x.id];
+      var vItems=vq?pr.items.filter(function(it){var o=it.o; return (o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(vq)>-1}):pr.items;
+      if(vq&&!vItems.length)return;
+      var pc=Math.round(pr.dq/pr.tq*100), open=vq?true:!!plOpenSec[x.id];
       rows+='<section class="card pvcard">'+
-        '<button type="button" class="needrow click" data-plsec="'+x.id+'" style="--c:'+x.h1+'"><span class="nn"><span class="dot" style="background:'+x.h1+'"></span>'+esc(x.name)+'</span><span class="nv">'+nf.format(pr.dq)+' / '+nf.format(pr.tq)+'<i class="chevmini">'+(open?'︿':'›')+'</i></span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı'+(pr.tp?' · '+money(pr.dr)+' / '+money(pr.tp)+' ₺':'')+'</div></button>'+
-        (open?('<div class="items">'+pr.items.map(function(it){
+        '<button type="button" class="needrow click" data-plsec="'+x.id+'" style="--c:'+x.h1+'"><span class="nn"><span class="dot" style="background:'+x.h1+'"></span>'+esc(x.name)+'</span><span class="nv">'+nf.format(pr.dq)+' / '+nf.format(pr.tq)+'<i class="chevmini">'+(open?'︿':'›')+'</i></span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı'+(pr.tp?' · '+money(pr.dr)+' / '+money(pr.tp)+' ₺':'')+(vq?' · aramayla eşleşen '+vItems.length+' ürün':'')+'</div></button>'+
+        (open?('<div class="items">'+vItems.map(function(it){
           var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
           return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+x.h1+';cursor:pointer" data-oid="'+o.id+'"><div class="orow">'+
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
@@ -4605,13 +4609,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<button type="button" class="btn ghost" data-editplan="'+x.id+'" style="margin-top:12px;width:100%">Planı düzenle</button>'):'')+
         '</section>';
     });
-    $("pvlist").innerHTML=navHtml+(rows||'<div class="empty">'+(scope==="day"?(selected===todayIso?"Bugün":esc(isoDayLabel(selected))):"Bu hafta")+' için henüz plan girilmemiş.<br>Bir bölüme gir, “Plan” ile başla.</div>');
+    $("pvlist").innerHTML=navHtml+(rows||'<div class="empty">'+(vq?'“'+esc(planVQ.trim())+'” ile eşleşen bir ürün yok.':((scope==="day"?(selected===todayIso?"Bugün":esc(isoDayLabel(selected))):"Bu hafta")+' için henüz plan girilmemiş.<br>Bir bölüme gir, “Plan” ile başla.'))+'</div>');
     var pc2=tot.tq?Math.round(tot.dq/tot.tq*100):0;
     $("pvpc").textContent="%"+pc2;
     $("pvsub").textContent=(tot.tq?(nf.format(tot.dq)+" / "+nf.format(tot.tq)+" adet · "):"")+esc(planLabel(scope));
   }
   $("pvDay").addEventListener("click",function(){setPvScope("day")});
   $("pvWeek").addEventListener("click",function(){setPvScope("week")});
+  $("pvsearch").addEventListener("input",function(e){planVQ=e.target.value;renderPlansScreen()});
   $("plback").addEventListener("click",plansHome);
   $("pvMacPlan").addEventListener("click",function(){
     floorMacId=null; floorLabel=null; floorDayKey=selected!==todayIso?selected:null;
