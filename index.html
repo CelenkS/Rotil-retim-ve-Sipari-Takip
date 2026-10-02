@@ -610,7 +610,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 30.09 19:56</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 02.10 21:02</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1563,6 +1563,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function jumpToDate(iso){
     lineQ=""; var ls0=$("lsearch"); if(ls0)ls0.value=""; catDrill=null; codeDrill=null;
     var y=+iso.slice(0,4), m=+iso.slice(5,7)-1, changed=(y!==Y||m!==M);
+    if(changed)flushNow();
     Y=y; M=m; selected=iso; lineQFor=iso;
     if(changed)loadMonth();
     setPeriod("gun");
@@ -1741,9 +1742,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     window.scrollTo({top:0,behavior:"smooth"});
   });
   $("gotoday").addEventListener("click",function(){
-    Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; loadMonth();
+    flushNow(); Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; loadMonth();
   });
   function shift(n){
+    flushNow();
     var d=new Date(Y,M+n,1); Y=d.getFullYear(); M=d.getMonth();
     selected=(Y===now.getFullYear()&&M===now.getMonth())?todayIso:isoOf(1);
     loadMonth();
@@ -2870,6 +2872,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!db){setStatus("Bu cihazda saklanıyor");return}
     setStatus("Kaydediliyor…");
     clearTimeout(timer); timer=setTimeout(flush,600);
+  }
+  // Bölüm/ay/gün değiştirmeden HEMEN ÖNCE çağrılır: henüz 600ms'lik bekleme
+  // süresini doldurmamış (debounce'taki) bir giriş varsa, loadMonth()/enterSection()
+  // dirty={} ile sıfırlamadan ve sec/Y/M değişmeden ÖNCE bunu hemen kaydeder.
+  // Aksi halde o giriş sessizce kaybolur — "adetler bazen hiç gelmiyor" şikayetinin
+  // asıl sebebi buydu: kullanıcı bir adet girip 600ms dolmadan başka bölüme/aya
+  // geçince, bekleyen setTimeout iptal ediliyor ama kaydedilmeden gidiyordu.
+  function flushNow(){
+    if(timer){clearTimeout(timer);timer=null}
+    if(db&&(Object.keys(dirty).length||tdirty||pdirty))flush();
   }
   function flush(){
     var ks=Object.keys(dirty); if(!ks.length&&!tdirty&&!pdirty)return;
@@ -4804,6 +4816,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
   }
   function enterSection(id,after){
+    flushNow();
     dbP.then(function(){
       sec=SECTIONS.filter(function(x){return x.id===id})[0]||SECTIONS[0];
       needBoxOpen=false;
