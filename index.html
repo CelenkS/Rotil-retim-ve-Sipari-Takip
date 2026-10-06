@@ -357,6 +357,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .nli .nlsc.nfin .nlv{color:#1f7a45}
 .nli .nlsc.nfin .nlsb i{background:#2ea05a}
 .nli .nlsc.off{opacity:.45}
+.nli .nlq{display:inline-flex;align-items:baseline;gap:6px;margin:0 0 7px;padding:3px 10px;border-radius:99px;background:var(--surface);border:1px solid var(--line)}
+.nli .nlq span{font:700 10.5px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.03em}
+.nli .nlq b{font:800 14px var(--font-ui);color:var(--ink)}
+.nli .nlsc .nll em{font-style:normal;font-weight:800;color:var(--ink)}
 .nli .nlr{text-align:right;display:flex;flex-direction:column;gap:2px}
 .nli .nlr b{font:800 16px var(--font-ui)}
 .nli .nlr small{font:600 11px var(--font-ui);color:var(--ink2);white-space:nowrap}
@@ -678,7 +682,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 15:50</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 16:16</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3313,7 +3317,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var sg=STAGES[i], on=(o.st||[])[i], so=SECTIONS.filter(function(z){return z.id===sg.sec})[0];
       if(!on)return '<div class="nlsc off"><div class="nll">'+sg.short+'</div><div class="nlv">—</div></div>';
       var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, fin=nd>0&&(dn>=nd||stClosed(o,i)), pc=nd?Math.min(100,Math.round(dn/nd*100)):0;
-      return '<div class="nlsc'+(fin?' nfin':'')+(hiSec===sg.sec?' hi':'')+'" style="--sc:'+so.h1+'"><div class="nll">'+sg.short+'</div><div class="nlv">'+nf.format(dn)+' / '+nf.format(nd)+'</div><div class="nlsb"><i style="width:'+pc+'%"></i></div></div>';
+      return '<div class="nlsc'+(fin?' nfin':'')+(hiSec===sg.sec?' hi':'')+'" style="--sc:'+so.h1+'"><div class="nll">'+sg.short+(muOf(o,i)>1?' <em>×'+muOf(o,i)+'</em>':'')+'</div><div class="nlv">'+nf.format(dn)+' / '+nf.format(nd)+'</div><div class="nlsb"><i style="width:'+pc+'%"></i></div></div>';
     }).join("")+'</div>';
   }
   function statusChips(o){
@@ -3455,6 +3459,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
                 (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
                 '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b>'+statusChips(o)+'</div>'+
                 '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
+                '<div class="nlq"><span>Sipariş adedi</span><b>'+nf.format(o.qty)+' adet</b></div>'+
                 '<div class="nlbar"><i style="width:'+Math.min(100,pc)+'%;background:var(--p'+i+')"></i></div></div>'+
                 '<div class="nlr"><b>%'+pc+'</b><small>'+esc(sg.short)+'</small></div>'+stagesRowHtml(o,sg.sec)+'</div>';
             };
