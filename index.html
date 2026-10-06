@@ -626,7 +626,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 13:16</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 14:16</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -734,6 +734,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     </div>
     <input type="file" id="okpupf" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
     <div class="impnote" id="kpnote" hidden></div>
+    <button class="btn ghost" id="ofark" style="width:100%;margin-top:8px">🔍 Tamamlanan / gönderilen farkını göster</button>
+    <div class="impnote" id="farknote" hidden></div>
     <button class="btn ghost" id="ofillimg" style="width:100%;margin-top:8px">🖼 Eksik görselleri tamamla (Excel)</button>
     <input type="file" id="ofillimgf" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
     <div class="impnote" id="fillimgnote" hidden></div>
@@ -891,12 +893,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 (function(){
   var SECTIONS=[
     {id:"cncg",name:"CNC Transfer Gövde",h1:"#3B78E0",h2:"#22459C",cats:["Genel"]},
-    {id:"cnca",name:"CNC Aşık",h1:"#E08A2E",h2:"#A9531A",cats:["Genel"]},
     {id:"pres",name:"Preshane Aşık",h1:"#8460E6",h2:"#4E2FAE",cats:["Genel"]},
+    {id:"cnca",name:"CNC Aşık",h1:"#E08A2E",h2:"#A9531A",cats:["Genel"]},
+    {id:"disacma",name:"Diş ve delik açma",h1:"#2E9E6B",h2:"#175C3E",cats:["Genel"]},
     {id:"kaynak",name:"Z-Rot Kaynak",h1:"#E0506A",h2:"#8F1D3B",cats:["Z-Rot"]},
-    {id:"montaj",name:"Montaj",h1:"#0F8B8D",h2:"#1B5F7A",cats:["Z-Rot","Rotil","Rot başı","Rot mili"]},
     {id:"kaplama",name:"Kaplama",h1:"#5B6B8C",h2:"#2F3A52",cats:["Genel"]},
-    {id:"disacma",name:"Diş ve delik açma",h1:"#2E9E6B",h2:"#175C3E",cats:["Genel"]}
+    {id:"montaj",name:"Montaj",h1:"#0F8B8D",h2:"#1B5F7A",cats:["Z-Rot","Rotil","Rot başı","Rot mili"]}
   ];
   var STAGES=[
     {sec:"cncg",name:"Gövde işleme",short:"Gövde"},
@@ -3080,6 +3082,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var x=src[oid]; if(x){q+=x.q;r+=x.r;e=e.concat(x.e)}
     });
     if(live&&!seenLive){var x2=extractSums(lns)[oid]; if(x2){q+=x2.q;r+=x2.r;e=e.concat(x2.e)}}
+    // Aşama "adette tamamla" ile ya da (gönderilmiş/tamamlanmış siparişlerde) toptan "yapılmış"
+    // olarak kapatıldıysa, kapanış adedi (cl) üretim girişi gibi sayılır; böylece toplam adetlerde
+    // (ör. toplam kaplama adedi) görünür. Gerçek üretim girişi daha büyükse o geçerlidir.
+    var si0=stageIdx(secId);
+    if(si0>-1){
+      for(var oi=0;oi<orders.length;oi++){
+        if(orders[oi].id===oid){var cq=+((orders[oi].cl||[])[si0])||0; if(cq>q)q=cq; break}
+      }
+    }
     return {q:q,r:r,e:e};
   }
   // Not: daha önce burada tamamen bitmiş (dn>=nd) sipariş/aşama çiftleri toplama hiç
@@ -4636,13 +4647,24 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var rows=list.map(function(o){return [o.id,o.code||"",o.cust||"",ORDER_CATS[o.cat]||"",o.qty||0,(o.st||[])[5]?(o.kp||""):(o.kp===KP_NONE?KP_NONE:""),(o.st||[])[6]?"Var":""]});
     downloadBlobFile(buildKaplamaXlsx(rows),"kaplama-listesi-"+todayIso+".xlsx",note);
   });
-  var kpPending=null;
-  function planKaplamaRows(rows){
+  var kpPending=null, kpRows=null, kpWide=false;
+  function stagePad(a,fill){var o=(a||[]).slice(); while(o.length<7)o.push(fill); return o}
+  function stageDoneNow(o,i,clArr){
+    var nd=o.qty*muOf(o,i);
+    return doneOf(o.id,STAGES[i].sec).q>=nd||(+(clArr||o.cl||[])[i]>=nd&&nd>0)||stClosed(o,i);
+  }
+  // Kaplama/diş hariç (5,6) tüm açık aşamaları bitmiş mi? (yalnız "geniş" kapsamda kullanılır)
+  function completeExceptLate(o){
+    var any=false, ok=true;
+    STAGES.forEach(function(sg,i){if(i===5||i===6)return; if((o.st||[])[i]){any=true; if(!stageDoneNow(o,i))ok=false}});
+    return any&&ok;
+  }
+  function planKaplamaRows(rows,wide){
     var header=rows[0].map(normHead);
     function ix(names){for(var i=0;i<header.length;i++)if(names.indexOf(header[i])>-1)return i; return -1}
     var iId=ix(["siparis_no","id","siparis_id"]), iKod=ix(HEAD_ALIASES.kod), iMus=ix(HEAD_ALIASES.musteri), iAdet=ix(HEAD_ALIASES.adet), iKp=ix(HEAD_ALIASES.kaplama), iDis=ix(HEAD_ALIASES.dis);
     if((iKp<0&&iDis<0)||(iId<0&&iKod<0))return {err:'Başlık satırında "kaplama" ya da "dis_delik" sütunu ve "siparis_no" (ya da "kod") sütunu bulunamadı. “Kaplama / diş listesi (Excel)” ile indirdiğin dosyayı kullan.'};
-    var out={updates:[],same:0,blank:0,bad:0,shipped:0,unmatched:[],ambiguous:[],reopen:0}, seen={};
+    var out={updates:[],same:0,blank:0,bad:0,unmatched:[],ambiguous:[],doneN:0,doneQty:[0,0,0,0,0,0,0],shippedN:0}, seen={};
     for(var r=1;r<rows.length;r++){
       var row=rows[r]; if(!row)continue;
       var rawKp=iKp>-1?String(row[iKp]===undefined||row[iKp]===null?"":row[iKp]).trim():"";
@@ -4661,13 +4683,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       }
       if(!o){out.unmatched.push(id||row[iKod]||("satır "+(r+1))); continue}
       if(seen[o.id])continue; seen[o.id]=1;
-      if(o.shipped){out.shipped++; continue}
       var st5=(o.st||[])[5]?1:0, st6=(o.st||[])[6]?1:0;
-      var kpSame=kp===null||(kp===KP_NONE?(!st5&&o.kp===KP_NONE):(st5&&o.kp===kp));
-      var dsSame=ds===null||ds===st6;
-      if(kpSame&&dsSame){out.same++; continue}
-      if(isComplete(o)&&((kp&&kp!==KP_NONE&&!st5)||(ds===1&&!st6)))out.reopen++;
-      out.updates.push({o:o,kp:kpSame?null:kp,dis:dsSame?null:ds});
+      var want5=kp===null?st5:(kp===KP_NONE?0:1), want6=ds===null?st6:ds;
+      var kpChange=kp!==null&&(kp!==o.kp||want5!==st5), dsChange=ds!==null&&want6!==st6;
+      // Teslim edilmiş (gönderilmiş) ya da zaten tamamlanmış siparişlerde kaplama/diş aşamaları
+      // "yapılmış" sayılır; "geniş" seçenekte kaplama/diş hariç hepsi bitmiş siparişler de dahil.
+      var leg=!!o.shipped||isComplete(o)||(wide&&completeExceptLate(o));
+      var markDone=[];
+      if(leg){[5,6].forEach(function(i){
+        var enabledNow=i===5?want5:want6, requested=i===5?kp!==null:ds!==null;
+        if(enabledNow&&requested&&!stageDoneNow(o,i))markDone.push(i);
+      })}
+      if(!kpChange&&!dsChange&&!markDone.length){out.same++; continue}
+      if(o.shipped)out.shippedN++;
+      if(markDone.length){out.doneN++; markDone.forEach(function(i){out.doneQty[i]+=o.qty*muOf(o,i)})}
+      out.updates.push({o:o,kp:kpChange?kp:null,dis:dsChange?ds:null,markDone:markDone});
     }
     return out;
   }
@@ -4678,15 +4708,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(kpTotal)parts.push("kaplama: "+KP_ALL.filter(function(k){return cnt[k]}).map(function(k){return k+" "+cnt[k]}).join(", "));
     if(dv||dn)parts.push("diş ve delik: "+(dv?"Var "+dv:"")+(dv&&dn?", ":"")+(dn?"Yok "+dn:""));
     var h='<b>'+pl.updates.length+' siparişte değişiklik yapılacak</b>'+(parts.length?' ('+parts.join(" · ")+')':'')+'. Adet, fiyat ve üretim kayıtlarına dokunulmaz.';
-    if(pl.reopen)h+='<br>⚠ '+pl.reopen+' sipariş şu an tamamlanmış görünüyor; yeni aşama eklenince o aşama bitene kadar yeniden açık görünür.';
+    if(pl.doneN)h+='<br>✓ '+pl.doneN+' siparişte (gönderilmiş / tamamlanmış'+(kpWide?' / diğer aşamaları bitmiş':'')+') şu aşamalar <b>yapılmış sayılacak</b>: '+(pl.doneQty[5]?'kaplama '+nf.format(pl.doneQty[5])+' adet':'')+(pl.doneQty[5]&&pl.doneQty[6]?', ':'')+(pl.doneQty[6]?'diş/delik '+nf.format(pl.doneQty[6])+' adet':'')+'. Bunlar toplam kaplama / diş adedinde görünür; sipariş “tamamlandı”dan düşmez.';
     if(pl.same)h+='<br>'+pl.same+' sipariş zaten aynı, atlandı.';
     if(pl.blank)h+='<br>'+pl.blank+' satırda kaplama ve diş/delik boş, atlandı.';
-    if(pl.shipped)h+='<br>'+pl.shipped+' gönderilmiş sipariş atlandı.';
     if(pl.bad)h+='<br>'+pl.bad+' satırda değer tanınmadı (kaplama: Siyah / Fosfat / Beyaz / Kaplamasız, diş/delik: Var / Yok), atlandı.';
     if(pl.unmatched.length)h+='<br>'+pl.unmatched.length+' satır hiçbir siparişle eşleşmedi, atlandı.';
     if(pl.ambiguous.length)h+='<br>'+pl.ambiguous.length+' satırda aynı kodlu birden fazla sipariş var, hangisi olduğu anlaşılamadı, atlandı ('+pl.ambiguous.slice(0,5).map(esc).join(", ")+'). Bunlar için listedeki siparis_no sütununu silmeden kullan.';
+    h+='<label style="display:flex;gap:8px;align-items:flex-start;margin-top:8px;font:600 12.5px var(--font-ui)"><input type="checkbox" id="kpwide"'+(kpWide?' checked':'')+' style="margin-top:3px"><span>Kaplama / diş hariç tüm aşamaları bitmiş siparişlerde de bu aşamaları <b>yapılmış say</b> (önceki yüklemede “açık”a dönen tamamlanmış siparişleri düzeltmek için). Kaplaması gerçekten bekleyen siparişler varsa işaretleme.</span></label>';
     if(pl.updates.length)h+='<div class="frow" style="margin-top:8px"><button type="button" class="btn" id="kpyes">Evet, gir</button><button type="button" class="btn ghost" id="kpno">Vazgeç</button></div>';
     return h;
+  }
+  function showKpPlan(){
+    var note=$("kpnote"), pl=planKaplamaRows(kpRows,kpWide);
+    if(pl.err){note.className="impnote err"; note.textContent=pl.err; return}
+    kpPending=pl;
+    note.className="impnote"+(pl.updates.length?"":" err");
+    note.innerHTML=(pl.updates.length?"":"Girilecek bir değişiklik bulunamadı.<br>")+kpPreviewHtml(pl);
   }
   $("okpup").addEventListener("click",function(){$("kpnote").hidden=true; kpPending=null; $("okpupf").click()});
   $("okpupf").addEventListener("change",function(e){
@@ -4698,13 +4735,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     reader.onload=function(){
       xlsxToRows(reader.result).then(function(res){
         if(!res.rows||res.rows.length<2){note.className="impnote err"; note.textContent="Dosyada okunacak satır bulunamadı."; return}
-        var pl=planKaplamaRows(res.rows);
-        if(pl.err){note.className="impnote err"; note.textContent=pl.err; return}
-        kpPending=pl;
-        note.className="impnote"+(pl.updates.length?"":" err"); note.innerHTML=pl.updates.length?kpPreviewHtml(pl):("Girilecek bir değişiklik bulunamadı."+kpPreviewHtml(pl).replace(/^<b>.*?<\/b>[^<]*/,""));
+        kpRows=res.rows; kpWide=false; showKpPlan();
       }).catch(function(){note.className="impnote err"; note.textContent="Excel dosyası okunamadı. Bozuk olmadığından emin ol."});
     };
     reader.readAsArrayBuffer(f);
+  });
+  $("kpnote").addEventListener("change",function(e){
+    if(e.target.id==="kpwide"&&kpRows){kpWide=e.target.checked; showKpPlan()}
   });
   $("kpnote").addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b)return;
@@ -4719,6 +4756,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(u.kp){st[5]=(u.kp===KP_NONE?0:1); patch.kp=u.kp}
       if(u.dis===1||u.dis===0)st[6]=u.dis;
       patch.st=st;
+      if(u.markDone&&u.markDone.length){
+        var cl=(cur.cl||[]).slice(); while(cl.length<7)cl.push(0);
+        u.markDone.forEach(function(i){cl[i]=Math.max(+cl[i]||0,cur.qty*muOf(cur,i))});
+        patch.cl=cl;
+      }
       var upd=Object.assign({},cur,patch);
       orders=orders.map(function(x){return x.id===cur.id?upd:x});
       // st ve kp düz (üst seviye) alanlar: update() güvenli; başka hiçbir alan yazılmaz.
@@ -4731,6 +4773,70 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       note.textContent=okN+" siparişte kaplama / diş-delik girildi"+(fails?", "+fails+" sipariş kaydedilemedi (tekrar dene)":"")+".";
       if(okN)logActivity("Kaplama / diş-delik toplu girildi: "+okN+" sipariş","info");
       renderOrders(); paintOrdersHome();
+    });
+  });
+  /* ---------- Tamamlanan / gönderilen farkı: hangi siparişler neden farklı ---------- */
+  var farkConfirm=false;
+  function farkData(){
+    var comp=[], ship=[], shipNotDone=[], doneNotShip=[];
+    orders.forEach(function(o){
+      var c=isComplete(o); if(c)comp.push(o); if(o.shipped)ship.push(o);
+      if(o.shipped&&!c){
+        var miss=[];
+        STAGES.forEach(function(sg,i){
+          if(!(o.st||[])[i])return;
+          var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q;
+          if(dn<nd&&!stClosed(o,i))miss.push({i:i,name:sg.name,pc:nd?Math.round(dn/nd*100):0});
+        });
+        shipNotDone.push({o:o,miss:miss});
+      }
+      if(c&&!o.shipped)doneNotShip.push(o);
+    });
+    return {comp:comp,ship:ship,shipNotDone:shipNotDone,doneNotShip:doneNotShip};
+  }
+  function sumOrders(a){var q=0,t=0; a.forEach(function(o){q+=o.qty; t+=orderTotal(o)}); return {n:a.length,q:q,t:t}}
+  function farkHtml(){
+    var d=farkData(), c=sumOrders(d.comp), s=sumOrders(d.ship), sn=sumOrders(d.shipNotDone.map(function(x){return x.o})), dn=sumOrders(d.doneNotShip);
+    var h='<b>Tamamlanan:</b> '+c.n+' sipariş · '+nf.format(c.q)+' adet · '+money(c.t)+' ₺<br><b>Gönderilen:</b> '+s.n+' sipariş · '+nf.format(s.q)+' adet · '+money(s.t)+' ₺<br><i>(tüm zamanlar; aylık görünümde tarihe göre süzülür)</i>';
+    h+='<br><br><b>Gönderilmiş ama tamamlanmamış görünen:</b> '+sn.n+' sipariş · '+nf.format(sn.q)+' adet · '+money(sn.t)+' ₺';
+    d.shipNotDone.slice(0,25).forEach(function(x){
+      h+='<br>• '+esc(x.o.code)+' · '+esc(x.o.cust||"—")+' · '+nf.format(x.o.qty)+' adet — eksik: '+(x.miss.length?x.miss.map(function(m){return esc(m.name)+' %'+m.pc}).join(", "):'?');
+    });
+    if(d.shipNotDone.length>25)h+='<br>… ve '+(d.shipNotDone.length-25)+' sipariş daha';
+    h+='<br><br><b>Tamamlanmış ama henüz gönderilmemiş:</b> '+dn.n+' sipariş · '+nf.format(dn.q)+' adet · '+money(dn.t)+' ₺ (bu bir hata değil, bekleyen sevkiyat).';
+    var fixable=d.shipNotDone.filter(function(x){return x.miss.some(function(m){return m.i===5||m.i===6})});
+    if(fixable.length){
+      h+='<br><br>Gönderilmiş bir sipariş teslim edildiği için kaplama / diş-delik aşamaları yapılmış sayılmalı. ';
+      h+=farkConfirm?'<b>'+fixable.length+' siparişte</b> eksik kalan kaplama / diş-delik aşamaları yapılmış sayılacak. Emin misin?<div class="frow" style="margin-top:8px"><button type="button" class="btn" id="farkyes">Evet, düzelt</button><button type="button" class="btn ghost" id="farkno">Vazgeç</button></div>':'<div class="frow" style="margin-top:8px"><button type="button" class="btn" id="farkfix">Gönderilenlerde eksik kalan kaplama / diş-delik’i yapılmış say ('+fixable.length+')</button></div>';
+    }
+    return h;
+  }
+  $("ofark").addEventListener("click",function(){
+    var note=$("farknote");
+    if(!note.hidden){note.hidden=true; return}
+    farkConfirm=false; note.hidden=false; note.className="impnote"; note.innerHTML=farkHtml();
+  });
+  $("farknote").addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b)return;
+    var note=$("farknote");
+    if(b.id==="farkfix"){farkConfirm=true; note.innerHTML=farkHtml(); return}
+    if(b.id==="farkno"){farkConfirm=false; note.innerHTML=farkHtml(); return}
+    if(b.id!=="farkyes")return;
+    var d=farkData(), fails=0, n=0;
+    var jobs=d.shipNotDone.map(function(x){
+      var o=x.o, idx=x.miss.filter(function(m){return m.i===5||m.i===6}).map(function(m){return m.i});
+      if(!idx.length)return Promise.resolve();
+      var cl=(o.cl||[]).slice(); while(cl.length<7)cl.push(0);
+      idx.forEach(function(i){cl[i]=Math.max(+cl[i]||0,o.qty*muOf(o,i))});
+      var upd=Object.assign({},o,{cl:cl}); orders=orders.map(function(y){return y.id===o.id?upd:y}); n++;
+      return db?db.doc("orders/"+o.id).update({cl:cl}).catch(function(){fails++}):Promise.resolve();
+    });
+    lsOrdersSet(); farkConfirm=false; note.textContent="Düzeltiliyor…";
+    Promise.all(jobs).then(function(){
+      renderOrders(); paintOrdersHome();
+      note.className="impnote"+(fails?" err":" ok");
+      note.innerHTML=(n-fails)+" gönderilmiş siparişte kaplama / diş-delik yapılmış sayıldı"+(fails?", "+fails+" sipariş kaydedilemedi, tekrar dene":"")+".<br><br>"+farkHtml();
+      if(n-fails)logActivity("Gönderilen siparişlerde kaplama / diş-delik yapılmış sayıldı: "+(n-fails)+" sipariş","info");
     });
   });
   $("ofillimg").addEventListener("click",function(){$("fillimgnote").hidden=true; $("ofillimgf").click()});
@@ -5056,6 +5162,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var id=orderFormId||uid();
     var obj={code:code,cat:ordCat,cust:cust,qty:qty,st:st,pr:pr,mu:mu,od:$("ood").value||"",dd:$("odd").value||"",th:oImgTh||"",up:cleanNum($("oup").value,99999999,false),not:($("onote")?$("onote").value.trim():(old&&old.not)||""),kp:ordKp,cl:(old&&old.cl)?old.cl.slice():[0,0,0,0,0,0,0],cr:old?(old.cr||monthKeyNow()):monthKeyNow(),ts:old?(old.ts||Date.now()):Date.now()};
     if(old&&old.shipped){obj.shipped=true; if(old.shipDate)obj.shipDate=old.shipDate}
+    // Gönderilmiş bir siparişe sonradan kaplama / diş-delik aşaması eklenirse bu aşamalar zaten
+    // yapılmış sayılır (sipariş teslim edilmiş); yoksa sipariş "tamamlanmamış"a dönüp toplamlar kayar.
+    if(old&&old.shipped){
+      [5,6].forEach(function(i){
+        if(st[i]&&!(old.st||[])[i]){obj.cl[i]=Math.max(+obj.cl[i]||0,qty*mu[i])}
+      });
+    }
     var full=Object.assign({id:id},obj);
     orders=orders.filter(function(x){return x.id!==id}).concat([full]);
     lsOrdersSet(); paintOrdersHome();
