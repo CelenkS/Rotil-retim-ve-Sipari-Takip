@@ -326,13 +326,24 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .needlist{display:flex;flex-direction:column;gap:8px;margin:4px 0 12px}
 .nlhead{font:700 12px var(--font-ui);color:var(--ink2);padding:2px 2px 0}
 .nlsep{font:800 11.5px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin:8px 2px 0}
-.nli{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;background:var(--bg);border-radius:14px;padding:10px 12px;font-family:inherit;color:var(--ink);cursor:pointer}
+.nli{display:grid;grid-template-columns:60px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;background:var(--bg);border-radius:14px;padding:10px 12px;font-family:inherit;color:var(--ink);cursor:pointer}
 .nli:active{transform:scale(.99)}
-.nli .nlth{width:48px;height:48px;border-radius:10px;object-fit:cover;background:var(--bg2)}
+.nli .nlth{width:60px;height:60px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line)}
 .nli .nlth.ph{display:flex;align-items:center;justify-content:center;font:800 18px var(--font-head);color:var(--ink2)}
 .nli .nlb{min-width:0}
 .nli .nlt{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:700 14px var(--font-ui)}
-.nli .nlship{font:700 10.5px var(--font-ui);padding:1px 7px;border-radius:99px;background:rgba(42,157,143,.14);color:#1d7a6f}
+.stchip{font:700 10.5px var(--font-ui);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.stchip.ok{background:rgba(46,160,90,.16);color:#1f7a45}
+.stchip.ship{background:rgba(59,120,224,.15);color:#2a5cb8}
+.nli .nlchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.nli .nlchips .due{font:700 10.5px var(--font-ui);padding:2px 8px;margin:0}
+.ostatcard-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+.ostatcard-h h2{margin:0;font:700 17px var(--font-head)}
+.ostatcard-h button{border:0;background:var(--bg);color:var(--ink);border-radius:99px;width:34px;height:34px;font:700 16px var(--font-ui);cursor:pointer}
+.osfilt{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 8px}
+.osfilt button{border:0;background:var(--bg);color:var(--ink);border-radius:99px;padding:6px 12px;font:700 12px var(--font-ui);cursor:pointer}
+.osfilt button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.nli .nlcat{font:600 11.5px var(--font-ui);color:var(--ink2)}
 .nli .nlc{font:600 12px var(--font-ui);color:var(--ink2);margin:1px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nli .nlbar{height:6px;border-radius:99px;background:rgba(120,130,130,.18);overflow:hidden}
 .nli .nlbar i{display:block;height:100%;border-radius:99px}
@@ -516,11 +527,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .opbar{height:7px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:-2px}
 .opbar:last-child{margin-bottom:2px}
 .opbar i{display:block;height:100%;border-radius:99px;background:#fff}
-.ostats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);overflow:hidden}
-.ost{padding:12px 8px;text-align:center;border-left:1px solid rgba(255,255,255,.1)}
+.ostats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);overflow:hidden}
+.ost{padding:12px 4px;text-align:center;border:0;border-left:1px solid rgba(255,255,255,.1);background:none;font-family:inherit;cursor:pointer;color:inherit}
+.ost[aria-pressed="true"]{background:rgba(255,255,255,.18)}
+.obig.click{cursor:pointer}
 .ost:first-child{border-left:0}
 .ost b{display:block;font:800 24px/1.1 var(--font-head);color:#fff}
-.ost span{display:block;margin-top:3px;font:700 11px var(--font-ui);color:rgba(255,255,255,.7);letter-spacing:.03em}
+.ost span{display:block;margin-top:3px;font:700 10.5px var(--font-ui);color:rgba(255,255,255,.7);letter-spacing:.03em}
 .ost.late{background:rgba(255,90,90,.22)}
 .ost.late b{color:#FFB4B4}
 .onewbtn{background:#FFC454;color:#1A2238;padding:14px 16px;font-size:16px;font-weight:800;box-shadow:0 6px 16px rgba(255,196,84,.28)}
@@ -655,7 +668,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 15:14</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 15:29</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -721,13 +734,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="hirow"><div class="oeyebrow">Sipariş takibi</div><button class="tbtn" id="oback">‹ Bölümler</button></div>
     <div class="pbar" role="group" aria-label="Sipariş dönemi"><button id="osAll" aria-pressed="true">Toplam</button><button id="osMonth" aria-pressed="false">Aylık</button></div>
     <div class="mnav" id="omnav" hidden><button type="button" id="oprevm" aria-label="Önceki ay">‹</button><h1 id="omtitle"></h1><button type="button" id="onextm" aria-label="Sonraki ay">›</button></div>
-    <div class="obig"><span class="obl">Açık sipariş tutarı</span><b id="oamt">0 ₺</b><span class="obs" id="oamtsub"></span></div>
-    <div class="obig sm"><span class="obl">Tamamlanan sipariş cirosu</span><b id="oamtdone">0 ₺</b><span class="obs" id="oamtdonesub"></span></div>
-    <div class="obig sm"><span class="obl">Gönderilen tutar</span><b id="oamtship">0 ₺</b><span class="obs" id="oamtshipsub"></span></div>
+    <div class="obig click" data-ostat="open"><span class="obl">Açık sipariş tutarı</span><b id="oamt">0 ₺</b><span class="obs" id="oamtsub"></span></div>
+    <div class="obig sm click" data-ostat="done"><span class="obl">Tamamlanan sipariş cirosu</span><b id="oamtdone">0 ₺</b><span class="obs" id="oamtdonesub"></span></div>
+    <div class="obig sm click" data-ostat="ship"><span class="obl">Gönderilen tutar</span><b id="oamtship">0 ₺</b><span class="obs" id="oamtshipsub"></span></div>
     <div class="ostats">
-      <div class="ost"><b id="oopen">0</b><span>Açık</span></div>
-      <div class="ost" id="olatebox"><b id="olate">0</b><span>Termini geçen</span></div>
-      <div class="ost"><b id="odone">0</b><span>Tamamlanan</span></div>
+      <button type="button" class="ost" data-ostat="open"><b id="oopen">0</b><span>Açık</span></button>
+      <button type="button" class="ost" id="olatebox" data-ostat="late"><b id="olate">0</b><span>Termini geçen</span></button>
+      <button type="button" class="ost" data-ostat="done"><b id="odone">0</b><span>Tamamlanan</span></button>
+      <button type="button" class="ost" data-ostat="ship"><b id="oshipn">0</b><span>Gönderilen</span></button>
     </div>
     <div class="oprog" id="oprog" hidden>
       <div class="oprow"><span>Sipariş bazında</span><b id="opq"></b><span class="opc" id="opqc"></span></div>
@@ -737,6 +751,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     </div>
     <button class="btn onewbtn" id="onew">+ Yeni sipariş</button>
   </section>
+  <section class="card" id="ostatcard" hidden></section>
   <section class="card" id="needcard" hidden>
     <h2 style="margin:0 0 4px;font:700 17px var(--font-head)">Yapmamız gereken adetler</h2>
     <p style="margin:0 0 10px;font:600 12.5px var(--font-ui);color:var(--ink2)">Bölüm bölüm, açık siparişlerden gelen toplam iş — istersen tek bir müşteriye göre süz</p>
@@ -3280,6 +3295,70 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
   function daysTo(iso){if(!iso)return null; var a=iso.split("-"); return Math.round((new Date(+a[0],+a[1]-1,+a[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
   function fmtD(iso){if(!iso)return ""; var a=iso.split("-"); return (+a[2])+" "+AY[+a[1]-1]+" "+a[0]}
+  function statusChips(o){
+    return (isComplete(o)?'<span class="stchip ok">Tamamlandı</span>':'')+(o.shipped?'<span class="stchip ship">Gönderildi</span>':'');
+  }
+  // Üst kutulardaki sayıları oluşturan siparişler (aynı dönem kuralı: Toplam ya da seçili ay)
+  var ostatKey=null, ostatCat=null, ostatCust="";
+  var OSTAT_TITLE={open:"Açık siparişler",late:"Termini geçen siparişler",done:"Tamamlanan siparişler",ship:"Gönderilen siparişler"};
+  function statOrders(key){
+    var mk=ordScope==="month"?(ordY+"-"+pad(ordM+1)):null;
+    return orders.filter(function(o){
+      if(key==="open"||key==="late"){
+        if(isComplete(o))return false;
+        if(mk&&((o.od||o.cr||"").slice(0,7))!==mk)return false;
+        if(key==="late"){var n=daysTo(o.dd); return n!==null&&n<0}
+        return true;
+      }
+      if(key==="done"){
+        if(!isComplete(o))return false;
+        if(mk){var cd=completionDateOf(o); if(!cd||cd.slice(0,7)!==mk)return false}
+        return true;
+      }
+      if(key==="ship"){
+        if(!o.shipped)return false;
+        if(mk&&(o.shipDate||"").slice(0,7)!==mk)return false;
+        return true;
+      }
+      return false;
+    });
+  }
+  function statRowHtml(o){
+    var c=isComplete(o), tot=orderTotal(o);
+    return '<button type="button" class="nli" data-oid="'+o.id+'">'+
+      (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+      '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b></div>'+
+      '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
+      '<div class="nlcat"><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p'+(o.cat%6)+');margin-right:5px"></span>'+esc(ORDER_CATS[o.cat]||"")+'</div>'+
+      '<div class="nlchips">'+statusChips(o)+(o.shipped&&o.shipDate?'<span class="due ok">Gönderim '+fmtD(o.shipDate)+'</span>':dueChip(o,c))+'</div></div>'+
+      '<div class="nlr"><b>'+nf.format(o.qty)+'</b><small>adet</small>'+(tot?'<small>'+money(tot)+' ₺</small>':'')+'</div></button>';
+  }
+  function renderStatPanel(){
+    var card=$("ostatcard"); if(!card)return;
+    [].forEach.call(document.querySelectorAll(".ost[data-ostat]"),function(b){b.setAttribute("aria-pressed",b.dataset.ostat===ostatKey)});
+    if(!ostatKey){card.hidden=true; card.innerHTML=""; return}
+    var all=statOrders(ostatKey), cats=ORDER_CATS.map(function(){return 0});
+    all.forEach(function(o){cats[o.cat]=(cats[o.cat]||0)+1});
+    if(ostatCat!==null&&!cats[ostatCat])ostatCat=null;
+    var custs={}; all.forEach(function(o){if(ostatCat===null||o.cat===ostatCat){var k=o.cust||"Müşteri yok"; custs[k]=(custs[k]||0)+1}});
+    var custNames=Object.keys(custs).sort(function(a,b){return a.localeCompare(b,"tr")});
+    if(ostatCust&&!custs[ostatCust])ostatCust="";
+    var list=all.filter(function(o){return (ostatCat===null||o.cat===ostatCat)&&(!ostatCust||(o.cust||"Müşteri yok")===ostatCust)});
+    var q=0,t=0; list.forEach(function(o){q+=o.qty; t+=orderTotal(o)});
+    list.sort(function(a,b){
+      if(ostatKey==="ship")return (b.shipDate||"")<(a.shipDate||"")?-1:((b.shipDate||"")>(a.shipDate||"")?1:0);
+      if(ostatKey==="done")return (completionDateOf(b)||"")<(completionDateOf(a)||"")?-1:1;
+      var da=a.dd||"9999", db_=b.dd||"9999"; return da<db_?-1:(da>db_?1:0);
+    });
+    var h='<div class="ostatcard-h"><h2>'+OSTAT_TITLE[ostatKey]+' ('+all.length+')</h2><button type="button" id="ostatx" aria-label="Kapat">×</button></div>'+
+      '<div style="font:600 12.5px var(--font-ui);color:var(--ink2)">'+list.length+' sipariş · '+nf.format(q)+' adet · '+money(t)+' ₺</div>'+
+      '<div class="osfilt"><button type="button" data-sf="all" aria-pressed="'+(ostatCat===null)+'">Tümü '+all.length+'</button>'+
+      cats.map(function(n,i){return n?'<button type="button" data-sf="'+i+'" aria-pressed="'+(ostatCat===i)+'">'+esc(ORDER_CATS[i])+' '+n+'</button>':''}).join("")+'</div>'+
+      '<select class="fin" id="ostatcust" style="margin-bottom:10px;height:44px;font-size:14px"><option value="">Tüm müşteriler</option>'+
+      custNames.map(function(n){return '<option value="'+esc(n)+'"'+(ostatCust===n?" selected":"")+'>'+esc(n)+' ('+custs[n]+')</option>'}).join("")+'</select>'+
+      '<div class="needlist">'+(list.length?list.map(statRowHtml).join(""):'<div class="empty">Bu seçimde sipariş yok.</div>')+'</div>';
+    card.innerHTML=h; card.hidden=false;
+  }
   function dueChip(o,complete){
     var n=daysTo(o.dd); if(n===null)return "";
     if(complete)return '<span class="due ok">Termin '+fmtD(o.dd)+'</span>';
@@ -3353,7 +3432,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
               var o=x.o, pc=x.nd?Math.round(x.dn/x.nd*100):0, fin=x.nd>0&&x.dn>=x.nd;
               return '<button type="button" class="nli'+(fin?' fin':'')+'" data-oid="'+o.id+'">'+
                 (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-                '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b>'+(o.shipped?'<span class="nlship">📦 Gönderildi</span>':'')+'</div>'+
+                '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b>'+statusChips(o)+'</div>'+
                 '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
                 '<div class="nlbar"><i style="width:'+Math.min(100,pc)+'%;background:var(--p'+i+')"></i></div></div>'+
                 '<div class="nlr"><b>%'+pc+'</b><small>'+nf.format(x.dn)+' / '+nf.format(x.nd)+'</small></div></button>';
@@ -3462,7 +3541,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       shipped++; shipAmt+=orderTotal(o); shipQty+=o.qty;
     });
     var scopeTxt=ordScope==="month"?(" · "+omLabel()):"";
-    $("oopen").textContent=open; $("odone").textContent=done; $("oamt").textContent=money(amt)+" ₺"; $("olate").textContent=late; $("olatebox").classList.toggle("late",late>0); $("oamtsub").textContent=(open?open+" açık siparişin toplamı":"Açık sipariş yok")+scopeTxt;
+    $("oopen").textContent=open; $("odone").textContent=done; $("oshipn").textContent=shipped; $("oamt").textContent=money(amt)+" ₺"; $("olate").textContent=late; $("olatebox").classList.toggle("late",late>0); $("oamtsub").textContent=(open?open+" açık siparişin toplamı":"Açık sipariş yok")+scopeTxt;
     $("oamtdone").textContent=money(doneAmt)+" ₺"; $("oamtdonesub").textContent=(done?done+" tamamlanan sipariş · "+nf.format(doneQty)+" adet":"Henüz tamamlanan yok")+scopeTxt;
     $("oamtship").textContent=money(shipAmt)+" ₺"; $("oamtshipsub").textContent=(shipped?shipped+" gönderilen sipariş · "+nf.format(shipQty)+" adet":"Henüz gönderilen yok")+scopeTxt;
     // Sipariş bazında (tüm siparişlerin adedi içinde tamamlanan pay) ve aşama bazında
@@ -3484,7 +3563,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     };
     var row=function(name,dot,g,cls,attr){return '<'+(attr?'button type="button"':'div')+' class="sumrow'+(cls||'')+'"'+(attr||'')+'><span class="sn">'+(dot?'<span class="dot" style="background:'+dot+'"></span>':'')+esc(name)+'</span><span class="sa">'+(g.t?money(g.t)+' ₺':'—')+'</span><span class="ss">'+g.n+' sipariş · '+nf.format(g.q)+' adet</span><span></span></'+(attr?'button':'div')+'>'};
     var catRows=function(arr,tn){var r=grp(arr); return r.gs.map(function(g,i){return g.n?row(ORDER_CATS[i],'var(--p'+i+')',g," click",' data-scat="'+i+'"'):''}).join("")+row(tn||"Toplam","",r.gt," tot")};
-    renderStageNeeds();
+    renderStageNeeds(); renderStatPanel();
     $("osumcard").hidden=!orders.length;
     $("stCat").setAttribute("aria-pressed",sumTab==="cat"); $("stCust").setAttribute("aria-pressed",sumTab==="cust");
     var sh="";
@@ -5305,6 +5384,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     else if(b.dataset.scat!==undefined)sumCat=+b.dataset.scat;
     else return;
     renderOrders();
+  });
+  document.addEventListener("click",function(e){
+    var sb=e.target.closest&&e.target.closest("[data-ostat]"); if(!sb||$("ords").hidden)return;
+    var k=sb.dataset.ostat;
+    if(ostatKey===k&&sb.classList.contains("ost")){ostatKey=null}else{ostatKey=k; ostatCat=null; ostatCust=""}
+    renderStatPanel();
+    if(ostatKey)setTimeout(function(){var c=$("ostatcard"); if(c&&!c.hidden)c.scrollIntoView({behavior:"smooth",block:"start"})},30);
+  });
+  $("ostatcard").addEventListener("click",function(e){
+    if(e.target.closest("#ostatx")){ostatKey=null; renderStatPanel(); return}
+    var f=e.target.closest("[data-sf]");
+    if(f){ostatCat=f.dataset.sf==="all"?null:+f.dataset.sf; ostatCust=""; renderStatPanel(); return}
+    var o=e.target.closest("[data-oid]"); if(o)openOrderDetail(o.dataset.oid);
+  });
+  $("ostatcard").addEventListener("change",function(e){
+    if(e.target.id==="ostatcust"){ostatCust=e.target.value||""; renderStatPanel()}
   });
   $("needcard").addEventListener("click",function(e){
     var fo=e.target.closest("[data-oid]"); if(fo){openOrderDetail(fo.dataset.oid); return}
