@@ -575,6 +575,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .nrow.click{cursor:pointer}
 .nrow.click::after{content:"›";float:right;margin-top:-30px;font:700 22px var(--font-ui);color:var(--ink2)}
 .osearch{display:flex;gap:8px;margin-top:12px}
+.ocatf{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.ocatf button{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:2px solid transparent;border-radius:99px;background:var(--soft);padding:8px 14px;font:700 13px var(--font-ui);color:var(--ink);white-space:nowrap}
+.ocatf button small{font:800 11px var(--font-num);color:var(--ink2)}
+.ocatf button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 20%,var(--surface))}
+.ocatf .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
 .impnote{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--soft);font:600 12.5px var(--font-ui);color:var(--ink2)}
 .impnote.err{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad)}
 .impnote.ok{background:color-mix(in srgb,var(--good) 14%,var(--surface));color:var(--good)}
@@ -626,7 +631,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 14:16</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 14:38</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -722,6 +727,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <section class="card">
     <div class="otabs" role="group" aria-label="Sipariş durumu"><button id="otOpen" aria-pressed="true">Açık</button><button id="otDone" aria-pressed="false">Tamamlanan</button><button id="otShip" aria-pressed="false">Gönderilen</button></div>
     <div class="osearch"><input class="search" id="osearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara…" aria-label="Sipariş ara"><button class="btn ghost" id="oref" aria-label="Yenile">Yenile</button></div>
+    <div class="ocatf" id="ocatf" role="group" aria-label="Kategori filtresi"></div>
     <div class="osearch" style="margin-top:8px">
       <button class="btn ghost" id="oimport" style="flex:1">⇧ İçe aktar (Excel/CSV)</button>
       <button class="btn ghost" id="oexport" style="flex:1">⇩ Dışa aktar (CSV)</button>
@@ -921,7 +927,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||(i===4&&o.cat===0)||!!(o.st||[])[i]}
   var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
-  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
+  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
   // Her kategorinin (COLS ile aynı sırada) standart üretim süresi — dakika/adet. Kullanıcı
@@ -3445,15 +3451,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     $("osum").innerHTML=sh;
     $("otOpen").setAttribute("aria-pressed",ordTab==="open"); $("otDone").setAttribute("aria-pressed",ordTab==="done"); $("otShip").setAttribute("aria-pressed",ordTab==="shipped");
-    list.filter(function(x){
+    var tabList=list.filter(function(x){
       var match=ordTab==="done"?x.c:ordTab==="shipped"?!!x.o.shipped:!x.c;
       return match&&(!q||(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).toLowerCase().indexOf(q)>-1);
-    }).sort(function(a,b){
+    });
+    // Kategori çipleri: seçili sekme + aramaya göre her kategorideki sipariş sayısı; çipe basınca
+    // sadece o kategorinin siparişleri listelenir (tekrar basınca ya da "Tümü" ile kalkar).
+    var catCnt=ORDER_CATS.map(function(){return 0}); tabList.forEach(function(x){catCnt[x.o.cat]=(catCnt[x.o.cat]||0)+1});
+    var cf=$("ocatf");
+    if(cf)cf.innerHTML='<button type="button" data-ocf="all" aria-pressed="'+(ordCatF===null)+'">Tümü <small>'+tabList.length+'</small></button>'+
+      ORDER_CATS.map(function(c,i){return (catCnt[i]||ordCatF===i)?'<button type="button" data-ocf="'+i+'" aria-pressed="'+(ordCatF===i)+'"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(c)+' <small>'+catCnt[i]+'</small></button>':''}).join("");
+    tabList.filter(function(x){return ordCatF===null||x.o.cat===ordCatF}).sort(function(a,b){
       if(ordTab==="shipped"){var SA=a.o.shipDate||"",SB=b.o.shipDate||""; if(SA!==SB)return SA<SB?1:-1}
       else if(ordTab!=="done"){var A=a.o.dd||"9999",B=b.o.dd||"9999"; if(A!==B)return A<B?-1:1}
       return (b.o.ts||0)-(a.o.ts||0)
     }).forEach(function(x){cards+=ocardHtml(x)});
-    $("ocards").innerHTML=cards||'<div class="empty">'+(orders.length?(ordTab==="done"?"Henüz tamamlanan sipariş yok.":ordTab==="shipped"?"Henüz gönderilen sipariş yok.":"Açık sipariş yok."):"Henüz sipariş yok.<br>“Yeni sipariş” ile ilkini gir.")+'</div>';
+    $("ocards").innerHTML=cards||'<div class="empty">'+(ordCatF!==null&&orders.length?"Bu kategoride "+(ordTab==="done"?"tamamlanan":ordTab==="shipped"?"gönderilen":"açık")+" sipariş yok.":orders.length?(ordTab==="done"?"Henüz tamamlanan sipariş yok.":ordTab==="shipped"?"Henüz gönderilen sipariş yok.":"Açık sipariş yok."):"Henüz sipariş yok.<br>“Yeni sipariş” ile ilkini gir.")+'</div>';
   }
   function openOrders(){
     dbP.then(function(){
@@ -5233,6 +5246,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("sheet").addEventListener("focusin",function(e){if(e.target.dataset&&e.target.dataset.oq)e.target.select()});
   $("onew").addEventListener("click",function(){openOrderForm(null)});
   $("ocards").addEventListener("click",function(e){var b=e.target.closest("[data-oid]"); if(b)openOrderDetail(b.dataset.oid)});
+  $("ocatf").addEventListener("click",function(e){
+    var b=e.target.closest("[data-ocf]"); if(!b)return;
+    var v=b.dataset.ocf; ordCatF=(v==="all"||ordCatF===+v)?null:+v; renderOrders();
+  });
   $("otOpen").addEventListener("click",function(){ordTab="open";renderOrders()});
   $("otDone").addEventListener("click",function(){ordTab="done";renderOrders()});
   $("otShip").addEventListener("click",function(){ordTab="shipped";renderOrders()});
