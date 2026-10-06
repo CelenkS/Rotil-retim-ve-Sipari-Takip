@@ -615,7 +615,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 11:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 12:37</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -889,6 +889,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     {sec:"kaplama",name:"Kaplama",short:"Kaplama"}
   ];
   var KAPLAMA=["Siyah","Fosfat","Beyaz"];
+  // Ekranda aşama sırası: Gövde, Pres, CNC aşık, Kaynak, Kaplama, Montaj (montaj hep en sonda).
+  // Veri tarafında aşama sırası (st/pr/mu/cl dizileri) değişmez, sadece gösterim sırası bu.
+  var SORD=[0,1,2,4,5,3];
   function defMu(cat){return cat===0?[2,2,2,1,1,1]:[1,1,1,1,1,1]}
   // "Bu adette tamamla": o.cl[i] > 0 ise o aşama, üretilen adet siparişin hedefinden az olsa
   // bile (ör. 500 yerine 495) kapatılmış sayılır. cl[i] kapatıldığı andaki yapılan adedi tutar.
@@ -1800,7 +1803,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             }).join("")+'</div>';
         }
         html+='<div class="dst" style="--sc:#8460E6"><div class="h"><b>Not</b></div><textarea class="fin" id="odnote" rows="2" placeholder="Bu sipariş için not ekle…" style="margin-top:8px">'+esc(od.not||"")+'</textarea><button type="button" class="btn ghost sm" id="odnotesave" data-oid="'+od.id+'" style="margin-top:8px">Notu kaydet</button></div>';
-        STAGES.forEach(function(sg,i){
+        SORD.forEach(function(i){
+          var sg=STAGES[i];
           if(!(od.st||[])[i])return;
           var nd=od.qty*muOf(od,i), mu=muOf(od,i), dn=doneOf(od.id,sg.sec), pc=nd?Math.round(dn.q/nd*100):0, so=SECTIONS.filter(function(x){return x.id===sg.sec})[0];
           var ents=dn.e.slice().sort(function(a,b){return a.d<b.d?1:-1});
@@ -1841,7 +1845,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="oup">Ürün birim fiyatı (₺) · sipariş tutarı = adet × fiyat</label><input class="fin" id="oup" type="number" inputmode="decimal" min="0" step="any" placeholder="ör. 187" value="'+(of.up||"")+'"></div>'+
         '<div><label class="fl" for="onote">Not (isteğe bağlı)</label><textarea class="fin" id="onote" rows="2" placeholder="Bu siparişle ilgili not…">'+esc(of.not||"")+'</textarea></div>'+
         '<div><span class="fl">Hangi bölümlerden geçecek? (× = 1 üründe kaç işlem · bölüm birim fiyatı ₺, isteğe bağlı)</span>'+
-        STAGES.map(function(sg,i){return '<label class="strow" id="ostrow'+i+'"'+((i===4&&ordCat!==0)?' hidden':'')+'><input type="checkbox" id="ost'+i+'"'+((of.st||[])[i]?" checked":"")+'><span class="sn">'+sg.name+'</span><input class="fin mu" id="omu'+i+'" type="number" inputmode="numeric" min="1" step="1" aria-label="'+sg.name+' çarpan" value="'+muOf(of,i)+'"><input class="fin" id="opr'+i+'" type="number" inputmode="decimal" min="0" step="any" placeholder="₺ / adet" value="'+(((of.pr||[])[i])||"")+'"></label>'}).join("")+'<div class="note">Örn. bir Z-Rot’ta 2 aşık varsa gövde, pres ve CNC aşık için × 2, montaj için × 1 yaz. 1.000 adet sipariş için bu bölümlerde 2.000 adet hedeflenir.</div></div>'+
+        SORD.map(function(i){var sg=STAGES[i];return '<label class="strow" id="ostrow'+i+'"'+((i===4&&ordCat!==0)?' hidden':'')+'><input type="checkbox" id="ost'+i+'"'+((of.st||[])[i]?" checked":"")+'><span class="sn">'+sg.name+'</span><input class="fin mu" id="omu'+i+'" type="number" inputmode="numeric" min="1" step="1" aria-label="'+sg.name+' çarpan" value="'+muOf(of,i)+'"><input class="fin" id="opr'+i+'" type="number" inputmode="decimal" min="0" step="any" placeholder="₺ / adet" value="'+(i===5?"0":(((of.pr||[])[i])||""))+'"'+(i===5?' disabled title="Kaplamada ciro her zaman 0 ₺"':'')+'></label>'}).join("")+'<div class="note">Örn. bir Z-Rot’ta 2 aşık varsa gövde, pres ve CNC aşık için × 2, montaj için × 1 yaz. 1.000 adet sipariş için bu bölümlerde 2.000 adet hedeflenir.</div></div>'+
         '<div id="kprow"'+((of.st||[])[5]?'':' hidden')+'><span class="fl">Kaplama türü</span><div class="kpbtns">'+KAPLAMA.map(function(k){return '<button type="button" data-kp="'+k+'" aria-pressed="'+(ordKp===k)+'">'+k+'</button>'}).join("")+'</div></div>'+
         '<div class="frow"><button class="btn" id="ofsave">Kaydet</button><button class="btn ghost" id="ofcancel">Vazgeç</button>'+(orderFormId?'<button class="btn danger" id="ofdel">Siparişi sil</button>':"")+'</div>'+
         (orderFormId?'<div class="note">Siparişi silersen bölümlerde girilmiş üretim kayıtları silinmez, sadece siparişle bağı kopar.</div>':'')+'</div>';
@@ -2613,7 +2617,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       recDraft=collectRec(); recDraft.splice(+t.dataset.recrm,1); renderSheet(); return;
     }
     if(t.id==="fsave"){
-      var code=$("fcode").value.trim(), price=cleanNum($("fprice").value,99999999,false);
+      var code=$("fcode").value.trim(), price=sec.id==="kaplama"?0:cleanNum($("fprice").value,99999999,false);
       var note=($("fnote")?$("fnote").value.trim():"");
       if(!code){$("fcode").focus();return}
       var iid=editId||uid();
@@ -2883,7 +2887,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return 0;
   }
   function addOrderLine(o,n){n=n||1;
-    var si=stageIdx(sec.id), before=COLS.length, k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), price=+((o.pr||[])[si])||0;
+    var si=stageIdx(sec.id), before=COLS.length, k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), price=sec.id==="kaplama"?0:(+((o.pr||[])[si])||0);
     var arr=lines(selected).slice(), hit=-1;
     // Eleman/makine farklıysa (kim yaptığı değiştiyse) aynı satıra ekleme — ayrı satır aç,
     // yoksa hangi elemanın ne kadar ürettiği karışır.
@@ -2898,7 +2902,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var arr=lines(selected).slice(), hit=-1;
     arr.forEach(function(l,i){if(hit<0&&l.c===it.code&&l.k===it.k&&l.p===it.p&&(l.u||"")===curCust&&(l.e||"")===curEmp&&(l.m||"")===curMac)hit=i});
     if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=1;l.t=Date.now();arr[hit]=l}
-    else{arr.push({c:it.code,k:it.k,q:1,p:it.p,u:curCust,e:curEmp||"",m:curMac||"",t:Date.now()}); logActivity(sec.name+": "+it.code+" için üretim girildi","prod",{code:it.code,sec:sec.id})}
+    else{arr.push({c:it.code,k:it.k,q:1,p:sec.id==="kaplama"?0:it.p,u:curCust,e:curEmp||"",m:curMac||"",t:Date.now()}); logActivity(sec.name+": "+it.code+" için üretim girildi","prod",{code:it.code,sec:sec.id})}
     lns[selected]=arr; touch(); renderLines();
     applyRecipeUsage(it.code,1);
   }
@@ -3267,7 +3271,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var cust=(needCust&&custList.indexOf(needCust)>-1)?needCust:"";
     needCust=cust;
     var srows="", stot={req:0,done:0};
-    STAGES.forEach(function(sg){
+    SORD.forEach(function(si0){
+      var sg=STAGES[si0];
       var n=stageNeed(sg.sec,cust||null); if(!n.req)return;
       var so=SECTIONS.filter(function(z){return z.id===sg.sec})[0], pc=Math.round(n.done/n.req*100), open=needOpen===sg.sec;
       stot.req+=n.req; stot.done+=n.done;
@@ -3315,7 +3320,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       (tot?'<div class="oamt"><small>Sipariş tutarı</small><span>'+money(tot)+' ₺</span></div>':'')+
       ((o.od||o.dd)?'<div class="odates">'+(o.od?'<span>Sipariş '+fmtD(o.od)+'</span>':'')+dueChip(o,x.c)+'</div>':'')+
       '<div class="stages" style="grid-template-columns:repeat('+STAGES.filter(function(sg,i){return shownStage(o,i)}).length+',1fr)">'+
-      STAGES.map(function(sg,i){
+      SORD.map(function(i){
+        var sg=STAGES[i];
         if(!shownStage(o,i))return '';
         var on=(o.st||[])[i], nd=o.qty*muOf(o,i), d=on?doneOf(o.id,sg.sec).q:0, pc=nd?Math.round(d/nd*100):0, so=SECTIONS.filter(function(z){return z.id===sg.sec})[0];
         var clz=on&&stClosed(o,i);
@@ -3938,7 +3944,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
   });
   /* ---------- CSV içe/dışa aktar ---------- */
-  var STAGE_SLUGS=["govde","pres","cnc_asik","montaj","kaynak","kaplama"];
+  var STAGE_SLUGS=["govde","pres","cnc_asik","montaj","kaynak"];
+  // Kaplama aşaması CSV/Excel'de tek bir "kaplama" sütunuyla (Siyah/Fosfat/Beyaz; boş = kaplama yok) gelir; ciro her zaman 0 ₺.
+  function normKp(v){var x=String(v===undefined||v===null?"":v).trim().toLocaleLowerCase("tr"); for(var i=0;i<KAPLAMA.length;i++)if(KAPLAMA[i].toLocaleLowerCase("tr")===x)return KAPLAMA[i]; return ""}
   function csvField(v){
     v=(v===undefined||v===null)?"":String(v);
     if(/[",\n\r]/.test(v))v='"'+v.replace(/"/g,'""')+'"';
@@ -3948,10 +3956,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function exportOrdersCsv(){
     var header=["kod","kategori","musteri","adet","birim_fiyat","siparis_tarihi","termin_tarihi"];
     STAGE_SLUGS.forEach(function(s){header.push(s+"_acik",s+"_carpan",s+"_fiyat")});
+    header.push("kaplama");
     var lines=[csvRow(header)];
     orders.forEach(function(o){
       var row=[o.code||"",ORDER_CATS[o.cat]||"",o.cust||"",o.qty||0,o.up||"",o.od||"",o.dd||""];
       STAGE_SLUGS.forEach(function(s,i){row.push((o.st||[])[i]?1:0, muOf(o,i), ((o.pr||[])[i])||"")});
+      row.push((o.st||[])[5]?(o.kp||""):"");
       lines.push(csvRow(row));
     });
     return lines.join("\r\n");
@@ -4000,7 +4010,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     adet:["adet","miktar","qty","quantity"],
     birim_fiyat:["birim_fiyat","fiyat","price","unit_price","urun_fiyati"],
     siparis_tarihi:["siparis_tarihi","order_date","tarih"],
-    termin_tarihi:["termin_tarihi","termin","due_date","teslim_tarihi"]
+    termin_tarihi:["termin_tarihi","termin","due_date","teslim_tarihi"],
+    kaplama:["kaplama","kaplama_turu","kaplama_tipi"]
   };
   function normDateCell(v){
     v=String(v===undefined||v===null?"":v).trim();
@@ -4025,7 +4036,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var ix={
       kod:idx(HEAD_ALIASES.kod), kategori:idx(HEAD_ALIASES.kategori), musteri:idx(HEAD_ALIASES.musteri),
       adet:idx(HEAD_ALIASES.adet), birim_fiyat:idx(HEAD_ALIASES.birim_fiyat),
-      siparis_tarihi:idx(HEAD_ALIASES.siparis_tarihi), termin_tarihi:idx(HEAD_ALIASES.termin_tarihi)
+      siparis_tarihi:idx(HEAD_ALIASES.siparis_tarihi), termin_tarihi:idx(HEAD_ALIASES.termin_tarihi), kaplama:idx(HEAD_ALIASES.kaplama)
     };
     if(ix.kod<0||ix.adet<0)return {added:0,skipped:0,errors:['Başlık satırında "kod" ve "adet" sütunları bulunamadı. Sütun adlarını kontrol et.']};
     var stIx=STAGE_SLUGS.map(function(s){return {acik:header.indexOf(s+"_acik"),carpan:header.indexOf(s+"_carpan"),fiyat:header.indexOf(s+"_fiyat")}});
@@ -4033,7 +4044,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     // aynı ürün kodu farklı bir sipariş olarak veya aynı müşteri tarafından tekrar
     // (aynı adette bile) meşru şekilde girilebiliyor. Her satır kendi siparişi olarak
     // eklenir; hangi siparişlerin gerçek kopya olduğuna kullanıcı kendi karar verir.
-    var added=0, skipped=0, newOrders=[];
+    var added=0, skipped=0, newOrders=[], kpBad=0;
     for(var r=1;r<rows.length;r++){
       var row=rows[r]; if(!row||!row.length)continue;
       var code=(row[ix.kod]||"").toString().trim();
@@ -4054,11 +4065,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         o.pr.push(six.fiyat>-1?(+String(row[six.fiyat]||"").replace(",",".")||0):0);
         if(six.carpan>-1){var mv=+row[six.carpan]; if(mv>0)o.mu[i]=Math.round(mv)}
       });
+      var kpRaw=ix.kaplama>-1?String(row[ix.kaplama]===undefined||row[ix.kaplama]===null?"":row[ix.kaplama]).trim():"", kpv=normKp(kpRaw);
+      if(kpRaw&&!kpv)kpBad++;
+      o.st.push(kpv?1:0); o.pr.push(0); o.kp=kpv;
       if(!o.st.some(Boolean))o.st=[1,1,1,1,0,0];
       if(images&&images[r])o._rawImg=images[r];
       newOrders.push(normOrder(o)); added++;
     }
-    return {added:added,skipped:skipped,errors:[],newOrders:newOrders};
+    return {added:added,skipped:skipped,kpBad:kpBad,errors:[],newOrders:newOrders};
   }
   function importOrdersCsv(text){
     var rows=parseCsv(text);
@@ -4440,7 +4454,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(res.errors&&res.errors.length){
         note.hidden=false; note.className="impnote err"; note.textContent=res.errors[0]; return;
       }
-      var baseMsg=res.added+" sipariş eklendi"+(res.skipped?", "+res.skipped+" satır atlandı (kod ya da adet eksik)":"")+".";
+      var baseMsg=res.added+" sipariş eklendi"+(res.skipped?", "+res.skipped+" satır atlandı (kod ya da adet eksik)":"")+"."+(res.kpBad?" "+res.kpBad+" satırda kaplama türü tanınmadı (Siyah / Fosfat / Beyaz yazılmalı), o siparişlerde kaplama kapalı bırakıldı.":"");
       if(res.added){
         orders=orders.concat(res.newOrders); lsOrdersSet();
         if(db)res.newOrders.forEach(function(o){var d=Object.assign({},o); delete d.id; delete d._rawImg; db.doc("orders/"+o.id).set(d).catch(function(){})});
@@ -4803,6 +4817,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var st=[],pr=[],mu=[];
     for(var i=0;i<STAGES.length;i++){st.push($("ost"+i).checked?1:0); pr.push(cleanNum($("opr"+i).value,99999999,false)); mu.push(Math.max(1,cleanNum($("omu"+i).value,1000,false)||1))}
     if(ordCat!==0)st[4]=0;
+    pr[5]=0; // kaplama cirosu her zaman 0 ₺
     if(st[5]&&!ordKp){var kr0=$("kprow"); if(kr0){kr0.hidden=false; kr0.scrollIntoView({block:"center"}); kr0.style.outline="2px solid #E0506A"; setTimeout(function(){kr0.style.outline=""},1600)} return}
     if(!st.some(Boolean))st=[1,1,1,1,0,0];
     var old=orderFormId?orders.filter(function(x){return x.id===orderFormId})[0]:null;
