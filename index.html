@@ -323,7 +323,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .needsplit{padding:2px 0 10px 4px;display:flex;flex-direction:column;gap:8px}
 .needcatrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
 .needcatrow{background:none;border:0;padding:4px 0;width:100%;text-align:left;font-family:inherit;color:inherit;cursor:pointer}
-.needlist{display:flex;flex-direction:column;gap:6px;margin:2px 0 8px}
+.needlist{display:flex;flex-direction:column;gap:8px;margin:4px 0 12px}
+.nlhead{font:700 12px var(--font-ui);color:var(--ink2);padding:2px 2px 0}
+.nlsep{font:800 11.5px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin:8px 2px 0}
+.nli{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;background:var(--bg);border-radius:14px;padding:10px 12px;font-family:inherit;color:var(--ink);cursor:pointer}
+.nli:active{transform:scale(.99)}
+.nli .nlth{width:48px;height:48px;border-radius:10px;object-fit:cover;background:var(--bg2)}
+.nli .nlth.ph{display:flex;align-items:center;justify-content:center;font:800 18px var(--font-head);color:var(--ink2)}
+.nli .nlb{min-width:0}
+.nli .nlt{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:700 14px var(--font-ui)}
+.nli .nlship{font:700 10.5px var(--font-ui);padding:1px 7px;border-radius:99px;background:rgba(42,157,143,.14);color:#1d7a6f}
+.nli .nlc{font:600 12px var(--font-ui);color:var(--ink2);margin:1px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nli .nlbar{height:6px;border-radius:99px;background:rgba(120,130,130,.18);overflow:hidden}
+.nli .nlbar i{display:block;height:100%;border-radius:99px}
+.nli .nlr{text-align:right;display:flex;flex-direction:column;gap:2px}
+.nli .nlr b{font:800 16px var(--font-ui)}
+.nli .nlr small{font:600 11px var(--font-ui);color:var(--ink2);white-space:nowrap}
+.nli.fin .nlr b{color:#1d7a6f}
 .needcatrow .nn2{font:700 13px var(--font-ui);display:flex;align-items:center;gap:7px;color:var(--ink2)}
 .needcatrow .nv2{font:700 13px var(--font-ui);text-align:right}
 .nbar.sm{grid-column:1/3;height:5px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:1px}
@@ -639,7 +655,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 15:08</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 15:14</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3332,10 +3348,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             var si1=stageIdx(sg.sec), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]&&(!cust||custBaseName(o.cust)===cust)}).map(function(o){
               var nd=need(o,sg.sec), dn=Math.min(doneOf(o.id,sg.sec).q,nd); return {o:o,nd:nd,dn:dn};
             }).sort(function(a,b){return (b.dn-a.dn)||((a.o.code||"").localeCompare(b.o.code||"","tr"))});
-            h+='<div class="needlist">'+(lst.length?lst.map(function(x){
-              var pc=x.nd?Math.round(x.dn/x.nd*100):0;
-              return '<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(x.o.code)+'</b> · '+esc(x.o.cust||"—")+(x.o.shipped?' · 📦':'')+'<br><small>'+nf.format(x.dn)+' / '+nf.format(x.nd)+' adet · %'+pc+'</small><span class="go">›</span></button>';
-            }).join(""):'<div class="empty">Sipariş yok.</div>')+'</div>';
+            var started=lst.filter(function(x){return x.dn>0}), notst=lst.filter(function(x){return x.dn<=0});
+            var item=function(x){
+              var o=x.o, pc=x.nd?Math.round(x.dn/x.nd*100):0, fin=x.nd>0&&x.dn>=x.nd;
+              return '<button type="button" class="nli'+(fin?' fin':'')+'" data-oid="'+o.id+'">'+
+                (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+                '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b>'+(o.shipped?'<span class="nlship">📦 Gönderildi</span>':'')+'</div>'+
+                '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
+                '<div class="nlbar"><i style="width:'+Math.min(100,pc)+'%;background:var(--p'+i+')"></i></div></div>'+
+                '<div class="nlr"><b>%'+pc+'</b><small>'+nf.format(x.dn)+' / '+nf.format(x.nd)+'</small></div></button>';
+            };
+            h+='<div class="needlist">'+(lst.length?(
+              '<div class="nlhead">'+lst.length+' sipariş · '+started.length+' tanesinde üretim var</div>'+
+              started.map(item).join("")+
+              (notst.length?'<div class="nlsep">Henüz başlanmayan ('+notst.length+')</div>'+notst.map(item).join(""):"")
+            ):'<div class="empty">Sipariş yok.</div>')+'</div>';
           }
           return h;
         }).join("")+'</div>';
