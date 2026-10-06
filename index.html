@@ -637,7 +637,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 14:53</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 15:01</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4778,7 +4778,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(b.id==="kpno"){kpPending=null; note.hidden=true; return}
     if(b.id!=="kpyes"||!kpPending)return;
     var pl=kpPending; kpPending=null; b.disabled=true; note.className="impnote"; note.textContent="Giriliyor…";
-    var fails=0, jobs=pl.updates.map(function(u){
+    var fails=0, firstErr="", srvBad=[], jobs=pl.updates.map(function(u){
       var cur=orders.filter(function(x){return x.id===u.o.id})[0]||u.o;
       var st=(cur.st||[]).slice(); while(st.length<7)st.push(0);
       var patch={};
@@ -4793,17 +4793,30 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var upd=Object.assign({},cur,patch);
       orders=orders.map(function(x){return x.id===cur.id?upd:x});
       // st ve kp düz (üst seviye) alanlar: update() güvenli; başka hiçbir alan yazılmaz.
-      return db?db.doc("orders/"+cur.id).update(patch).catch(function(){fails++}):Promise.resolve();
+      return db?db.doc("orders/"+cur.id).update(patch).catch(function(err){fails++; if(!firstErr)firstErr=(err&&(err.code||err.message))||"bilinmeyen hata"}):Promise.resolve();
     });
     lsOrdersSet();
     Promise.all(jobs).then(function(){
+      // Sunucudan geri oku: gerçekten kalıcı yazıldı mı? (yalnız yazılanları kontrol et)
+      var chk=db?Promise.all(pl.updates.map(function(u){
+        return db.doc("orders/"+u.o.id).get({source:"server"}).then(function(d){
+          var x=d.data()||{}, ok=true;
+          if(u.kp&&x.kp!==u.kp)ok=false;
+          if((u.dis===1||u.dis===0)&&(((x.st||[])[6]?1:0)!==u.dis))ok=false;
+          if(u.kp&&((x.st||[])[5]?1:0)!==(u.kp===KP_NONE?0:1))ok=false;
+          (u.markDone||[]).forEach(function(i){if(!(+((x.cl||[])[i])>0))ok=false});
+          if(!ok)srvBad.push(u.o.code);
+        }).catch(function(err){srvBad.push(u.o.code+" (okunamadı)")});
+      })):Promise.resolve();
+      return chk;
+    }).then(function(){
       var okN=pl.updates.length-fails;
       note.className="impnote"+(fails?" err":" ok");
       // Doğrulama: yazdıktan sonra Excel ile tekrar karşılaştır; kalan fark / eşleşmeyen satırları listele.
       var vf=planKaplamaRows(kpRows,kpWide), vcodes=function(arr){return arr.slice(0,8).map(function(x){return esc(String(x))}).join(", ")+(arr.length>8?" …":"")};
       var vbad=vf.updates.map(function(u){return u.o.code});
       var vmsg=(!vf.updates.length&&!vf.unmatched.length&&!vf.ambiguous.length&&!vf.bad)?"<br>✓ Doğrulandı: Excel'deki tüm satırlar uygulamayla birebir aynı.":"<br>⚠ Doğrulama: "+(vf.updates.length?vf.updates.length+" sipariş hâlâ Excel'den farklı ("+vcodes(vbad)+"). ":"")+(vf.unmatched.length?vf.unmatched.length+" satır siparişle eşleşmedi ("+vcodes(vf.unmatched)+"). ":"")+(vf.ambiguous.length?vf.ambiguous.length+" satırda aynı kodlu sipariş ayırt edilemedi ("+vcodes(vf.ambiguous)+"). ":"")+(vf.bad?vf.bad+" satırın değeri tanınmadı. ":"");
-      note.innerHTML=okN+" siparişte kaplama / diş-delik girildi"+(fails?", "+fails+" sipariş kaydedilemedi (tekrar dene)":"")+"."+vmsg;
+      note.innerHTML=okN+" siparişte kaplama / diş-delik girildi"+(fails?", "+fails+" sipariş kaydedilemedi (tekrar dene) — hata: "+esc(firstErr):"")+"."+(srvBad.length?"<br>⚠ Sunucuya kalıcı yazılmadığı görülen "+srvBad.length+" sipariş: "+srvBad.slice(0,8).map(esc).join(", ")+(srvBad.length>8?" …":""):(db&&okN?"<br>✓ Sunucudan geri okundu, hepsi kalıcı kaydedildi.":""))+vmsg;
       if(okN)logActivity("Kaplama / diş-delik toplu girildi: "+okN+" sipariş","info");
       renderOrders(); paintOrdersHome();
     });
