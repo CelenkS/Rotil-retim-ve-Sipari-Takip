@@ -615,7 +615,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 12:37</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 12:42</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -717,6 +717,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     </div>
     <input type="file" id="oimportf" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
     <div class="impnote" id="impnote" hidden></div>
+    <div class="osearch" style="margin-top:8px">
+      <button class="btn ghost" id="okpdl" style="flex:1">⇩ Kaplama listesi (Excel)</button>
+      <button class="btn ghost" id="okpup" style="flex:1">⇧ Kaplamaları gir (Excel)</button>
+    </div>
+    <input type="file" id="okpupf" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+    <div class="impnote" id="kpnote" hidden></div>
     <button class="btn ghost" id="ofillimg" style="width:100%;margin-top:8px">🖼 Eksik görselleri tamamla (Excel)</button>
     <input type="file" id="ofillimgf" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
     <div class="impnote" id="fillimgnote" hidden></div>
@@ -4502,6 +4508,161 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     doImportFile(f); e.target.value="";
   });
   $("oexport").addEventListener("click",function(){downloadCsv(exportOrdersCsv(),"siparisler-"+todayIso+".csv")});
+
+  /* ---------- Kaplama Excel'i: mevcut siparişlerin kaplama türünü toplu girme ----------
+     "Kaplama listesi" tüm siparişleri (sipariş no'suyla) bir .xlsx'e döker; kullanıcı kaplama
+     sütununu (Siyah/Fosfat/Beyaz) doldurup "Kaplamaları gir" ile geri yükler. Sadece kaplama
+     türü + kaplama aşaması açılır; adet, fiyat, tarih, üretim kayıtları, tamamlama (cl) gibi
+     hiçbir alana dokunulmaz. Yazmadan önce önizleme gösterilip onay istenir. */
+  function crc32(u8){
+    var t=crc32.t;
+    if(!t){t=crc32.t=[]; for(var n=0;n<256;n++){var c=n; for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0}}
+    var c2=0xFFFFFFFF; for(var i=0;i<u8.length;i++)c2=t[(c2^u8[i])&255]^(c2>>>8);
+    return (c2^0xFFFFFFFF)>>>0;
+  }
+  function zipStoreBlob(files){
+    var enc=new TextEncoder(), parts=[], cd=[], off=0;
+    files.forEach(function(f){
+      var nm=enc.encode(f.name), data=enc.encode(f.text), crc=crc32(data), sz=data.length;
+      var lh=new Uint8Array(30+nm.length), dv=new DataView(lh.buffer);
+      dv.setUint32(0,0x04034b50,true); dv.setUint16(4,20,true); dv.setUint16(6,0x0800,true); dv.setUint16(12,0x0021,true);
+      dv.setUint32(14,crc,true); dv.setUint32(18,sz,true); dv.setUint32(22,sz,true); dv.setUint16(26,nm.length,true); lh.set(nm,30);
+      parts.push(lh,data);
+      var ch=new Uint8Array(46+nm.length), cv=new DataView(ch.buffer);
+      cv.setUint32(0,0x02014b50,true); cv.setUint16(4,20,true); cv.setUint16(6,20,true); cv.setUint16(8,0x0800,true); cv.setUint16(14,0x0021,true);
+      cv.setUint32(16,crc,true); cv.setUint32(20,sz,true); cv.setUint32(24,sz,true); cv.setUint16(28,nm.length,true); cv.setUint32(42,off,true); ch.set(nm,46);
+      cd.push(ch); off+=lh.length+sz;
+    });
+    var cdSize=0; cd.forEach(function(c){cdSize+=c.length});
+    var end=new Uint8Array(22), ev=new DataView(end.buffer);
+    ev.setUint32(0,0x06054b50,true); ev.setUint16(8,files.length,true); ev.setUint16(10,files.length,true); ev.setUint32(12,cdSize,true); ev.setUint32(16,off,true);
+    return new Blob(parts.concat(cd,[end]),{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  }
+  function xmlEsc(v){return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  function buildKaplamaXlsx(rows){
+    var heads=["siparis_no","kod","musteri","kategori","adet","kaplama"], widths=[26,20,28,14,10,14];
+    function colL(i){return String.fromCharCode(65+i)}
+    var sd='<row r="1">'+heads.map(function(h,i){return '<c r="'+colL(i)+'1" t="inlineStr" s="1"><is><t>'+h+'</t></is></c>'}).join("")+'</row>';
+    rows.forEach(function(r,ri){
+      var rn=ri+2;
+      sd+='<row r="'+rn+'">'+r.map(function(v,i){
+        if(v===""||v===null||v===undefined)return "";
+        if(i===4&&typeof v==="number")return '<c r="'+colL(i)+rn+'"><v>'+v+'</v></c>';
+        return '<c r="'+colL(i)+rn+'" t="inlineStr"><is><t xml:space="preserve">'+xmlEsc(v)+'</t></is></c>';
+      }).join("")+'</row>';
+    });
+    var last=Math.max(rows.length+1,500);
+    var sheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>'+
+      widths.map(function(w,i){return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>'}).join("")+'</cols><sheetData>'+sd+'</sheetData>'+
+      '<dataValidations count="1"><dataValidation type="list" allowBlank="1" showErrorMessage="1" errorTitle="Kaplama" error="Siyah, Fosfat veya Beyaz seç." sqref="F2:F'+last+'"><formula1>"'+KAPLAMA.join(",")+'"</formula1></dataValidation></dataValidations></worksheet>';
+    var ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
+    var rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+    var wb='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Kaplama" sheetId="1" r:id="rId1"/></sheets></workbook>';
+    var wbr='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+    var st='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><name val="Arial"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>';
+    return zipStoreBlob([{name:"[Content_Types].xml",text:ct},{name:"_rels/.rels",text:rels},{name:"xl/workbook.xml",text:wb},{name:"xl/_rels/workbook.xml.rels",text:wbr},{name:"xl/styles.xml",text:st},{name:"xl/worksheets/sheet1.xml",text:sheet}]);
+  }
+  function downloadBlobFile(blob,filename,noteEl){
+    if(!downloadsApi){noteEl.hidden=false; noteEl.className="impnote err"; noteEl.textContent="İndirme şu an kullanılamıyor. Sayfayı yenileyip tekrar dene."; return}
+    downloadsApi.save({filename:filename,data:blob}).then(function(){
+      noteEl.hidden=false; noteEl.className="impnote ok"; noteEl.textContent="İndirildi: "+filename+". Kaplama sütununu doldur, kaydet, sonra “Kaplamaları gir”e bas.";
+    }).catch(function(err){
+      noteEl.hidden=false; noteEl.className="impnote err"; noteEl.textContent=(err&&err.code==="declined")?"İndirme iptal edildi.":"İndirilemedi. Tekrar dene.";
+    });
+  }
+  $("okpdl").addEventListener("click",function(){
+    var note=$("kpnote");
+    var list=orders.slice().sort(function(a,b){
+      var sa=a.shipped?1:0, sb=b.shipped?1:0; if(sa!==sb)return sa-sb;
+      return (a.code||"").localeCompare(b.code||"","tr");
+    });
+    var rows=list.map(function(o){return [o.id,o.code||"",o.cust||"",ORDER_CATS[o.cat]||"",o.qty||0,(o.st||[])[5]?(o.kp||""):""]});
+    downloadBlobFile(buildKaplamaXlsx(rows),"kaplama-listesi-"+todayIso+".xlsx",note);
+  });
+  var kpPending=null;
+  function planKaplamaRows(rows){
+    var header=rows[0].map(normHead);
+    function ix(names){for(var i=0;i<header.length;i++)if(names.indexOf(header[i])>-1)return i; return -1}
+    var iId=ix(["siparis_no","id","siparis_id"]), iKod=ix(HEAD_ALIASES.kod), iMus=ix(HEAD_ALIASES.musteri), iAdet=ix(HEAD_ALIASES.adet), iKp=ix(HEAD_ALIASES.kaplama);
+    if(iKp<0||(iId<0&&iKod<0))return {err:'Başlık satırında "kaplama" sütunu ve "siparis_no" (ya da "kod") sütunu bulunamadı. “Kaplama listesi (Excel)” ile indirdiğin dosyayı kullan.'};
+    var out={updates:[],same:0,blank:0,bad:0,shipped:0,unmatched:[],ambiguous:[],reopen:0}, seen={};
+    for(var r=1;r<rows.length;r++){
+      var row=rows[r]; if(!row)continue;
+      var raw=String(row[iKp]===undefined||row[iKp]===null?"":row[iKp]).trim();
+      var id=iId>-1?String(row[iId]||"").trim():"", kod=iKod>-1?String(row[iKod]||"").trim().toLowerCase():"";
+      if(!raw){out.blank++; continue}
+      var kp=normKp(raw); if(!kp){out.bad++; continue}
+      var o=null;
+      if(id)o=orders.filter(function(x){return x.id===id})[0]||null;
+      if(!o&&kod){
+        var cands=orders.filter(function(x){return (x.code||"").toLowerCase().trim()===kod});
+        if(iMus>-1){var mu=String(row[iMus]||"").trim().toLowerCase(); if(mu){var c2=cands.filter(function(x){return (x.cust||"").toLowerCase().trim()===mu}); if(c2.length)cands=c2}}
+        if(cands.length>1&&iAdet>-1){var ad=+String(row[iAdet]||"").replace(",","."); if(ad){var c3=cands.filter(function(x){return x.qty===ad}); if(c3.length)cands=c3}}
+        if(cands.length===1)o=cands[0]; else if(cands.length>1){out.ambiguous.push(row[iKod]||kod); continue}
+      }
+      if(!o){out.unmatched.push(id||row[iKod]||("satır "+(r+1))); continue}
+      if(seen[o.id])continue; seen[o.id]=1;
+      if(o.shipped){out.shipped++; continue}
+      if((o.st||[])[5]&&o.kp===kp){out.same++; continue}
+      if(isComplete(o)&&!(o.st||[])[5])out.reopen++;
+      out.updates.push({o:o,kp:kp});
+    }
+    return out;
+  }
+  function kpPreviewHtml(pl){
+    var cnt={}; KAPLAMA.forEach(function(k){cnt[k]=0}); pl.updates.forEach(function(u){cnt[u.kp]++});
+    var h='<b>'+pl.updates.length+' siparişe kaplama girilecek</b> ('+KAPLAMA.map(function(k){return k+': '+cnt[k]}).join(", ")+'). Adet, fiyat ve üretim kayıtlarına dokunulmaz.';
+    if(pl.reopen)h+='<br>⚠ '+pl.reopen+' sipariş şu an tamamlanmış görünüyor; kaplama aşaması eklenince kaplama bitene kadar yeniden açık görünür.';
+    if(pl.same)h+='<br>'+pl.same+' sipariş zaten aynı kaplamada, atlandı.';
+    if(pl.blank)h+='<br>'+pl.blank+' satırda kaplama boş, atlandı.';
+    if(pl.shipped)h+='<br>'+pl.shipped+' gönderilmiş sipariş atlandı.';
+    if(pl.bad)h+='<br>'+pl.bad+' satırda kaplama türü tanınmadı (Siyah / Fosfat / Beyaz olmalı), atlandı.';
+    if(pl.unmatched.length)h+='<br>'+pl.unmatched.length+' satır hiçbir siparişle eşleşmedi, atlandı.';
+    if(pl.ambiguous.length)h+='<br>'+pl.ambiguous.length+' satırda aynı kodlu birden fazla sipariş var, hangisi olduğu anlaşılamadı, atlandı ('+pl.ambiguous.slice(0,5).map(esc).join(", ")+'). Bunlar için listedeki siparis_no sütununu silmeden kullan.';
+    if(pl.updates.length)h+='<div class="frow" style="margin-top:8px"><button type="button" class="btn" id="kpyes">Evet, kaplamaları gir</button><button type="button" class="btn ghost" id="kpno">Vazgeç</button></div>';
+    return h;
+  }
+  $("okpup").addEventListener("click",function(){$("kpnote").hidden=true; kpPending=null; $("okpupf").click()});
+  $("okpupf").addEventListener("change",function(e){
+    var f=e.target.files&&e.target.files[0]; e.target.value=""; if(!f)return;
+    var note=$("kpnote"); note.hidden=false; note.className="impnote"; note.textContent="Excel okunuyor…";
+    if(!/\.xlsx$/i.test(f.name||"")){note.className="impnote err"; note.textContent="Bu özellik .xlsx (Excel) dosyasıyla çalışır. CSV ise Excel'de “Farklı kaydet → Excel Çalışma Kitabı” yap."; return}
+    if(!orders.length){note.className="impnote err"; note.textContent="Siparişler henüz yüklenmedi, birkaç saniye bekleyip tekrar dene."; return}
+    var reader=new FileReader();
+    reader.onload=function(){
+      xlsxToRows(reader.result).then(function(res){
+        if(!res.rows||res.rows.length<2){note.className="impnote err"; note.textContent="Dosyada okunacak satır bulunamadı."; return}
+        var pl=planKaplamaRows(res.rows);
+        if(pl.err){note.className="impnote err"; note.textContent=pl.err; return}
+        kpPending=pl;
+        note.className="impnote"+(pl.updates.length?"":" err"); note.innerHTML=pl.updates.length?kpPreviewHtml(pl):("Girilecek kaplama bulunamadı."+kpPreviewHtml(pl).replace(/^<b>.*?<\/b>[^<]*/,""));
+      }).catch(function(){note.className="impnote err"; note.textContent="Excel dosyası okunamadı. Bozuk olmadığından emin ol."});
+    };
+    reader.readAsArrayBuffer(f);
+  });
+  $("kpnote").addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b)return;
+    var note=$("kpnote");
+    if(b.id==="kpno"){kpPending=null; note.hidden=true; return}
+    if(b.id!=="kpyes"||!kpPending)return;
+    var pl=kpPending; kpPending=null; b.disabled=true; note.className="impnote"; note.textContent="Kaplamalar giriliyor…";
+    var fails=0, jobs=pl.updates.map(function(u){
+      var cur=orders.filter(function(x){return x.id===u.o.id})[0]||u.o;
+      var st=(cur.st||[]).slice(); while(st.length<6)st.push(0); st[5]=1;
+      var upd=Object.assign({},cur,{st:st,kp:u.kp});
+      orders=orders.map(function(x){return x.id===cur.id?upd:x});
+      // st ve kp düz (üst seviye) alanlar: update() güvenli; başka hiçbir alan yazılmaz.
+      return db?db.doc("orders/"+cur.id).update({st:st,kp:u.kp}).catch(function(){fails++}):Promise.resolve();
+    });
+    lsOrdersSet();
+    Promise.all(jobs).then(function(){
+      var okN=pl.updates.length-fails;
+      note.className="impnote"+(fails?" err":" ok");
+      note.textContent=okN+" siparişe kaplama girildi"+(fails?", "+fails+" sipariş kaydedilemedi (tekrar dene)":"")+".";
+      if(okN)logActivity("Kaplama türleri toplu girildi: "+okN+" sipariş","info");
+      renderOrders(); paintOrdersHome();
+    });
+  });
   $("ofillimg").addEventListener("click",function(){$("fillimgnote").hidden=true; $("ofillimgf").click()});
   $("ofillimgf").addEventListener("change",function(e){
     var f=e.target.files&&e.target.files[0]; e.target.value=""; if(!f)return;
