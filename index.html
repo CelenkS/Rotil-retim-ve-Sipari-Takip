@@ -717,6 +717,26 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 #loginGate .impnote.show{display:block}
 .logoutrow{display:flex;justify-content:center;margin-top:18px}
 .logoutrow button{background:none;border:0;color:var(--ink2);font:600 12.5px var(--font-ui);text-decoration:underline}
+/* Bilgisayar (geniş ekran): tam genişlik, iki sütun — solda özet kartı, sağda listeler. Telefon aynı kalır. */
+@media (min-width:1000px){
+  body{padding-inline:28px}
+  .wrap{max-width:1600px}
+  #home{max-width:1200px}
+  .hcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+  .wrap:not(#home){display:grid;grid-template-columns:minmax(400px,500px) minmax(0,1fr);column-gap:22px;row-gap:18px;align-items:start}
+  .wrap:not(#home)>*{grid-column:2;min-width:0}
+  .wrap:not(#home)>.hero{grid-column:1;grid-row:1/span 40;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
+  .ocards{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr))}
+  .needlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr))}
+  .needlist>.nlhead,.needlist>.nlsep,.needlist>.empty{grid-column:1/-1}
+  .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr))}
+  .items>.empty{grid-column:1/-1}
+  .sheet{max-width:800px}
+}
+@media (min-width:1700px){
+  .wrap:not(#home){grid-template-columns:minmax(440px,540px) minmax(0,1fr)}
+  .ocards,.needlist,.items{grid-template-columns:repeat(auto-fill,minmax(480px,1fr))}
+}
 @media (max-width:420px){
   h1{font-size:23px;min-width:8ch}
   th,td{padding-inline:4px}
@@ -754,7 +774,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 10:55</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 10:58</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
