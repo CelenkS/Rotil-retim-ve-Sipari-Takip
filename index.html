@@ -632,6 +632,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.prodc::after{background:rgba(15,139,141,.2)}
 .hcard.ordc.prodc .hk,.hcard.ordc.prodc .go{color:#2EC4C6}
 .hback{width:100%;text-align:left}
+.homewho{display:flex;flex-direction:column;gap:8px;background:var(--soft);border-radius:16px;padding:12px 14px;margin-bottom:2px}
+.homewho:has(>.hwb){flex-direction:row;align-items:center;justify-content:space-between;padding:8px 14px}
+.homewho .hwl{font:700 14px var(--font-ui);color:var(--ink)}
+.homewho .hwb{border:0;background:none;color:var(--ink2);font:700 12px var(--font-ui);text-decoration:underline;cursor:pointer}
+.homewho .hwrow{display:flex;gap:8px}
+.homewho .hwrow .fin{flex:1;height:44px}
+.homewho .hwrow .btn{flex:0 0 auto;height:44px;padding:0 18px}
+.homewho .hwn{font:600 11px var(--font-ui);color:var(--ink2)}
 @media (min-width:1000px){.hcards .hback{grid-column:1/-1;width:auto;justify-self:start;padding:0 18px}}
 .hcard.ordc.notec{border-color:rgba(250,204,21,.6)}
 .hcard.ordc.notec::after{background:rgba(250,204,21,.15)}
@@ -875,10 +883,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <button type="button" class="bellbtn" id="bellbtn" aria-label="Bildirimler" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nfbadge" id="nfbadge" hidden></span></button>
     <div class="nfpop" id="nfpop" hidden><div class="nfph"><b>Bildirimler</b><button type="button" id="nfall">Tümünü gör ›</button></div><div id="nfpoplist"></div></div>
   </div>
+  <div class="homewho" id="homewho" hidden></div>
   <div class="hcards" id="hcards"></div>
   <button class="btn ghost" id="homesetbtn" aria-expanded="false" style="width:100%;margin-top:22px">⚙ Ayarlar ▾</button>
   <div id="homeset" hidden>
-  <button class="btn ghost" id="mynamebtn" style="width:100%;margin-top:12px">👤 Adını yaz</button>
   <div class="osearch" style="margin-top:12px">
     <button class="btn ghost" id="bkExport" style="flex:1">☁ Tam yedek al (.json)</button>
     <button class="btn ghost" id="bkImport" style="flex:1">⟲ Yedekten geri yükle</button>
@@ -889,7 +897,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:43</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:54</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4120,17 +4128,32 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       try{if(!$("notifs").hidden)renderNotifs(nfCache)}catch(e){}
       try{if(!$("purch").hidden)renderPurch()}catch(e){}
       try{paintMyName()}catch(e){}
-      if(nameFirstSnap&&!(snap.metadata&&snap.metadata.fromCache)){
-        nameFirstSnap=false;
-        setTimeout(function(){if(!myNameStored()&&!nameSkip&&$("ov").hidden)openNameForm()},800);
-      }
     },function(){});
   }
   function openNameForm(){sheetMode="nameform";$("ov").hidden=false;renderSheet()}
+  var nameEditing=false;
   function paintMyName(){
-    var b=$("mynamebtn"); if(!b)return;
-    var n=myNameStored(); b.textContent="👤 "+(n?n+" — adı değiştir":"Adını yaz (şu an: "+(myEmailPrefix()||"?")+")");
+    var box=$("homewho"); if(!box)return;
+    if(document.activeElement&&document.activeElement.id==="hwinp")return;
+    box.hidden=(homeView!=="main");
+    var n=myNameStored();
+    if(n&&!nameEditing){
+      box.innerHTML='<span class="hwl">👤 <b>'+esc(n)+'</b></span><button type="button" class="hwb" data-nmedit="1">değiştir</button>';
+    }else{
+      box.innerHTML='<label class="hwl" for="hwinp">'+(n?'Adını değiştir':'👤 Adın ve soyadın')+'</label>'+
+        '<div class="hwrow"><input class="fin" id="hwinp" autocomplete="name" placeholder="Ad Soyad yaz" value="'+esc(n)+'"><button type="button" class="btn" data-nmsave="1">Kaydet</button></div>'+
+        (n?'':'<div class="hwn">Bildirimlerde ve kayıtlarda e-posta yerine bu isim görünür</div>');
+    }
   }
+  function saveMyName(){
+    var inp=$("hwinp"); if(!inp)return;
+    var v=inp.value.trim().replace(/\s+/g," ").slice(0,60); if(!v){inp.focus();return}
+    var mem=null; try{mem=firebase.auth().currentUser.email.toLowerCase()}catch(e){}
+    if(!db||!mem){inp.placeholder="Bağlantı yok, kaydedilemedi";return}
+    db.doc("appusers/"+mem).set({email:mem,name:v,ts:Date.now()},{merge:true}).catch(function(){});
+    userNames[mem.split("@")[0]]=v; nameEditing=false; inp.blur(); paintMyName();
+  }
+
   // extra: {oid,code,sec} — bildirime tıklayınca ilgili siparişe/ürüne/bölüme gidebilmek için.
   function logActivity(text,type,extra){
     if(!db)return;
@@ -4778,7 +4801,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     noteEditId=null; closeSheet();
   }
-  $("mynamebtn").addEventListener("click",function(){openNameForm()});
+  $("homewho").addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b)return;
+    if(b.dataset.nmedit){nameEditing=true; paintMyName(); var i=$("hwinp"); if(i)i.focus(); return}
+    if(b.dataset.nmsave)saveMyName();
+  });
+  $("homewho").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="hwinp"){e.preventDefault();saveMyName()}});
   $("homesetbtn").addEventListener("click",function(){
     var o=$("homeset"), open=o.hidden; o.hidden=!open;
     this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar ▴":"⚙ Ayarlar ▾";
@@ -6433,10 +6461,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       $("hcards").innerHTML=ordersC+notesC+purchC+stockC+prodC;
     }
     paintOrdersHome();
+    try{paintMyName()}catch(e){}
   }
   function setHomeView(v){
     homeView=v; buildHome(); window.scrollTo(0,0);
-    try{paintStockHome();paintPurchHome();paintNotesHome();paintStaffHome()}catch(e){}
+    try{paintStockHome();paintPurchHome();paintNotesHome();paintStaffHome();paintMyName()}catch(e){}
     refreshHome();
   }
   function refreshHome(){
