@@ -489,7 +489,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .flzoom button:disabled{opacity:.4;cursor:default}
 .flzoom span{font:700 12px var(--font-ui);color:var(--ink2);min-width:46px;text-align:center}
 .floorwrap .flabel{position:absolute;left:14px;bottom:10px;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
-.floorgrid{display:grid;grid-template-columns:repeat(7,minmax(74px,1fr));grid-auto-rows:118px;gap:6px;min-width:760px}
+.floorgrid{display:grid;grid-template-columns:repeat(7,minmax(74px,1fr));--rh:118px;--gh:20px;grid-auto-rows:var(--rh);gap:6px;min-width:760px}
 .fbox{border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:800 10.5px var(--font-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px;cursor:pointer;gap:2px;line-height:1.2}
 .fbox.vert span{writing-mode:vertical-rl;text-orientation:mixed}
 .fbox.empty{border-style:dashed;color:var(--ink2);opacity:.55;background:none}
@@ -500,19 +500,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .fbrem{font:700 9px var(--font-ui);opacity:.8;background:rgba(255,255,255,.5);border-radius:6px;padding:1px 5px}
 /* Yerleşim / Makine Planı ekranlarındaki kroki (renderFloor'daki küçük ana ekran widget'ı hariç):
    ürün görseli çok daha büyük gösterilsin, üstüne "－ 🔍 ＋" ile 2 kademe daha da yakınlaştırılabilsin. */
-.floorwrap.flbig .floorgrid{grid-template-columns:repeat(7,minmax(92px,1fr));grid-auto-rows:158px}
+.floorwrap.flbig .floorgrid{grid-template-columns:repeat(7,minmax(92px,1fr));--rh:158px;--gh:26px}
 .floorwrap.flbig .fbox{padding:6px;gap:3px}
 .floorwrap.flbig .fbimg{width:36px;height:36px;border-radius:7px}
 .floorwrap.flbig .fbox small{font-size:11px}
 .floorwrap.flbig .fbstat{font-size:11.5px}
 .floorwrap.flbig .fbrem{font-size:10.5px}
-.floorwrap.flbig.fz2 .floorgrid{grid-template-columns:repeat(7,minmax(124px,1fr));grid-auto-rows:206px}
+.floorwrap.flbig.fz2 .floorgrid{grid-template-columns:repeat(7,minmax(124px,1fr));--rh:206px;--gh:34px}
 .floorwrap.flbig.fz2 .fbox{padding:8px;font-size:12.5px}
 .floorwrap.flbig.fz2 .fbimg{width:50px;height:50px;border-radius:9px}
 .floorwrap.flbig.fz2 .fbox small{font-size:12.5px}
 .floorwrap.flbig.fz2 .fbstat{font-size:13px}
 .floorwrap.flbig.fz2 .fbrem{font-size:11.5px}
-.floorwrap.flbig.fz3 .floorgrid{grid-template-columns:repeat(7,minmax(158px,1fr));grid-auto-rows:258px}
+.floorwrap.flbig.fz3 .floorgrid{grid-template-columns:repeat(7,minmax(158px,1fr));--rh:258px;--gh:42px}
 .floorwrap.flbig.fz3 .fbox{padding:10px;font-size:14.5px}
 .floorwrap.flbig.fz3 .fbimg{width:66px;height:66px;border-radius:11px}
 .floorwrap.flbig.fz3 .fbox small{font-size:14px}
@@ -774,7 +774,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 10:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 11:10</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1133,26 +1133,35 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // yoksa boş/tanımsız kutu olarak gösterilip tıklayınca oluşturulabiliyor.
   var FLOOR_CIVATA=(function(){
     var out=[];
-    for(var i=1;i<=6;i++)out.push({label:"CNC "+i,col:1,row:i,cs:1,rs:1,secs:["cncg","cnca"]});
-    for(var i=1;i<=6;i++)out.push({label:"CNC "+(6+i),col:2,row:i,cs:1,rs:1,secs:["cncg","cnca"]});
-    for(var i=1;i<=4;i++)out.push({label:"CNC "+(12+i),col:3,row:i,cs:1,rs:1,secs:["cncg","cnca"]});
-    out.push({label:"Hİ 1",col:4,row:1,cs:1,rs:4,secs:["cncg","cnca"],vert:true});
-    out.push({label:"Hİ 2",col:5,row:1,cs:1,rs:4,secs:["cncg","cnca"],vert:true});
-    out.push({label:"Hİ 3",col:6,row:1,cs:1,rs:4,secs:["cncg","cnca"],vert:true});
+    // Her 2 CNC'den sonra 1 küçük boşluk (CNC 1-2 | CNC 3-4 | CNC 5-6 ...): kullanıcı CNC'leri ikişer ikişer
+    // karşılıklı kullanıyor, hangisinin kiminle karşılıklı olduğu görünsün diye. Boşluk satırları 3 ve 6.
+    function fr(i){return i+Math.floor((i-1)/2)}
+    for(var i=1;i<=6;i++)out.push({label:"CNC "+i,col:1,row:fr(i),cs:1,rs:1,secs:["cncg","cnca"]});
+    for(var i=1;i<=6;i++)out.push({label:"CNC "+(6+i),col:2,row:fr(i),cs:1,rs:1,secs:["cncg","cnca"]});
+    for(var i=1;i<=4;i++)out.push({label:"CNC "+(12+i),col:3,row:fr(i),cs:1,rs:1,secs:["cncg","cnca"]});
+    out.push({label:"Hİ 1",col:4,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
+    out.push({label:"Hİ 2",col:5,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
+    out.push({label:"Hİ 3",col:6,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
     out.push({label:"OVALAMA",col:7,row:1,cs:1,rs:1,secs:["pres"]});
     out.push({label:"D.PRES 1",col:7,row:2,cs:1,rs:1,secs:["pres"]});
-    out.push({label:"D.PRES 2",col:7,row:3,cs:1,rs:1,secs:["pres"]});
-    out.push({label:"D.PRES 3",col:7,row:4,cs:1,rs:1,secs:["pres"]});
-    out.push({label:"CNC 17",col:4,row:5,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
-    out.push({label:"CNC 18",col:5,row:5,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
-    out.push({label:"TRANSFER 3",col:3,row:7,cs:1,rs:1,secs:["cncg","cnca"]});
-    out.push({label:"TRANSFER 2",col:4,row:7,cs:1,rs:1,secs:["cncg","cnca"]});
-    out.push({label:"TRANSFER 1",col:5,row:7,cs:1,rs:1,secs:["cncg","cnca"]});
+    out.push({label:"D.PRES 2",col:7,row:4,cs:1,rs:1,secs:["pres"]});
+    out.push({label:"D.PRES 3",col:7,row:5,cs:1,rs:1,secs:["pres"]});
+    out.push({label:"CNC 17",col:4,row:7,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
+    out.push({label:"CNC 18",col:5,row:7,cs:1,rs:2,secs:["cncg","cnca"],vert:true});
+    out.push({label:"TRANSFER 3",col:3,row:9,cs:1,rs:1,secs:["cncg","cnca"]});
+    out.push({label:"TRANSFER 2",col:4,row:9,cs:1,rs:1,secs:["cncg","cnca"]});
+    out.push({label:"TRANSFER 1",col:5,row:9,cs:1,rs:1,secs:["cncg","cnca"]});
     return out;
   })();
   // Kroki kutu etiketleri sonradan değişebiliyor (ör. "CN 1"→"CNC 17"); eski etiketle
   // floorSlot yazılmış makineler yeni etiketle kutuyu bulmaya devam etsin diye eski→yeni
   // eşlemesi burada tutuluyor.
+  var FLOOR_GAPROWS=[3,6];
+  function floorGridStyle(boxes){
+    var mx=1; boxes.forEach(function(x){mx=Math.max(mx,x.row+x.rs-1)});
+    var r=[]; for(var i=1;i<=mx;i++)r.push(FLOOR_GAPROWS.indexOf(i)>-1?"var(--gh)":"var(--rh)");
+    return ' style="grid-template-rows:'+r.join(" ")+'"';
+  }
   var FLOOR_ALIAS={"CN 1":"CNC 17","CN 2":"CNC 18"};
   var floorMacId=null, floorLabel=null, floorSecsForNew=[], floorFrom="list";
   var jobDraftSec=null, jobCat=[], jobCatBusy=false, jobSearch="", jobCatalogCache={}, opAssignDraft=[];
@@ -2399,7 +2408,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         )+
         '<div class="note" style="margin-top:8px">'+(floorScope==="week"?'Kutucuklarda o haftaya ait planlanan/yapılan adet ve siparişten kalan görünür — plan Planlar ekranından veya bir makineye dokunup "Plan yap"tan girilir.':'Kutucuklarda o güne ait planlanan/yapılan adet ve siparişten kalan görünür — plan Planlar ekranından veya bir makineye dokunup "Plan yap"tan girilir.')+'</div>'+
         flZoomHtml()+
-        '<div class="'+flWrapCls()+'" style="margin-top:2px"><div class="floorgrid">'+fsHtml+'</div><div class="flabel">'+esc(sec.name)+'</div></div></div>';
+        '<div class="'+flWrapCls()+'" style="margin-top:2px"><div class="floorgrid"'+floorGridStyle(fsBoxes)+'>'+fsHtml+'</div><div class="flabel">'+esc(sec.name)+'</div></div></div>';
     }else if(sheetMode==="floorall"){
       // Planlar ekranından açılan, TÜM bölümlerin krokisini bir arada gösteren ekran:
       // gün/hafta gezip her makinenin planı/yapılanı/kalanını görmek ve oradan hem
@@ -2429,7 +2438,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         faGroups.map(function(g){
           var gname=g.secs.map(secNameOf).join(" + ");
           return '<div class="fl" style="margin-top:18px">'+esc(gname.toUpperCase())+'</div>'+
-            '<div class="'+flWrapCls()+'" style="margin-top:6px"><div class="floorgrid">'+g.boxes.map(function(s){return floorBoxHtml(s,floorScope)}).join("")+'</div><div class="flabel">'+esc(gname)+'</div></div>';
+            '<div class="'+flWrapCls()+'" style="margin-top:6px"><div class="floorgrid"'+floorGridStyle(g.boxes)+'>'+g.boxes.map(function(s){return floorBoxHtml(s,floorScope)}).join("")+'</div><div class="flabel">'+esc(gname)+'</div></div>';
         }).join("")+
         '</div>';
     }else{
@@ -4294,7 +4303,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function renderFloor(){
     var html=FLOOR_CIVATA.map(floorBoxHtml).join("");
-    $("stflist").innerHTML='<div class="floorwrap"><div class="floorgrid">'+html+'</div><div class="flabel">Rotil-Civata Bölümü</div></div>';
+    $("stflist").innerHTML='<div class="floorwrap"><div class="floorgrid"'+floorGridStyle(FLOOR_CIVATA)+'>'+html+'</div><div class="flabel">Rotil-Civata Bölümü</div></div>';
   }
   function loadJobCat(secId){
     if(jobCatalogCache[secId]){jobCat=jobCatalogCache[secId]; renderSheet(); return}
