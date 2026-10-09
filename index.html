@@ -613,6 +613,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .oc2 .oadd .step input{width:74px;height:44px;font-size:18px;background:var(--soft)}
 .oc2 .oadd .rembtn{border:0;border-radius:12px;background:var(--soft);color:var(--ink2);font:700 12px var(--font-ui);height:44px;padding:0 10px}
 .oc2 .planrm{display:block;margin-top:10px;margin-left:auto;border:0;background:none;color:var(--bad);font:700 12px var(--font-ui);text-decoration:underline;padding:4px 0}
+.oc2 .startbtn{display:block;width:100%;margin-top:8px;height:42px;border:2px dashed var(--sc);border-radius:12px;background:none;color:var(--sc);font:800 14px var(--font-head);cursor:pointer}
+.oc2 .startbtn small{font:600 11px var(--font-ui);opacity:.8}
+.oc2 .startnote{margin-top:8px;padding:9px 12px;border-radius:12px;background:rgba(46,160,90,.14);color:var(--good);font:700 12.5px var(--font-ui);text-align:center}
 .oc2 .oadd .addbtn{flex:1;height:44px;border-radius:12px;background:var(--sc);color:#fff;font:800 15px var(--font-head)}
 .ltop{gap:8px}
 .lthumb{flex:0 0 34px;width:34px;height:34px;border-radius:9px;object-fit:contain;background:#fff;border:1px solid var(--line);cursor:zoom-in}
@@ -751,7 +754,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.10 16:34</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 10:55</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2436,7 +2439,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             ((o.dd||t)?'<div class="odates">'+dueChip(o,x.fin)+(t?'<span class="tod">Bugün +'+nf.format(t)+'</span>':'')+'</div>':'')+
             '<div class="oadd"><div class="step"><button type="button" data-oqd="-1" data-oid="'+o.id+'" aria-label="Azalt">−</button><input type="number" inputmode="numeric" min="1" data-oq="'+o.id+'" value="'+aq+'" aria-label="Eklenecek adet"><button type="button" data-oqd="1" data-oid="'+o.id+'" aria-label="Artır">+</button></div>'+
             (rem?'<button type="button" class="rembtn" data-oqrem="'+o.id+'">Kalan</button>':'')+
-            '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div></div>';
+            '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div>'+startBtnHtml(o)+'</div>';
         }).join(""):'<div class="empty">'+(orders.length?"Bu bölüm için eşleşen sipariş yok.":"Henüz sipariş yok.<br>Ana ekrandaki “Siparişler” bölümünden sipariş gir.")+'</div>')+'</div>';
       }else if(addTab==="plan"){
         var si3=stageIdx(sec.id), wk3=curWeekKey(), pmap3=weekPlanMap(sec.id), rng3=planRange("week",wk3);
@@ -2458,7 +2461,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             (x.t?'<div class="odates"><span class="tod">Bugün +'+nf.format(x.t)+'</span></div>':'')+
             '<div class="oadd"><div class="step"><button type="button" data-oqd="-1" data-oid="'+o.id+'" aria-label="Azalt">−</button><input type="number" inputmode="numeric" min="1" data-oq="'+o.id+'" value="'+aq+'" aria-label="Eklenecek adet"><button type="button" data-oqd="1" data-oid="'+o.id+'" aria-label="Artır">+</button></div>'+
             (x.rem?'<button type="button" class="rembtn" data-oqrem="'+o.id+'">Kalan</button>':'')+
-            '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div></div>';
+            '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div>'+startBtnHtml(o)+'</div>';
         }).join(""):'<div class="empty">'+(Object.keys(pmap3).length?"Aramayla eşleşen planlı ürün yok.":"Bu hafta için bu bölümde plan girilmemiş.<br>“Plan” ile haftalık planını oluştur.")+'</div>')+'</div>';
       }else{
       var list=catalog.filter(function(x){return !q||x.code.toLowerCase().indexOf(q)>-1}).sort(function(a,b){return a.k-b.k||a.code.localeCompare(b.code,"tr")});
@@ -2609,6 +2612,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("sheet").addEventListener("click",function(e){
     var t=e.target.closest("button"); if(!t)return;
     if(t.dataset.tab){addTab=t.dataset.tab; renderSheet(); return}
+    if(t.dataset.startp){
+      var so=orders.filter(function(x){return x.id===t.dataset.startp})[0]; if(!so)return;
+      startOrderLine(so); var sc1=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc1; return;
+    }
     if(t.dataset.addo){
       var oo=orders.filter(function(x){return x.id===t.dataset.addo})[0]; if(!oo)return;
       addOrderLine(oo,addQ[oo.id]||1); addQ[oo.id]=1; var sc0=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc0; return;
@@ -3121,6 +3128,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
     applyRecipeUsage(o.code,n);
+  }
+  // "Üretime gir": sabah hangi ürünün yapılacağını, adet YAZMADAN güne ekler (adet akşam girilir).
+  function startBtnHtml(o){
+    var inDay=lines(selected).some(function(l){return l.o===o.id});
+    return inDay?'<div class="startnote">✓ Bugün üretimde — adedi günün listesinden gir</div>'
+      :'<button type="button" class="startbtn" data-startp="'+o.id+'">▶ Üretime gir <small>(adet akşam yazılır)</small></button>';
+  }
+  function startOrderLine(o){
+    var si=stageIdx(sec.id), k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), before=COLS.length, price=sec.id==="kaplama"?0:(+((o.pr||[])[si])||0);
+    var arr=lines(selected).slice();
+    if(arr.some(function(l){return l.o===o.id}))return false; // zaten bugün listede
+    arr.push({c:o.code,k:k,q:0,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:curMac||"",t:Date.now()});
+    logActivity(sec.name+": "+o.code+" üretime girdi (adet akşam girilecek)","prod",{oid:o.id,code:o.code,sec:sec.id});
+    lns[selected]=arr; touch(); renderLines();
+    if(COLS.length!==before)renderAll();
+    return true;
   }
   function addLine(it){
     var arr=lines(selected).slice(), hit=-1;
