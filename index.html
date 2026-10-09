@@ -41,7 +41,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);background-image:linear-gradient(180deg,var(--bg2),var(--bg) 380px);background-repeat:no-repeat;color:var(--ink);font-family:var(--font-ui);font-size:15px;padding-inline:16px;padding-block:16px 48px}
+body{background:var(--bg);background-image:linear-gradient(180deg,var(--bg2),var(--bg) 380px);background-repeat:no-repeat;color:var(--ink);font-family:var(--font-ui);font-size:15px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:max(calc(env(safe-area-inset-top,0px) + 20px),34px) calc(48px + env(safe-area-inset-bottom,0px))}
 .wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
@@ -825,7 +825,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .logoutrow button{background:none;border:0;color:var(--ink2);font:600 12.5px var(--font-ui);text-decoration:underline}
 /* Bilgisayar (geniş ekran): tam genişlik, iki sütun — solda özet kartı, sağda listeler. Telefon aynı kalır. */
 @media (min-width:1000px){
-  body{padding-inline:28px}
+  body{padding-inline:28px;padding-block-start:16px}
   .wrap{max-width:1600px}
   #home{max-width:1200px}
   .hcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
@@ -883,7 +883,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:25</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:26</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
