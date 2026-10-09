@@ -880,7 +880,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:16</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:19</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1351,6 +1351,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return a;
   }
   function sum(a){var t=0;for(var i=0;i<a.length;i++)t+=(a[i]||0);return t}
+  // Arama için Türkçe uyumlu normalleştirme: büyük/küçük harf, ı/İ/I → i, ş→s, ç→c, ğ→g, ö→o, ü→u
+  function fold(s){return String(s==null?"":s).replace(/[İIı]/g,"i").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
   function money(n){return nf.format(Math.round(n*100)/100)}
   function isoOf(d){return Y+"-"+pad(M+1)+"-"+pad(d)}
   function wd(d){return (new Date(Y,M,d).getDay()+6)%7}
@@ -1863,8 +1865,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // tıklayınca o güne gidilir. Geçmiş aylar Firestore'dan bir kez çekilip önbelleğe alınır.
   var gsCache={sec:null,data:null,promise:null}, gsToken=0;
   function lineMatchesQ(l,ql){
-    var catName=(COLS[l.k]||"").toLowerCase();
-    return (l.c||"").toLowerCase().indexOf(ql)>-1||(l.u||"").toLowerCase().indexOf(ql)>-1||catName.indexOf(ql)>-1;
+    var catName=fold(COLS[l.k]||"");
+    return fold(l.c||"").indexOf(ql)>-1||fold(l.u||"").indexOf(ql)>-1||catName.indexOf(ql)>-1;
   }
   function loadAllSectionLines(){
     if(gsCache.sec===sec.id&&gsCache.data)return Promise.resolve(gsCache.data);
@@ -1885,7 +1887,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return p;
   }
   function renderGlobalSearch(q){
-    var ql=q.trim().toLowerCase(), tok=++gsToken;
+    var ql=fold(q.trim()), tok=++gsToken;
     $("lines").innerHTML='<div class="empty">Aranıyor…</div>';
     loadAllSectionLines().then(function(hist){
       // Bu arada yeni bir arama başlamış ya da kutu temizlenip gün görünümüne dönülmüş olabilir —
@@ -2277,11 +2279,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var plCustList=[], seenPc={};
       plistAll.forEach(function(x){var cn=x.o.cust||""; if(cn&&!seenPc[cn.toLowerCase()]){seenPc[cn.toLowerCase()]=1;plCustList.push(cn)}});
       plCustList.sort(function(a,b){return a.localeCompare(b,"tr")});
-      var pq2=planSearch.trim().toLowerCase();
+      var pq2=fold(planSearch.trim());
       var plist=plistAll.filter(function(x){
         if(planFCat!==null&&x.o.cat!==planFCat)return false;
         if(planFCust&&(x.o.cust||"")!==planFCust)return false;
-        if(pq2&&(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).toLowerCase().indexOf(pq2)<0)return false;
+        if(pq2&&fold(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).indexOf(pq2)<0)return false;
         return true;
       }).sort(function(a,b){return (b.pq>0?1:0)-(a.pq>0?1:0)||(a.fin?1:0)-(b.fin?1:0)||((b.o.ts||0)-(a.o.ts||0))});
       html+='<div class="shead"><div><h2 id="sh-title">Plan</h2><small>'+esc(planLabel(planScope))+' · '+esc(sec.name)+' · hangi siparişten ne kadar üreteceksin?</small></div></div>';
@@ -2500,7 +2502,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else if(sheetMode==="jobassign"){
       var fm2=floorMacId?machinesList.filter(function(x){return x.id===floorMacId})[0]:null;
       var secsOpt=(fm2&&fm2.secs)||[];
-      var jq=jobSearch.trim().toLowerCase();
+      var jq=fold(jobSearch.trim());
       var jSecObj=SECTIONS.filter(function(x){return x.id===jobDraftSec})[0]; var jSc=jSecObj?jSecObj.h1:"#3B78E0";
       html+='<div class="shead"><div><h2 id="sh-title">İş ata</h2><small>'+esc(fm2?fm2.name:"")+'</small></div></div>'+
         '<div class="form">'+
@@ -2513,7 +2515,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         }else if(jobTab==="order"){
           var jsi=stageIdx(jobDraftSec);
           var jol=orders.filter(function(o){
-            return (o.st||[])[jsi]&&(!jq||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(jq)>-1);
+            return (o.st||[])[jsi]&&(!jq||fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(jq)>-1);
           }).map(function(o){var d=doneOf(o.id,jobDraftSec).q;return {o:o,d:d,nd:need(o,jobDraftSec),fin:d>=need(o,jobDraftSec)||stClosed(o,jsi)}})
             .sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))});
           html+='<div class="items">'+(jol.length?jol.map(function(x){
@@ -2529,7 +2531,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         }else if(jobTab==="plan"){
           var jwk=curWeekKey(), jpmap=weekPlanMap(jobDraftSec), jrng=planRange("week",jwk);
           var jpl=orders.filter(function(o){
-            return jpmap[o.id]!==undefined&&(!jq||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(jq)>-1);
+            return jpmap[o.id]!==undefined&&(!jq||fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(jq)>-1);
           }).map(function(o){
             var planQ=jpmap[o.id]||0, dn=doneOf(o.id,jobDraftSec), wdone=0;
             (dn.e||[]).forEach(function(en){if(jrng.indexOf(en.d)>-1)wdone+=en.q});
@@ -2546,7 +2548,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           }).join(""):'<div class="empty">'+(Object.keys(jpmap).length?"Aramayla eşleşen planlı ürün yok.":"Bu hafta için bu bölümde plan girilmemiş.")+'</div>')+'</div>';
         }else{
           html+='<div class="items">'+(jobCatBusy?'<div class="empty">Yükleniyor…</div>':(function(){
-            var jlist=jobCat.filter(function(x){return !jq||x.code.toLowerCase().indexOf(jq)>-1});
+            var jlist=jobCat.filter(function(x){return !jq||fold(x.code).indexOf(jq)>-1});
             return jlist.length?jlist.map(function(x){return '<button type="button" class="item d'+x.k+'" data-jpick="'+esc(x.code)+'">'+(x.img?'<img class="ithumb" alt="" src="'+x.img+'">':'')+'<span class="code">'+esc(x.code)+'</span></button>'}).join(""):'<div class="empty">'+(jobCat.length?"Aramayla eşleşen ürün yok.":"Bu bölümde henüz ürün tanımlı değil.")+'</div>';
           })())+'</div>';
         }
@@ -2611,7 +2613,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         }).join("")+
         '</div>';
     }else{
-      var q=search.trim().toLowerCase();
+      var q=fold(search.trim());
       var head='<div class="shead"><div><h2 id="sh-title">Ürün ekle</h2><small>'+title+' · adedi yaz ya da +/− ile ayarla, Ekle’ye bas</small></div><button class="btn" id="sdone">Bitti</button></div>'+
         '<div class="otabs" role="group"><button type="button" data-tab="order" aria-pressed="'+(addTab==="order")+'">Siparişlerden</button><button type="button" data-tab="plan" aria-pressed="'+(addTab==="plan")+'">Haftalık plandan</button><button type="button" data-tab="cat" aria-pressed="'+(addTab==="cat")+'">Ürün listesi</button></div>';
       var srch='<input class="search" id="ssearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod ara…" value="'+esc(search)+'" aria-label="Kod ara">';
@@ -2623,7 +2625,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(addTab==="order"){
         var si=stageIdx(sec.id);
         var ol=orders.filter(function(o){
-          return (o.st||[])[si]&&(!q||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(q)>-1);
+          return (o.st||[])[si]&&(!q||fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)>-1);
         }).map(function(o){var d=doneOf(o.id,sec.id).q;return {o:o,d:d,nd:need(o,sec.id),fin:d>=need(o,sec.id)||stClosed(o,si)}})
           .sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))});
         html+=head+emRow+srch+'<div class="items">'+(ol.length?ol.map(function(x){
@@ -2642,7 +2644,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       }else if(addTab==="plan"){
         var si3=stageIdx(sec.id), wk3=curWeekKey(), pmap3=weekPlanMap(sec.id), rng3=planRange("week",wk3);
         var pl=orders.filter(function(o){
-          return pmap3[o.id]!==undefined&&(!q||(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(q)>-1);
+          return pmap3[o.id]!==undefined&&(!q||fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)>-1);
         }).map(function(o){
           var planQ=pmap3[o.id]||0, dn3=doneOf(o.id,sec.id), wdone=0;
           (dn3.e||[]).forEach(function(en){if(rng3.indexOf(en.d)>-1)wdone+=en.q});
@@ -2662,7 +2664,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div>'+startBtnHtml(o)+'</div>';
         }).join(""):'<div class="empty">'+(Object.keys(pmap3).length?"Aramayla eşleşen planlı ürün yok.":"Bu hafta için bu bölümde plan girilmemiş.<br>“Plan” ile haftalık planını oluştur.")+'</div>')+'</div>';
       }else{
-      var list=catalog.filter(function(x){return !q||x.code.toLowerCase().indexOf(q)>-1}).sort(function(a,b){return a.k-b.k||a.code.localeCompare(b.code,"tr")});
+      var list=catalog.filter(function(x){return !q||fold(x.code).indexOf(q)>-1}).sort(function(a,b){return a.k-b.k||a.code.localeCompare(b.code,"tr")});
       html+=head+
         '<div class="custrow"><label class="fl" for="scust" style="font:700 12px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)">Kime yapıldı? (Müşteri)</label><div class="r"><select id="scust">'+custOptions(curCust)+'</select>'+
         '<button class="btn ghost" id="cnew">+ Yeni</button>'+(curCust&&customers.some(function(c){return c.name===curCust})?'<button class="btn ghost" id="cedit">Düzenle</button>':"")+'</div></div>'+
@@ -3966,7 +3968,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(ordScope==="month")$("omtitle").textContent=omLabel();
   }
   function renderOrders(){
-    var q=ordQ.trim().toLowerCase(), cards="", qtyAll=0, qtyDone=0;
+    var q=fold(ordQ.trim()), cards="", qtyAll=0, qtyDone=0;
     var list=orders.map(function(o){return {o:o,c:isComplete(o)}});
     list.forEach(function(x){qtyAll+=x.o.qty; if(x.c)qtyDone+=x.o.qty});
     // Üstteki üç toplam kutusu seçili döneme göre (Toplam ya da tek bir ay) hesaplanır,
@@ -4046,7 +4048,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("otOpen").setAttribute("aria-pressed",ordTab==="open"); $("otDone").setAttribute("aria-pressed",ordTab==="done"); $("otShip").setAttribute("aria-pressed",ordTab==="shipped");
     var tabList=list.filter(function(x){
       var match=ordTab==="done"?x.c:ordTab==="shipped"?!!x.o.shipped:!x.c;
-      return match&&(!q||(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).toLowerCase().indexOf(q)>-1);
+      return match&&(!q||fold(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).indexOf(q)>-1);
     });
     // Kategori çipleri: seçili sekme + aramaya göre her kategorideki sipariş sayısı; çipe basınca
     // sadece o kategorinin siparişleri listelenir (tekrar basınca ya da "Tümü" ile kalkar).
@@ -4240,8 +4242,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function renderStock(){
     $("stkcount").textContent=materials.length;
-    var q=matSearch.trim().toLowerCase();
-    var list=materials.filter(function(m){return !q||(m.name||"").toLowerCase().indexOf(q)>-1});
+    var q=fold(matSearch.trim());
+    var list=materials.filter(function(m){return !q||fold(m.name||"").indexOf(q)>-1});
     $("stklist").innerHTML=list.length?list.map(matRowHtml).join(""):'<div class="empty">'+(materials.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle.")+'</div>';
   }
   function adjustMaterialStock(id,delta){
@@ -4512,13 +4514,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     allD.forEach(function(d){var n=purchases.filter(function(x){return purDeptOf(x)===d&&purStOf(x)!=="geldi"}).length; dh+='<button type="button" data-pdept="'+esc(d)+'" aria-pressed="'+(purDept===d)+'"'+(n||purDept===d?'':' style="opacity:.55"')+'>'+esc(d)+(n?'<span class="n">'+n+'</span>':'')+'</button>'});
     $("purdepts").innerHTML=dh;
     $("purpick").innerHTML=purPickHtml();
-    var q=purSearch.trim().toLowerCase();
+    var q=fold(purSearch.trim());
     var list=purSorted(purchases.filter(function(x){
       var st=purStOf(x);
       if(!purFilterOk(x))return false;
       if(purFilter==="urgent"&&!(x.urgent&&st!=="geldi"))return false;
       if(purFilter!=="all"&&purFilter!=="urgent"&&st!==purFilter)return false;
-      return !q||(x.name||"").toLowerCase().indexOf(q)>-1||(x.note||"").toLowerCase().indexOf(q)>-1;
+      return !q||fold((x.name||"")+" "+(x.note||"")+" "+(x.firm||"")+" "+(x.loc||"")+" "+purDeptOf(x)).indexOf(q)>-1;
     }));
     $("purchlist").innerHTML=list.length?list.map(purCardHtml).join(""):'<div class="empty">'+(purchases.length?"Bu filtrede ihtiyaç yok.":"Henüz ihtiyaç girilmedi.<br>“+ Yeni ihtiyaç gir” ile ilkini ekle.")+'</div>';
   }
@@ -4679,12 +4681,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("ntobs").textContent=notesAll.length?(cnt.late?cnt.late+" gecikmiş · ":"")+(cnt.today?cnt.today+" bugün · ":"")+cnt.soon+" yaklaşan · "+cnt.done+" tamamlanan":"yapılacakları ve hatırlatmaları buraya yaz";
     var tabs=[["all","Hepsi",cnt.all],["today","Bugün",cnt.today],["soon","Yaklaşan",cnt.soon],["late","⏰ Gecikmiş",cnt.late],["done","Tamamlanan",cnt.done]];
     $("nttabs").innerHTML=tabs.map(function(t){return '<button type="button" data-nf="'+t[0]+'" aria-pressed="'+(noteFilter===t[0])+'">'+t[1]+' '+t[2]+'</button>'}).join("");
-    var q=noteSearch.trim().toLowerCase();
+    var q=fold(noteSearch.trim());
     var list=noteSorted(notesAll.filter(function(n){
       var b=noteBucket(n);
       if(noteFilter!=="all"&&b!==noteFilter)return false;
       if(!q)return true;
-      return ((n.title||"")+" "+(n.text||"")+" "+(n.items||[]).map(function(i){return i.t}).join(" ")).toLowerCase().indexOf(q)>-1;
+      return fold((n.title||"")+" "+(n.text||"")+" "+(n.items||[]).map(function(i){return i.t}).join(" ")).indexOf(q)>-1;
     }));
     $("notelist").innerHTML=list.length?list.map(noteCardHtml).join(""):'<div class="empty">'+(notesAll.length?"Bu filtrede not yok.":"Henüz notun yok.<br>“+ Yeni not” ile ilkini yaz.")+'</div>';
   }
@@ -6072,11 +6074,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var scope=planScope, k=scope==="day"?selected:curWeekKey(), rows="", tot={tq:0,dq:0,tp:0,dr:0};
     var navHtml=scope==="day"?('<div class="mnav" style="margin:-4px 0 14px"><button type="button" id="pvDayPrev" aria-label="Önceki gün">‹</button><h1 style="font-size:15px">'+(selected===todayIso?"Bugün":esc(isoDayLabel(selected)))+'</h1><button type="button" id="pvDayNext" aria-label="Sonraki gün">›</button></div>'+
       (selected!==todayIso?'<button type="button" class="tbtn" id="pvDayToday" style="margin:-8px auto 14px;display:block">Bugüne dön</button>':'')):"";
-    var vq=planVQ.trim().toLowerCase();
+    var vq=fold(planVQ.trim());
     SECTIONS.forEach(function(x){
       var pr=planProgressFor(x.id,scope,k); if(!pr.tq)return;
       tot.tq+=pr.tq; tot.dq+=pr.dq; tot.tp+=pr.tp; tot.dr+=pr.dr;
-      var vItems=vq?pr.items.filter(function(it){var o=it.o; return (o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).toLowerCase().indexOf(vq)>-1}):pr.items;
+      var vItems=vq?pr.items.filter(function(it){var o=it.o; return fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(vq)>-1}):pr.items;
       if(vq&&!vItems.length)return;
       var pc=Math.round(pr.dq/pr.tq*100), open=vq?true:!!plOpenSec[x.id];
       rows+='<section class="card pvcard">'+
