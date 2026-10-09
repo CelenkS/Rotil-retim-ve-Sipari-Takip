@@ -566,6 +566,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .purc .pnote{margin-top:6px;font:600 12px var(--font-ui);color:var(--ink2);font-style:italic}
 .purc .pthumb{width:56px;height:56px;flex:0 0 56px;border-radius:12px;background:#fff;object-fit:contain;border:1px solid var(--line);cursor:zoom-in}
 .purc .phead{display:flex;gap:10px;min-width:0;flex:1}
+.pickcard{background:var(--surface);border:2px solid #C0392B;border-radius:18px;padding:14px;margin:10px 0}
+.pickcard .pkh{font:800 17px var(--font-head)}
+.pickcard .pks{margin-top:3px;font:600 12px var(--font-ui);color:var(--ink2)}
+.pickcard .pkr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.pickcard .pkr:first-of-type{margin-top:8px}
+.pickcard .pkt{width:40px;height:40px;flex:0 0 40px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line)}
+.pickcard .pkn{flex:1;min-width:0;font:800 14px/1.2 var(--font-head);overflow-wrap:anywhere}
+.pickcard .pkn small{display:block;margin-top:3px;font:600 11px var(--font-ui);color:var(--ink2)}
+.pickcard .pkn small.w{color:#B7791F}
+.pickcard .pkq{font:800 17px var(--font-num);white-space:nowrap;text-align:right}
+.pickcard .pkq i{display:block;font:700 10px var(--font-ui);font-style:normal;color:var(--ink2)}
+.pickcard .pkr.urg .pkn{color:var(--bad)}
+#purlocs button .n{opacity:.75;margin-left:4px}
 .urgtog{display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px 14px;font:800 14px var(--font-ui);color:inherit;cursor:pointer;text-align:left}
 .urgtog[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
 .hcard.ordc.purchc{border-color:rgba(214,58,58,.55)}
@@ -814,7 +827,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 11:33</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 11:38</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -981,6 +994,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="obig"><span class="obl">Bekleyen ihtiyaç</span><b id="purcount">0</b><span class="obs" id="purobs">üretimin ihtiyaçlarını gir, sipariş ve geliş durumunu takip et</span></div>
   </section>
   <div class="otabs" id="purtabs" role="group" aria-label="Durum filtresi" style="flex-wrap:wrap;border-radius:18px"></div>
+  <div class="chiprow" id="purlocs" style="margin-top:8px"></div>
+  <div id="purpick"></div>
   <input class="search" id="pursearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün ara…" aria-label="Ürün ara" style="margin-top:8px">
   <button class="btn" id="purnew" style="width:100%;margin-top:8px">+ Yeni ihtiyaç gir</button>
   <div id="purchlist" style="margin-top:10px"></div>
@@ -1162,7 +1177,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // {id,name,unit,stock,crit,note} tutar — bölümlerden bağımsız, TEK ortak havuz (bir ürünün
   // reçetesi başka bölümde üretilen bir ürünü de (ör. Aşık) malzeme olarak gösterebiliyor).
   // Her katalog ürününün "rec" alanı [{m:malzemeId,q:1birim için gereken miktar}] listesidir.
-  var purchases=[], unsubPur=null, purFilter="all", purSearch="", purEditId=null, purSecDraft="", purUrgDraft=false, purDelArm=false, purImgTh="", purImgFull=null, purImgDirty=false, purImgCache={};
+  var purchases=[], unsubPur=null, purFilter="all", purSearch="", purEditId=null, purSecDraft="", purUrgDraft=false, purDelArm=false, purImgTh="", purImgFull=null, purImgDirty=false, purImgCache={}, purLocs=[], purLoc="", purLocDraft="", purLocEdit=false, purMetaOn=false;
   var materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
   // Elemanlar (personel) ve makineler — bölümlerden bağımsız iki ortak Firestore koleksiyonu.
   // Bir eleman birden fazla bölümde/makinede çalışabiliyor (secs/machines birer id listesi).
@@ -2299,6 +2314,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div class="dgrid"><div><label class="fl" for="pfqty">Miktar</label><input class="fin" id="pfqty" type="number" inputmode="decimal" min="0" step="any" placeholder="0" value="'+(pu.qty||"")+'"></div><div><label class="fl" for="pfunit">Birim</label><input class="fin" id="pfunit" autocomplete="off" placeholder="adet, kg, m" value="'+esc(pu.unit||"adet")+'"></div></div>'+
         '<div><span class="fl">Ürün görseli (isteğe bağlı)</span><div class="imgpick"><div class="pv" id="pfpv">'+(purImgTh?'<img alt="" src="'+purImgTh+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:16px">':'Görsel yok')+'</div><div style="display:flex;flex-direction:column;gap:6px"><label class="btn ghost" for="pfcam">📷 Fotoğraf çek</label><input id="pfcam" type="file" accept="image/*" capture="environment"><label class="btn ghost" for="pfgal">🖼 Galeriden seç</label><input id="pfgal" type="file" accept="image/*"><button type="button" class="btn ghost" id="pfimgrm"'+(purImgTh?'':' hidden')+'>Görseli kaldır</button></div></div></div>'+
         '<div class="dgrid"><div><label class="fl" for="pfreq">İhtiyaç girildiği tarih</label><input class="fin" id="pfreq" type="date" value="'+esc(pu.req||isoToday())+'"></div><div><label class="fl" for="pfdue">Gelmesi gereken tarih</label><input class="fin" id="pfdue" type="date" value="'+esc(pu.due||"")+'"></div></div>'+
+        '<div><span class="fl">Nereden alınacak (yer)</span><div class="chiprow" id="pflocs">'+purLocChipsHtml()+'</div>'+
+        '<div style="display:flex;gap:6px;margin-top:8px"><input class="fin" id="pfnewloc" autocomplete="off" placeholder="Yeni yer yaz (ör. İkitelli)" style="flex:1"><button type="button" class="btn ghost" id="pfaddloc" style="flex:0 0 auto">+ Ekle</button></div>'+
+        '<button type="button" class="pedit" id="pflocedit" style="margin-top:6px">'+(purLocEdit?'bitti':'yerleri düzenle')+'</button></div>'+
         '<div><span class="fl">Hangi bölüm için (isteğe bağlı)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-pfsec="'+x.id+'" aria-pressed="'+(purSecDraft===x.id)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         '<div><button type="button" class="urgtog" id="pfurg" aria-pressed="'+purUrgDraft+'"><span>🚨</span><span>ACİL — kırmızı işaretle</span></button></div>'+
         '<div><label class="fl" for="pfnote">Not</label><textarea class="fin" id="pfnote" rows="2" placeholder="ör. ölçü, tedarikçi, hangi sipariş için…">'+esc(pu.note||"")+'</textarea></div>'+
@@ -2965,6 +2983,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     if(t.dataset.pfsec!==undefined){purSecDraft=(purSecDraft===t.dataset.pfsec)?"":t.dataset.pfsec; var pfs=document.querySelectorAll("[data-pfsec]"); for(var pi=0;pi<pfs.length;pi++)pfs[pi].setAttribute("aria-pressed",pfs[pi].dataset.pfsec===purSecDraft); return}
     if(t.id==="pfurg"||(t.closest&&t.closest("#pfurg"))){purUrgDraft=!purUrgDraft; $("pfurg").setAttribute("aria-pressed",purUrgDraft); return}
+    if(t.dataset.pfloc!==undefined){purLocDraft=(purLocDraft===t.dataset.pfloc)?"":t.dataset.pfloc; $("pflocs").innerHTML=purLocChipsHtml(); return}
+    if(t.id==="pfaddloc"){
+      var nin=$("pfnewloc"), nv2=nin.value.trim(); if(!nv2){nin.focus();return}
+      if(purAllLocs().indexOf(nv2)<0)purSaveLocs(purLocs.concat([nv2]));
+      purLocDraft=nv2; nin.value=""; $("pflocs").innerHTML=purLocChipsHtml(); return;
+    }
+    if(t.id==="pflocedit"){purLocEdit=!purLocEdit; t.textContent=purLocEdit?"bitti":"yerleri düzenle"; $("pflocs").innerHTML=purLocChipsHtml(); return}
+    if(t.dataset.pfdelloc!==undefined){
+      var dl=t.dataset.pfdelloc;
+      if(purchases.some(function(x){return x.loc===dl})){t.textContent="Kayıtlı ihtiyaç var, silinemez"; return}
+      purSaveLocs(purLocs.filter(function(x){return x!==dl})); if(purLocDraft===dl)purLocDraft="";
+      $("pflocs").innerHTML=purLocChipsHtml(); return;
+    }
     if(t.id==="pfimgrm"){purImgTh="";purImgFull=null;purImgDirty=true;$("pfpv").innerHTML="Görsel yok";t.hidden=true;return}
     if(t.id==="pfcancel"){purEditId=null;sheetMode="list";closeSheet();return}
     if(t.id==="pfsave"){purFormSave();return}
@@ -4191,6 +4222,51 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       paintPurchHome();
       if(!$("purch").hidden)renderPurch();
     },function(){});
+    if(!purMetaOn){
+      purMetaOn=true;
+      db.doc("purchmeta/main").onSnapshot(function(sn){
+        var dd=sn.exists?sn.data():null; purLocs=(dd&&dd.locs&&dd.locs.length)?dd.locs.slice():[];
+        if(!$("purch").hidden)renderPurch();
+        var pl=$("pflocs"); if(pl)pl.innerHTML=purLocChipsHtml();
+      },function(){});
+    }
+  }
+  function purAllLocs(){
+    var out=purLocs.slice();
+    purchases.forEach(function(x){if(x.loc&&out.indexOf(x.loc)<0)out.push(x.loc)});
+    return out;
+  }
+  function purSaveLocs(arr){
+    purLocs=arr;
+    if(db)db.doc("purchmeta/main").set({locs:arr},{merge:true}).catch(function(){$("purstatus").textContent="Yer kaydedilemedi, tekrar dene"});
+  }
+  function purLocChipsHtml(){
+    var all=purAllLocs();
+    if(!all.length)return '<span class="pm" style="font:600 12px var(--font-ui);color:var(--ink2)">Henüz yer yok — aşağıya yazıp ekle (ör. İkitelli, Bayrampaşa)</span>';
+    return all.map(function(l){
+      return purLocEdit?'<button type="button" data-pfdelloc="'+esc(l)+'" aria-pressed="false">'+esc(l)+' ✕</button>':'<button type="button" data-pfloc="'+esc(l)+'" aria-pressed="'+(purLocDraft===l)+'">'+esc(l)+'</button>';
+    }).join("");
+  }
+  function purPickHtml(){
+    if(!purLoc)return "";
+    var rows=purchases.filter(function(x){return purStOf(x)!=="geldi"&&(purLoc==="__none"?!x.loc:x.loc===purLoc)});
+    var title=purLoc==="__none"?"Yeri seçilmemiş":purLoc;
+    if(!rows.length)return '<div class="pickcard"><div class="pkh">📍 '+esc(title)+'</div><div class="pks">Burada alınacak bekleyen bir şey yok.</div></div>';
+    var g={}, keys=[];
+    rows.forEach(function(x){
+      var k=(x.name||"").trim().toLowerCase()+"|"+(x.unit||"adet").toLowerCase();
+      if(!g[k]){g[k]={name:x.name,unit:x.unit||"adet",q:0,n:0,ord:0,wait:0,urg:false,th:""};keys.push(k)}
+      var o=g[k]; o.q+=(+x.qty||0); o.n++; if(purStOf(x)==="siparis")o.ord++; else o.wait++; if(x.urgent)o.urg=true; if(!o.th&&x.th)o.th=x.th;
+    });
+    keys.sort(function(a,b){var A=g[a],B=g[b]; if(A.urg!==B.urg)return A.urg?-1:1; if((A.wait>0)!==(B.wait>0))return A.wait>0?1:-1; return (A.name||"").localeCompare(B.name||"","tr")});
+    var totOrd=rows.filter(function(x){return purStOf(x)==="siparis"}).length;
+    return '<div class="pickcard"><div class="pkh">📍 '+esc(title)+' — alınacaklar</div>'+
+      '<div class="pks">'+keys.length+' kalem · '+rows.length+' ihtiyaç · '+totOrd+' sipariş edildi'+(rows.length-totOrd?' · '+(rows.length-totOrd)+' henüz verilmedi':'')+'</div>'+
+      keys.map(function(k){var o=g[k];
+        return '<div class="pkr'+(o.urg?' urg':'')+'">'+(o.th?'<img class="pkt" alt="" src="'+o.th+'">':'')+
+          '<div class="pkn">'+(o.urg?'🚨 ':'')+esc(o.name)+'<small'+(o.wait?' class="w"':'')+'>'+o.n+' ihtiyaç'+(o.ord?' · '+o.ord+' sipariş edildi':'')+(o.wait?' · '+o.wait+' henüz sipariş verilmedi':'')+'</small></div>'+
+          '<div class="pkq">'+(o.q?nf.format(o.q):'—')+'<i>'+esc(o.unit)+'</i></div></div>';
+      }).join("")+'</div>';
   }
   function paintPurchHome(){
     var el=$("hs-purch"); if(!el)return;
@@ -4221,6 +4297,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var st=purStOf(x), done=st==="geldi", urg=!!x.urgent&&!done, dt=x.due?daysTo(x.due):null, late=!done&&dt!==null&&dt<0;
     var badges='';
     if(urg)badges+='<span class="pbd acil">🚨 ACİL</span>';
+    if(x.loc)badges+='<span class="pbd">📍 '+esc(x.loc)+'</span>';
     badges+='<span class="pbd '+(done?'ok':(st==="siparis"?'ord':'wait'))+'">'+(done?'✓ ':'')+PUR_ST[st]+'</span>';
     if(!done&&dt!==null){
       if(late)badges+='<span class="pbd late">'+(-dt)+' gün gecikti</span>';
@@ -4247,9 +4324,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("purobs").textContent=purchases.length?(nv+" verilmedi · "+ns+" sipariş edildi · "+ng+" geldi"+(nu?" · "+nu+" acil":"")):"üretimin ihtiyaçlarını gir, sipariş ve geliş durumunu takip et";
     var tabs=[["all","Hepsi",purchases.length],["urgent","🚨 Acil",nu],["verilmedi","Verilmedi",nv],["siparis","Sipariş edildi",ns],["geldi","Geldi",ng]];
     $("purtabs").innerHTML=tabs.map(function(t){return '<button type="button" data-pf="'+t[0]+'" aria-pressed="'+(purFilter===t[0])+'">'+t[1]+' '+t[2]+'</button>'}).join("");
+    var allL=purAllLocs(), noneN=purchases.filter(function(x){return !x.loc&&purStOf(x)!=="geldi"}).length;
+    var lh='<button type="button" data-ploc="" aria-pressed="'+(purLoc==="")+'">📍 Tüm yerler</button>';
+    allL.forEach(function(l){var n=purchases.filter(function(x){return x.loc===l&&purStOf(x)!=="geldi"}).length; lh+='<button type="button" data-ploc="'+esc(l)+'" aria-pressed="'+(purLoc===l)+'">'+esc(l)+'<span class="n">'+n+'</span></button>'});
+    if(noneN&&allL.length)lh+='<button type="button" data-ploc="__none" aria-pressed="'+(purLoc==="__none")+'">Yeri yok<span class="n">'+noneN+'</span></button>';
+    $("purlocs").innerHTML=allL.length?lh:"";
+    if(purLoc&&purLoc!=="__none"&&allL.indexOf(purLoc)<0)purLoc="";
+    $("purpick").innerHTML=purPickHtml();
     var q=purSearch.trim().toLowerCase();
     var list=purSorted(purchases.filter(function(x){
       var st=purStOf(x);
+      if(purLoc&&(purLoc==="__none"?!!x.loc:x.loc!==purLoc))return false;
       if(purFilter==="urgent"&&!(x.urgent&&st!=="geldi"))return false;
       if(purFilter!=="all"&&purFilter!=="urgent"&&st!==purFilter)return false;
       return !q||(x.name||"").toLowerCase().indexOf(q)>-1||(x.note||"").toLowerCase().indexOf(q)>-1;
@@ -4268,7 +4353,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   $("purback").addEventListener("click",purchHome);
   $("pursearch").addEventListener("input",function(e){purSearch=e.target.value;renderPurch()});
-  $("purnew").addEventListener("click",function(){purEditId=null;purSecDraft="";purUrgDraft=false;purDelArm=false;purImgTh="";purImgFull=null;purImgDirty=false;sheetMode="purchform";$("ov").hidden=false;renderSheet();});
+  $("purnew").addEventListener("click",function(){purEditId=null;purSecDraft="";purUrgDraft=false;purDelArm=false;purImgTh="";purImgFull=null;purImgDirty=false;purLocDraft=(purLoc&&purLoc!=="__none")?purLoc:"";purLocEdit=false;sheetMode="purchform";$("ov").hidden=false;renderSheet();});
+  $("purlocs").addEventListener("click",function(e){var b=e.target.closest("[data-ploc]"); if(!b)return; purLoc=b.dataset.ploc; renderPurch()});
   $("purtabs").addEventListener("click",function(e){var b=e.target.closest("[data-pf]"); if(!b)return; purFilter=b.dataset.pf; renderPurch()});
   function purShowImg(id,thumb){
     var d=document.createElement("div"); d.className="lbx"; d.innerHTML='<img alt="" src="'+thumb+'">';
@@ -4285,15 +4371,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var eb=e.target.closest("[data-pedit]");
     if(eb){
       purEditId=eb.dataset.pedit; var x=purchases.filter(function(y){return y.id===purEditId})[0]||{};
-      purSecDraft=x.sec||""; purUrgDraft=!!x.urgent; purDelArm=false; purImgTh=x.th||""; purImgFull=null; purImgDirty=false;
+      purSecDraft=x.sec||""; purUrgDraft=!!x.urgent; purDelArm=false; purImgTh=x.th||""; purImgFull=null; purImgDirty=false; purLocDraft=x.loc||""; purLocEdit=false;
       sheetMode="purchform"; $("ov").hidden=false; renderSheet();
     }
   });
   function purFormSave(){
     var name=$("pfname").value.trim(); if(!name){$("pfname").focus();return}
     if(!db){$("purstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+    var nl=$("pfnewloc")?$("pfnewloc").value.trim():"";
+    if(nl&&!purLocDraft){ if(purAllLocs().indexOf(nl)<0)purSaveLocs(purLocs.concat([nl])); purLocDraft=nl }
     var qty=$("pfqty").value?cleanNum($("pfqty").value,99999999,false):0;
-    var data={name:name,qty:qty||0,unit:$("pfunit").value.trim()||"adet",sec:purSecDraft||"",urgent:!!purUrgDraft,
+    var data={name:name,qty:qty||0,unit:$("pfunit").value.trim()||"adet",sec:purSecDraft||"",loc:purLocDraft||"",urgent:!!purUrgDraft,
       req:$("pfreq").value||isoToday(),due:$("pfdue").value||"",note:$("pfnote").value.trim()};
     var pid=purEditId;
     if(purImgDirty)data.th=purImgTh||"";
