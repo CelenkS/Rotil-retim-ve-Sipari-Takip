@@ -532,6 +532,44 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .matrow .mu{font:600 12px var(--font-ui);color:var(--ink2)}
 .matrow .mstock{font:800 17px var(--font-num)}
 .matrow .mstock.low{color:var(--bad)}
+
+/* ---------- Satın alma ---------- */
+.purc{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px 12px 18px;margin-bottom:10px;overflow:hidden}
+.purc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:#9AA3B2}
+.purc.s-siparis::before{background:#E69138}
+.purc.s-geldi{background:rgba(22,133,90,.12);border-color:rgba(22,133,90,.55)}
+.purc.s-geldi::before{background:var(--good)}
+.purc.urg{background:rgba(214,58,58,.10);border-color:var(--bad)}
+.purc.urg::before{background:var(--bad)}
+.purc .ptop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.purc .pn{font:800 16px/1.2 var(--font-head);overflow-wrap:anywhere}
+.purc .pq{font:800 15px var(--font-num);white-space:nowrap}
+.purc .pm{margin-top:4px;font:600 12px var(--font-ui);color:var(--ink2);line-height:1.5}
+.purc .pm b{color:inherit}
+.purc .pbadges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.purc .pbd{display:inline-block;border-radius:99px;padding:3px 10px;font:800 11px var(--font-ui);letter-spacing:.03em;background:var(--soft);color:var(--ink2)}
+.purc .pbd.acil{background:var(--bad);color:#fff}
+.purc .pbd.late{background:rgba(214,58,58,.16);color:var(--bad)}
+.purc .pbd.ok{background:var(--good);color:#fff}
+.purc .pbd.ord{background:rgba(230,145,56,.2);color:#B7791F}
+.purc .pbd.wait{background:var(--soft);color:var(--ink2)}
+.purc .pdates{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.purc .pdates div{background:var(--bg2);border-radius:10px;padding:6px 10px;font:600 11px var(--font-ui);color:var(--ink2)}
+.purc .pdates b{display:block;font:800 13px var(--font-num);color:var(--ink)}
+.purc.s-geldi .pdates div{background:rgba(22,133,90,.12)}
+.purc .pseg{display:flex;gap:6px;margin-top:10px}
+.purc .pseg button{flex:1;border:1.5px solid var(--line);background:var(--bg2);border-radius:12px;padding:10px 4px;font:800 12px var(--font-ui);color:var(--ink2);cursor:pointer}
+.purc .pseg button[aria-pressed="true"][data-pst="verilmedi"]{background:#6B7385;border-color:#6B7385;color:#fff}
+.purc .pseg button[aria-pressed="true"][data-pst="siparis"]{background:#E69138;border-color:#E69138;color:#fff}
+.purc .pseg button[aria-pressed="true"][data-pst="geldi"]{background:var(--good);border-color:var(--good);color:#fff}
+.purc .pedit{border:0;background:none;color:var(--ink2);font:700 12px var(--font-ui);text-decoration:underline;padding:2px 0;cursor:pointer}
+.purc .pnote{margin-top:6px;font:600 12px var(--font-ui);color:var(--ink2);font-style:italic}
+.urgtog{display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px 14px;font:800 14px var(--font-ui);color:inherit;cursor:pointer;text-align:left}
+.urgtog[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
+.hcard.ordc.purchc{border-color:rgba(214,58,58,.55)}
+.hcard.ordc.purchc::after{background:rgba(214,58,58,.16)}
+.hcard.ordc.purchc .hk,.hcard.ordc.purchc .go{color:#FF8A8A}
+@media (min-width:1000px){#purchlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;align-items:start}#purchlist .purc{margin-bottom:0}#purchlist .empty{grid-column:1/-1}}
 .matrow .madj{display:flex;align-items:center;gap:8px;margin-top:10px}
 .matrow .madj input{flex:1;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);padding:0 10px;font:700 15px var(--font-num);color:inherit}
 .matrow .madj button{height:40px;padding:0 14px;border-radius:10px;border:0;font:700 13px var(--font-ui);cursor:pointer}
@@ -774,7 +812,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 11:10</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 11:25</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -934,6 +972,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="stkneednote" hidden></div>
   <div id="stklist"></div>
   <div class="status" id="stkstatus"></div>
+</div>
+<div class="wrap" id="purch" hidden style="--hero1:#C0392B;--hero2:#7B1F16">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Satın alma</div><button class="tbtn" id="purback">‹ Bölümler</button></div>
+    <div class="obig"><span class="obl">Bekleyen ihtiyaç</span><b id="purcount">0</b><span class="obs" id="purobs">üretimin ihtiyaçlarını gir, sipariş ve geliş durumunu takip et</span></div>
+  </section>
+  <div class="otabs" id="purtabs" role="group" aria-label="Durum filtresi" style="flex-wrap:wrap;border-radius:18px"></div>
+  <input class="search" id="pursearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün ara…" aria-label="Ürün ara" style="margin-top:8px">
+  <button class="btn" id="purnew" style="width:100%;margin-top:8px">+ Yeni ihtiyaç gir</button>
+  <div id="purchlist" style="margin-top:10px"></div>
+  <div class="status" id="purstatus"></div>
 </div>
 <div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
   <section class="hero ohero">
@@ -1111,6 +1160,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // {id,name,unit,stock,crit,note} tutar — bölümlerden bağımsız, TEK ortak havuz (bir ürünün
   // reçetesi başka bölümde üretilen bir ürünü de (ör. Aşık) malzeme olarak gösterebiliyor).
   // Her katalog ürününün "rec" alanı [{m:malzemeId,q:1birim için gereken miktar}] listesidir.
+  var purchases=[], unsubPur=null, purFilter="all", purSearch="", purEditId=null, purSecDraft="", purUrgDraft=false, purDelArm=false;
   var materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
   // Elemanlar (personel) ve makineler — bölümlerden bağımsız iki ortak Firestore koleksiyonu.
   // Bir eleman birden fazla bölümde/makinede çalışabiliyor (secs/machines birer id listesi).
@@ -2239,6 +2289,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="mtnote">Not</label><textarea class="fin" id="mtnote" rows="2" placeholder="ör. tedarikçi, ölçü…">'+esc(mt.note||"")+'</textarea></div>'+
         (matEditId?'<div class="note">Stok miktarını değiştirmek için listedeki “+ Giriş / − Çıkış” butonlarını kullan — buradan sadece ad/birim/kritik seviye/not düzenlenir.</div>':'')+
         '<div class="frow"><button class="btn" id="mtsave">Kaydet</button><button class="btn ghost" id="mtcancel">Vazgeç</button>'+(matEditId?'<button class="btn danger" id="mtdel">Malzemeyi sil</button>':"")+'</div></div>';
+    }else if(sheetMode==="purchform"){
+      var pu=purchases.filter(function(x){return x.id===purEditId})[0]||{name:"",qty:"",unit:"adet",note:"",req:isoToday(),due:""};
+      html+='<div class="shead"><div><h2 id="sh-title">'+(purEditId?"İhtiyacı düzenle":"Yeni ihtiyaç")+'</h2><small>Üretimin satın almadan istediği ürün / malzeme</small></div></div>'+
+        '<div class="form">'+
+        '<div><label class="fl" for="pfname">Ürün / malzeme</label><input class="fin" id="pfname" list="pfdl" autocomplete="off" placeholder="ör. Dövme, Toz lastik, Somun" value="'+esc(pu.name)+'"><datalist id="pfdl">'+materials.map(function(m){return '<option value="'+esc(m.name)+'">'}).join("")+'</datalist></div>'+
+        '<div class="dgrid"><div><label class="fl" for="pfqty">Miktar</label><input class="fin" id="pfqty" type="number" inputmode="decimal" min="0" step="any" placeholder="0" value="'+(pu.qty||"")+'"></div><div><label class="fl" for="pfunit">Birim</label><input class="fin" id="pfunit" autocomplete="off" placeholder="adet, kg, m" value="'+esc(pu.unit||"adet")+'"></div></div>'+
+        '<div class="dgrid"><div><label class="fl" for="pfreq">İhtiyaç girildiği tarih</label><input class="fin" id="pfreq" type="date" value="'+esc(pu.req||isoToday())+'"></div><div><label class="fl" for="pfdue">Gelmesi gereken tarih</label><input class="fin" id="pfdue" type="date" value="'+esc(pu.due||"")+'"></div></div>'+
+        '<div><span class="fl">Hangi bölüm için (isteğe bağlı)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-pfsec="'+x.id+'" aria-pressed="'+(purSecDraft===x.id)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
+        '<div><button type="button" class="urgtog" id="pfurg" aria-pressed="'+purUrgDraft+'"><span>🚨</span><span>ACİL — kırmızı işaretle</span></button></div>'+
+        '<div><label class="fl" for="pfnote">Not</label><textarea class="fin" id="pfnote" rows="2" placeholder="ör. ölçü, tedarikçi, hangi sipariş için…">'+esc(pu.note||"")+'</textarea></div>'+
+        '<div class="frow"><button class="btn" id="pfsave">Kaydet</button><button class="btn ghost" id="pfcancel">Vazgeç</button>'+(purEditId?'<button class="btn danger" id="pfdel">'+(purDelArm?"Emin misin? Tekrar dokun":"Sil")+'</button>':"")+'</div></div>';
     }else if(sheetMode==="empform"){
       var em=employees.filter(function(x){return x.id===empEditId})[0]||{name:"",note:""};
       var empMacSeen={}, empMacOptions=empSecsDraft.reduce(function(acc,sid){return acc.concat(machinesInSec(sid))},[]).filter(function(m){return empMacSeen[m.id]?false:(empMacSeen[m.id]=1)});
@@ -2512,6 +2573,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(sheetMode==="form"){var f=$("fcode"); if(f&&!editId)f.focus()}
     if(sheetMode==="cform"){var g=$("cname"); if(g&&!editCust)g.focus()}
     if(sheetMode==="matform"){var mn=$("mtname"); if(mn&&!matEditId)mn.focus()}
+    if(sheetMode==="purchform"){var pn=$("pfname"); if(pn&&!purEditId)pn.focus()}
     if(sheetMode==="empform"){var en=$("emname"); if(en&&!empEditId)en.focus()}
     if(sheetMode==="macform"){var mcn=$("mcname"); if(mcn&&!macEditId)mcn.focus()}
   }
@@ -2897,6 +2959,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(db)db.doc("catimg/"+sec.id+"_"+editId).delete().catch(function(){});
       delete catImgCache[sec.id+"_"+editId];
       saveCatalog(); sheetMode="list"; editId=null; renderSheet(); return;
+    }
+    if(t.dataset.pfsec!==undefined){purSecDraft=(purSecDraft===t.dataset.pfsec)?"":t.dataset.pfsec; var pfs=document.querySelectorAll("[data-pfsec]"); for(var pi=0;pi<pfs.length;pi++)pfs[pi].setAttribute("aria-pressed",pfs[pi].dataset.pfsec===purSecDraft); return}
+    if(t.id==="pfurg"||(t.closest&&t.closest("#pfurg"))){purUrgDraft=!purUrgDraft; $("pfurg").setAttribute("aria-pressed",purUrgDraft); return}
+    if(t.id==="pfcancel"){purEditId=null;sheetMode="list";closeSheet();return}
+    if(t.id==="pfsave"){purFormSave();return}
+    if(t.id==="pfdel"){
+      if(!purDelArm){purDelArm=true; t.textContent="Emin misin? Tekrar dokun"; return}
+      if(db&&purEditId)db.doc("purchases/"+purEditId).delete().catch(function(){});
+      purEditId=null; purDelArm=false; closeSheet(); return;
     }
     if(t.id==="mtcancel"){sheetMode="list";matEditId=null;closeSheet();return}
     if(t.id==="mtsave"){
@@ -3843,7 +3914,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openOrders(){
     dbP.then(function(){
-      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
       watchOrders(); watchMaterials(); loadMCatalog(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -3854,7 +3925,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   /* ---------- bildirimler: yeni sipariş / üretim girişi / tamamlama / gönderim gibi
      olayların düştüğü paylaşımlı, canlı akış (herkesin cihazında aynı liste) ---------- */
   var unsubNotifs=null;
-  var NF_ICON={order:"🧾",prod:"📦",complete:"✅",ship:"🚚",info:"🔔"};
+  var NF_ICON={order:"🧾",prod:"📦",complete:"✅",ship:"🚚",info:"🔔",buy:"🛒"};
   function whoAmI(){
     try{var u=firebase.auth&&firebase.auth().currentUser; return u&&u.email?u.email.split("@")[0]:""}catch(e){return ""}
   }
@@ -3910,12 +3981,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(code&&orders.some(function(o){return (o.code||"").toLowerCase().trim()===code.toLowerCase().trim()}))return {k:"code",code:code};
     if(secId&&SECTIONS.some(function(x){return x.id===secId}))return {k:"sec",id:secId};
     if(/^Stok (girişi|çıkışı)/.test(tx))return {k:"stock"};
+    if(/^Satın alma/.test(tx))return {k:"purch"};
     return null;
   }
   function nfGo(a){
     var tg=nfTarget(a); if(!tg)return;
     $("notifs").hidden=true;
     if(tg.k==="stock"){openStock();return}
+    if(tg.k==="purch"){openPurch();return}
     if(tg.k==="sec"){enterSection(tg.id);return}
     openOrders();
     var tries=0;
@@ -3969,7 +4042,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("nflist").innerHTML=items.length?items.map(function(a,ix){return nfRowHtml(a,ix,false)}).join(""):'<div class="empty">Henüz bir işlem yok.</div>';
   }
   function openNotifs(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
     renderNotifs(nfCache);
     $("nfstatus").textContent=db?"Güncel":"Bağlantı yok — sadece bu cihazda görülenler";
     try{localStorage.setItem("montaj:nfseen",String(Date.now()))}catch(e){}
@@ -4007,7 +4080,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function stockHome(){
-    $("stock").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+    $("stock").hidden=true; $("purch").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   function matRowHtml(m){
     var stock=+m.stock||0, low=m.crit&&stock<=+m.crit, needQ=matNeed?(matNeed[m.id]||0):null, deficit=needQ!==null?Math.max(0,needQ-stock):null;
@@ -4101,6 +4174,123 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!v)return;
     adjustMaterialStock(id,sign*v); inp.value="";
   });
+  /* ---------- satın alma ---------- */
+  // "purchases" koleksiyonu: üretimin girdiği ihtiyaçlar. Alanların hepsi düz (iç içe map yok),
+  // durum değişimleri sadece ilgili alanlara update() ile yazılır.
+  // status: "verilmedi" (sipariş verilmedi) → "siparis" (sipariş edildi) → "geldi" (geldi)
+  var PUR_ST={verilmedi:"Verilmedi",siparis:"Sipariş edildi",geldi:"Geldi"};
+  function purStOf(x){return x.status==="geldi"?"geldi":(x.status==="siparis"?"siparis":"verilmedi")}
+  function watchPurch(){
+    if(unsubPur||!db)return;
+    unsubPur=db.collection("purchases").onSnapshot(function(snap){
+      purchases=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+      paintPurchHome();
+      if(!$("purch").hidden)renderPurch();
+    },function(){});
+  }
+  function paintPurchHome(){
+    var el=$("hs-purch"); if(!el)return;
+    var open=purchases.filter(function(x){return purStOf(x)!=="geldi"}), urg=open.filter(function(x){return x.urgent}).length;
+    el.textContent=purchases.length?(open.length+" bekleyen"+(urg?" · "+urg+" acil":"")):"İhtiyaç girişi ve sipariş takibi";
+  }
+  function openPurch(){
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
+    watchPurch(); watchMaterials(); renderPurch();
+    $("purstatus").textContent=db?"Güncel":"Bağlantı yok — kaydedilemez";
+  }
+  function purchHome(){
+    $("purch").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+  }
+  function purSorted(list){
+    return list.slice().sort(function(a,b){
+      var ga=purStOf(a)==="geldi"?1:0, gb=purStOf(b)==="geldi"?1:0;
+      if(ga!==gb)return ga-gb;
+      if(ga){return (b.arrDate||"").localeCompare(a.arrDate||"")}
+      if(!!a.urgent!==!!b.urgent)return a.urgent?-1:1;
+      var da=a.due||"9999", db2=b.due||"9999";
+      if(da!==db2)return da<db2?-1:1;
+      return (b.ts||0)-(a.ts||0);
+    });
+  }
+  function purDateTxt(iso){if(!iso)return "—"; var a=iso.split("-"); return (+a[2])+" "+AY[+a[1]-1]}
+  function purCardHtml(x){
+    var st=purStOf(x), done=st==="geldi", urg=!!x.urgent&&!done, dt=x.due?daysTo(x.due):null, late=!done&&dt!==null&&dt<0;
+    var badges='';
+    if(urg)badges+='<span class="pbd acil">🚨 ACİL</span>';
+    badges+='<span class="pbd '+(done?'ok':(st==="siparis"?'ord':'wait'))+'">'+(done?'✓ ':'')+PUR_ST[st]+'</span>';
+    if(!done&&dt!==null){
+      if(late)badges+='<span class="pbd late">'+(-dt)+' gün gecikti</span>';
+      else badges+='<span class="pbd">'+(dt===0?'bugün gelmeli':dt+' gün kaldı')+'</span>';
+    }
+    var d3=done?('<div>Geldiği tarih<b>'+purDateTxt(x.arrDate)+'</b></div>'):('<div>Sipariş verildiği<b>'+(st==="siparis"?purDateTxt(x.ordDate):'henüz verilmedi')+'</b></div>');
+    var q=(+x.qty||0)?nf.format(+x.qty)+' '+esc(x.unit||"adet"):'';
+    var secName=x.sec?secNameOf(x.sec):"";
+    return '<div class="purc s-'+st+(urg?' urg':'')+'">'+
+      '<div class="ptop"><div><div class="pn">'+esc(x.name)+'</div>'+
+      '<div class="pm">'+(secName?esc(secName)+' için':'Üretim ihtiyacı')+(x.by?' · '+esc(x.by):'')+'</div></div><div class="pq">'+q+'</div></div>'+
+      '<div class="pbadges">'+badges+'</div>'+
+      '<div class="pdates"><div>İhtiyaç girildi<b>'+purDateTxt(x.req)+'</b></div><div>Gelmesi gereken<b'+(late?' style="color:var(--bad)"':'')+'>'+purDateTxt(x.due)+'</b></div>'+d3+'<div>Durum<b>'+PUR_ST[st]+'</b></div></div>'+
+      (x.note?'<div class="pnote">“'+esc(x.note)+'”</div>':'')+
+      '<div class="pseg" role="group" aria-label="Durum">'+
+        ['verilmedi','siparis','geldi'].map(function(k){return '<button type="button" data-pst="'+k+'" data-pid="'+x.id+'" aria-pressed="'+(st===k)+'">'+PUR_ST[k]+'</button>'}).join("")+'</div>'+
+      '<div style="margin-top:8px;text-align:right"><button type="button" class="pedit" data-pedit="'+x.id+'">düzenle</button></div></div>';
+  }
+  function renderPurch(){
+    var openN=purchases.filter(function(x){return purStOf(x)!=="geldi"}).length;
+    $("purcount").textContent=openN;
+    var nv=0,ns=0,ng=0,nu=0;
+    purchases.forEach(function(x){var st=purStOf(x); if(st==="verilmedi")nv++; else if(st==="siparis")ns++; else ng++; if(x.urgent&&st!=="geldi")nu++});
+    $("purobs").textContent=purchases.length?(nv+" verilmedi · "+ns+" sipariş edildi · "+ng+" geldi"+(nu?" · "+nu+" acil":"")):"üretimin ihtiyaçlarını gir, sipariş ve geliş durumunu takip et";
+    var tabs=[["all","Hepsi",purchases.length],["urgent","🚨 Acil",nu],["verilmedi","Verilmedi",nv],["siparis","Sipariş edildi",ns],["geldi","Geldi",ng]];
+    $("purtabs").innerHTML=tabs.map(function(t){return '<button type="button" data-pf="'+t[0]+'" aria-pressed="'+(purFilter===t[0])+'">'+t[1]+' '+t[2]+'</button>'}).join("");
+    var q=purSearch.trim().toLowerCase();
+    var list=purSorted(purchases.filter(function(x){
+      var st=purStOf(x);
+      if(purFilter==="urgent"&&!(x.urgent&&st!=="geldi"))return false;
+      if(purFilter!=="all"&&purFilter!=="urgent"&&st!==purFilter)return false;
+      return !q||(x.name||"").toLowerCase().indexOf(q)>-1||(x.note||"").toLowerCase().indexOf(q)>-1;
+    }));
+    $("purchlist").innerHTML=list.length?list.map(purCardHtml).join(""):'<div class="empty">'+(purchases.length?"Bu filtrede ihtiyaç yok.":"Henüz ihtiyaç girilmedi.<br>“+ Yeni ihtiyaç gir” ile ilkini ekle.")+'</div>';
+  }
+  function purSetStatus(id,st){
+    if(!db){$("purstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+    var x=purchases.filter(function(y){return y.id===id})[0]; if(!x||purStOf(x)===st)return;
+    var patch={status:st};
+    if(st==="verilmedi"){patch.ordDate="";patch.arrDate=""}
+    else if(st==="siparis"){patch.ordDate=isoToday();patch.arrDate=""}
+    else{patch.arrDate=isoToday(); if(!x.ordDate)patch.ordDate=isoToday()}
+    db.doc("purchases/"+id).update(patch).catch(function(){$("purstatus").textContent="Kaydedilemedi, tekrar dene"});
+    if(st!=="verilmedi")logActivity("Satın alma: "+x.name+(+x.qty?" · "+nf.format(+x.qty)+" "+(x.unit||"adet"):"")+(st==="siparis"?" sipariş edildi":" geldi"),"buy");
+  }
+  $("purback").addEventListener("click",purchHome);
+  $("pursearch").addEventListener("input",function(e){purSearch=e.target.value;renderPurch()});
+  $("purnew").addEventListener("click",function(){purEditId=null;purSecDraft="";purUrgDraft=false;purDelArm=false;sheetMode="purchform";$("ov").hidden=false;renderSheet();});
+  $("purtabs").addEventListener("click",function(e){var b=e.target.closest("[data-pf]"); if(!b)return; purFilter=b.dataset.pf; renderPurch()});
+  $("purchlist").addEventListener("click",function(e){
+    var sb=e.target.closest("[data-pst]");
+    if(sb){purSetStatus(sb.dataset.pid,sb.dataset.pst);return}
+    var eb=e.target.closest("[data-pedit]");
+    if(eb){
+      purEditId=eb.dataset.pedit; var x=purchases.filter(function(y){return y.id===purEditId})[0]||{};
+      purSecDraft=x.sec||""; purUrgDraft=!!x.urgent; purDelArm=false;
+      sheetMode="purchform"; $("ov").hidden=false; renderSheet();
+    }
+  });
+  function purFormSave(){
+    var name=$("pfname").value.trim(); if(!name){$("pfname").focus();return}
+    if(!db){$("purstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+    var qty=$("pfqty").value?cleanNum($("pfqty").value,99999999,false):0;
+    var data={name:name,qty:qty||0,unit:$("pfunit").value.trim()||"adet",sec:purSecDraft||"",urgent:!!purUrgDraft,
+      req:$("pfreq").value||isoToday(),due:$("pfdue").value||"",note:$("pfnote").value.trim()};
+    if(purEditId){
+      db.doc("purchases/"+purEditId).update(data).catch(function(){$("purstatus").textContent="Kaydedilemedi, tekrar dene"});
+    }else{
+      data.status="verilmedi"; data.ordDate=""; data.arrDate=""; data.by=whoAmI(); data.ts=Date.now();
+      db.collection("purchases").add(data).catch(function(){$("purstatus").textContent="Kaydedilemedi, tekrar dene"});
+      logActivity("Satın alma ihtiyacı: "+name+(qty?" · "+nf.format(qty)+" "+data.unit:"")+(data.urgent?" · ACİL":"")+(data.due?" · "+purDateTxt(data.due)+" tarihine kadar":""),"buy");
+    }
+    purEditId=null; closeSheet();
+  }
   /* ---------- elemanlar / makineler ---------- */
   function watchEmployees(){
     if(unsubEmp||!db)return;
@@ -4168,7 +4358,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
   }
   function openStaff(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
     empPerf={};
     watchEmployees(); watchMachinesList(); renderStaff();
     $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
@@ -5416,7 +5606,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openPlansScreen(){
     dbP.then(function(){
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null; planVQ=""; if($("pvsearch"))$("pvsearch").value="";
-      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
+      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -5692,6 +5882,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function buildHome(){
     $("hcards").innerHTML='<button type="button" class="hcard ordc" data-orders="1"><div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
+      '<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Elemanlar</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
       SECTIONS.map(function(x){
@@ -5727,7 +5918,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
       gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
-      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("staff").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
       if(db)watchCatalog();
       if(!catsSaved&&!db){promptShown=true;openCats()}
@@ -5741,8 +5932,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff]"); if(!b)return;
-    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else enterSection(b.dataset.sec);
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch]"); if(!b)return;
+    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else if(b.dataset.purch)openPurch(); else enterSection(b.dataset.sec);
   });
   $("back").addEventListener("click",goHome);
 
@@ -5903,7 +6094,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 
   setBrk(brkTab);
   orders=lsOrdersGet().map(normOrder);
-  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchMaterials();watchEmployees();watchMachinesList()});
+  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchMaterials();watchPurch();watchEmployees();watchMachinesList()});
 })();
 </script>
 
