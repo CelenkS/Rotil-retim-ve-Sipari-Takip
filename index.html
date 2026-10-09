@@ -628,6 +628,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .nfrow{display:flex;gap:6px;margin-top:6px}
 .nfrow .fin{flex:1;height:42px}
 .nfrow button{flex:0 0 42px;border:1.5px solid var(--line);background:var(--bg2);border-radius:12px;font:800 15px var(--font-ui);color:var(--ink2);cursor:pointer}
+.hcard.ordc.prodc{border-color:rgba(15,139,141,.65)}
+.hcard.ordc.prodc::after{background:rgba(15,139,141,.2)}
+.hcard.ordc.prodc .hk,.hcard.ordc.prodc .go{color:#2EC4C6}
+.hback{width:100%;text-align:left}
+@media (min-width:1000px){.hcards .hback{grid-column:1/-1;width:auto;justify-self:start;padding:0 18px}}
 .hcard.ordc.notec{border-color:rgba(250,204,21,.6)}
 .hcard.ordc.notec::after{background:rgba(250,204,21,.15)}
 .hcard.ordc.notec .hk,.hcard.ordc.notec .go{color:#FACC15}
@@ -866,7 +871,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 </div>
 
 <div class="wrap" id="home">
-  <div class="homehead"><div class="eyebrow">Günlük adet ve ciro defteri</div><h1>Bölüm seç</h1><p>Hangi bölümün kaydını gireceksin?</p>
+  <div class="homehead"><div class="eyebrow">Günlük adet ve ciro defteri</div><h1 id="homeh1">Ana sayfa</h1><p id="homep">Ne yapmak istiyorsun?</p>
     <button type="button" class="bellbtn" id="bellbtn" aria-label="Bildirimler" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nfbadge" id="nfbadge" hidden></span></button>
     <div class="nfpop" id="nfpop" hidden><div class="nfph"><b>Bildirimler</b><button type="button" id="nfall">Tümünü gör ›</button></div><div id="nfpoplist"></div></div>
   </div>
@@ -883,7 +888,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:26</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:33</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1069,7 +1074,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   </section>
   <div class="otabs" id="nttabs" role="group" aria-label="Not filtresi" style="flex-wrap:wrap;border-radius:18px"></div>
   <input class="search" id="ntsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Notlarda ara…" aria-label="Notlarda ara" style="margin-top:8px">
-  <button class="btn" id="ntnew" style="width:100%;margin-top:8px">+ Yeni not</button>
+  <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="ntnew" style="flex:1">+ Yeni not</button><button class="btn ghost" id="ntrefresh" style="flex:0 0 auto" aria-label="Yenile">↻ Yenile</button></div>
   <div id="notelist" style="margin-top:10px"></div>
   <div class="status" id="ntstatus"></div>
 </div>
@@ -4614,14 +4619,25 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!ts)return ""; var d=new Date(ts);
     return d.getDate()+" "+AY[d.getMonth()]+" "+pad(d.getHours())+":"+pad(d.getMinutes());
   }
-  function watchNotes(){
+  var noteErr="", noteSynced=false;
+  function noteInfoTxt(){
+    var me=myEmail();
+    return (me?"Giriş: "+me:"Giriş bilgisi alınamadı")+" · "+notesAll.length+" not"+(noteSynced?" · sunucuyla eşleşti":" · bağlanıyor…")+(noteErr?" · HATA: "+noteErr:"");
+  }
+  function watchNotes(force){
+    if(force&&unsubNote){try{unsubNote()}catch(e){} unsubNote=null}
     if(unsubNote||!db)return;
     var me=myEmail(); if(!me)return;
-    unsubNote=db.collection("usernotes").where("owner","==",me).onSnapshot(function(snap){
-      notesAll=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(n){return n.owner===me});
+    noteErr=""; noteSynced=false;
+    unsubNote=db.collection("usernotes").where("owner","==",me).onSnapshot({includeMetadataChanges:true},function(snap){
+      noteSynced=!snap.metadata||!snap.metadata.fromCache;
+      notesAll=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(n){return (n.owner||"").toLowerCase().trim()===me});
       paintNotesHome();
       if(!$("notes").hidden)renderNotes();
-    },function(){});
+    },function(err){
+      noteErr=(err&&(err.code||err.message))||"bilinmeyen"; unsubNote=null;
+      if(!$("notes").hidden)renderNotes();
+    });
   }
   function noteBucket(n){
     if(n.done)return "done";
@@ -4638,7 +4654,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openNotes(){
     closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
     watchNotes(); renderNotes();
-    $("ntstatus").textContent=db?"Güncel":"Bağlantı yok — kaydedilemez";
+    $("ntstatus").textContent=db?noteInfoTxt():"Bağlantı yok — kaydedilemez";
   }
   function notesHome(){
     $("notes").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
@@ -4681,6 +4697,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     notesAll.forEach(function(n){var b=noteBucket(n); cnt.all++; if(b==="done")cnt.done++; else if(b==="late")cnt.late++; else if(b==="today")cnt.today++; else if(b==="soon")cnt.soon++});
     var open=cnt.all-cnt.done;
     $("ntcount").textContent=open;
+    if(db)$("ntstatus").textContent=noteInfoTxt();
     $("ntobs").textContent=notesAll.length?(cnt.late?cnt.late+" gecikmiş · ":"")+(cnt.today?cnt.today+" bugün · ":"")+cnt.soon+" yaklaşan · "+cnt.done+" tamamlanan":"yapılacakları ve hatırlatmaları buraya yaz";
     var tabs=[["all","Hepsi",cnt.all],["today","Bugün",cnt.today],["soon","Yaklaşan",cnt.soon],["late","⏰ Gecikmiş",cnt.late],["done","Tamamlanan",cnt.done]];
     $("nttabs").innerHTML=tabs.map(function(t){return '<button type="button" data-nf="'+t[0]+'" aria-pressed="'+(noteFilter===t[0])+'">'+t[1]+' '+t[2]+'</button>'}).join("");
@@ -4727,6 +4744,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar / araçlar ▴":"⚙ Ayarlar / araçlar ▾";
   });
   $("ntback").addEventListener("click",notesHome);
+  $("ntrefresh").addEventListener("click",function(){watchNotes(true);renderNotes()});
   $("ntnew").addEventListener("click",function(){noteOpenForm(null)});
   $("ntsearch").addEventListener("input",function(e){noteSearch=e.target.value;renderNotes()});
   $("nttabs").addEventListener("click",function(e){var b=e.target.closest("[data-nf]"); if(!b)return; noteFilter=b.dataset.nf; renderNotes()});
@@ -6351,17 +6369,31 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var el=$("hs-"+id); if(!el)return;
     el.textContent=AY[now.getMonth()]+": "+((sm&&(sm.a||sm.r))?nf.format(sm.a)+" adet · "+money(sm.r)+" ₺":"henüz kayıt yok");
   }
+  var homeView="main";
   function buildHome(){
-    $("hcards").innerHTML='<button type="button" class="hcard ordc" data-orders="1"><div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>'+
-      '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
-      '<button type="button" class="hcard ordc notec" data-notes="1"><div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>'+
-      '<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>'+
-      '<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>'+
-      '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Elemanlar</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
-      SECTIONS.map(function(x){
-      return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'"><div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
-    }).join("");
+    var ordersC='<button type="button" class="hcard ordc" data-orders="1"><div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>';
+    var notesC='<button type="button" class="hcard ordc notec" data-notes="1"><div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>';
+    var purchC='<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>';
+    var stockC='<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>';
+    var prodC='<button type="button" class="hcard ordc prodc" data-prod="1"><div><div class="hk">Günlük kayıt · plan · ekip</div><div class="hn">Üretim</div><div class="hs">Bölümler, planlar ve elemanlar</div></div><span class="go">›</span></button>';
+    if(homeView==="prod"){
+      $("homeh1").textContent="Üretim"; $("homep").textContent="Hangi bölümün kaydını gireceksin?";
+      $("hcards").innerHTML='<button type="button" class="btn ghost hback" data-homeback="1">‹ Ana sayfa</button>'+
+        '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
+        '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Elemanlar</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
+        SECTIONS.map(function(x){
+          return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'"><div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
+        }).join("");
+    }else{
+      $("homeh1").textContent="Ana sayfa"; $("homep").textContent="Ne yapmak istiyorsun?";
+      $("hcards").innerHTML=ordersC+notesC+purchC+stockC+prodC;
+    }
     paintOrdersHome();
+  }
+  function setHomeView(v){
+    homeView=v; buildHome(); window.scrollTo(0,0);
+    try{paintStockHome();paintPurchHome();paintNotesHome();paintStaffHome()}catch(e){}
+    refreshHome();
   }
   function refreshHome(){
     SECTIONS.forEach(function(x){
@@ -6405,7 +6437,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes]"); if(!b)return;
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes],[data-prod],[data-homeback]"); if(!b)return;
+    if(b.dataset.prod){setHomeView("prod");return}
+    if(b.dataset.homeback){setHomeView("main");return}
     if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else if(b.dataset.purch)openPurch(); else if(b.dataset.notes)openNotes(); else enterSection(b.dataset.sec);
   });
   $("back").addEventListener("click",goHome);
