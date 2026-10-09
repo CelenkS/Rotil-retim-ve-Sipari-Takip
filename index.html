@@ -598,6 +598,40 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .pickcard .pksub .pbd.late{background:rgba(214,58,58,.16);color:var(--bad)}
 .pickcard .pksub .pbd.ord{background:rgba(230,145,56,.2);color:#B7791F}
 #purlocs button .n,#purdepts button .n{opacity:.75;margin-left:4px}
+/* ---------- Notlarım ---------- */
+.nt{position:relative;--nc:#9AA3B2;background:var(--surface);border:1.5px solid var(--line);border-left:7px solid var(--nc);border-radius:16px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.nt.has{background:color-mix(in srgb,var(--nc) 9%,var(--surface))}
+.nt.done{opacity:.62}
+.nt.done .ntt{text-decoration:line-through}
+.nt.late{border-color:var(--bad)}
+.nt .nth{display:flex;align-items:flex-start;gap:10px}
+.nt .nck{flex:0 0 28px;width:28px;height:28px;border-radius:50%;border:2px solid var(--nc);background:var(--bg2);color:#fff;font:800 15px/1 var(--font-ui);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.nt.done .nck{background:var(--good);border-color:var(--good)}
+.nt .ntt{flex:1;min-width:0;font:800 16px/1.25 var(--font-head);overflow-wrap:anywhere}
+.nt .ntp{flex:0 0 auto;font-size:15px}
+.nt .ntx{margin-top:6px;font:600 13.5px/1.5 var(--font-ui);color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.nt .nci{display:flex;align-items:flex-start;gap:9px;width:100%;border:0;background:none;padding:5px 0;text-align:left;font:600 13.5px/1.35 var(--font-ui);color:inherit;cursor:pointer}
+.nt .nci i{flex:0 0 20px;width:20px;height:20px;border-radius:6px;border:2px solid var(--nc);display:flex;align-items:center;justify-content:center;font:800 12px/1 var(--font-ui);font-style:normal;color:#fff;margin-top:1px}
+.nt .nci.on i{background:var(--good);border-color:var(--good)}
+.nt .nci.on span{text-decoration:line-through;color:var(--ink2)}
+.nt .nbar{height:5px;border-radius:9px;background:var(--soft);margin-top:8px;overflow:hidden}
+.nt .nbar b{display:block;height:100%;background:var(--good)}
+.nt .nft{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px}
+.nt .nbd{display:inline-block;border-radius:99px;padding:3px 10px;font:800 11px var(--font-ui);background:var(--soft);color:var(--ink2)}
+.nt .nbd.late{background:var(--bad);color:#fff}
+.nt .nbd.today{background:#E69138;color:#fff}
+.nt .nbd.ok{background:rgba(22,133,90,.18);color:var(--good)}
+.nt .nmeta{margin-top:7px;font:600 11px var(--font-ui);color:var(--ink2)}
+.ncols{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ncols button{width:34px;height:34px;border-radius:50%;border:3px solid transparent;background:var(--nc);padding:0;cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+.ncols button[aria-pressed="true"]{border-color:var(--ink)}
+.nfrow{display:flex;gap:6px;margin-top:6px}
+.nfrow .fin{flex:1;height:42px}
+.nfrow button{flex:0 0 42px;border:1.5px solid var(--line);background:var(--bg2);border-radius:12px;font:800 15px var(--font-ui);color:var(--ink2);cursor:pointer}
+.hcard.ordc.notec{border-color:rgba(250,204,21,.6)}
+.hcard.ordc.notec::after{background:rgba(250,204,21,.15)}
+.hcard.ordc.notec .hk,.hcard.ordc.notec .go{color:#FACC15}
+@media (min-width:1000px){#notelist{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;align-items:start}#notelist .nt{margin-bottom:0}#notelist .empty{grid-column:1/-1}}
 .urgtog{display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px 14px;font:800 14px var(--font-ui);color:inherit;cursor:pointer;text-align:left}
 .urgtog[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
 .hcard.ordc.purchc{border-color:rgba(214,58,58,.55)}
@@ -846,7 +880,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:04</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -946,6 +980,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="otabs" role="group" aria-label="Sipariş durumu"><button id="otOpen" aria-pressed="true">Açık</button><button id="otDone" aria-pressed="false">Tamamlanan</button><button id="otShip" aria-pressed="false">Gönderilen</button></div>
     <div class="osearch"><input class="search" id="osearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara…" aria-label="Sipariş ara"><button class="btn ghost" id="oref" aria-label="Yenile">Yenile</button></div>
     <div class="ocatf" id="ocatf" role="group" aria-label="Kategori filtresi"></div>
+    <button class="btn ghost" id="osetbtn" aria-expanded="false" style="width:100%;margin-top:8px">⚙ Ayarlar / araçlar ▾</button>
+    <div id="oset" hidden>
     <div class="osearch" style="margin-top:8px">
       <button class="btn ghost" id="oimport" style="flex:1">⇧ İçe aktar (Excel/CSV)</button>
       <button class="btn ghost" id="oexport" style="flex:1">⇩ Dışa aktar (CSV)</button>
@@ -967,6 +1003,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="impnote" id="fixcatnote" hidden></div>
     <button class="btn ghost" id="odelall" style="width:100%;margin-top:8px;color:var(--bad)">🗑 Tüm siparişleri sil</button>
     <div class="impnote" id="odelnote" hidden></div>
+    </div>
     <div class="ocards" id="ocards"></div>
   </section>
   <div class="status" id="ostatus"></div>
@@ -1020,6 +1057,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <button class="btn" id="purnew" style="width:100%;margin-top:8px">+ Yeni ihtiyaç gir</button>
   <div id="purchlist" style="margin-top:10px"></div>
   <div class="status" id="purstatus"></div>
+</div>
+<div class="wrap" id="notes" hidden style="--hero1:#B8860B;--hero2:#6B4E06">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Sadece sana özel</div><button class="tbtn" id="ntback">‹ Bölümler</button></div>
+    <div class="obig"><span class="obl">Açık notlarım</span><b id="ntcount">0</b><span class="obs" id="ntobs">yapılacakları ve hatırlatmaları buraya yaz</span></div>
+  </section>
+  <div class="otabs" id="nttabs" role="group" aria-label="Not filtresi" style="flex-wrap:wrap;border-radius:18px"></div>
+  <input class="search" id="ntsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Notlarda ara…" aria-label="Notlarda ara" style="margin-top:8px">
+  <button class="btn" id="ntnew" style="width:100%;margin-top:8px">+ Yeni not</button>
+  <div id="notelist" style="margin-top:10px"></div>
+  <div class="status" id="ntstatus"></div>
 </div>
 <div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
   <section class="hero ohero">
@@ -1197,6 +1245,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // {id,name,unit,stock,crit,note} tutar — bölümlerden bağımsız, TEK ortak havuz (bir ürünün
   // reçetesi başka bölümde üretilen bir ürünü de (ör. Aşık) malzeme olarak gösterebiliyor).
   // Her katalog ürününün "rec" alanı [{m:malzemeId,q:1birim için gereken miktar}] listesidir.
+  var notesAll=[], unsubNote=null, noteFilter="all", noteSearch="", noteEditId=null, noteColor="", notePin=false, noteDone=false, noteDelArm=false;
+  var NOTE_COLS=["","#E69138","#D63A3A","#16855A","#2A6FB0","#8E5BD9","#C79A00"];
   var purchases=[], unsubPur=null, purFilter="all", purSearch="", purEditId=null, purSecDraft="", purUrgDraft=false, purDelArm=false, purImgTh="", purImgFull=null, purImgDirty=false, purImgCache={}, purLocs=[], purDept="", purLoc="", purLocDraft="", purLocEdit=false, purMetaOn=false;
   var materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
   // Elemanlar (personel) ve makineler — bölümlerden bağımsız iki ortak Firestore koleksiyonu.
@@ -2341,6 +2391,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><button type="button" class="urgtog" id="pfurg" aria-pressed="'+purUrgDraft+'"><span>🚨</span><span>ACİL — kırmızı işaretle</span></button></div>'+
         '<div><label class="fl" for="pfnote">Not</label><textarea class="fin" id="pfnote" rows="2" placeholder="ör. ölçü, tedarikçi, hangi sipariş için…">'+esc(pu.note||"")+'</textarea></div>'+
         '<div class="frow"><button class="btn" id="pfsave">Kaydet</button><button class="btn ghost" id="pfcancel">Vazgeç</button>'+(purEditId?'<button class="btn danger" id="pfdel">'+(purDelArm?"Emin misin? Tekrar dokun":"Sil")+'</button>':"")+'</div></div>';
+    }else if(sheetMode==="noteform"){
+      var nt=notesAll.filter(function(x){return x.id===noteEditId})[0]||{title:"",text:"",items:[],due:"",time:""};
+      html+='<div class="shead"><div><h2 id="sh-title">'+(noteEditId?"Notu düzenle":"Yeni not")+'</h2><small>Bu not sadece sana görünür</small></div></div>'+
+        '<div class="form">'+
+        '<div><label class="fl" for="nftitle">Başlık</label><input class="fin" id="nftitle" autocomplete="off" placeholder="ör. Pazartesi toplantı hazırlığı" value="'+esc(nt.title||"")+'"></div>'+
+        '<div><label class="fl" for="nftext">Not</label><textarea class="fin" id="nftext" rows="4" placeholder="Notunu yaz…">'+esc(nt.text||"")+'</textarea></div>'+
+        '<div><span class="fl">Kontrol listesi (isteğe bağlı)</span><div id="nfitems">'+(nt.items||[]).map(function(i){return noteItemRowHtml(i.t,i.d)}).join("")+'</div><button type="button" class="btn ghost" id="nfaddi" style="width:100%;margin-top:8px">+ Madde ekle</button></div>'+
+        '<div class="dgrid"><div><label class="fl" for="nfdue">Tarih (hatırlatma)</label><input class="fin" id="nfdue" type="date" value="'+esc(nt.due||"")+'"></div><div><label class="fl" for="nftime">Saat</label><input class="fin" id="nftime" type="time" value="'+esc(nt.time||"")+'"></div></div>'+
+        '<div><span class="fl">Renk</span><div class="ncols">'+NOTE_COLS.map(function(c){return '<button type="button" data-nfcol="'+c+'" aria-label="Renk" aria-pressed="'+(noteColor===c)+'" style="--nc:'+(c||'#C9D1DC')+'"></button>'}).join("")+'</div></div>'+
+        '<div class="dgrid"><button type="button" class="urgtog" id="nfpin" aria-pressed="'+notePin+'" style="'+(notePin?'background:#C79A00;border-color:#C79A00;color:#fff':'')+'"><span>📌</span><span>Sabitle</span></button>'+
+        '<button type="button" class="urgtog" id="nfdone" aria-pressed="'+noteDone+'" style="'+(noteDone?'background:var(--good);border-color:var(--good);color:#fff':'')+'"><span>✓</span><span>Kontrol edildi</span></button></div>'+
+        '<div class="frow"><button class="btn" id="nfsave">Kaydet</button><button class="btn ghost" id="nfcancel">Vazgeç</button>'+(noteEditId?'<button class="btn danger" id="nfdel">Sil</button>':"")+'</div></div>';
     }else if(sheetMode==="empform"){
       var em=employees.filter(function(x){return x.id===empEditId})[0]||{name:"",note:""};
       var empMacSeen={}, empMacOptions=empSecsDraft.reduce(function(acc,sid){return acc.concat(machinesInSec(sid))},[]).filter(function(m){return empMacSeen[m.id]?false:(empMacSeen[m.id]=1)});
@@ -2615,6 +2677,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(sheetMode==="cform"){var g=$("cname"); if(g&&!editCust)g.focus()}
     if(sheetMode==="matform"){var mn=$("mtname"); if(mn&&!matEditId)mn.focus()}
     if(sheetMode==="purchform"){var pn=$("pfname"); if(pn&&!purEditId)pn.focus()}
+    if(sheetMode==="noteform"){var ntf=$("nftitle"); if(ntf&&!noteEditId)ntf.focus()}
     if(sheetMode==="empform"){var en=$("emname"); if(en&&!empEditId)en.focus()}
     if(sheetMode==="macform"){var mcn=$("mcname"); if(mcn&&!macEditId)mcn.focus()}
   }
@@ -3023,6 +3086,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(!purDelArm){purDelArm=true; t.textContent="Emin misin? Tekrar dokun"; return}
       if(db&&purEditId)db.doc("purchases/"+purEditId).delete().catch(function(){});
       purEditId=null; purDelArm=false; closeSheet(); return;
+    }
+    if(t.dataset.nfcol!==undefined){noteColor=t.dataset.nfcol; [].forEach.call(document.querySelectorAll("[data-nfcol]"),function(b){b.setAttribute("aria-pressed",b.dataset.nfcol===noteColor)}); return}
+    if(t.id==="nfpin"){notePin=!notePin; t.setAttribute("aria-pressed",notePin); t.style.cssText=notePin?"background:#C79A00;border-color:#C79A00;color:#fff":""; return}
+    if(t.id==="nfdone"||(t.closest&&t.closest("#nfdone"))){noteDone=!noteDone; var nd=$("nfdone"); nd.setAttribute("aria-pressed",noteDone); nd.style.cssText=noteDone?"background:var(--good);border-color:var(--good);color:#fff":""; return}
+    if(t.id==="nfaddi"){$("nfitems").insertAdjacentHTML("beforeend",noteItemRowHtml("",false)); var rws=$("nfitems").querySelectorAll("input"); rws[rws.length-1].focus(); return}
+    if(t.dataset.nfrm){var rr=t.closest("[data-nrow]"); if(rr)rr.remove(); return}
+    if(t.id==="nfcancel"){noteEditId=null;sheetMode="list";closeSheet();return}
+    if(t.id==="nfsave"){noteFormSave();return}
+    if(t.id==="nfdel"){
+      if(!noteDelArm){noteDelArm=true; t.textContent="Emin misin? Tekrar dokun"; return}
+      if(db&&noteEditId)db.doc("usernotes/"+noteEditId).delete().catch(function(){});
+      noteEditId=null; noteDelArm=false; closeSheet(); return;
     }
     if(t.id==="mtcancel"){sheetMode="list";matEditId=null;closeSheet();return}
     if(t.id==="mtsave"){
@@ -3969,7 +4044,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openOrders(){
     dbP.then(function(){
-      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
       watchOrders(); watchMaterials(); loadMCatalog(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -4097,7 +4172,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("nflist").innerHTML=items.length?items.map(function(a,ix){return nfRowHtml(a,ix,false)}).join(""):'<div class="empty">Henüz bir işlem yok.</div>';
   }
   function openNotifs(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
     renderNotifs(nfCache);
     $("nfstatus").textContent=db?"Güncel":"Bağlantı yok — sadece bu cihazda görülenler";
     try{localStorage.setItem("montaj:nfseen",String(Date.now()))}catch(e){}
@@ -4135,7 +4210,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function stockHome(){
-    $("stock").hidden=true; $("purch").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+    $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   function matRowHtml(m){
     var stock=+m.stock||0, low=m.crit&&stock<=+m.crit, needQ=matNeed?(matNeed[m.id]||0):null, deficit=needQ!==null?Math.max(0,needQ-stock):null;
@@ -4325,7 +4400,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     el.textContent=purchases.length?(open.length+" bekleyen"+(urg?" · "+urg+" acil":"")):"İhtiyaç girişi ve sipariş takibi";
   }
   function openPurch(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
     watchPurch(); watchMaterials(); renderPurch();
     $("purstatus").textContent=db?"Güncel":"Bağlantı yok — kaydedilemez";
   }
@@ -4459,6 +4534,148 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     purImgDirty=false; purEditId=null; closeSheet();
   }
+  /* ---------- notlarım (kullanıcıya özel) ---------- */
+  // "usernotes" koleksiyonu: her not "owner" (giriş yapan kullanıcının e-postası) ile kaydedilir
+  // ve her kullanıcı sadece kendi notlarını sorgular/görür. Tüm alanlar düz (iç içe map yok).
+  var WDAY=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+  function myEmail(){
+    try{var u=firebase.auth&&firebase.auth().currentUser; return u&&u.email?u.email.toLowerCase():""}catch(e){return ""}
+  }
+  function noteDateTxt(iso){
+    if(!iso)return ""; var a=iso.split("-"), d=new Date(+a[0],+a[1]-1,+a[2]);
+    return (+a[2])+" "+AY[+a[1]-1]+" "+WDAY[d.getDay()];
+  }
+  function noteTsTxt(ts){
+    if(!ts)return ""; var d=new Date(ts);
+    return d.getDate()+" "+AY[d.getMonth()]+" "+pad(d.getHours())+":"+pad(d.getMinutes());
+  }
+  function watchNotes(){
+    if(unsubNote||!db)return;
+    var me=myEmail(); if(!me)return;
+    unsubNote=db.collection("usernotes").where("owner","==",me).onSnapshot(function(snap){
+      notesAll=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(n){return n.owner===me});
+      paintNotesHome();
+      if(!$("notes").hidden)renderNotes();
+    },function(){});
+  }
+  function noteBucket(n){
+    if(n.done)return "done";
+    if(!n.due)return "open";
+    var dt=daysTo(n.due);
+    return dt<0?"late":(dt===0?"today":"soon");
+  }
+  function paintNotesHome(){
+    var el=$("hs-notes"); if(!el)return;
+    var open=notesAll.filter(function(n){return !n.done}), late=0, today=0;
+    open.forEach(function(n){var b=noteBucket(n); if(b==="late")late++; else if(b==="today")today++});
+    el.textContent=notesAll.length?(open.length+" açık not"+(late?" · "+late+" gecikmiş":"")+(today?" · "+today+" bugün":"")):"Kişisel notların ve hatırlatmaların";
+  }
+  function openNotes(){
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
+    watchNotes(); renderNotes();
+    $("ntstatus").textContent=db?"Güncel":"Bağlantı yok — kaydedilemez";
+  }
+  function notesHome(){
+    $("notes").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+  }
+  function noteSorted(list){
+    var rank={late:0,today:1,soon:2,open:3,done:4};
+    return list.slice().sort(function(a,b){
+      var ra=rank[noteBucket(a)], rb=rank[noteBucket(b)];
+      if((ra===4)!==(rb===4))return ra===4?1:-1;
+      if(ra===4)return (b.doneAt||0)-(a.doneAt||0);
+      if(!!a.pin!==!!b.pin)return a.pin?-1:1;
+      if(ra!==rb&&(ra<3||rb<3))return ra-rb;
+      if(a.due&&b.due&&a.due!==b.due)return a.due<b.due?-1:1;
+      return (b.ts||0)-(a.ts||0);
+    });
+  }
+  function noteCardHtml(n){
+    var bk=noteBucket(n), items=n.items||[], doneN=items.filter(function(x){return x.d}).length;
+    var chips='';
+    if(n.due){
+      var dt=daysTo(n.due), tm=n.time?(" "+esc(n.time)):"";
+      if(n.done)chips+='<span class="nbd">📅 '+esc(noteDateTxt(n.due))+tm+'</span>';
+      else if(dt<0)chips+='<span class="nbd late">⏰ '+(-dt)+' gün gecikti · '+esc(noteDateTxt(n.due))+'</span>';
+      else if(dt===0)chips+='<span class="nbd today">⏰ Bugün'+tm+'</span>';
+      else chips+='<span class="nbd">📅 '+(dt===1?'Yarın':dt+' gün kaldı')+' · '+esc(noteDateTxt(n.due))+tm+'</span>';
+    }
+    if(n.done)chips+='<span class="nbd ok">✓ Kontrol edildi</span>';
+    if(items.length)chips+='<span class="nbd">☑ '+doneN+'/'+items.length+'</span>';
+    return '<div class="nt'+(n.color?' has':'')+(n.done?' done':'')+(bk==="late"?' late':'')+'" style="'+(n.color?'--nc:'+n.color:'')+'" data-nedit="'+n.id+'" role="button" tabindex="0">'+
+      '<div class="nth"><button type="button" class="nck" data-ncheck="'+n.id+'" aria-label="Kontrol edildi" aria-pressed="'+(!!n.done)+'">'+(n.done?'✓':'')+'</button>'+
+      '<div class="ntt">'+(esc(n.title||"")||(n.text?esc(n.text.split("\n")[0].slice(0,60)):"Başlıksız not"))+'</div>'+(n.pin?'<span class="ntp">📌</span>':'')+'</div>'+
+      (n.title&&n.text?'<div class="ntx">'+esc(n.text)+'</div>':'')+
+      (items.length?'<div style="margin-top:6px">'+items.map(function(it,ix){return '<button type="button" class="nci'+(it.d?' on':'')+'" data-nitem="'+n.id+':'+ix+'"><i>'+(it.d?'✓':'')+'</i><span>'+esc(it.t)+'</span></button>'}).join("")+
+        '<div class="nbar"><b style="width:'+Math.round(doneN/items.length*100)+'%"></b></div></div>':'')+
+      (chips?'<div class="nft">'+chips+'</div>':'')+
+      '<div class="nmeta">Yazıldı: '+noteTsTxt(n.cr||n.ts)+(n.done&&n.doneAt?' · Kontrol: '+noteTsTxt(n.doneAt):'')+'</div></div>';
+  }
+  function renderNotes(){
+    var cnt={all:0,today:0,soon:0,late:0,done:0};
+    notesAll.forEach(function(n){var b=noteBucket(n); cnt.all++; if(b==="done")cnt.done++; else if(b==="late")cnt.late++; else if(b==="today")cnt.today++; else if(b==="soon")cnt.soon++});
+    var open=cnt.all-cnt.done;
+    $("ntcount").textContent=open;
+    $("ntobs").textContent=notesAll.length?(cnt.late?cnt.late+" gecikmiş · ":"")+(cnt.today?cnt.today+" bugün · ":"")+cnt.soon+" yaklaşan · "+cnt.done+" tamamlanan":"yapılacakları ve hatırlatmaları buraya yaz";
+    var tabs=[["all","Hepsi",cnt.all],["today","Bugün",cnt.today],["soon","Yaklaşan",cnt.soon],["late","⏰ Gecikmiş",cnt.late],["done","Tamamlanan",cnt.done]];
+    $("nttabs").innerHTML=tabs.map(function(t){return '<button type="button" data-nf="'+t[0]+'" aria-pressed="'+(noteFilter===t[0])+'">'+t[1]+' '+t[2]+'</button>'}).join("");
+    var q=noteSearch.trim().toLowerCase();
+    var list=noteSorted(notesAll.filter(function(n){
+      var b=noteBucket(n);
+      if(noteFilter!=="all"&&b!==noteFilter)return false;
+      if(!q)return true;
+      return ((n.title||"")+" "+(n.text||"")+" "+(n.items||[]).map(function(i){return i.t}).join(" ")).toLowerCase().indexOf(q)>-1;
+    }));
+    $("notelist").innerHTML=list.length?list.map(noteCardHtml).join(""):'<div class="empty">'+(notesAll.length?"Bu filtrede not yok.":"Henüz notun yok.<br>“+ Yeni not” ile ilkini yaz.")+'</div>';
+  }
+  function noteOpenForm(id){
+    noteEditId=id; noteDelArm=false;
+    var n=id?notesAll.filter(function(x){return x.id===id})[0]:null;
+    noteColor=n?(n.color||""):""; notePin=n?!!n.pin:false; noteDone=n?!!n.done:false;
+    sheetMode="noteform"; $("ov").hidden=false; renderSheet();
+  }
+  function noteItemRowHtml(t,d){
+    return '<div class="nfrow" data-nrow="1" data-nd="'+(d?1:0)+'"><input class="fin nfi" autocomplete="off" placeholder="Madde yaz…" value="'+esc(t||"")+'"><button type="button" data-nfrm="1" aria-label="Maddeyi sil">✕</button></div>';
+  }
+  function noteFormSave(){
+    var me=myEmail(); if(!db||!me){$("ntstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+    var title=$("nftitle").value.trim(), text=$("nftext").value.trim();
+    var items=[].map.call($("nfitems").querySelectorAll("[data-nrow]"),function(r){return {t:r.querySelector("input").value.trim(),d:r.dataset.nd==="1"}}).filter(function(x){return x.t});
+    if(!title&&!text&&!items.length){$("nftitle").focus();return}
+    var data={title:title,text:text,items:items,due:$("nfdue").value||"",time:$("nfdue").value?($("nftime").value||""):"",color:noteColor,pin:!!notePin,done:!!noteDone,ts:Date.now()};
+    var old=noteEditId?notesAll.filter(function(x){return x.id===noteEditId})[0]:null;
+    data.doneAt=noteDone?((old&&old.done&&old.doneAt)||Date.now()):0;
+    if(noteEditId){
+      db.doc("usernotes/"+noteEditId).update(data).catch(function(){$("ntstatus").textContent="Kaydedilemedi, tekrar dene"});
+    }else{
+      data.owner=me; data.cr=Date.now();
+      db.collection("usernotes").add(data).catch(function(){$("ntstatus").textContent="Kaydedilemedi, tekrar dene"});
+    }
+    noteEditId=null; closeSheet();
+  }
+  $("osetbtn").addEventListener("click",function(){
+    var o=$("oset"), open=o.hidden; o.hidden=!open;
+    this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar / araçlar ▴":"⚙ Ayarlar / araçlar ▾";
+  });
+  $("ntback").addEventListener("click",notesHome);
+  $("ntnew").addEventListener("click",function(){noteOpenForm(null)});
+  $("ntsearch").addEventListener("input",function(e){noteSearch=e.target.value;renderNotes()});
+  $("nttabs").addEventListener("click",function(e){var b=e.target.closest("[data-nf]"); if(!b)return; noteFilter=b.dataset.nf; renderNotes()});
+  $("notelist").addEventListener("click",function(e){
+    var ck=e.target.closest("[data-ncheck]");
+    if(ck){
+      var n=notesAll.filter(function(x){return x.id===ck.dataset.ncheck})[0]; if(!n||!db)return;
+      var nd=!n.done; db.doc("usernotes/"+n.id).update({done:nd,doneAt:nd?Date.now():0}).catch(function(){$("ntstatus").textContent="Kaydedilemedi, tekrar dene"}); return;
+    }
+    var ci=e.target.closest("[data-nitem]");
+    if(ci){
+      var pr=ci.dataset.nitem.split(":"), n2=notesAll.filter(function(x){return x.id===pr[0]})[0]; if(!n2||!db)return;
+      var arr=(n2.items||[]).map(function(x){return {t:x.t,d:!!x.d}}); var ix=+pr[1]; if(!arr[ix])return; arr[ix].d=!arr[ix].d;
+      db.doc("usernotes/"+n2.id).update({items:arr}).catch(function(){$("ntstatus").textContent="Kaydedilemedi, tekrar dene"}); return;
+    }
+    var eb=e.target.closest("[data-nedit]"); if(eb)noteOpenForm(eb.dataset.nedit);
+  });
+  $("notelist").addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.hasAttribute&&e.target.hasAttribute("data-nedit")){e.preventDefault();noteOpenForm(e.target.dataset.nedit)}});
   /* ---------- elemanlar / makineler ---------- */
   function watchEmployees(){
     if(unsubEmp||!db)return;
@@ -4526,7 +4743,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
   }
   function openStaff(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
     empPerf={};
     watchEmployees(); watchMachinesList(); renderStaff();
     $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
@@ -5774,7 +5991,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openPlansScreen(){
     dbP.then(function(){
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null; planVQ=""; if($("pvsearch"))$("pvsearch").value="";
-      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
+      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -5952,6 +6169,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var d=document.createElement("div"); d.className="lbx"; d.innerHTML='<img alt="" src="'+e.target.src+'">';
     d.addEventListener("click",function(){d.remove()}); document.body.appendChild(d);
   });
+  $("sheet").addEventListener("keydown",function(e){
+    if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("nfi")){
+      e.preventDefault(); $("nfitems").insertAdjacentHTML("beforeend",noteItemRowHtml("",false));
+      var rws=$("nfitems").querySelectorAll("input"); rws[rws.length-1].focus();
+    }
+  });
   $("sheet").addEventListener("change",function(e){
     if((e.target.id==="pfcam"||e.target.id==="pfgal")&&e.target.files&&e.target.files[0]){
       var pf=e.target.files[0]; e.target.value="";
@@ -6062,6 +6285,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function buildHome(){
     $("hcards").innerHTML='<button type="button" class="hcard ordc" data-orders="1"><div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
+      '<button type="button" class="hcard ordc notec" data-notes="1"><div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>'+
       '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Elemanlar</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
@@ -6098,7 +6322,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
       gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
-      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("staff").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
       if(db)watchCatalog();
       if(!catsSaved&&!db){promptShown=true;openCats()}
@@ -6112,8 +6336,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch]"); if(!b)return;
-    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else if(b.dataset.purch)openPurch(); else enterSection(b.dataset.sec);
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes]"); if(!b)return;
+    if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else if(b.dataset.purch)openPurch(); else if(b.dataset.notes)openNotes(); else enterSection(b.dataset.sec);
   });
   $("back").addEventListener("click",goHome);
 
@@ -6274,7 +6498,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 
   setBrk(brkTab);
   orders=lsOrdersGet().map(normOrder);
-  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchMaterials();watchPurch();watchEmployees();watchMachinesList()});
+  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchMaterials();watchPurch();watchNotes();watchEmployees();watchMachinesList()});
 })();
 </script>
 
