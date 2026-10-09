@@ -871,7 +871,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="nfpop" id="nfpop" hidden><div class="nfph"><b>Bildirimler</b><button type="button" id="nfall">Tümünü gör ›</button></div><div id="nfpoplist"></div></div>
   </div>
   <div class="hcards" id="hcards"></div>
-  <div class="osearch" style="margin-top:22px">
+  <button class="btn ghost" id="homesetbtn" aria-expanded="false" style="width:100%;margin-top:22px">⚙ Ayarlar ▾</button>
+  <div id="homeset" hidden>
+  <div class="osearch" style="margin-top:12px">
     <button class="btn ghost" id="bkExport" style="flex:1">☁ Tam yedek al (.json)</button>
     <button class="btn ghost" id="bkImport" style="flex:1">⟲ Yedekten geri yükle</button>
   </div>
@@ -879,8 +881,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="bknote" hidden></div>
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
+  </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:19</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:25</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4715,6 +4718,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     noteEditId=null; closeSheet();
   }
+  $("homesetbtn").addEventListener("click",function(){
+    var o=$("homeset"), open=o.hidden; o.hidden=!open;
+    this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar ▴":"⚙ Ayarlar ▾";
+  });
   $("osetbtn").addEventListener("click",function(){
     var o=$("oset"), open=o.hidden; o.hidden=!open;
     this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar / araçlar ▴":"⚙ Ayarlar / araçlar ▾";
