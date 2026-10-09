@@ -878,6 +878,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="hcards" id="hcards"></div>
   <button class="btn ghost" id="homesetbtn" aria-expanded="false" style="width:100%;margin-top:22px">⚙ Ayarlar ▾</button>
   <div id="homeset" hidden>
+  <button class="btn ghost" id="mynamebtn" style="width:100%;margin-top:12px">👤 Adını yaz</button>
   <div class="osearch" style="margin-top:12px">
     <button class="btn ghost" id="bkExport" style="flex:1">☁ Tam yedek al (.json)</button>
     <button class="btn ghost" id="bkImport" style="flex:1">⟲ Yedekten geri yükle</button>
@@ -888,7 +889,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:33</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:43</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2406,6 +2407,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><button type="button" class="urgtog" id="pfurg" aria-pressed="'+purUrgDraft+'"><span>🚨</span><span>ACİL — kırmızı işaretle</span></button></div>'+
         '<div><label class="fl" for="pfnote">Not</label><textarea class="fin" id="pfnote" rows="2" placeholder="ör. ölçü, tedarikçi, hangi sipariş için…">'+esc(pu.note||"")+'</textarea></div>'+
         '<div class="frow"><button class="btn" id="pfsave">Kaydet</button><button class="btn ghost" id="pfcancel">Vazgeç</button>'+(purEditId?'<button class="btn danger" id="pfdel">'+(purDelArm?"Emin misin? Tekrar dokun":"Sil")+'</button>':"")+'</div></div>';
+    }else if(sheetMode==="nameform"){
+      html+='<div class="shead"><div><h2 id="sh-title">Adın soyadın</h2><small>Bildirimlerde ve kayıtlarda e-posta yerine bu isim görünecek</small></div></div>'+
+        '<div class="form"><div><label class="fl" for="nmname">Ad Soyad</label><input class="fin" id="nmname" autocomplete="name" placeholder="ör. Yusuf Çelenk" value="'+esc(myNameStored())+'"></div>'+
+        '<div class="note">Giriş e-postan: '+esc((function(){try{return firebase.auth().currentUser.email}catch(e){return ""}})())+'</div>'+
+        '<div class="frow"><button class="btn" id="nmsave">Kaydet</button><button class="btn ghost" id="nmskip">Sonra</button></div></div>';
     }else if(sheetMode==="noteform"){
       var nt=notesAll.filter(function(x){return x.id===noteEditId})[0]||{title:"",text:"",items:[],due:"",time:""};
       html+='<div class="shead"><div><h2 id="sh-title">'+(noteEditId?"Notu düzenle":"Yeni not")+'</h2><small>Bu not sadece sana görünür</small></div></div>'+
@@ -2693,6 +2699,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(sheetMode==="matform"){var mn=$("mtname"); if(mn&&!matEditId)mn.focus()}
     if(sheetMode==="purchform"){var pn=$("pfname"); if(pn&&!purEditId)pn.focus()}
     if(sheetMode==="purchform")purUpdTot();
+    if(sheetMode==="nameform"){var nmf=$("nmname"); if(nmf)nmf.focus()}
     if(sheetMode==="noteform"){var ntf=$("nftitle"); if(ntf&&!noteEditId)ntf.focus()}
     if(sheetMode==="empform"){var en=$("emname"); if(en&&!empEditId)en.focus()}
     if(sheetMode==="macform"){var mcn=$("mcname"); if(mcn&&!macEditId)mcn.focus()}
@@ -3115,6 +3122,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(!purDelArm){purDelArm=true; t.textContent="Emin misin? Tekrar dokun"; return}
       if(db&&purEditId)db.doc("purchases/"+purEditId).delete().catch(function(){});
       purEditId=null; purDelArm=false; closeSheet(); return;
+    }
+    if(t.id==="nmskip"){nameSkip=true;sheetMode="list";closeSheet();return}
+    if(t.id==="nmsave"){
+      var nmv=$("nmname").value.trim().replace(/\s+/g," ").slice(0,60); if(!nmv){$("nmname").focus();return}
+      var mem=null; try{mem=firebase.auth().currentUser.email.toLowerCase()}catch(e){}
+      if(!db||!mem){t.textContent="Bağlantı yok, kaydedilemedi";return}
+      db.doc("appusers/"+mem).set({email:mem,name:nmv,ts:Date.now()},{merge:true}).catch(function(){});
+      userNames[mem.split("@")[0]]=nmv; paintMyName(); sheetMode="list"; closeSheet(); return;
     }
     if(t.dataset.nfcol!==undefined){noteColor=t.dataset.nfcol; [].forEach.call(document.querySelectorAll("[data-nfcol]"),function(b){b.setAttribute("aria-pressed",b.dataset.nfcol===noteColor)}); return}
     if(t.id==="nfpin"){notePin=!notePin; t.setAttribute("aria-pressed",notePin); t.style.cssText=notePin?"background:#C79A00;border-color:#C79A00;color:#fff":""; return}
@@ -4085,8 +4100,36 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
      olayların düştüğü paylaşımlı, canlı akış (herkesin cihazında aynı liste) ---------- */
   var unsubNotifs=null;
   var NF_ICON={order:"🧾",prod:"📦",complete:"✅",ship:"🚚",info:"🔔",buy:"🛒"};
-  function whoAmI(){
+  // Kullanıcı adı: her kullanıcı ilk girişte Ad Soyad'ını yazar ("appusers/<e-posta>" belgesi).
+  // Eski kayıtlarda "by" e-postanın ön ekiydi; nameFor() onları da gerçek isme çevirir.
+  var userNames={}, unsubUsers=null, nameSkip=false, nameFirstSnap=true;
+  function myEmailPrefix(){
     try{var u=firebase.auth&&firebase.auth().currentUser; return u&&u.email?u.email.split("@")[0]:""}catch(e){return ""}
+  }
+  function nameFor(by){return (by&&userNames[by])||by||""}
+  function whoAmI(){
+    var pre=myEmailPrefix(); return userNames[pre]||pre;
+  }
+  function myNameStored(){var pre=myEmailPrefix(); return pre?userNames[pre]||"":""}
+  function watchUsers(){
+    if(unsubUsers||!db)return;
+    unsubUsers=db.collection("appusers").onSnapshot(function(snap){
+      var m={}; snap.docs.forEach(function(d){var dd=d.data(); if(dd&&dd.name&&dd.email)m[String(dd.email).split("@")[0]]=dd.name});
+      userNames=m;
+      try{renderNfPop()}catch(e){}
+      try{if(!$("notifs").hidden)renderNotifs(nfCache)}catch(e){}
+      try{if(!$("purch").hidden)renderPurch()}catch(e){}
+      try{paintMyName()}catch(e){}
+      if(nameFirstSnap&&!(snap.metadata&&snap.metadata.fromCache)){
+        nameFirstSnap=false;
+        setTimeout(function(){if(!myNameStored()&&!nameSkip&&$("ov").hidden)openNameForm()},800);
+      }
+    },function(){});
+  }
+  function openNameForm(){sheetMode="nameform";$("ov").hidden=false;renderSheet()}
+  function paintMyName(){
+    var b=$("mynamebtn"); if(!b)return;
+    var n=myNameStored(); b.textContent="👤 "+(n?n+" — adı değiştir":"Adını yaz (şu an: "+(myEmailPrefix()||"?")+")");
   }
   // extra: {oid,code,sec} — bildirime tıklayınca ilgili siparişe/ürüne/bölüme gidebilmek için.
   function logActivity(text,type,extra){
@@ -4170,7 +4213,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var nfSeenBefore=0;
   function nfRowHtml(a,ix,isNew){
     var tg=nfTarget(a);
-    return '<div class="nrow'+(tg?' click':'')+(isNew?' new':'')+'"'+(tg?' data-nf="'+ix+'" role="button" tabindex="0"':'')+'><div class="ntext">'+(NF_ICON[a.type]||"🔔")+' '+esc(a.text)+'</div><div class="nsub">'+(a.by?esc(a.by)+' · ':'')+relTime(a.ts)+'</div></div>';
+    return '<div class="nrow'+(tg?' click':'')+(isNew?' new':'')+'"'+(tg?' data-nf="'+ix+'" role="button" tabindex="0"':'')+'><div class="ntext">'+(NF_ICON[a.type]||"🔔")+' '+esc(a.text)+'</div><div class="nsub">'+(a.by?esc(nameFor(a.by))+' · ':'')+relTime(a.ts)+'</div></div>';
   }
   function renderNfPop(){
     var pop=$("nfpoplist"); if(!pop)return;
@@ -4414,7 +4457,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<div class="pksub s-'+st+(x.urgent?' urg':'')+'" role="button" tabindex="0" data-pedit="'+x.id+'">'+
       '<div class="sh"><div style="display:flex;align-items:center;gap:8px;min-width:0">'+(x.th?'<img class="pkt" alt="" data-pimg="'+x.id+'" src="'+x.th+'">':'')+'<span class="sq">'+q+'</span></div><span class="se">düzenle ›</span></div>'+
       '<div style="margin-top:5px">'+b+'</div>'+
-      '<div class="sm">'+(dept?'🏭 <b>'+esc(dept)+'</b>':'🏭 bölüm yok')+' · '+(x.firm?'🏢 <b>'+esc(x.firm)+'</b> · ':'')+(x.loc?'📍 <b>'+esc(x.loc)+'</b>':'📍 yer yok')+(x.by?' · '+esc(x.by):'')+'<br>'+
+      '<div class="sm">'+(dept?'🏭 <b>'+esc(dept)+'</b>':'🏭 bölüm yok')+' · '+(x.firm?'🏢 <b>'+esc(x.firm)+'</b> · ':'')+(x.loc?'📍 <b>'+esc(x.loc)+'</b>':'📍 yer yok')+(x.by?' · '+esc(nameFor(x.by)):'')+'<br>'+
       'İhtiyaç girildi: <b>'+purDateTxt(x.req)+'</b> · Gelmesi gereken: <b>'+purDateTxt(x.due)+'</b>'+(st==="siparis"&&x.ordDate?' · Sipariş: <b>'+purDateTxt(x.ordDate)+'</b>':'')+(+x.price?'<br>Birim: <b>'+purPrice(+x.price)+'</b>'+(purTotal(x)?' · Toplam: <b style="color:var(--good)">'+purTl(purTotal(x))+'</b>':''):'')+'</div>'+
       (x.note?'<div class="sm" style="font-style:italic">“'+esc(x.note)+'”</div>':'')+
       '<div class="pseg" role="group" aria-label="Durum">'+['verilmedi','siparis','geldi'].map(function(k){return '<button type="button" data-pst="'+k+'" data-pid="'+x.id+'" aria-pressed="'+(st===k)+'">'+PUR_ST[k]+'</button>'}).join("")+'</div></div>';
@@ -4488,7 +4531,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var secName=purDeptOf(x);
     return '<div class="purc s-'+st+(urg?' urg':'')+'">'+
       '<div class="ptop"><div class="phead">'+(x.th?'<img class="pthumb" alt="" data-pimg="'+x.id+'" src="'+x.th+'">':'')+'<div style="min-width:0"><div class="pn">'+esc(x.name)+'</div>'+
-      '<div class="pm">'+(secName?esc(secName)+' için':'Üretim ihtiyacı')+(x.by?' · '+esc(x.by):'')+'</div></div></div><div class="pq" style="text-align:right">'+q+(+x.price?'<div style="font:700 11px var(--font-ui);color:var(--ink2)">'+purPrice(+x.price)+' / '+esc(x.unit||"adet")+'</div>'+(purTotal(x)?'<div style="font:800 14px var(--font-num);color:var(--good)">= '+purTl(purTotal(x))+'</div>':''):'')+'</div></div>'+
+      '<div class="pm">'+(secName?esc(secName)+' için':'Üretim ihtiyacı')+(x.by?' · '+esc(nameFor(x.by)):'')+'</div></div></div><div class="pq" style="text-align:right">'+q+(+x.price?'<div style="font:700 11px var(--font-ui);color:var(--ink2)">'+purPrice(+x.price)+' / '+esc(x.unit||"adet")+'</div>'+(purTotal(x)?'<div style="font:800 14px var(--font-num);color:var(--good)">= '+purTl(purTotal(x))+'</div>':''):'')+'</div></div>'+
       '<div class="pbadges">'+badges+'</div>'+
       '<div class="pdates"><div>İhtiyaç girildi<b>'+purDateTxt(x.req)+'</b></div><div>Gelmesi gereken<b'+(late?' style="color:var(--bad)"':'')+'>'+purDateTxt(x.due)+'</b></div>'+d3+'<div>Durum<b>'+PUR_ST[st]+'</b></div></div>'+
       (x.note?'<div class="pnote">“'+esc(x.note)+'”</div>':'')+
@@ -4735,6 +4778,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     noteEditId=null; closeSheet();
   }
+  $("mynamebtn").addEventListener("click",function(){openNameForm()});
   $("homesetbtn").addEventListener("click",function(){
     var o=$("homeset"), open=o.hidden; o.hidden=!open;
     this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar ▴":"⚙ Ayarlar ▾";
@@ -6601,7 +6645,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 
   setBrk(brkTab);
   orders=lsOrdersGet().map(normOrder);
-  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchMaterials();watchPurch();watchNotes();watchEmployees();watchMachinesList()});
+  buildHome(); refreshHome(); dbP.then(function(){refreshHome();watchOrders();watchNotifsHome();watchUsers();watchMaterials();watchPurch();watchNotes();watchEmployees();watchMachinesList()});
 })();
 </script>
 
