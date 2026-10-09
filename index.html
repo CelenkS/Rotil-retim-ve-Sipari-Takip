@@ -647,6 +647,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.notec::after{background:rgba(250,204,21,.15)}
 .hcard.ordc.notec .hk,.hcard.ordc.notec .go{color:#FACC15}
 @media (min-width:1000px){#notelist{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;align-items:start}#notelist .nt{margin-bottom:0}#notelist .empty{grid-column:1/-1}}
+/* ---------- hatırlatma bandı ---------- */
+#remind{position:fixed;left:50%;transform:translateX(-50%);width:min(560px,calc(100vw - 16px));top:calc(env(safe-area-inset-top,0px) + 8px);z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#remind .rmx{pointer-events:auto;width:auto;height:auto;font-size:inherit;display:block;background:var(--surface);border:2px solid #E69138;border-radius:16px;padding:12px 14px;box-shadow:0 12px 34px rgba(0,0,0,.35)}
+#remind .rmh{font:800 11px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#B7791F}
+#remind .rmt{margin-top:3px;font:800 16px/1.25 var(--font-head);color:var(--ink);overflow-wrap:anywhere}
+#remind .rmw{margin-top:2px;font:600 12px var(--font-ui);color:var(--ink2)}
+#remind .rmb{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#remind .rmb button{flex:1 1 auto;border:1.5px solid var(--line);background:var(--bg2);border-radius:11px;padding:9px 10px;font:800 12px var(--font-ui);color:var(--ink);cursor:pointer}
+#remind .rmb button.p{background:var(--good);border-color:var(--good);color:#fff}
 .urgtog{display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px 14px;font:800 14px var(--font-ui);color:inherit;cursor:pointer;text-align:left}
 .urgtog[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
 .hcard.ordc.purchc{border-color:rgba(214,58,58,.55)}
@@ -899,7 +908,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 13:01</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1084,6 +1093,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="obig"><span class="obl">Açık notlarım</span><b id="ntcount">0</b><span class="obs" id="ntobs">yapılacakları ve hatırlatmaları buraya yaz</span></div>
   </section>
   <div class="otabs" id="nttabs" role="group" aria-label="Not filtresi" style="flex-wrap:wrap;border-radius:18px"></div>
+  <button class="btn ghost" id="ntperm" hidden style="width:100%;margin-top:8px">🔔 Hatırlatma bildirimlerine izin ver</button>
   <input class="search" id="ntsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Notlarda ara…" aria-label="Notlarda ara" style="margin-top:8px">
   <div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="ntnew" style="flex:1">+ Yeni not</button><button class="btn ghost" id="ntrefresh" style="flex:0 0 auto" aria-label="Yenile">↻ Yenile</button></div>
   <div id="notelist" style="margin-top:10px"></div>
@@ -2430,6 +2440,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="nftext">Not</label><textarea class="fin" id="nftext" rows="4" placeholder="Notunu yaz…">'+esc(nt.text||"")+'</textarea></div>'+
         '<div><span class="fl">Kontrol listesi (isteğe bağlı)</span><div id="nfitems">'+(nt.items||[]).map(function(i){return noteItemRowHtml(i.t,i.d)}).join("")+'</div><button type="button" class="btn ghost" id="nfaddi" style="width:100%;margin-top:8px">+ Madde ekle</button></div>'+
         '<div class="dgrid"><div><label class="fl" for="nfdue">Tarih (hatırlatma)</label><input class="fin" id="nfdue" type="date" value="'+esc(nt.due||"")+'"></div><div><label class="fl" for="nftime">Saat</label><input class="fin" id="nftime" type="time" value="'+esc(nt.time||"")+'"></div></div>'+
+        '<div class="note">⏰ Hatırlatma: tarihi (ve saati) gelince uygulama açıksa üstte uyarı çıkar, ses verir. Saat yazmazsan o gün sabah 08:00 olarak hatırlatır. Uygulama kapalıysa bir sonraki açışta gösterilir.</div>'+
         '<div><span class="fl">Renk</span><div class="ncols">'+NOTE_COLS.map(function(c){return '<button type="button" data-nfcol="'+c+'" aria-label="Renk" aria-pressed="'+(noteColor===c)+'" style="--nc:'+(c||'#C9D1DC')+'"></button>'}).join("")+'</div></div>'+
         '<div class="dgrid"><button type="button" class="urgtog" id="nfpin" aria-pressed="'+notePin+'" style="'+(notePin?'background:#C79A00;border-color:#C79A00;color:#fff':'')+'"><span>📌</span><span>Sabitle</span></button>'+
         '<button type="button" class="urgtog" id="nfdone" aria-pressed="'+noteDone+'" style="'+(noteDone?'background:var(--good);border-color:var(--good);color:#fff':'')+'"><span>✓</span><span>Kontrol edildi</span></button></div>'+
@@ -4723,6 +4734,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       noteSynced=!snap.metadata||!snap.metadata.fromCache;
       notesAll=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(n){return (n.owner||"").toLowerCase().trim()===me});
       paintNotesHome();
+      try{remCheck()}catch(e){}
       if(!$("notes").hidden)renderNotes();
     },function(err){
       noteErr=(err&&(err.code||err.message))||"bilinmeyen"; unsubNote=null;
@@ -4743,7 +4755,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openNotes(){
     closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
-    watchNotes(); renderNotes();
+    watchNotes(); renderNotes(); paintNotifPerm();
     $("ntstatus").textContent=db?noteInfoTxt():"Bağlantı yok — kaydedilemez";
   }
   function notesHome(){
@@ -4838,6 +4850,89 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("osetbtn").addEventListener("click",function(){
     var o=$("oset"), open=o.hidden; o.hidden=!open;
     this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar / araçlar ▴":"⚙ Ayarlar / araçlar ▾";
+  });
+  /* ---------- not hatırlatmaları ---------- */
+  // Uygulama açıkken (telefonda ekran açıkken / bilgisayarda sekme açıkken) saati gelen notlar
+  // üstte bir bant olarak çıkar, ses + titreşim verir; izin verilmişse sistem bildirimi de gösterir.
+  // Uygulama tamamen kapalıyken bildirim gönderilemez (sunucu yok) — bir sonraki açılışta,
+  // zamanı gelmiş ve henüz gösterilmemiş hatırlatmalar hemen çıkar.
+  var remSnooze={}, remShown={};
+  function remKey(n){return "montaj:rem:"+n.id+"|"+(n.due||"")+"|"+(n.time||"")}
+  function remFired(n){try{return localStorage.getItem(remKey(n))==="1"}catch(e){return !!remShown[n.id]}}
+  function remMark(n,on){try{if(on)localStorage.setItem(remKey(n),"1"); else localStorage.removeItem(remKey(n))}catch(e){}}
+  function remDueTs(n){
+    if(!n.due)return 0; var a=n.due.split("-"), t=(n.time||"08:00").split(":");
+    return new Date(+a[0],+a[1]-1,+a[2],+t[0]||0,+t[1]||0).getTime();
+  }
+  function remBeep(){
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext; if(!AC)return;
+      var c=new AC(), o=c.createOscillator(), g=c.createGain(); o.type="sine"; o.frequency.value=880; o.connect(g); g.connect(c.destination);
+      g.gain.setValueAtTime(.0001,c.currentTime); g.gain.exponentialRampToValueAtTime(.25,c.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.6);
+      o.start(); o.stop(c.currentTime+.65);
+    }catch(e){}
+    try{if(navigator.vibrate)navigator.vibrate([250,120,250])}catch(e){}
+  }
+  function remSysNotify(list){
+    try{
+      if(!("Notification" in window)||Notification.permission!=="granted")return;
+      var body=list.slice(0,3).map(function(n){return (n.title||n.text||"Not").slice(0,50)+(n.time?" · "+n.time:"")}).join("\n")+(list.length>3?"\n+"+(list.length-3)+" not daha":"");
+      var opt={body:body,tag:"montaj-hatirlatma",icon:"icon-192.png",renotify:true};
+      if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(function(reg){reg.showNotification("⏰ Hatırlatma",opt)}).catch(function(){try{new Notification("⏰ Hatırlatma",opt)}catch(e){}})}
+      else new Notification("⏰ Hatırlatma",opt);
+    }catch(e){}
+  }
+  function remBox(){
+    var b=document.getElementById("remind");
+    if(!b){b=document.createElement("div"); b.id="remind"; document.body.appendChild(b)}
+    return b;
+  }
+  function remRowHtml(n){
+    var dt=daysTo(n.due), when=dt<0?(-dt)+" gün gecikti":(n.time?"Bugün "+n.time:"Bugün");
+    return '<div class="rmx" data-rmid="'+n.id+'"><div class="rmh">⏰ Hatırlatma</div><div class="rmt">'+(esc(n.title||"")||esc((n.text||"Not").split("\n")[0].slice(0,80)))+'</div>'+
+      '<div class="rmw">'+esc(when)+' · '+esc(noteDateTxt(n.due))+'</div>'+
+      '<div class="rmb"><button type="button" class="p" data-rmact="done">✓ Kontrol edildi</button><button type="button" data-rmact="open">Notu aç</button><button type="button" data-rmact="snooze">10 dk ertele</button><button type="button" data-rmact="close">Kapat</button></div></div>';
+  }
+  function remRender(){
+    var b=remBox(), ids=Object.keys(remShown).filter(function(id){return remShown[id]});
+    var rows=ids.map(function(id){return notesAll.filter(function(n){return n.id===id&&!n.done})[0]}).filter(Boolean);
+    ids.forEach(function(id){if(!rows.some(function(n){return n.id===id}))delete remShown[id]});
+    b.innerHTML=rows.map(remRowHtml).join("");
+  }
+  function remCheck(){
+    var now=Date.now(), fresh=[];
+    notesAll.forEach(function(n){
+      if(n.done||!n.due)return;
+      if(remDueTs(n)>now)return;
+      if(remShown[n.id])return;
+      if(remSnooze[n.id]&&remSnooze[n.id]>now)return;
+      if(remFired(n)&&!remSnooze[n.id])return;
+      fresh.push(n);
+    });
+    if(fresh.length){
+      fresh.forEach(function(n){remShown[n.id]=1; remMark(n,true); delete remSnooze[n.id]});
+      remBeep(); remSysNotify(fresh);
+    }
+    remRender();
+  }
+  document.addEventListener("click",function(e){
+    var bt=e.target.closest&&e.target.closest("#remind [data-rmact]"); if(!bt)return;
+    var row=bt.closest("[data-rmid]"), id=row.dataset.rmid, n=notesAll.filter(function(x){return x.id===id})[0], act=bt.dataset.rmact;
+    if(act==="close"){delete remShown[id]}
+    else if(act==="snooze"){delete remShown[id]; if(n)remMark(n,false); remSnooze[id]=Date.now()+10*60*1000}
+    else if(act==="done"){delete remShown[id]; if(n&&db)db.doc("usernotes/"+id).update({done:true,doneAt:Date.now()}).catch(function(){})}
+    else if(act==="open"){delete remShown[id]; openNotes(); setTimeout(function(){noteOpenForm(id)},200)}
+    remRender();
+  });
+  setInterval(function(){try{remCheck()}catch(e){}},20000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden){try{remCheck()}catch(e){}}});
+  function paintNotifPerm(){
+    var b=$("ntperm"); if(!b)return;
+    var ok=("Notification" in window);
+    b.hidden=!(ok&&Notification.permission==="default");
+  }
+  $("ntperm").addEventListener("click",function(){
+    try{Notification.requestPermission().then(function(){paintNotifPerm()})}catch(e){}
   });
   $("ntback").addEventListener("click",notesHome);
   $("ntrefresh").addEventListener("click",function(){watchNotes(true);renderNotes()});
