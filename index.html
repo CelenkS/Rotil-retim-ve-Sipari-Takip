@@ -567,6 +567,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .purc .pthumb{width:56px;height:56px;flex:0 0 56px;border-radius:12px;background:#fff;object-fit:contain;border:1px solid var(--line);cursor:zoom-in}
 .purc .phead{display:flex;gap:10px;min-width:0;flex:1}
 .pickcard{background:var(--surface);border:2px solid #C0392B;border-radius:18px;padding:14px;margin:10px 0}
+.pickcard.unk{border-style:dashed;border-color:#9AA3B2;background:var(--bg2)}
+.purdiv{grid-column:1/-1;margin:14px 0 4px;padding:8px 12px;border-radius:12px;background:var(--soft);font:800 13px var(--font-ui);color:var(--ink2)}
 .pickcard .pkh{font:800 17px var(--font-head)}
 .pickcard .pks{margin-top:3px;font:600 12px var(--font-ui);color:var(--ink2)}
 .pickcard .pkr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
@@ -897,7 +899,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:54</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 09.10 12:58</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4464,8 +4466,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       return purLocEdit?'<button type="button" data-pfdelloc="'+esc(l)+'" aria-pressed="false">'+esc(l)+' ✕</button>':'<button type="button" data-pfloc="'+esc(l)+'" aria-pressed="'+(purLocDraft===l)+'">'+esc(l)+'</button>';
     }).join("");
   }
-  function purFilterOk(x){
-    if(purLoc&&(purLoc==="__none"?!!x.loc:x.loc!==purLoc))return false;
+  function purFilterOk(x,ignoreLoc){
+    if(!ignoreLoc&&purLoc&&(purLoc==="__none"?!!x.loc:x.loc!==purLoc))return false;
     if(purDept&&purDeptOf(x)!==purDept)return false;
     if(purFirm&&(purFirm==="__none"?!!x.firm:x.firm!==purFirm))return false;
     return true;
@@ -4480,21 +4482,30 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<div class="pksub s-'+st+(x.urgent?' urg':'')+'" role="button" tabindex="0" data-pedit="'+x.id+'">'+
       '<div class="sh"><div style="display:flex;align-items:center;gap:8px;min-width:0">'+(x.th?'<img class="pkt" alt="" data-pimg="'+x.id+'" src="'+x.th+'">':'')+'<span class="sq">'+q+'</span></div><span class="se">düzenle ›</span></div>'+
       '<div style="margin-top:5px">'+b+'</div>'+
-      '<div class="sm">'+(dept?'🏭 <b>'+esc(dept)+'</b>':'🏭 bölüm yok')+' · '+(x.firm?'🏢 <b>'+esc(x.firm)+'</b> · ':'')+(x.loc?'📍 <b>'+esc(x.loc)+'</b>':'📍 yer yok')+(x.by?' · '+esc(nameFor(x.by)):'')+'<br>'+
+      '<div class="sm">'+(dept?'🏭 <b>'+esc(dept)+'</b>':'🏭 bölüm yok')+' · '+(x.firm?'🏢 <b>'+esc(x.firm)+'</b> · ':'')+(x.loc?'📍 <b>'+esc(x.loc)+'</b>':'📍 yer belirsiz')+(x.by?' · '+esc(nameFor(x.by)):'')+'<br>'+
       'İhtiyaç girildi: <b>'+purDateTxt(x.req)+'</b> · Gelmesi gereken: <b>'+purDateTxt(x.due)+'</b>'+(st==="siparis"&&x.ordDate?' · Sipariş: <b>'+purDateTxt(x.ordDate)+'</b>':'')+(+x.price?'<br>Birim: <b>'+purPrice(+x.price)+'</b>'+(purTotal(x)?' · Toplam: <b style="color:var(--good)">'+purTl(purTotal(x))+'</b>':''):'')+'</div>'+
       (x.note?'<div class="sm" style="font-style:italic">“'+esc(x.note)+'”</div>':'')+
       '<div class="pseg" role="group" aria-label="Durum">'+['verilmedi','siparis','geldi'].map(function(k){return '<button type="button" data-pst="'+k+'" data-pid="'+x.id+'" aria-pressed="'+(st===k)+'">'+PUR_ST[k]+'</button>'}).join("")+'</div></div>';
   }
   function purPickHtml(){
     if(!purLoc&&!purDept&&!purFirm)return "";
+    var realLoc=purLoc&&purLoc!=="__none";
     var rows=purchases.filter(function(x){return purStOf(x)!=="geldi"&&purFilterOk(x)});
-    var parts=[];
-    if(purDept)parts.push("🏭 "+purDept);
-    if(purFirm)parts.push("🏢 "+(purFirm==="__none"?"Firması seçilmemiş":purFirm));
-    if(purLoc)parts.push("📍 "+(purLoc==="__none"?"Yeri seçilmemiş":purLoc));
+    var base=[];
+    if(purDept)base.push("🏭 "+purDept);
+    if(purFirm)base.push("🏢 "+(purFirm==="__none"?"Firması belirsiz":purFirm));
+    var parts=base.slice();
+    if(purLoc)parts.push("📍 "+(purLoc==="__none"?"Yeri belirsiz":purLoc));
     var title=parts.join(" · ");
     var what=purDept&&!purLoc&&!purFirm?"ihtiyaçlar":"alınacaklar";
-    if(!rows.length)return '<div class="pickcard"><div class="pkh">'+esc(title)+'</div><div class="pks">Bekleyen ihtiyaç yok.</div></div>';
+    var html=rows.length?purPickCard(rows,title,what,""):'<div class="pickcard"><div class="pkh">'+esc(title)+'</div><div class="pks">Bekleyen ihtiyaç yok.</div></div>';
+    if(realLoc){
+      var unk=purchases.filter(function(x){return purStOf(x)!=="geldi"&&!x.loc&&purFilterOk(x,true)});
+      if(unk.length)html+=purPickCard(unk,base.concat(["📍 Yeri belirsiz"]).join(" · "),"yeri henüz seçilmemiş ("+purLoc+" ile karışmaz)","unk");
+    }
+    return html;
+  }
+  function purPickCard(rows,title,what,cls){
     var g={}, keys=[];
     rows.forEach(function(x){
       var k=(x.name||"").trim().toLowerCase()+"|"+(x.unit||"adet").toLowerCase();
@@ -4504,7 +4515,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     keys.sort(function(a,b){var A=g[a],B=g[b]; if(A.urg!==B.urg)return A.urg?-1:1; if((A.wait>0)!==(B.wait>0))return A.wait>0?1:-1; return (A.name||"").localeCompare(B.name||"","tr")});
     var totOrd=rows.filter(function(x){return purStOf(x)==="siparis"}).length;
     var grand=0, noPr=0; rows.forEach(function(x){if(+x.price&&+x.qty)grand+=purTotal(x); else noPr++});
-    return '<div class="pickcard"><div class="pkh">'+esc(title)+' — '+what+'</div>'+
+    return '<div class="pickcard'+(cls?' '+cls:'')+'"><div class="pkh">'+esc(title)+' — '+what+'</div>'+
       '<div class="pks">'+keys.length+' kalem · '+rows.length+' ihtiyaç · '+totOrd+' sipariş edildi'+(rows.length-totOrd?' · '+(rows.length-totOrd)+' henüz verilmedi':'')+'</div>'+
       (grand?'<div class="pks" style="font:800 15px var(--font-num);color:var(--good);margin-top:6px">Toplam tutar: '+purTl(grand)+(noPr?' <span style="font:600 11px var(--font-ui);color:var(--ink2)">('+noPr+' ihtiyaçta fiyat/adet yok, dahil değil)</span>':'')+'</div>':(noPr?'<div class="pks">Fiyat girilmemiş — toplam hesaplanamadı</div>':''))+
       keys.map(function(k){var o=g[k];
@@ -4579,7 +4590,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var allL=purAllLocs(), noneN=purchases.filter(function(x){return !x.loc&&purStOf(x)!=="geldi"}).length;
     var lh='<button type="button" data-ploc="" aria-pressed="'+(purLoc==="")+'">📍 Tüm yerler</button>';
     allL.forEach(function(l){var n=purchases.filter(function(x){return x.loc===l&&purStOf(x)!=="geldi"}).length; lh+='<button type="button" data-ploc="'+esc(l)+'" aria-pressed="'+(purLoc===l)+'">'+esc(l)+'<span class="n">'+n+'</span></button>'});
-    if(noneN&&allL.length)lh+='<button type="button" data-ploc="__none" aria-pressed="'+(purLoc==="__none")+'">Yeri yok<span class="n">'+noneN+'</span></button>';
+    if(noneN&&allL.length)lh+='<button type="button" data-ploc="__none" aria-pressed="'+(purLoc==="__none")+'">Yeri belirsiz<span class="n">'+noneN+'</span></button>';
     $("purlocs").innerHTML=allL.length?lh:"";
     if(purLoc&&purLoc!=="__none"&&allL.indexOf(purLoc)<0)purLoc="";
     var allD=purAllDepts();
@@ -4596,6 +4607,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(purFilter!=="all"&&purFilter!=="urgent"&&st!==purFilter)return false;
       return !q||fold((x.name||"")+" "+(x.note||"")+" "+(x.firm||"")+" "+(x.loc||"")+" "+purDeptOf(x)).indexOf(q)>-1;
     }));
+    var list2=[];
+    if(purLoc&&purLoc!=="__none"){
+      list2=purSorted(purchases.filter(function(x){
+        var st=purStOf(x);
+        if(x.loc||!purFilterOk(x,true))return false;
+        if(purFilter==="urgent"&&!(x.urgent&&st!=="geldi"))return false;
+        if(purFilter!=="all"&&purFilter!=="urgent"&&st!==purFilter)return false;
+        return !q||fold((x.name||"")+" "+(x.note||"")+" "+(x.firm||"")+" "+purDeptOf(x)).indexOf(q)>-1;
+      }));
+    }
+    if(list2.length){
+      $("purchlist").innerHTML=(list.length?list.map(purCardHtml).join(""):'<div class="empty">'+esc(purLoc)+' için ihtiyaç yok.</div>')+'<div class="purdiv">📍 Yeri belirsiz — '+esc(purLoc)+' ile karışmasın diye ayrı gösteriliyor</div>'+list2.map(purCardHtml).join("");
+    }else
     $("purchlist").innerHTML=list.length?list.map(purCardHtml).join(""):'<div class="empty">'+(purchases.length?"Bu filtrede ihtiyaç yok.":"Henüz ihtiyaç girilmedi.<br>“+ Yeni ihtiyaç gir” ile ilkini ekle.")+'</div>';
   }
   function purSetStatus(id,st){
