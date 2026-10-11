@@ -640,7 +640,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .mppick{margin-top:10px}
 .mpcats{margin:8px 0}
 .mplist{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow:auto}
-.mpitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 10px;cursor:pointer}
+.mpi1{display:flex;align-items:center;gap:10px}
+.mpst{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.mps{position:relative;border:1.5px solid var(--line);border-radius:10px;padding:5px 7px 8px;overflow:hidden;background:var(--surface) linear-gradient(var(--line),var(--line)) bottom/100% 3px no-repeat}
+.mps span{display:block;font:700 10.5px var(--font-ui);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mps b{display:block;font:800 12px var(--font-ui);color:var(--ink2);white-space:nowrap}
+.mps i{position:absolute;left:0;bottom:0;height:3px;background:var(--line);border-radius:0 3px 3px 0;z-index:1}
+.mps.go b{color:#C98A1E}.mps.go i{background:#E8A24B}
+.mps.ok b{color:#2FA66E}.mps.ok i{background:#2FA66E}
+.mps.cur{border-color:var(--accent,#3B78E0);box-shadow:0 0 0 1px var(--accent,#3B78E0) inset}
+.mps.cur span{color:var(--ink)}
+.mpitem{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 10px;cursor:pointer}
 .mpitem:active{border-color:var(--accent,#3B78E0)}
 .mpkal{display:flex;flex-direction:column;align-items:flex-end;flex:0 0 auto}
 .mpkal b{font:800 15px var(--font-ui)}
@@ -734,15 +744,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .flzoom button:disabled{opacity:.4;cursor:default}
 .flzoom span{font:700 12px var(--font-ui);color:var(--ink2);min-width:46px;text-align:center}
 .floorwrap .flabel{position:absolute;left:14px;bottom:10px;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
-.floorgrid{display:grid;grid-template-columns:repeat(7,minmax(74px,1fr));--rh:118px;--gh:20px;grid-auto-rows:var(--rh);gap:6px;min-width:760px}
+.floorgrid{display:grid;grid-template-columns:repeat(7,minmax(74px,1fr));--rh:132px;--gh:20px;grid-auto-rows:var(--rh);gap:6px;min-width:760px}
 .fbox{border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:800 10.5px var(--font-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px;cursor:pointer;gap:2px;line-height:1.2}
 .fbox{position:relative}
-.fbox:has(.fbd){padding-top:12px;padding-bottom:13px}
-.fbox .fbd{position:absolute;top:3px;left:0;right:0;text-align:center;font:800 9px var(--font-ui);font-style:normal;letter-spacing:.03em;color:var(--dc);pointer-events:none}
-.fbox .fbm{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:3px;pointer-events:none}
+.fbox{overflow:hidden}
+.fbox .fbd{order:-2;position:static;flex:0 0 auto;text-align:center;font:800 9px var(--font-ui);font-style:normal;letter-spacing:.05em;color:var(--dc);pointer-events:none;margin:0 0 1px}
+.fbox .fbd::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--dc);margin-right:4px;vertical-align:1px}
+.fbox>span{order:-1}
+.fbox .fbm{order:9;position:static;flex:0 0 auto;display:flex;justify-content:center;gap:3px;pointer-events:none;margin-top:auto;padding-top:3px}
 .fbox .fbm u{width:9px;height:9px;border-radius:50%;text-decoration:none;display:block;box-shadow:0 0 0 1.5px var(--surface)}
-.floorwrap.flbig .fbox .fbd{font-size:9.5px;top:5px}
+.fbox.busy .fbd,.fbox.busy>span{margin-top:0}
+.floorwrap.flbig .fbox .fbd{font-size:9.5px}
 .floorwrap.flbig .fbox .fbm u{width:10px;height:10px}
+.fbdone{opacity:.8}
 .fllegend{display:flex;flex-direction:column;gap:6px;margin:8px 0;font:700 11.5px var(--font-ui);color:var(--ink2)}
 .fllegend>div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
 .fllegend b{font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.06em;margin-right:2px}
@@ -754,22 +768,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .fbox small{font:600 9px var(--font-ui);opacity:.85;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fbimg{width:22px;height:22px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid rgba(0,0,0,.08);margin:1px 0}
 .fbstat{font:800 10px var(--font-ui);margin-top:1px;white-space:normal}
-.fbrem{font:700 9px var(--font-ui);opacity:.8;background:rgba(255,255,255,.5);border-radius:6px;padding:1px 5px}
+.fbrem{font:700 9px var(--font-ui);opacity:.9;background:color-mix(in srgb,var(--ink) 14%,transparent);border-radius:6px;padding:1px 6px}
 /* Yerleşim / Makine Planı ekranlarındaki kroki (renderFloor'daki küçük ana ekran widget'ı hariç):
    ürün görseli çok daha büyük gösterilsin, üstüne "－ 🔍 ＋" ile 2 kademe daha da yakınlaştırılabilsin. */
-.floorwrap.flbig .floorgrid{grid-template-columns:repeat(7,minmax(92px,1fr));--rh:158px;--gh:26px}
+.floorwrap.flbig .floorgrid{grid-template-columns:repeat(7,minmax(92px,1fr));--rh:186px;--gh:26px}
 .floorwrap.flbig .fbox{padding:6px;gap:3px}
 .floorwrap.flbig .fbimg{width:36px;height:36px;border-radius:7px}
 .floorwrap.flbig .fbox small{font-size:11px}
 .floorwrap.flbig .fbstat{font-size:11.5px}
 .floorwrap.flbig .fbrem{font-size:10.5px}
-.floorwrap.flbig.fz2 .floorgrid{grid-template-columns:repeat(7,minmax(124px,1fr));--rh:206px;--gh:34px}
+.floorwrap.flbig.fz2 .floorgrid{grid-template-columns:repeat(7,minmax(124px,1fr));--rh:238px;--gh:34px}
 .floorwrap.flbig.fz2 .fbox{padding:8px;font-size:12.5px}
 .floorwrap.flbig.fz2 .fbimg{width:50px;height:50px;border-radius:9px}
 .floorwrap.flbig.fz2 .fbox small{font-size:12.5px}
 .floorwrap.flbig.fz2 .fbstat{font-size:13px}
 .floorwrap.flbig.fz2 .fbrem{font-size:11.5px}
-.floorwrap.flbig.fz3 .floorgrid{grid-template-columns:repeat(7,minmax(158px,1fr));--rh:258px;--gh:42px}
+.floorwrap.flbig.fz3 .floorgrid{grid-template-columns:repeat(7,minmax(158px,1fr));--rh:298px;--gh:42px}
 .floorwrap.flbig.fz3 .fbox{padding:10px;font-size:14.5px}
 .floorwrap.flbig.fz3 .fbimg{width:66px;height:66px;border-radius:11px}
 .floorwrap.flbig.fz3 .fbox small{font-size:14px}
@@ -1235,7 +1249,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:52</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:59</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -6260,14 +6274,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     list.sort(function(a,b){return (b.o.ts||0)-(a.o.ts||0)});
     return {list:list,hidden:other};
   }
+  function mpStagesHtml(o,curSec){
+    var cells=STAGES.map(function(stg,i){
+      if(!(o.st||[])[i])return "";
+      var nd=need(o,stg.sec), dn=Math.min(doneOf(o.id,stg.sec).q,nd); if(stClosed(o,i))dn=nd;
+      var pc=nd?Math.min(100,Math.round(dn/nd*100)):0, mu=muOf(o,i);
+      return '<div class="mps'+(stg.sec===curSec?' cur':'')+(pc>=100?' ok':pc>0?' go':'')+'"><span>'+esc(stg.short)+(mu>1?' ×'+mu:'')+'</span><b>'+nf.format(dn)+' / '+nf.format(nd)+'</b><i style="width:'+pc+'%"></i></div>';
+    }).join("");
+    return cells?'<div class="mpst">'+cells+'</div>':'';
+  }
   function mpPickListHtml(m,secId){
     var c=mpCandidates(m,secId);
     return (c.list.length?c.list.slice(0,40).map(function(x){
       var o=x.o, im=jobThumb({oid:o.id});
-      return '<button type="button" class="mpitem" data-mpadd="'+secId+'|'+o.id+'">'+
+      return '<button type="button" class="mpitem" data-mpadd="'+secId+'|'+o.id+'"><span class="mpi1">'+
         (im?'<img class="mdjimg" alt="" src="'+im+'">':'<span class="mdjimg ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</span>')+
         '<span class="mpit"><b>'+esc(o.code)+'</b><small>'+esc((o.cust||"Müşteri yok")+" · "+(ORDER_CATS[o.cat]||""))+'</small></span>'+
-        '<span class="mpkal"><b>'+nf.format(x.kal)+'</b><small>kalan</small></span></button>';
+        '<span class="mpkal"><b>'+nf.format(x.kal)+'</b><small>kalan</small></span></span>'+mpStagesHtml(o,secId)+'</button>';
     }).join("")+(c.list.length>40?'<div class="note">İlk 40 sonuç gösteriliyor — aramayı daralt.</div>':''):'<div class="empty">Uygun sipariş yok.</div>')+
       (c.hidden?'<div class="note">'+c.hidden+' sipariş başka makineye planlı olduğu için gizlendi.</div>':'');
   }
@@ -6294,7 +6317,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<input class="mpq" inputmode="numeric" id="mpq-'+o.id+'" data-mpsc="'+x.secId+'|'+o.id+'" value="'+x.pe.q+'" aria-label="Planlanan adet">'+
         '<button type="button" data-mpstep="'+x.secId+'|'+o.id+'|100" aria-label="100 artır">+</button></div>'+
         '<button type="button" class="mpfill" data-mpfill="'+x.secId+'|'+o.id+'"'+(kal<=0?' disabled':'')+'>Kalan '+nf.format(kal)+'</button></div>'+
-        '<div class="mppg"><i style="width:'+pc+'%"></i></div><div class="mppt">yapılan '+nf.format(done)+' / '+nf.format(x.pe.q)+'</div></div>';
+        '<div class="mppg"><i style="width:'+pc+'%"></i></div><div class="mppt">bu '+(isDay?'gün':'hafta')+' yapılan '+nf.format(done)+' / '+nf.format(x.pe.q)+'</div>'+mpStagesHtml(o,x.secId)+'</div>';
     }).join("");
     return '<div class="mpcard">'+
       '<div class="mphead"><div class="mptt">'+(isDay?"GÜNLÜK PLAN":"HAFTALIK PLAN")+'</div>'+
@@ -6512,7 +6535,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       }
       var wf=wst.items[0], wimg=jobThumb({oid:wf.ord.id});
       var wcode=wst.items.length>1?(wf.ord.code+" +"+(wst.items.length-1)):wf.ord.code;
-      var wstats='<b class="fbstat">Plan '+nf.format(wst.totalPlan)+' · Yapılan '+nf.format(wst.totalDone)+'</b><small class="fbrem">'+(wst.items.length>1?(wst.items.length+' sipariş'):('Kalan '+nf.format(wf.kalan)))+'</small>';
+      var wstats='<b class="fbstat">Plan '+nf.format(wst.totalPlan)+'</b><small class="fbdone">Yapılan '+nf.format(wst.totalDone)+'</small><small class="fbrem">'+(wst.items.length>1?(wst.items.length+' sipariş'):('Kalan '+nf.format(wf.kalan)))+'</small>';
       return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wimg?'<img class="fbimg" alt="" src="'+wimg+'">':'')+'<small class="fbcode">'+esc(wcode)+'</small>'+wstats+'</button>';
     }
     var st=m?jobDayStats(m,floorDayIso()):null;
@@ -6520,7 +6543,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var cls="fbox"+(m?"":" empty")+(busy?" busy":"")+(s.vert?" vert":"");
     if(!busy)return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
     var code=st?st.ord.code:(m.job.code||""), img=jobThumb(st?{oid:st.ord.id}:m.job);
-    var statsHtml=st?('<b class="fbstat">Plan '+nf.format(st.planQ)+' · Yapılan '+nf.format(st.dayDone)+'</b><small class="fbrem">Kalan '+nf.format(st.kalan)+'</small>'):"";
+    var statsHtml=st?('<b class="fbstat">Plan '+nf.format(st.planQ)+'</b><small class="fbdone">Yapılan '+nf.format(st.dayDone)+'</small><small class="fbrem">Kalan '+nf.format(st.kalan)+'</small>'):"";
     return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(img?'<img class="fbimg" alt="" src="'+img+'">':'')+'<small class="fbcode">'+esc(code)+'</small>'+statsHtml+'</button>';
   }
   function renderFloor(){
