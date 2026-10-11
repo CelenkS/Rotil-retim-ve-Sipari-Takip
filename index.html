@@ -1240,6 +1240,125 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcards .hcard[data-sec] .hic{color:#fff;background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.32)}
 .hcards .hcard[data-sec] .hn{font:800 21px/1.15 var(--font-head)}
 .hcards .hcard[data-sec] .hs{font:700 12.5px var(--font-ui);color:rgba(255,255,255,.92)}
+/* ---- Bölüm ekranı (#app): yeni tasarım — sadece görünüm; geri almak için bu bloğu sil ---- */
+#app .hero{--gl:rgba(255,255,255,.16);padding:22px 18px 20px;border-radius:28px;gap:16px;border:1px solid rgba(255,255,255,.2);
+  background:radial-gradient(120% 70% at 100% 0%,rgba(255,255,255,.26) 0%,transparent 58%),radial-gradient(90% 60% at 0% 100%,color-mix(in srgb,var(--hero2) 70%,#000) 0%,transparent 70%),linear-gradient(155deg,var(--hero1),var(--hero2));
+  box-shadow:0 18px 40px color-mix(in srgb,var(--hero2) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.3)}
+#app .hero::before{width:260px;height:260px;right:-90px;top:-120px;background:rgba(255,255,255,.07)}
+#app .hero::after{display:none}
+#app .hirow .hi{font:800 11px var(--font-ui);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.88)}
+#app .hirow .tbtn{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.18);padding:8px 14px}
+#app .mnav{margin-top:10px;gap:10px}
+#app .mnav button{width:42px;height:42px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+#app .mnav h1{font:800 30px/1.1 var(--font-head);letter-spacing:-.01em;text-shadow:0 2px 12px rgba(0,0,0,.18)}
+#app .pbar,#app .tabs{padding:4px;gap:4px;background:rgba(0,0,0,.2);box-shadow:inset 0 1px 3px rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1)}
+#app .pbar button,#app .tabs button{padding:10px 6px;font:800 13px var(--font-head);color:rgba(255,255,255,.8);transition:background .18s,color .18s,box-shadow .18s}
+#app .pbar button[aria-pressed="true"],#app .tabs button[aria-pressed="true"]{background:#fff;color:var(--hero2);box-shadow:0 4px 12px rgba(0,0,0,.22)}
+#app .plabel{margin-top:-4px;font:800 17px var(--font-head)}
+#app .tbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:8px 13px;font:800 12px var(--font-ui);transition:background .15s}
+#app .tbtn:hover{background:rgba(255,255,255,.24)}
+#app .plrow{flex-wrap:wrap;row-gap:8px}
+#app .pbtns{display:flex;flex-wrap:wrap;gap:6px}
+#app .tbtn.hl{background:#fff;color:var(--hero2);border-color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+#app .totals{gap:12px}
+#app .tot-box{position:relative;overflow:hidden;padding:15px 16px 14px;border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.22);box-shadow:0 8px 20px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);backdrop-filter:none}
+#app .tot-box::before{content:"";position:absolute;left:16px;top:0;width:34px;height:3px;border-radius:0 0 4px 4px;background:#fff;opacity:.85}
+#app .tot-box+.tot-box::before{background:#FFD98A}
+#app .tot-box span{font:800 10.5px var(--font-ui);letter-spacing:.14em;color:rgba(255,255,255,.82)}
+#app .tot-box b{margin-top:5px;font:800 31px/1.1 var(--font-head);letter-spacing:-.01em}
+#app .tot-box+.tot-box b{color:#FFE9B8}
+#app .gbar{height:7px;background:rgba(0,0,0,.2)}
+#app .avgline{margin-top:-6px;font:700 12.5px var(--font-ui);color:rgba(255,255,255,.88);background:rgba(0,0,0,.16);border-radius:99px;padding:7px 14px;align-self:center}
+#app .needbox{padding:15px 16px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);backdrop-filter:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+#app .needbox.click:hover,#app .needbox.planbtn:hover{background:rgba(255,255,255,.16)}
+#app .needtop{font:800 11.5px var(--font-ui);letter-spacing:.06em;text-transform:uppercase}
+#app .needtop b{font:800 20px var(--font-head);letter-spacing:0;text-transform:none;background:rgba(255,255,255,.18);border-radius:99px;padding:3px 12px}
+#app .needbar{height:9px;background:rgba(0,0,0,.22);margin-top:12px}
+#app .needbar i{background:linear-gradient(90deg,#fff,#FFE9B8)}
+#app .needsub{margin-top:9px;font:700 12px var(--font-ui)}
+#app .rowsx{gap:8px;margin-top:14px}
+#app .brk .bar{height:12px;background:rgba(0,0,0,.22);box-shadow:inset 0 1px 2px rgba(0,0,0,.2)}
+#app .bk{padding:11px 14px;border-radius:16px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);column-gap:11px;transition:background .15s}
+#app .bkcat:hover .bk{background:rgba(255,255,255,.15)}
+#app .bk .dot{width:12px;height:12px;margin-top:4px;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 28%,transparent)}
+#app .bk .nm{font:800 15px var(--font-head)}
+#app .bk .sub{font:600 12px var(--font-ui);color:rgba(255,255,255,.78)}
+#app .bk .pc{font:800 19px var(--font-head)}
+#app .catback{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.18)}
+#app .drow{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 14px}
+
+/* giriş kartı */
+#app .card{border-radius:28px;padding:20px 20px 22px;border:1px solid var(--line);box-shadow:0 1px 2px rgba(22,48,58,.05),0 18px 40px rgba(22,48,58,.1);position:relative;overflow:hidden}
+#app .card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--hero1),var(--hero2))}
+#app .ehead{align-items:center;margin:4px 0 6px}
+#app .ehead small{font:800 10.5px var(--font-ui);letter-spacing:.16em;color:var(--hero1);display:flex;align-items:center;gap:7px;margin-bottom:4px}
+#app .ehead small::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--hero1)}
+#app .ehead h2{font:800 28px/1.1 var(--font-head);letter-spacing:-.015em}
+#app .dtotal{gap:8px}
+#app .pill{padding:8px 15px;background:var(--soft);border:1px solid var(--line);font:700 12px var(--font-ui)}
+#app .pill b{font:800 18px var(--font-head)}
+#app .pill.m{background:color-mix(in srgb,var(--money) 14%,var(--surface));border-color:color-mix(in srgb,var(--money) 30%,var(--line))}
+#app .sec{margin:18px 0 10px;padding-top:16px;border-top:1px solid var(--line)}
+#app .sec h3{font:800 17px var(--font-head)}
+#app .sec .btn{padding:11px 20px;font:800 14px var(--font-ui);background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#1b5f7a));box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 38%,transparent);transition:transform .12s,box-shadow .12s}
+#app .sec .btn:active{transform:translateY(1px);box-shadow:0 3px 8px color-mix(in srgb,var(--accent) 30%,transparent)}
+#app .search{height:50px;border-radius:16px;border:1.5px solid var(--line);background:var(--soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238FA6AA' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 14px center;padding-left:44px;font:600 14px var(--font-ui)}
+#app .search:focus{background-color:var(--surface);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+#app .dvtog{padding:5px;background:var(--soft);border:1px solid var(--line);margin:4px 0 10px}
+#app .dvtog button{padding:11px 6px;font:800 13px var(--font-head)}
+#app .dvtog button[aria-pressed="true"]{background:var(--surface);color:var(--hero1);box-shadow:0 3px 10px rgba(0,0,0,.14)}
+#app .dsumtop{gap:10px;margin:6px 0 8px}
+#app .dsumtop>div{position:relative;overflow:hidden;padding:14px 8px 12px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+#app .dsumtop>div::before{content:"";position:absolute;left:50%;top:0;width:30px;height:3px;margin-left:-15px;border-radius:0 0 4px 4px;background:var(--hero1)}
+#app .dsumtop>div:nth-child(2)::before{background:var(--p3)}
+#app .dsumtop>div:nth-child(3)::before{background:var(--money)}
+#app .dsumtop>div:nth-child(3) b{color:var(--money)}
+#app .dsumtop span{font:800 10px var(--font-ui);letter-spacing:.14em}
+#app .dsumtop b{font:800 26px/1.1 var(--font-head);margin-top:4px}
+#app .ghead{margin:18px 0 8px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--c,var(--ink2)) 10%,var(--surface));font:800 14px var(--font-head)}
+#app .ghead .dot{width:10px;height:10px;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+#app .ghead .gsum{font:700 12px var(--font-ui)}
+#app .dcard,#app .line{background:var(--surface);border:1px solid var(--line);border-left:0;border-radius:20px;padding:14px 14px 12px 18px;box-shadow:0 1px 2px rgba(22,48,58,.04),0 6px 16px rgba(22,48,58,.06);overflow:hidden}
+#app .dcard::before,#app .line::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+#app .line{position:relative}
+#app .dcth{width:64px;height:64px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+#app .dcc{font:800 16px var(--font-head)}
+#app .dcr b{font:800 27px/1.05 var(--font-head);letter-spacing:-.01em}
+#app .dcr em{font:800 13px var(--font-ui)}
+#app .dcm span{background:var(--soft);border:1px solid var(--line);padding:3px 10px}
+#app .dcprog{padding-top:10px;border-top:1px dashed var(--line)}
+#app .dced{background:var(--soft);border:1px solid var(--line);padding:7px 14px;font:800 12px var(--font-ui);transition:background .15s,color .15s}
+#app .dced:hover{background:var(--hero1);color:#fff;border-color:var(--hero1)}
+#app button.empty{border:2px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:20px;background:color-mix(in srgb,var(--accent) 6%,var(--surface));padding:30px 16px;margin:8px 0;transition:background .15s}
+#app button.empty:hover{background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+#app details.manual{margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--soft);border:1px solid var(--line)}
+#app .wsum{margin-top:14px;padding:13px 16px;border-radius:16px;background:linear-gradient(90deg,color-mix(in srgb,var(--hero1) 12%,var(--surface)),var(--soft));border:1px solid var(--line);font:700 13px var(--font-ui)}
+#app .wsum b{font:800 16px var(--font-head)}
+#app .today-btn{padding:11px 20px;font:800 13px var(--font-ui);box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 35%,transparent)}
+#app .hint2{margin-top:-4px;font:700 12px var(--font-ui);letter-spacing:.02em}
+
+/* günlük tablo */
+#app .tablewrap{border-radius:28px;border:1px solid var(--line);box-shadow:0 1px 2px rgba(22,48,58,.05),0 18px 40px rgba(22,48,58,.1)}
+#app thead th{padding:15px 16px;font:800 10.5px var(--font-ui);letter-spacing:.16em;background:linear-gradient(180deg,var(--soft),var(--surface));border-bottom:1px solid var(--line)}
+#app td{padding:13px 14px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#app tr.day{transition:background .12s}
+#app tr.day:hover td{background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+#app tr.day td:first-child{font:800 16px var(--font-head)}
+#app tr.day td:first-child small{font:700 11.5px var(--font-ui);color:var(--ink2)}
+#app tr.today td:first-child{box-shadow:inset 5px 0 0 var(--p0)}
+#app tr.sel td{background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+#app tr.sel td:first-child{box-shadow:inset 5px 0 0 var(--accent)}
+#app td.a{font:800 18px var(--font-head)}
+#app td.c{font:800 15px var(--font-head)}
+#app td.a small{font:700 11.5px var(--font-ui)}
+#app tr.week td{background:linear-gradient(180deg,color-mix(in srgb,var(--hero1) 14%,var(--surface)),color-mix(in srgb,var(--hero1) 8%,var(--surface)));padding-block:15px;border-top:1px solid color-mix(in srgb,var(--hero1) 25%,var(--line))}
+#app tr.week:hover td{background:color-mix(in srgb,var(--hero1) 20%,var(--surface))}
+#app tr.week td:first-child small{display:inline-block;margin-top:3px;background:color-mix(in srgb,var(--hero1) 22%,transparent);color:var(--ink);border-radius:99px;padding:2px 9px;font:800 9.5px var(--font-ui);letter-spacing:.1em}
+#app tr.week td.a{font:800 20px var(--font-head)}
+#app tr.week td.c{font:800 17px var(--font-head)}
+#app tr.grand td{background:linear-gradient(135deg,var(--hero1),var(--hero2));padding-block:20px}
+#app tr.grand td:first-child{font:800 19px var(--font-head)}
+#app tr.grand td.a,#app tr.grand td.c{font:800 21px var(--font-head)}
 </style>
 </head>
 <body>
@@ -1276,7 +1395,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:34</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:40</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
