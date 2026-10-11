@@ -922,7 +922,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:11</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:22</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1019,9 +1019,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div id="osum"></div>
   </section>
   <section class="card">
-    <div class="otabs" role="group" aria-label="Sipariş durumu"><button id="otOpen" aria-pressed="true">Açık</button><button id="otDone" aria-pressed="false">Tamamlanan</button><button id="otShip" aria-pressed="false">Gönderilen</button></div>
+    <div class="otabs" role="group" aria-label="Sipariş durumu"><button id="otOpen" aria-pressed="true">Açık</button><button id="otDone" aria-pressed="false">Tamamlanan</button><button id="otShip" aria-pressed="false">Gönderilen</button><button id="otAll" aria-pressed="false">Hepsi</button></div>
     <div class="osearch"><input class="search" id="osearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara…" aria-label="Sipariş ara"><button class="btn ghost" id="oref" aria-label="Yenile">Yenile</button></div>
     <div class="ocatf" id="ocatf" role="group" aria-label="Kategori filtresi"></div>
+    <div class="ocatf" id="ocustf" role="group" aria-label="Müşteri filtresi"></div>
     <button class="btn ghost" id="osetbtn" aria-expanded="false" style="width:100%;margin-top:8px">⚙ Ayarlar / araçlar ▾</button>
     <div id="oset" hidden>
     <div class="osearch" style="margin-top:8px">
@@ -1263,7 +1264,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||(i===4&&o.cat===0)||!!(o.st||[])[i]}
   var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
-  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
+  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
   // Her kategorinin (COLS ile aynı sırada) standart üretim süresi — dakika/adet. Kullanıcı
@@ -3924,6 +3925,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return complete?maxD:null;
   }
   function normOrder(o){o.cat=o.cat||0; o.st=(o.st||[1,1,1,1]).slice(); while(o.st.length<7)o.st.push(0); o.pr=(o.pr||[]).slice(); while(o.pr.length<7)o.pr.push(0); o.cl=(o.cl||[]).slice(); while(o.cl.length<7)o.cl.push(0); o.kp=o.kp||""; o.dk=o.dk==="Var"||o.dk==="Yok"?o.dk:""; o.mu=(o.mu&&o.mu.length?o.mu.slice():defMu(o.cat)); while(o.mu.length<7)o.mu.push(1); o.qty=+o.qty||0; o.od=o.od||""; o.dd=o.dd||""; o.th=o.th||""; o.up=+o.up||0; o.not=o.not||""; return o}
+  var ordCustName="";
+  function custBase(n){return String(n||"Müşteri yok").replace(/\s+S\s*\d+\s*$/i,"").replace(/\s+/g," ").trim()||"Müşteri yok"}
+  function custKey(b){return fold(b)}
   function orderTotal(o){return o.qty*(+o.up||0)}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
   function daysTo(iso){if(!iso)return null; var a=iso.split("-"); return Math.round((new Date(+a[0],+a[1]-1,+a[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
@@ -4247,23 +4251,38 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       }).join("")+row("Toplam","",grp(sl).gt," tot");
     }
     $("osum").innerHTML=sh;
-    $("otOpen").setAttribute("aria-pressed",ordTab==="open"); $("otDone").setAttribute("aria-pressed",ordTab==="done"); $("otShip").setAttribute("aria-pressed",ordTab==="shipped");
+    $("otOpen").setAttribute("aria-pressed",ordTab==="open"); $("otDone").setAttribute("aria-pressed",ordTab==="done"); $("otShip").setAttribute("aria-pressed",ordTab==="shipped"); $("otAll").setAttribute("aria-pressed",ordTab==="all");
     var tabList=list.filter(function(x){
-      var match=ordTab==="done"?x.c:ordTab==="shipped"?!!x.o.shipped:!x.c;
+      var match=ordTab==="all"?true:ordTab==="done"?x.c:ordTab==="shipped"?!!x.o.shipped:!x.c;
       return match&&(!q||fold(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).indexOf(q)>-1);
     });
     // Kategori çipleri: seçili sekme + aramaya göre her kategorideki sipariş sayısı; çipe basınca
     // sadece o kategorinin siparişleri listelenir (tekrar basınca ya da "Tümü" ile kalkar).
-    var catCnt=ORDER_CATS.map(function(){return 0}); tabList.forEach(function(x){catCnt[x.o.cat]=(catCnt[x.o.cat]||0)+1});
+    // Müşteri adı sadeleştirilir: sondaki "S4", "S10" gibi ekler atılır (İNCEGÜL S6 ile İNCEGÜL S9 tek müşteri sayılır).
+    // Sadece FİLTRE için kullanılır; siparişlerdeki müşteri adına dokunulmaz.
+    var custCnt={}, custName={}, custOrd=[];
+    var byCust=tabList.filter(function(x){return ordCatF===null||x.o.cat===ordCatF});
+    byCust.forEach(function(x){var b=custBase(x.o.cust),k=custKey(b); if(!custName[k]){custName[k]=b;custOrd.push(k)} custCnt[k]=(custCnt[k]||0)+1});
+    if(ordCustF!==null&&!custName[ordCustF]){custName[ordCustF]=ordCustName||ordCustF;custOrd.push(ordCustF);custCnt[ordCustF]=0}
+    custOrd.sort(function(a,b){return custName[a].localeCompare(custName[b],"tr")});
+    var byCat=tabList.filter(function(x){return ordCustF===null||custKey(custBase(x.o.cust))===ordCustF});
+    var catCnt=ORDER_CATS.map(function(){return 0}); byCat.forEach(function(x){catCnt[x.o.cat]=(catCnt[x.o.cat]||0)+1});
     var cf=$("ocatf");
-    if(cf)cf.innerHTML='<button type="button" data-ocf="all" aria-pressed="'+(ordCatF===null)+'">Tümü <small>'+tabList.length+'</small></button>'+
+    if(cf)cf.innerHTML='<button type="button" data-ocf="all" aria-pressed="'+(ordCatF===null)+'">Tümü <small>'+byCat.length+'</small></button>'+
       ORDER_CATS.map(function(c,i){return (catCnt[i]||ordCatF===i)?'<button type="button" data-ocf="'+i+'" aria-pressed="'+(ordCatF===i)+'"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(c)+' <small>'+catCnt[i]+'</small></button>':''}).join("");
-    tabList.filter(function(x){return ordCatF===null||x.o.cat===ordCatF}).sort(function(a,b){
-      if(ordTab==="shipped"){var SA=a.o.shipDate||"",SB=b.o.shipDate||""; if(SA!==SB)return SA<SB?1:-1}
+    var uf=$("ocustf");
+    if(uf)uf.innerHTML=custOrd.length>1||ordCustF!==null?'<button type="button" data-ocu="all" aria-pressed="'+(ordCustF===null)+'">Tüm müşteriler <small>'+byCust.length+'</small></button>'+
+      custOrd.map(function(k){return '<button type="button" data-ocu="'+esc(k)+'" aria-pressed="'+(ordCustF===k)+'">'+esc(custName[k])+' <small>'+custCnt[k]+'</small></button>'}).join(""):"";
+    var grpOf=function(x){return ordTab!=="all"?0:(x.o.shipped?2:x.c?1:0)};
+    tabList.filter(function(x){return (ordCatF===null||x.o.cat===ordCatF)&&(ordCustF===null||custKey(custBase(x.o.cust))===ordCustF)}).sort(function(a,b){
+      if(ordTab==="all"){var ga=grpOf(a),gb=grpOf(b); if(ga!==gb)return ga-gb;
+        if(ga===0){var A0=a.o.dd||"9999",B0=b.o.dd||"9999"; if(A0!==B0)return A0<B0?-1:1}
+        else if(ga===2){var SA0=a.o.shipDate||"",SB0=b.o.shipDate||""; if(SA0!==SB0)return SA0<SB0?1:-1}}
+      else if(ordTab==="shipped"){var SA=a.o.shipDate||"",SB=b.o.shipDate||""; if(SA!==SB)return SA<SB?1:-1}
       else if(ordTab!=="done"){var A=a.o.dd||"9999",B=b.o.dd||"9999"; if(A!==B)return A<B?-1:1}
       return (b.o.ts||0)-(a.o.ts||0)
     }).forEach(function(x){cards+=ocardHtml(x)});
-    $("ocards").innerHTML=cards||'<div class="empty">'+(ordCatF!==null&&orders.length?"Bu kategoride "+(ordTab==="done"?"tamamlanan":ordTab==="shipped"?"gönderilen":"açık")+" sipariş yok.":orders.length?(ordTab==="done"?"Henüz tamamlanan sipariş yok.":ordTab==="shipped"?"Henüz gönderilen sipariş yok.":"Açık sipariş yok."):"Henüz sipariş yok.<br>“Yeni sipariş” ile ilkini gir.")+'</div>';
+    $("ocards").innerHTML=cards||'<div class="empty">'+((ordCatF!==null||ordCustF!==null)&&orders.length?"Bu filtrede "+(ordTab==="all"?"":ordTab==="done"?"tamamlanan ":ordTab==="shipped"?"gönderilen ":"açık ")+"sipariş yok.":orders.length?(ordTab==="all"?"Sipariş yok.":ordTab==="done"?"Henüz tamamlanan sipariş yok.":ordTab==="shipped"?"Henüz gönderilen sipariş yok.":"Açık sipariş yok."):"Henüz sipariş yok.<br>“Yeni sipariş” ile ilkini gir.")+'</div>';
   }
   function openOrders(){
     dbP.then(function(){
@@ -6723,6 +6742,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("otOpen").addEventListener("click",function(){ordTab="open";renderOrders()});
   $("otDone").addEventListener("click",function(){ordTab="done";renderOrders()});
   $("otShip").addEventListener("click",function(){ordTab="shipped";renderOrders()});
+  $("otAll").addEventListener("click",function(){ordTab="all";renderOrders()});
+  $("ocustf").addEventListener("click",function(e){
+    var b=e.target.closest("[data-ocu]"); if(!b)return;
+    var v=b.dataset.ocu; if(v==="all"||ordCustF===v){ordCustF=null;ordCustName=""}else{ordCustF=v;ordCustName=(b.textContent||"").replace(/\s*\d+\s*$/,"").trim()} renderOrders();
+  });
   $("osearch").addEventListener("input",function(e){ordQ=e.target.value;renderOrders()});
   $("oref").addEventListener("click",function(){$("ostatus").textContent="Yenileniyor…";loadProgress(true).then(function(){renderOrders();$("ostatus").textContent="Güncel"})});
   $("oback").addEventListener("click",ordersHome);
