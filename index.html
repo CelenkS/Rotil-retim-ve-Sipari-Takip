@@ -1020,7 +1020,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:01</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1428,6 +1428,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var EMP_DEPTS=["Rotil","Rozet","Yönetim","Ofis / İdari İşler"];
   // Alt bölümler (ör. "Rotil CNC", "Rozet Preshane") elle eklenir: ayarlar/bolumler = {list:[{id,g:grup,n:ad}]}
   var subDepts=[], unsubDept=null, empFromFin=false; // empFromFin: eleman formu "İşçilik ve maliyet"ten açıldıysa maaş alanları da çıkar (başka yerde ASLA çıkmaz)
+  // Eleman formu: seçilen bölüm grubuna göre alt bölüm seçenekleri
+  function empSubOptions(dept,sel){
+    var h='<option value="">Seçilmedi</option>';
+    if(dept){
+      subDepts.filter(function(x){return x.g===dept}).forEach(function(x){h+='<option value="'+x.id+'"'+(sel===x.id?' selected':'')+'>'+esc(x.n)+'</option>'});
+    }else{
+      EMP_DEPTS.forEach(function(d){var os=subDepts.filter(function(x){return x.g===d}); if(os.length)h+='<optgroup label="'+esc(d)+'">'+os.map(function(x){return '<option value="'+x.id+'"'+(sel===x.id?' selected':'')+'>'+esc(subLabel(x))+'</option>'}).join("")+'</optgroup>'});
+    }
+    return h;
+  }
+  function empRefreshSub(sel){
+    var el=$("emsub"); if(!el)return;
+    var d=$("emdept")?$("emdept").value:"", keep=sel!==undefined?sel:el.value;
+    var ok=subDepts.some(function(x){return x.id===keep&&(!d||x.g===d)});
+    el.innerHTML=empSubOptions(d,ok?keep:"");
+    var m=$("emsubmsg"); if(m&&d&&!subDepts.some(function(x){return x.g===d}))m.textContent="“"+d+"” grubunda henüz alt bölüm yok. Yukarıdaki kutuya yazıp ekle.";
+  }
   function subOf(id){return subDepts.filter(function(x){return x.id===id})[0]||null}
   function subLabel(x){return x?(x.g+" "+x.n):""}
   var employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
@@ -2704,7 +2721,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div class="form">'+
         '<div><label class="fl" for="emname">Ad Soyad</label><input class="fin" id="emname" autocomplete="off" value="'+esc(em.name)+'"></div>'+
         '<div><label class="fl" for="emdept">Bölüm grubu</label><select class="fin" id="emdept"><option value="">Seçilmedi</option>'+EMP_DEPTS.map(function(d){return '<option value="'+esc(d)+'"'+(em.dept===d?' selected':'')+'>'+esc(d)+'</option>'}).join("")+'</select></div>'+
-        '<div><label class="fl" for="emsub">Alt bölüm</label><select class="fin" id="emsub"><option value="">Seçilmedi</option>'+EMP_DEPTS.map(function(d){var os=subDepts.filter(function(x){return x.g===d}); return os.length?'<optgroup label="'+esc(d)+'">'+os.map(function(x){return '<option value="'+x.id+'"'+(em.sub===x.id?' selected':'')+'>'+esc(subLabel(x))+'</option>'}).join("")+'</optgroup>':''}).join("")+'</select><small style="color:var(--ink2)">Listede yoksa Elemanlar ekranındaki “Bölümleri düzenle” ile ekle</small></div>'+
+        '<div><label class="fl" for="emsub">Alt bölüm</label><select class="fin" id="emsub">'+empSubOptions(em.dept,em.sub)+'</select>'+
+          '<div class="frow" style="margin-top:8px;gap:8px"><input class="fin" id="emsubnew" autocomplete="off" placeholder="Yeni alt bölüm ekle (ör. CNC Aşık)" style="flex:1"><button type="button" class="btn ghost" id="emsubadd" style="flex:0 0 auto;padding:0 16px">+ Ekle</button></div>'+
+          '<small id="emsubmsg" style="color:var(--ink2);display:block;margin-top:4px">Önce bölüm grubunu seç; alt bölüm listesinde sadece o grubunkiler çıkar. Listede yoksa buraya yazıp ekle.</small></div>'+
         '<div><label class="fl" for="emrole">Görev</label><input class="fin" id="emrole" autocomplete="off" list="emroledl" placeholder="ör. CNC operatörü, mühendis, muhasebe, şoför, aşçı" value="'+esc(em.role||"")+'"><datalist id="emroledl">'+["Operatör","Mühendis","Pazarlama","Muhasebe","Şoför","Aşçı / Yemekhane","Temizlik","Güvenlik","Usta başı","Müdür"].map(function(r){return '<option value="'+esc(r)+'">'}).join("")+'</datalist></div>'+
         '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
@@ -5340,7 +5359,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       subDepts=(sn.exists&&sn.data().list)||[]; var gr=sn.exists&&sn.data().groups; if(Array.isArray(gr)){EMP_DEPTS.length=0; gr.forEach(function(x){EMP_DEPTS.push(x)})}
       if(!$("staff").hidden)renderStaff();
       if(!$("fin").hidden&&!(document.activeElement&&document.activeElement.tagName==="INPUT"&&$("fincontent").contains(document.activeElement)))renderFin();
-      if(!$("ov").hidden&&(sheetMode==="deptmgr"||sheetMode==="empform")&&!(document.activeElement&&document.activeElement.tagName==="INPUT"&&$("sheet").contains(document.activeElement)))renderSheet();
+      if(!$("ov").hidden&&sheetMode==="empform")empRefreshSub();
+      else if(!$("ov").hidden&&sheetMode==="deptmgr"&&!(document.activeElement&&document.activeElement.tagName==="INPUT"&&$("sheet").contains(document.activeElement)))renderSheet();
     },function(){});
   }
   function saveSubDepts(list){
@@ -5810,6 +5830,24 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(d.fadd!==undefined&&finNav.g!==null&&finNav.g>=0){empPreset.dept=EMP_DEPTS[finNav.g]; if(finNav.sub&&finNav.sub!=="*")empPreset.sub=finNav.sub}
       sheetMode="empform"; $("ov").hidden=false; renderSheet();
     }
+  });
+  // ---- eleman formu: grup seçince alt bölümler süzülür, formdan yeni alt bölüm eklenir ----
+  $("sheet").addEventListener("change",function(e){
+    if(sheetMode!=="empform")return;
+    if(e.target.id==="emdept")empRefreshSub();
+    else if(e.target.id==="emsub"&&e.target.value){var sd=subOf(e.target.value); if(sd&&$("emdept")&&$("emdept").value!==sd.g)$("emdept").value=sd.g}
+  });
+  $("sheet").addEventListener("click",function(e){
+    if(sheetMode!=="empform")return;
+    var t=e.target.closest("button"); if(!t||t.id!=="emsubadd")return;
+    var msg=$("emsubmsg"), g=$("emdept")?$("emdept").value:"", inp=$("emsubnew"), nm=inp?inp.value.trim().replace(/\s+/g," "):"";
+    if(!g){if(msg)msg.textContent="Önce yukarıdan bölüm grubunu seç (ör. Rotil)"; if($("emdept"))$("emdept").focus(); return}
+    if(!nm){if(inp)inp.focus();return}
+    var dup=subDepts.filter(function(x){return x.g===g&&x.n.toLowerCase()===nm.toLowerCase()})[0];
+    var id=dup?dup.id:uid();
+    if(!dup){subDepts=subDepts.concat([{id:id,g:g,n:nm}]); saveSubDepts(subDepts)}
+    empRefreshSub(id); inp.value="";
+    if(msg)msg.textContent=dup?"Bu alt bölüm zaten vardı, seçtim":"“"+nm+"” eklendi ve seçildi";
   });
   // ---- bölüm grubu / alt bölüm: ekle, adını değiştir, sil ----
   $("sheet").addEventListener("click",function(e){
