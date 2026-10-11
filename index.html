@@ -914,13 +914,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <button class="btn ghost" id="bkExport" style="flex:1">☁ Tam yedek al (.json)</button>
     <button class="btn ghost" id="bkImport" style="flex:1">⟲ Yedekten geri yükle</button>
   </div>
+  <button class="btn ghost" id="dsbtn" style="width:100%;margin-top:10px">📊 Veri boyutunu göster</button>
+  <div class="impnote" id="dsout" hidden></div>
   <input type="file" id="bkImportf" accept=".json,application/json" hidden>
   <div class="impnote" id="bknote" hidden></div>
   <button class="btn ghost" id="bkWipeProd" style="width:100%;margin-top:10px;color:var(--bad)">🗑 Tüm bölümlerdeki üretim kayıtlarını sil (adet/ciro sıfırlansın)</button>
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 10:06</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 10:24</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1182,7 +1184,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       firebase.auth().onAuthStateChanged(function(user){
         if(user){
           hideGate();
-          dbResolve(firebase.firestore());
+          var fsDb=firebase.firestore();
+          // Yerel önbellek: telefon uykudan dönünce/sekme geri gelince Firestore, 30 dk içinde
+          // sadece değişen belgeleri okur (tüm siparişleri baştan okumaz). Desteklenmiyorsa
+          // (gizli sekme vb.) sessizce eskisi gibi çalışır.
+          if(!window.__fsPersist){
+            window.__fsPersist=true;
+            try{fsDb.enablePersistence({synchronizeTabs:true}).catch(function(){})}catch(e){}
+          }
+          dbResolve(fsDb);
         }else{
           if(gate)gate.hidden=false;
           if(lgSubmit){lgSubmit.disabled=false;lgSubmit.textContent="Giriş yap"}
@@ -4975,6 +4985,34 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(b.dataset.nmsave)saveMyName();
   });
   $("homewho").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="hwinp"){e.preventDefault();saveMyName()}});
+  // Veri boyutu: ürün listesi (catalog) her bölümde TEK belgede durur; Firestore belge sınırı 1 MiB.
+  // Sipariş sayısı da her açılıştaki okuma sayısını belirler. Bu ekran ikisini gösterir (sadece okur).
+  function dsKB(n){return n>=1048576?(n/1048576).toFixed(2)+" MB":Math.round(n/1024)+" KB"}
+  $("dsbtn").addEventListener("click",function(){
+    var out=$("dsout"), btn=this; out.hidden=false;
+    if(!db){out.className="impnote"; out.textContent="Veritabanına bağlı değil."; return}
+    btn.disabled=true; out.className="impnote"; out.textContent="Hesaplanıyor…";
+    var LIM=1048576, rows=[], bytes=function(o){try{return new Blob([JSON.stringify(o)]).size}catch(e){return 0}};
+    Promise.all(SECTIONS.map(function(x){
+      return db.doc(catPathOf(x.id)).get().then(function(sn){
+        if(!sn.exists)return;
+        var d=sn.data(), n=(d.items||[]).length, b=bytes(d);
+        rows.push({name:x.name,n:n,b:b,pct:Math.round(b/LIM*100)});
+      }).catch(function(){});
+    })).then(function(){
+      var worst=0, h='<b>Ürün listesi belgesi (sınır 1 MB)</b><br>';
+      rows.forEach(function(r){
+        if(r.pct>worst)worst=r.pct;
+        h+=esc(r.name)+': '+r.n+' ürün · '+dsKB(r.b)+' · <b style="color:'+(r.pct>=85?'#c0392b':r.pct>=60?'#b9770e':'inherit')+'">%'+r.pct+'</b><br>';
+      });
+      if(!rows.length)h+='Kayıtlı ürün listesi yok.<br>';
+      var ob=bytes(orders), thb=0; orders.forEach(function(o){thb+=(o.th||"").length});
+      h+='<br><b>Siparişler</b><br>'+orders.length+' belge · toplam '+dsKB(ob)+' (küçük görseller '+dsKB(thb)+')<br>'+
+         'Her cihaz açılışta kabaca '+(orders.length+materials.length+purchases.length+60+SECTIONS.length*2)+'+ okuma yapar.<br>';
+      if(worst>=60)h+='<br>⚠ Ürün listesi %60’ı geçti. %100’e gelirse yeni ürün/resim kaydedilemez, haber ver.';
+      out.innerHTML=h; btn.disabled=false;
+    });
+  });
   $("homesetbtn").addEventListener("click",function(){
     var o=$("homeset"), open=o.hidden; o.hidden=!open;
     this.setAttribute("aria-expanded",open); this.textContent=open?"⚙ Ayarlar ▴":"⚙ Ayarlar ▾";
