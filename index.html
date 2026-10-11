@@ -1035,7 +1035,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:28</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:30</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5734,10 +5734,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function calcCompute(c){
     var days=calcN(c.days);
     var hrs=calcN(c.hrs)>0?calcN(c.hrs):8;
-    var ops=(c.ops||[]).map(function(o){var dd=calcN(o.s)>0?Math.floor(hrs*3600/calcN(o.s)):calcN(o.d), mo=dd*days, cost=calcN(o.p)*calcN(o.c); return {o:o,dd:dd,mo:mo,cost:cost,pp:mo>0?cost/mo:0}});
+    var ops=(c.ops||[]).map(function(o){var dd=calcN(o.s)>0?Math.floor(hrs*3600/calcN(o.s)):calcN(o.d), mo=dd*days, cost=calcN(o.p)*calcN(o.c), kk=calcN(o.k)>0?calcN(o.k):1, pPart=mo>0?cost/mo:0; return {o:o,dd:dd,mo:mo,cost:cost,kk:kk,pPart:pPart,pp:pPart*kk,pm:mo/kk}});
     var lab=0,labTotal=0; ops.forEach(function(x){lab+=x.pp; labTotal+=x.cost});
     var gt=0; (c.lines||[]).forEach(function(l){if(!l.ex)gt+=calcN(l.v)});
-    var auto=ops.length?ops[ops.length-1].mo:0, qty=calcN(c.qty)>0?calcN(c.qty):auto;
+    var auto=ops.length?ops[ops.length-1].pm:0, qty=calcN(c.qty)>0?calcN(c.qty):auto;
     var gp=qty>0?gt/qty:0;
     var dbl=ops.some(function(x){return x.cost>0})&&(c.lines||[]).some(function(l){return !l.ex&&calcN(l.v)>0&&/maaş|maas|sigorta/i.test(l.n||"")});
     return {ops:ops,lab:lab,labTotal:labTotal,gt:gt,auto:auto,qty:qty,gp:gp,total:lab+gp,dbl:dbl};
@@ -5769,7 +5769,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var r=calcCompute(c), h='<div class="fcompbox"><small style="color:var(--ink2);font:700 12px var(--font-ui)">Adet başı toplam maliyet</small><div class="cbig">'+nf2.format(r.total)+' ₺</div>';
     if(r.ops.length)h+='<div class="cres"><span>İşçilik / adet (operasyonlar)</span><b>'+nf2.format(r.lab)+' ₺</b></div>';
     h+='<div class="cres"><span>Genel gider / adet</span><b>'+nf2.format(r.gp)+' ₺</b></div>'+
-       '<div class="cres"><span>Aylık üretim adedi'+(calcN(c.qty)>0?'':(r.ops.length?' (son operasyondan)':''))+'</span><b>'+money(r.qty)+'</b></div>'+
+       '<div class="cres"><span>Aylık üretim adedi'+(calcN(c.qty)>0?'':(r.ops.length?' (son operasyondan, ürün cinsinden)':''))+'</span><b>'+money(r.qty)+'</b></div>'+
        '<div class="cres"><span>Toplam aylık gider</span><b>'+money(r.gt)+' ₺</b></div>'+
        (r.ops.length?'<div class="cres"><span>Toplam aylık işçilik</span><b>'+money(r.labTotal)+' ₺</b></div>':'');
     if(r.ops.length)h+='<div class="fsec" style="margin:12px 0 4px">Operasyon başına işçilik</div>'+r.ops.map(function(x){return '<div class="cres"><span>'+esc(x.o.n||"Operasyon")+'</span><b>'+nf2.format(x.pp)+' ₺</b></div>'}).join("");
@@ -5784,7 +5784,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     r.ops.forEach(function(x){
       var el=document.querySelector('[data-opres="'+x.o.id+'"]'), di=document.querySelector('[data-co="'+x.o.id+'"][data-cof="d"]'), bySn=calcN(x.o.s)>0;
       if(di){ if(bySn){di.value=money(x.dd); di.disabled=true} else if(di.disabled){di.disabled=false; di.value=finMoneyStr(x.o.d)} }
-      if(el)el.textContent=(bySn?"Günlük "+money(x.dd)+" adet ("+String(calcN(c.hrs)>0?calcN(c.hrs):8).replace(".",",")+" saat ÷ "+money(calcN(x.o.s))+" sn) · ":"")+"aylık "+money(x.mo)+" adet · aylık işçilik "+money(x.cost)+" ₺ · adet başı "+nf2.format(x.pp)+" ₺"});
+      if(el)el.textContent=(bySn?"Günlük "+money(x.dd)+" adet ("+String(calcN(c.hrs)>0?calcN(c.hrs):8).replace(".",",")+" saat ÷ "+money(calcN(x.o.s))+" sn) · ":"")+"aylık "+money(x.mo)+" parça · aylık işçilik "+money(x.cost)+" ₺ · parça başı "+nf2.format(x.pPart)+" ₺"+(x.kk!==1?" × "+money(x.kk)+" = ürün başı "+nf2.format(x.pp)+" ₺ (ürün cinsinden aylık "+money(Math.floor(x.pm))+")":" · ürün başı "+nf2.format(x.pp)+" ₺")});
     (c.lines||[]).forEach(function(l){var el=document.querySelector('[data-lres="'+l.id+'"]'); if(el)el.textContent=(!l.ex&&r.qty>0&&calcN(l.v)>0)?nf2.format(calcN(l.v)/r.qty)+" ₺ / adet":""});
   }
   function calcEditorHtml(c){
@@ -5799,7 +5799,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       h+='<div class="fsec">Operasyonlar</div>';
       (c.ops||[]).forEach(function(o){
         h+='<div class="copc"><div class="crow"><input class="fin" data-co="'+o.id+'" data-cof="n" autocomplete="off" value="'+esc(o.n||"")+'" placeholder="Operasyon adı" style="flex:1;font-weight:800"><button type="button" class="cx" data-copdel="'+o.id+'" aria-label="Operasyonu sil">✕</button></div>'+
-          '<div class="cgrid" style="grid-template-columns:1fr 1fr"><div><label>Bir parça kaç saniye?</label>'+calcCInp('data-co="'+o.id+'" data-cof="s"',o.s,"saniye")+'</div><div><label>Günlük adet (saniye yazarsan otomatik)</label>'+calcCInp('data-co="'+o.id+'" data-cof="d"',o.d)+'</div><div><label>Kaç kişi</label>'+calcCInp('data-co="'+o.id+'" data-cof="c"',o.c)+'</div><div><label>Kişi başı aylık maliyet ₺</label>'+calcCInp('data-co="'+o.id+'" data-cof="p"',o.p)+'</div></div>'+
+          '<div class="cgrid" style="grid-template-columns:1fr 1fr"><div><label>Bir parça kaç saniye?</label>'+calcCInp('data-co="'+o.id+'" data-cof="s"',o.s,"saniye")+'</div><div><label>Günlük adet (saniye yazarsan otomatik)</label>'+calcCInp('data-co="'+o.id+'" data-cof="d"',o.d)+'</div><div><label>Kaç kişi</label>'+calcCInp('data-co="'+o.id+'" data-cof="c"',o.c)+'</div><div><label>Kişi başı aylık maliyet ₺</label>'+calcCInp('data-co="'+o.id+'" data-cof="p"',o.p)+'</div><div style="grid-column:1/-1"><label>Üründe kaç tane gerekiyor? (ör. Z-Rot’ta gövde 2, montaj 1)</label>'+calcCInp('data-co="'+o.id+'" data-cof="k"',o.k,"1")+'</div></div>'+
           '<div class="note" data-opres="'+o.id+'" style="margin-top:6px"></div></div>';
       });
       h+='<button type="button" class="btn ghost" data-copadd style="width:100%">+ Operasyon ekle</button>';
