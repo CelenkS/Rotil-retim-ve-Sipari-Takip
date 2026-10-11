@@ -977,7 +977,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:21</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:29</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1384,7 +1384,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // girişi akışının nasıl etiketleneceği netleşince eklenecek.
   var EMP_DEPTS=["Rotil","Rozet","Yönetim","Ofis / İdari İşler"];
   // Alt bölümler (ör. "Rotil CNC", "Rozet Preshane") elle eklenir: ayarlar/bolumler = {list:[{id,g:grup,n:ad}]}
-  var subDepts=[], unsubDept=null;
+  var subDepts=[], unsubDept=null, empFromFin=false; // empFromFin: eleman formu "İşçilik ve maliyet"ten açıldıysa maaş alanları da çıkar (başka yerde ASLA çıkmaz)
   function subOf(id){return subDepts.filter(function(x){return x.id===id})[0]||null}
   function subLabel(x){return x?(x.g+" "+x.n):""}
   var employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
@@ -2665,6 +2665,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="emrole">Görev</label><input class="fin" id="emrole" autocomplete="off" list="emroledl" placeholder="ör. CNC operatörü, mühendis, muhasebe, şoför, aşçı" value="'+esc(em.role||"")+'"><datalist id="emroledl">'+["Operatör","Mühendis","Pazarlama","Muhasebe","Şoför","Aşçı / Yemekhane","Temizlik","Güvenlik","Usta başı","Müdür"].map(function(r){return '<option value="'+esc(r)+'">'}).join("")+'</datalist></div>'+
         '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
+        ((empFromFin&&finOwner())?(function(){var mm=empEditId?finMaasOf(empEditId,finMonth||finNowKey()):{n:0,s:0}; return '<div style="border:2px dashed var(--accent);border-radius:14px;padding:10px"><span class="fl">🔒 Maaş ve sigorta (sadece sen görürsün, Elemanlar ekranında görünmez)</span><div style="display:flex;gap:8px;margin-top:6px"><div style="flex:1"><label class="fl" for="emnet">Net maaş (₺)</label><input class="fin" id="emnet" type="number" inputmode="decimal" min="0" step="any" value="'+(mm.n||"")+'" placeholder="0"></div><div style="flex:1"><label class="fl" for="emsig">Sigorta (₺)</label><input class="fin" id="emsig" type="number" inputmode="decimal" min="0" step="any" value="'+(mm.s||"")+'" placeholder="0"></div></div><small style="color:var(--ink2)">'+esc((function(){var a=(finMonth||finNowKey()).split("-"); return AY[+a[1]-1]+" "+a[0]})())+' ayı için kaydedilir, sonraki aylara taşınır</small></div>'})():'')+
         '<div><label class="fl" for="emnote">Not</label><textarea class="fin" id="emnote" rows="2" placeholder="ör. vardiye, iletişim…">'+esc(em.note||"")+'</textarea></div>'+
         '<div class="frow"><button class="btn" id="emsave">Kaydet</button><button class="btn ghost" id="emcancel">Vazgeç</button>'+(empEditId?'<button class="btn danger" id="emdel">Elemanı sil</button>':"")+'</div></div>';
     }else if(sheetMode==="macform"){
@@ -3429,7 +3430,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(emidx>-1)empMacsDraft.splice(emidx,1); else empMacsDraft.push(emid);
       renderSheet(); return;
     }
-    if(t.id==="emcancel"){sheetMode="list";empEditId=null;closeSheet();return}
+    if(t.id==="emcancel"){sheetMode="list";empEditId=null;empFromFin=false;closeSheet();return}
     if(t.id==="dpclose"){sheetMode="list";closeSheet();return}
     if(t.dataset.dpadd!==undefined){
       var dg=EMP_DEPTS[+t.dataset.dpadd], di=$("dpn"+t.dataset.dpadd), dn=di?di.value.trim():"";
@@ -3447,9 +3448,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var enote=($("emnote")?$("emnote").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
       var edata={name:ename,secs:empSecsDraft.slice(),machines:empMacsDraft.slice(),note:enote,dept:(function(){var sb=subOf($("emsub")?$("emsub").value:""); return sb?sb.g:($("emdept")?$("emdept").value:"")})(),sub:($("emsub")?$("emsub").value:""),role:($("emrole")?$("emrole").value.trim():"")};
-      if(empEditId)db.doc("employees/"+empEditId).set(edata).catch(function(){});
-      else db.collection("employees").add(edata).catch(function(){});
-      empEditId=null; closeSheet(); return;
+      var eRef=empEditId?db.doc("employees/"+empEditId):db.collection("employees").doc();
+      eRef.set(edata).catch(function(){});
+      // Maaş SADECE "İşçilik ve maliyet"ten açılan formda ve sahibe yazılır; özel fin_ay koleksiyonuna gider, employees belgesine ASLA.
+      if(empFromFin&&finOwner()&&$("emnet")){
+        var sn2=cleanNum($("emnet").value,999999999,false), ss2=cleanNum($("emsig").value,999999999,false);
+        var fmk=finMonth||finNowKey();
+        var fdoc=(finDocs[fmk]=finDocs[fmk]||{}); fdoc.maas=Object.assign({},fdoc.maas); fdoc.maas[eRef.id]={n:sn2,s:ss2};
+        var fp={maas:{}}; fp.maas[eRef.id]={n:sn2,s:ss2};
+        db.doc("fin_ay/"+fmk).set(fp,{merge:true}).catch(function(){});
+      }
+      empEditId=null; empFromFin=false; closeSheet(); return;
     }
     if(t.id==="emdel"){
       if(db&&empEditId)db.doc("employees/"+empEditId).delete().catch(function(){});
@@ -5407,7 +5416,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
          FIN_ITEMS.map(function(it){return '<div class="finrow"><div class="fl2">'+it[1]+'</div>'+finInp('data-fg="'+it[0]+'" aria-label="'+it[1]+'"',+g[it[0]]||0)+'</div>'}).join("")+
          '<div class="fintot"><span>Toplam gider</span><span>'+money(t.total)+' ₺</span></div>';
     }else{
-      if(!employees.length)h='<div class="empty">Eleman yok. Önce Üretim → Elemanlar bölümünden eleman ekle.</div>';
+      h+='<button type="button" class="btn ghost" id="finnewemp" style="width:100%;margin-bottom:6px">+ Yeni eleman (maaşıyla birlikte)</button>';
+      if(!employees.length)h+='<div class="empty">Henüz eleman yok. Yukarıdaki düğmeyle ilk elemanı ekle.</div>';
       else{
         var grp={}, order=EMP_DEPTS.concat(["_"]);
         order.forEach(function(d){grp[d]=[]});
@@ -5424,7 +5434,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             h+=ses.map(function(e){
               var m=finMaasOf(e.id,finMonth), own=((finDocs[finMonth]||{}).maas||{})[e.id], carried=m.from&&m.from!==finMonth;
               var other=[e.role].concat((e.secs||[]).map(secNameOf)).filter(Boolean).join(", ");
-              return '<div class="finemp"><div class="en2">'+esc(e.name)+'</div><div class="es2">'+(other?esc(other)+' · ':'')+(carried?'önceki aydan ('+AY[+m.from.split("-")[1]-1]+')':(own?'bu ay girildi':'henüz girilmedi'))+'</div>'+
+              return '<div class="finemp"><div class="en2" style="display:flex;justify-content:space-between;gap:8px">'+esc(e.name)+'<button type="button" class="eedit" data-fedit="'+e.id+'" style="font:700 12px var(--font-ui);background:none;border:0;color:var(--ink2);text-decoration:underline">düzenle</button></div><div class="es2">'+(other?esc(other)+' · ':'')+(carried?'önceki aydan ('+AY[+m.from.split("-")[1]-1]+')':(own?'bu ay girildi':'henüz girilmedi'))+'</div>'+
                 '<div class="inp2"><label>Net maaş (₺)'+finInp('data-fe="'+e.id+'" data-ff="n"',m.n)+'</label><label>Sigorta (₺)'+finInp('data-fe="'+e.id+'" data-ff="s"',m.s)+'</label></div></div>';
             }).join("");
           });
@@ -5638,6 +5648,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("finback").addEventListener("click",finHome);
   $("finprev").addEventListener("click",function(){finMonth=finShift(finMonth||finNowKey(),-1);renderFin()});
   $("finnext").addEventListener("click",function(){finMonth=finShift(finMonth||finNowKey(),1);renderFin()});
+  $("fincontent").addEventListener("click",function(e){
+    var nb=e.target.closest("#finnewemp"), eb=e.target.closest("[data-fedit]");
+    if(!nb&&!eb)return;
+    if(!finOwner())return;
+    empFromFin=true; floorMacId=null;
+    if(nb){empEditId=null;empSecsDraft=[];empMacsDraft=[]}
+    else{
+      empEditId=eb.dataset.fedit;
+      var ee=employees.filter(function(x){return x.id===empEditId})[0];
+      empSecsDraft=(ee&&ee.secs)?ee.secs.slice():[]; empMacsDraft=(ee&&ee.machines)?ee.machines.slice():[];
+    }
+    sheetMode="empform"; $("ov").hidden=false; renderSheet();
+  });
   $("finTabG").addEventListener("click",function(){finTab="gider";renderFin()});
   $("finTabM").addEventListener("click",function(){finTab="maas";renderFin()});
   $("fincontent").addEventListener("change",function(e){
@@ -5678,14 +5701,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("stfperfbtn").addEventListener("click",computeEmpPerf);
   $("stfnew").addEventListener("click",function(){
     floorMacId=null;
-    if(stfTab==="emp"){empEditId=null;empSecsDraft=[];empMacsDraft=[];sheetMode="empform";}
+    if(stfTab==="emp"){empEditId=null;empFromFin=false;empSecsDraft=[];empMacsDraft=[];sheetMode="empform";}
     else{macEditId=null;mcSecsDraft=[];sheetMode="macform";}
     $("ov").hidden=false; renderSheet();
   });
   $("stflist").addEventListener("click",function(e){
     var eb=e.target.closest("[data-empedit]");
     if(eb){
-      empEditId=eb.dataset.empedit;
+      empEditId=eb.dataset.empedit; empFromFin=false;
       var ee=employees.filter(function(x){return x.id===empEditId})[0];
       empSecsDraft=(ee&&ee.secs)?ee.secs.slice():[]; empMacsDraft=(ee&&ee.machines)?ee.machines.slice():[];
       sheetMode="empform";$("ov").hidden=false;renderSheet();return;
