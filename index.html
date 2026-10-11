@@ -766,6 +766,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .floorwrap.flbig .fbox .fbd{font-size:9.5px}
 .floorwrap.flbig .fbox .fbm u{width:10px;height:10px}
 .fbdone{opacity:.8}
+.fbox small.fbsec{opacity:1;font-weight:800;background:color-mix(in srgb,var(--accent,#3B78E0) 28%,transparent);color:var(--ink);border-radius:6px;padding:1px 7px;margin:1px 0 2px}
 .fllegend{display:flex;flex-direction:column;gap:6px;margin:8px 0;font:700 11.5px var(--font-ui);color:var(--ink2)}
 .fllegend>div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
 .fllegend b{font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.06em;margin-right:2px}
@@ -1258,7 +1259,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:07</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:10</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -6544,6 +6545,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<div class="fllegend"><div><b>Bölüm</b>'+MAC_DEPTS.map(function(d){return '<span style="--dc:'+MAC_DEPT_COL[d]+'"><i></i>'+d+'</span>'}).join("")+'</div>'+
       '<div><b>Yapabildiği ürün</b>'+MAC_CAPS.map(function(c){return '<span style="--dc:'+c.c+'"><i></i>'+esc(c.n)+'</span>'}).join("")+'</div></div>';
   }
+  function fbSecTag(ids){
+    var seen={}, names=[]; ids.forEach(function(id){
+      if(!id||seen[id])return; seen[id]=1;
+      var st=STAGES.filter(function(x){return x.sec===id})[0]; names.push(st?st.short:secNameOf(id));
+    });
+    return names.length?'<small class="fbsec">'+esc(names.join(" + "))+'</small>':'';
+  }
   function floorBoxHtml0(s,scope){
     var m=floorMachine(s.label);
     var style="grid-column:"+s.col+" / span "+s.cs+";grid-row:"+s.row+" / span "+s.rs+";";
@@ -6554,20 +6562,32 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(!wbusy)return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
       if(!wst){
         var wjimg=jobThumb(m.job);
-        return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wjimg?'<img class="fbimg" alt="" src="'+wjimg+'">':'')+(m.job.code?'<small class="fbcode">'+esc(m.job.code)+'</small>':'')+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
+        return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wjimg?'<img class="fbimg" alt="" src="'+wjimg+'">':'')+(m.job.code?'<small class="fbcode">'+esc(m.job.code)+'</small>':'')+fbSecTag([m.job.sec])+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
       }
       var wf=wst.items[0], wimg=jobThumb({oid:wf.ord.id});
       var wcode=wst.items.length>1?(wf.ord.code+" +"+(wst.items.length-1)):wf.ord.code;
       var wstats='<b class="fbstat">Plan '+nf.format(wst.totalPlan)+'</b><small class="fbdone">Yapılan '+nf.format(wst.totalDone)+'</small><small class="fbrem">'+(wst.items.length>1?(wst.items.length+' sipariş'):('Kalan '+nf.format(wf.kalan)))+'</small>';
-      return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wimg?'<img class="fbimg" alt="" src="'+wimg+'">':'')+'<small class="fbcode">'+esc(wcode)+'</small>'+wstats+'</button>';
+      return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wimg?'<img class="fbimg" alt="" src="'+wimg+'">':'')+'<small class="fbcode">'+esc(wcode)+'</small>'+fbSecTag(wst.items.map(function(it){return it.secId}))+wstats+'</button>';
     }
     var st=m?jobDayStats(m,floorDayIso()):null;
     var busy=!!(m&&(m.job||st));
     var cls="fbox"+(m?"":" empty")+(busy?" busy":"")+(s.vert?" vert":"");
     if(!busy)return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
     var code=st?st.ord.code:(m.job.code||""), img=jobThumb(st?{oid:st.ord.id}:m.job);
+    // Aynı gün bu makineye birden fazla plan satırı girilmişse (farklı ürün / bölüm) ilkini göster, diğerlerini "+N" ile belirt.
+    var dayExtra=[]; if(st&&st.fromPlan&&!st.weekly){
+      var seenFirst=false;
+      ((m.secs||[]).length?m.secs:[m.job&&m.job.sec]).forEach(function(sid){
+        if(!sid)return; var P=plansOfSec(sid);
+        ((P.day&&P.day[floorDayIso()])||[]).forEach(function(pe){
+          if(pe.mid!==m.id)return;
+          if(!seenFirst&&sid===st.secId&&pe.oid===st.ord.id){seenFirst=true;return}
+          dayExtra.push({secId:sid});
+        });
+      });
+    }
     var statsHtml=st?('<b class="fbstat">Plan '+nf.format(st.planQ)+'</b><small class="fbdone">Yapılan '+nf.format(st.dayDone)+'</small><small class="fbrem">Kalan '+nf.format(st.kalan)+'</small>'):"";
-    return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(img?'<img class="fbimg" alt="" src="'+img+'">':'')+'<small class="fbcode">'+esc(code)+'</small>'+statsHtml+'</button>';
+    return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(img?'<img class="fbimg" alt="" src="'+img+'">':'')+'<small class="fbcode">'+esc(code)+(dayExtra.length?' +'+dayExtra.length:'')+'</small>'+fbSecTag([st?st.secId:(m.job&&m.job.sec)].concat(dayExtra.map(function(x){return x.secId})))+statsHtml+'</button>';
   }
   function renderFloor(){
     var html=FLOOR_CIVATA.map(floorBoxHtml).join("");
