@@ -494,6 +494,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .cbig{font:800 32px var(--font-num);color:var(--ink);margin:2px 0 8px}
 .cx{flex:0 0 auto;background:none;border:0;color:var(--ink2);font:700 18px var(--font-ui);padding:6px 8px;cursor:pointer}
 .cmn{background:var(--soft);color:var(--ink)}
+.cneed{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--soft);border-radius:12px;padding:8px 10px;font:700 12.5px var(--font-ui);color:var(--ink)}
 .clx{flex:0 0 auto;width:20px;height:20px;accent-color:var(--accent)}
 
 .dpg{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}
@@ -1035,7 +1036,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:32</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:36</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5720,7 +5721,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   /* ---------- İşçilik hesaplama (geleceğe dönük senaryo; güncel gider/eleman verisiyle KARIŞMAZ) ---------- */
   // Kayıtlar fin_ay/senaryo/items/{id} altında durur: fin_ay kuralı gereği sadece sahip okuyabilir/yazabilir.
   var calcList=[], unsubCalc=null, calcCur=null, calcSaveT=null, calcDelArm=false, calcPullArm=false;
-  var nf2=new Intl.NumberFormat("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
+  var nf2=new Intl.NumberFormat("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2}), nf1=new Intl.NumberFormat("tr-TR",{minimumFractionDigits:1,maximumFractionDigits:1});
   function calcCol(){return db.collection("fin_ay/senaryo/items")}
   function calcN(v){return +v||0}
   function calcDateLbl(ts){var d=new Date(ts||Date.now()); return d.getDate()+" "+AY[d.getMonth()]+" "+d.getFullYear()}
@@ -5732,12 +5733,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     },function(){$("calcstatus").textContent="Okunamadı (bağlantı ya da yetki)"});
   }
   function calcCompute(c){
-    var days=calcN(c.days);
-    var hrs=calcN(c.hrs)>0?calcN(c.hrs):8;
-    var ops=(c.ops||[]).map(function(o){var mk=calcN(o.m)>0?calcN(o.m):1, dd=calcN(o.s)>0?Math.floor(mk*hrs*3600/calcN(o.s)):calcN(o.d), mo=dd*days, cost=calcN(o.p)*calcN(o.c), kk=calcN(o.k)>0?calcN(o.k):1, pPart=mo>0?cost/mo:0; return {o:o,mk:mk,dd:dd,mo:mo,cost:cost,kk:kk,pPart:pPart,pp:pPart*kk,pm:mo/kk}});
-    var lab=0,labTotal=0; ops.forEach(function(x){lab+=x.pp; labTotal+=x.cost});
+    var days=calcN(c.days), hrs=calcN(c.hrs)>0?calcN(c.hrs):8;
+    var ops=(c.ops||[]).map(function(o){
+      var mk=calcN(o.m)>0?calcN(o.m):1, perM=calcN(o.s)>0?Math.floor(hrs*3600/calcN(o.s)):calcN(o.d), dd=mk*perM, mo=dd*days;
+      var cost=calcN(o.p)*calcN(o.c), kk=calcN(o.k)>0?calcN(o.k):1;
+      return {o:o,mk:mk,perM:perM,dd:dd,mo:mo,cost:cost,kk:kk,cap:mo/kk,pPart:mo>0?cost/mo:0};
+    });
+    var auto=ops.length?ops[ops.length-1].cap:0, qty=calcN(c.qty)>0?calcN(c.qty):auto;
+    var lab=0,labTotal=0;
+    ops.forEach(function(x){
+      x.need=(qty>0&&x.perM>0&&days>0)?(qty*x.kk)/(x.perM*days):0; x.needCeil=x.need>0?Math.ceil(x.need-1e-9):0;
+      x.short=qty>0&&x.perM>0&&x.cap<qty-1e-9; x.eff=qty>0?Math.min(qty,x.cap):x.cap;
+      x.pp=x.eff>0?x.cost/x.eff:0; x.pm=x.cap;
+      lab+=x.pp; labTotal+=x.cost;
+    });
     var gt=0; (c.lines||[]).forEach(function(l){if(!l.ex)gt+=calcN(l.v)});
-    var auto=ops.length?ops[ops.length-1].pm:0, qty=calcN(c.qty)>0?calcN(c.qty):auto;
     var gp=qty>0?gt/qty:0;
     var dbl=ops.some(function(x){return x.cost>0})&&(c.lines||[]).some(function(l){return !l.ex&&calcN(l.v)>0&&/maaş|maas|sigorta/i.test(l.n||"")});
     return {ops:ops,lab:lab,labTotal:labTotal,gt:gt,auto:auto,qty:qty,gp:gp,total:lab+gp,dbl:dbl};
@@ -5772,7 +5782,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
        '<div class="cres"><span>Aylık üretim adedi'+(calcN(c.qty)>0?'':(r.ops.length?' (son operasyondan, ürün cinsinden)':''))+'</span><b>'+money(r.qty)+'</b></div>'+
        '<div class="cres"><span>Toplam aylık gider</span><b>'+money(r.gt)+' ₺</b></div>'+
        (r.ops.length?'<div class="cres"><span>Toplam aylık işçilik</span><b>'+money(r.labTotal)+' ₺</b></div>':'');
-    if(r.ops.length)h+='<div class="fsec" style="margin:12px 0 4px">Operasyon başına işçilik</div>'+r.ops.map(function(x){return '<div class="cres"><span>'+esc(x.o.n||"Operasyon")+'</span><b>'+nf2.format(x.pp)+' ₺</b></div>'}).join("");
+    if(r.ops.length)h+='<div class="fsec" style="margin:12px 0 4px">Operasyon başına işçilik</div>'+r.ops.map(function(x){return '<div class="cres"><span>'+esc(x.o.n||"Operasyon")+'<br><small style="font-weight:600">'+money(x.mk)+' makine'+(x.needCeil?' (gerekli en az '+x.needCeil+')':'')+(x.short?' · <span style="color:#D9534F">kapasite yetmiyor</span>':'')+'</small></span><b>'+nf2.format(x.pp)+' ₺</b></div>'}).join("");
     if(!r.qty)h+='<div class="note" style="margin-top:8px;color:#C98A12">Adet girilmedi: genel gider adet başına bölünemiyor.</div>';
     if(r.dbl)h+='<div class="note" style="margin-top:8px;color:#C98A12">Dikkat: hem operasyonlarda kişi maliyeti hem de Maaş/Sigorta gider satırı var, işçilik iki kez sayılıyor olabilir.</div>';
     return h+'</div>';
@@ -5783,8 +5793,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("calcbig").textContent=nf2.format(r.total)+" ₺ / adet"; $("calcobs").textContent=c.title||"";
     r.ops.forEach(function(x){
       var el=document.querySelector('[data-opres="'+x.o.id+'"]'), di=document.querySelector('[data-co="'+x.o.id+'"][data-cof="d"]'), bySn=calcN(x.o.s)>0;
-      if(di){ if(bySn){di.value=money(x.dd); di.disabled=true} else if(di.disabled){di.disabled=false; di.value=finMoneyStr(x.o.d)} }
-      if(el)el.textContent=(bySn?"Günlük "+money(x.dd)+" adet ("+(x.mk!==1?money(x.mk)+" makine × ":"")+String(calcN(c.hrs)>0?calcN(c.hrs):8).replace(".",",")+" saat ÷ "+money(calcN(x.o.s))+" sn) · ":"")+"aylık "+money(x.mo)+" parça · aylık işçilik "+money(x.cost)+" ₺ · parça başı "+nf2.format(x.pPart)+" ₺"+(x.kk!==1?" × "+money(x.kk)+" = ürün başı "+nf2.format(x.pp)+" ₺ (ürün cinsinden aylık "+money(Math.floor(x.pm))+")":" · ürün başı "+nf2.format(x.pp)+" ₺")});
+      if(di){ if(bySn){di.value=money(x.perM); di.disabled=true} else if(di.disabled){di.disabled=false; di.value=finMoneyStr(x.o.d)} }
+      var nb=document.querySelector('[data-opneed="'+x.o.id+'"]');
+      if(nb){
+        var sp=nb.querySelector("span"), bt=nb.querySelector("button");
+        if(r.qty>0&&x.perM>0&&calcN(c.days)>0){
+          sp.textContent="Hedef "+money(r.qty)+" ürün için gerekli: "+nf1.format(x.need)+" makine (en az "+x.needCeil+")";
+          if(x.mk!==x.needCeil&&calcN(x.o.m)!==x.needCeil){bt.hidden=false; bt.textContent=x.needCeil+" makine yaz"}else bt.hidden=true;
+        }else{sp.textContent="Gerekli makine: hedef adet ve makine başı süre/adet yazınca çıkar"; bt.hidden=true}
+      }
+      if(el)el.innerHTML=(x.short?'<span style="color:#D9534F;font-weight:800">Kapasite yetmiyor: '+money(Math.floor(x.cap))+' ürün/ay yapar. </span>':'')+"Makine başı günlük "+money(x.perM)+" × "+money(x.mk)+" makine = günlük "+money(x.dd)+" · aylık "+money(x.mo)+" parça"+(x.kk!==1?" (ürün cinsinden "+money(Math.floor(x.cap))+")":"")+" · aylık işçilik "+money(x.cost)+" ₺ · ürün başı "+nf2.format(x.pp)+" ₺";
+    });
     (c.lines||[]).forEach(function(l){var el=document.querySelector('[data-lres="'+l.id+'"]'); if(el)el.textContent=(!l.ex&&r.qty>0&&calcN(l.v)>0)?nf2.format(calcN(l.v)/r.qty)+" ₺ / adet":""});
   }
   function calcEditorHtml(c){
@@ -5794,12 +5813,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     h+='<div id="clres" style="margin-top:12px"></div>';
     h+='<div class="fsec">Üretim</div><div class="copc"><div class="cgrid" style="grid-template-columns:1fr 1fr">'+
       (scen?'<div><label>Çalışılan gün sayısı (günlük adedi bununla çarparım)</label>'+calcCInp('data-cf="days"',c.days,"22")+'</div><div><label>Günlük çalışma saati (saniyeden adet için)</label>'+calcCInp('data-cf="hrs"',c.hrs||8,"8")+'</div>':'')+
-      '<div><label>'+(scen?'Aylık ürün adedi (boşsa son operasyondan)':'Aylık üretim adedi')+'</label>'+calcCInp('data-cf="qty"',c.qty,scen?"otomatik":"0")+'</div></div></div>';
+      '<div><label>'+(scen?'Aylık hedef ürün adedi (boşsa son operasyonun kapasitesi)':'Aylık üretim adedi')+'</label>'+calcCInp('data-cf="qty"',c.qty,scen?"otomatik":"0")+'</div></div></div>';
     if(scen){
       h+='<div class="fsec">Operasyonlar</div>';
       (c.ops||[]).forEach(function(o){
         h+='<div class="copc"><div class="crow"><input class="fin" data-co="'+o.id+'" data-cof="n" autocomplete="off" value="'+esc(o.n||"")+'" placeholder="Operasyon adı" style="flex:1;font-weight:800"><button type="button" class="cx" data-copdel="'+o.id+'" aria-label="Operasyonu sil">✕</button></div>'+
-          '<div class="cgrid" style="grid-template-columns:1fr 1fr"><div><label>Bir parça kaç saniye?</label>'+calcCInp('data-co="'+o.id+'" data-cof="s"',o.s,"saniye")+'</div><div><label>Günlük adet (saniye yazarsan otomatik)</label>'+calcCInp('data-co="'+o.id+'" data-cof="d"',o.d)+'</div><div><label>Kaç makineyle işliyorum?</label>'+calcCInp('data-co="'+o.id+'" data-cof="m"',o.m,"1")+'</div><div><label>Kaç kişi</label>'+calcCInp('data-co="'+o.id+'" data-cof="c"',o.c)+'</div><div><label>Kişi başı aylık maliyet ₺</label>'+calcCInp('data-co="'+o.id+'" data-cof="p"',o.p)+'</div><div style="grid-column:1/-1"><label>Üründe kaç tane gerekiyor? (ör. Z-Rot’ta gövde 2, montaj 1)</label>'+calcCInp('data-co="'+o.id+'" data-cof="k"',o.k,"1")+'</div></div>'+
+          '<div class="cgrid" style="grid-template-columns:1fr 1fr">'+
+          '<div><label>Makine başı: bir parça kaç saniye?</label>'+calcCInp('data-co="'+o.id+'" data-cof="s"',o.s,"saniye")+'</div>'+
+          '<div><label>Makine başı günlük adet (saniye yazarsan otomatik)</label>'+calcCInp('data-co="'+o.id+'" data-cof="d"',o.d)+'</div>'+
+          '<div class="cneed" data-opneed="'+o.id+'"><span></span><button type="button" class="btn ghost" data-cmuse="'+o.id+'" hidden style="flex:0 0 auto;min-height:32px;padding:0 10px"></button></div>'+
+          '<div><label>Kaç makine kullanacağım?</label>'+calcCInp('data-co="'+o.id+'" data-cof="m"',o.m,"1")+'</div>'+
+          '<div><label>Kaç kişi</label>'+calcCInp('data-co="'+o.id+'" data-cof="c"',o.c)+'</div>'+
+          '<div><label>Kişi başı aylık maliyet ₺</label>'+calcCInp('data-co="'+o.id+'" data-cof="p"',o.p)+'</div>'+
+          '<div><label>Üründe kaç tane gerekiyor? (ör. gövde 2)</label>'+calcCInp('data-co="'+o.id+'" data-cof="k"',o.k,"1")+'</div></div>'+
           '<div class="note" data-opres="'+o.id+'" style="margin-top:6px"></div></div>';
       });
       h+='<button type="button" class="btn ghost" data-copadd style="width:100%">+ Operasyon ekle</button>';
@@ -5851,6 +5877,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!calcCur)return; var c=calcCur;
     if(d.cback!==undefined){calcSaveNow(); calcCur=null; renderCalc(); window.scrollTo(0,0); return}
     if(d.copadd!==undefined){c.ops.push({id:uid(),n:"",d:0,c:0,p:0}); calcSaveSoon(); renderCalc(); return}
+    if(d.cmuse){var mo2=c.ops.filter(function(o){return o.id===d.cmuse})[0], rx=calcCompute(c).ops.filter(function(x){return x.o.id===d.cmuse})[0]; if(mo2&&rx&&rx.needCeil){mo2.m=rx.needCeil; calcSaveSoon(); renderCalc()} return}
     if(d.copdel){c.ops=c.ops.filter(function(o){return o.id!==d.copdel}); calcSaveSoon(); renderCalc(); return}
     if(d.cladd!==undefined){c.lines.push({id:uid(),n:"",v:0,ex:0}); calcSaveSoon(); renderCalc(); return}
     if(d.cldel){c.lines=c.lines.filter(function(l){return l.id!==d.cldel}); calcSaveSoon(); renderCalc(); return}
