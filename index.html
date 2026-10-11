@@ -592,6 +592,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .plcapf>span{font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);width:100%}
 .plcapf button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:6px 12px;font:700 12px var(--font-ui);cursor:pointer}
 .plcapf button[aria-pressed="true"]{background:var(--cc);border-color:var(--cc);color:#fff}
+.mtypes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.mtype{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px;cursor:pointer;color:var(--ink);font-family:var(--font-ui);min-width:0}
+.mtype[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.mtype .mn{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.mtype .mn b{font:800 15px var(--font-head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mtype .mn span{font:800 22px var(--font-num)}
+.mtype .ms{display:flex;gap:10px;margin-top:6px;font:700 11.5px var(--font-ui)}
+.mtype .ms i{font-style:normal;display:flex;align-items:center;gap:4px}
+.mtype .ms i::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.mtype .mb{height:6px;border-radius:99px;background:rgba(227,80,80,.35);overflow:hidden;margin-top:8px}
+.mtype .mb u{display:block;height:100%;background:#2FA66E;border-radius:99px}
+.mtype.mtall{grid-column:1/-1}
 .mdst{display:flex;gap:8px;margin:2px 0 4px}
 .mdst button{flex:1;border:2px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:14px;padding:12px 8px;font:800 14px var(--font-ui);cursor:pointer}
 .mdst button[data-mdst="ok"][aria-pressed="true"]{background:#2FA66E;border-color:#2FA66E;color:#fff}
@@ -1141,7 +1153,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:19</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:24</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1352,10 +1364,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 </div>
 <div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
   <section class="hero ohero">
-    <div class="hirow"><div class="oeyebrow">Elemanlar · Makineler</div><button class="tbtn" id="stfback">‹ Bölümler</button></div>
-    <div class="obig"><span class="obl">Eleman sayısı</span><b id="stfcount">0</b><span class="obs">hangi eleman hangi bölümde/makinede çalışıyor</span></div>
+    <div class="hirow"><div class="oeyebrow">Eleman ve Makineler</div><button class="tbtn" id="stfback">‹ Bölümler</button></div>
+    <div class="obig"><span class="obl">Eleman sayısı</span><b id="stfcount">0</b><span class="obs">eleman ve makine listesi · kim nerede, hangi makine çalışıyor</span></div>
   </section>
-  <div class="otabs" role="group" aria-label="Elemanlar kapsamı"><button type="button" id="stfTabEmp" aria-pressed="true">Elemanlar</button><button type="button" id="stfTabMac" aria-pressed="false">Makineler</button><button type="button" id="stfTabFloor" aria-pressed="false">Yerleşim</button></div>
+  <div class="otabs" role="group" aria-label="Eleman ve makine kapsamı"><button type="button" id="stfTabEmp" aria-pressed="true">Elemanlar</button><button type="button" id="stfTabMac" aria-pressed="false">Makineler</button><button type="button" id="stfTabFloor" aria-pressed="false">Yerleşim</button></div>
   <button class="btn stfnew" id="stfnew">+ Yeni eleman</button>
   <div class="stfbar">
     <button class="tpill" id="stfdepts" hidden>⚙ Bölümler</button>
@@ -1363,6 +1375,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <button class="tpill" id="stfbulk" hidden>⇧ Toplu makine ekle</button>
   </div>
   <div id="stfsum" class="stfsum"></div>
+  <div id="stftypes" class="mtypes" hidden></div>
   <input class="search stfsearch" id="stfsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ara…">
   <div id="stffilt" class="stffilt"></div>
   <div id="stflist"></div>
@@ -2880,6 +2893,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       html+='<div class="shead"><div><h2 id="sh-title">'+(macEditId?"Makineyi düzenle":"Yeni makine")+'</h2><small>Ad ve bölüm(ler) — aynı makine birden fazla bölümde (ör. ortak bir CNC havuzu) kullanılıyorsa hepsini seç</small></div></div>'+
         '<div class="form">'+
         '<div><label class="fl" for="mcname">Makine adı</label><input class="fin" id="mcname" autocomplete="off" placeholder="ör. CNC 1" value="'+esc(mc.name)+'"></div>'+
+        '<div><label class="fl" for="mctype">Makine türü (makine bölümü)</label><input class="fin" id="mctype" autocomplete="off" list="mctypedl" placeholder="ör. CNC, Transfer, Testere, Pres — boşsa addan bulunur" value="'+esc(mc.tp||"")+'"><datalist id="mctypedl">'+(function(){var seen={},o=["CNC","Transfer","Testere","Pres","Ovalama"]; machinesList.forEach(function(m){o.push(macTypeOf(m))}); return o.filter(function(x){var k=fold(x); if(seen[k])return false; seen[k]=1; return true}).map(function(x){return '<option value="'+esc(x)+'">'}).join("")})()+'</datalist></div>'+
         '<div><span class="fl">Bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-mcsec="'+x.id+'" aria-pressed="'+(mcSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         '<div><label class="fl" for="mcbrand">Marka</label><input class="fin" id="mcbrand" autocomplete="off" placeholder="ör. Fanuc Series 0i-TF Plus" value="'+esc(mc.brand||"")+'"></div>'+
         '<div><label class="fl" for="mcmodel">Model</label><input class="fin" id="mcmodel" autocomplete="off" placeholder="ör. VTRUN-20E" value="'+esc(mc.model||"")+'"></div>'+
@@ -3693,7 +3707,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var mcnote=($("mcnote")?$("mcnote").value.trim():"");
       var mcbrand=($("mcbrand")?$("mcbrand").value.trim():""), mcmodel=($("mcmodel")?$("mcmodel").value.trim():""), mcyear=($("mcyear")?$("mcyear").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
-      var mcdata={name:mcname,secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
+      var mcdata={name:mcname,tp:($("mctype")?$("mctype").value.trim():""),secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
       // Makinede henüz floorSlot yoksa (ör. toplu eklenen eski CNC 1-18 gibi, hâlâ ada göre
       // eşleşiyordu) — hangi ekrandan düzenlendiğine bakmaksızın (kroki kartından VEYA düz
       // Makineler listesinden "düzenle"), eski adı bir kroki kutusu etiketiyle birebir
@@ -5543,7 +5557,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function paintStaffHome(){
     var el=$("hs-staff"); if(!el)return;
-    el.textContent=employees.length?(employees.length+" eleman"):"Eleman ve makine listesi";
+    el.textContent=employees.length?(employees.length+" eleman"+(machinesList.length?" · "+machinesList.length+" makine":"")):"Eleman ve makine listesi";
   }
   // Bir makine birden fazla bölüme ait olabilir (ör. aynı CNC makinesinde bazen gövde bazen
   // aşık işleniyor) — bu yüzden makinenin bölümü "sec" (tekil) değil "secs" (liste).
@@ -6130,6 +6144,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       '<span class="fchev">›</span></button><button type="button" class="fedit" data-empedit="'+e.id+'" aria-label="Düzenle">✎</button></div>';
   }
   function macFault(m){return m&&m.st==="ariza"}
+  function macTypeOf(m){var t=String(m.tp||"").trim(); if(!t)t=String(m.name||"").replace(/[\s\-_.]*\d+\s*$/,"").trim()||String(m.name||"Diğer").trim()||"Diğer"; return t.toLocaleUpperCase("tr")}
+  function macTypeKey(m){return fold(macTypeOf(m))}
   function macRowHtml(m){
     var secs=(m.secs||[]), sc=SECTIONS.filter(function(x){return x.id===secs[0]})[0], col=sc?sc.h1:"#8C97AD", bad=macFault(m);
     var ops=employees.filter(function(x){return (x.machines||[]).indexOf(m.id)>-1}).length;
@@ -6305,7 +6321,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("stfdepts").hidden=stfTab!=="emp";
     $("stfdelall").hidden=!(stfTab==="emp"&&employees.length); if(stfDelArm&&stfTab!=="emp")stfDelArm=false; if(!stfDelArm)$("stfdelall").textContent="🗑 Tüm elemanları sil";
     $("stfperfbtn").hidden=stfTab!=="emp";
-    var sv=stfTab!=="floor"; $("stfsearch").hidden=!sv; $("stffilt").hidden=!sv; $("stfsum").hidden=!sv;
+    $("stftypes").hidden=stfTab!=="mac"; var sv=stfTab!=="floor"; $("stfsearch").hidden=!sv; $("stffilt").hidden=!sv; $("stfsum").hidden=!sv;
     $("stfsearch").placeholder=stfTab==="emp"?"Eleman ara (ad, bölüm, görev)…":"Makine ara (ad, marka, model)…";
     var q=fold(stfQ.trim());
     if(stfTab==="emp"){
@@ -6342,30 +6358,35 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else{
       var nbad=machinesList.filter(macFault).length, nok=machinesList.length-nbad;
       $("stfsum").innerHTML='<div><b>'+machinesList.length+'</b><small>Makine</small></div><div><b style="color:#2FA66E">'+nok+'</b><small>Çalışıyor</small></div><div><b style="color:'+(nbad?'#E35050':'inherit')+'">'+nbad+'</b><small>Arızalı</small></div>';
+      // makine bölümleri (türler): CNC, TRANSFER, D.PRES… — addan ya da "Makine türü" alanından
+      var tmap={}, torder=[];
+      machinesList.forEach(function(m){var k=macTypeKey(m); if(!tmap[k]){tmap[k]={k:k,n:macTypeOf(m),all:[]};torder.push(k)} tmap[k].all.push(m)});
+      torder.sort(function(a,b){return tmap[b].all.length-tmap[a].all.length||tmap[a].n.localeCompare(tmap[b].n,"tr")});
+      if(stfMF.indexOf("tp:")===0&&!tmap[stfMF.slice(3)])stfMF="";
+      $("stftypes").innerHTML=machinesList.length?torder.map(function(k){
+        var t=tmap[k], bad=t.all.filter(macFault).length, ok=t.all.length-bad;
+        return '<button type="button" class="mtype" data-mtype="'+esc(k)+'" aria-pressed="'+(stfMF==="tp:"+k)+'"><div class="mn"><b>'+esc(t.n)+'</b><span>'+t.all.length+'</span></div>'+
+          '<div class="ms"><i style="color:#2FA66E">'+ok+' çalışıyor</i><i style="color:'+(bad?'#E35050':'var(--ink2)')+'">'+bad+' arızalı</i></div>'+
+          '<div class="mb"><u style="width:'+Math.round(ok/t.all.length*100)+'%"></u></div></button>';
+      }).join(""):"";
       var secsUsed=SECTIONS.filter(function(x){return machinesList.some(function(m){return (m.secs||[]).indexOf(x.id)>-1})});
       var mf=[{k:"",l:"Hepsi",n:machinesList.length},{k:"__ok",l:"Çalışıyor",n:nok},{k:"__bad",l:"Arızalı",n:nbad}].concat(MAC_CAPS.map(function(c){return {k:"cap:"+c.id,l:c.n,n:machinesList.filter(function(m){return (m.caps||[]).indexOf(c.id)>-1}).length}})).concat(secsUsed.map(function(x){return {k:x.id,l:x.name}}));
-      if(mf.every(function(x){return x.k!==stfMF}))stfMF="";
+      if(stfMF.indexOf("tp:")!==0&&mf.every(function(x){return x.k!==stfMF}))stfMF="";
       $("stffilt").innerHTML=stfFiltHtml(mf,stfMF,"data-smf");
       var ml=machinesList.filter(function(m){
         if(stfMF==="__ok"&&macFault(m))return false;
         if(stfMF==="__bad"&&!macFault(m))return false;
-        if(stfMF.indexOf("cap:")===0){if((m.caps||[]).indexOf(stfMF.slice(4))<0)return false}
+        if(stfMF.indexOf("tp:")===0){if(macTypeKey(m)!==stfMF.slice(3))return false}
+        else if(stfMF.indexOf("cap:")===0){if((m.caps||[]).indexOf(stfMF.slice(4))<0)return false}
         else if(stfMF&&stfMF.indexOf("__")!==0&&(m.secs||[]).indexOf(stfMF)<0)return false;
         if(!q)return true;
-        return fold([m.name,m.brand,m.model,m.note,m.faultNote,macCapsOf(m).map(function(c){return c.n}).join(" "),(m.secs||[]).map(secNameOf).join(" ")].join(" ")).indexOf(q)>-1;
-      });
-      // Ortak havuzdaki (birden fazla bölüme ait) makineler tek grup altında, aynı
-      // bölüm setine sahip olanlar birlikte gösterilir.
-      var groups={}, order2=[];
-      ml.forEach(function(m){
-        var key=(m.secs||[]).slice().sort().join(",")||"?";
-        if(!groups[key]){groups[key]={secs:m.secs||[],items:[]};order2.push(key)}
-        groups[key].items.push(m);
+        return fold([m.name,m.brand,m.model,m.note,m.faultNote,macTypeOf(m),macCapsOf(m).map(function(c){return c.n}).join(" "),(m.secs||[]).map(secNameOf).join(" ")].join(" ")).indexOf(q)>-1;
       });
       var html="";
-      order2.forEach(function(key){
-        var g=groups[key], label=g.secs.length?g.secs.map(secNameOf).join(" + "):"Bölüm atanmadı";
-        html+='<div class="fsec">'+esc(label)+' · '+g.items.length+'</div>'+g.items.map(macRowHtml).join("");
+      torder.forEach(function(k){
+        var it=ml.filter(function(m){return macTypeKey(m)===k}); if(!it.length)return;
+        var bd=it.filter(macFault).length;
+        html+='<div class="fsec">'+esc(tmap[k].n)+' · '+it.length+' makine'+(bd?' · <span style="color:#E35050">'+bd+' arızalı</span>':'')+'</div>'+it.map(macRowHtml).join("");
       });
       $("stflist").innerHTML=html||(machinesList.length?'<div class="empty">Eşleşen makine yok.</div>':'<div class="empty">Henüz makine tanımlı değil.<br>“+ Yeni makine” ile ilkini ekle.</div>');
     }
@@ -6564,6 +6585,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!$("staff").hidden)renderStaff();
   });
   $("stfsearch").addEventListener("input",function(e){stfQ=e.target.value; renderStaff()});
+  $("stftypes").addEventListener("click",function(e){
+    var b=e.target.closest("[data-mtype]"); if(!b)return;
+    var k="tp:"+b.dataset.mtype; stfMF=(stfMF===k)?"":k; renderStaff();
+  });
   $("stffilt").addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b)return;
     if(b.dataset.sgrp!==undefined)stfGrp=b.dataset.sgrp; else if(b.dataset.smf!==undefined)stfMF=b.dataset.smf; else return;
@@ -7967,7 +7992,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       $("homeh1").textContent="Üretim"; $("homep").textContent="Hangi bölümün kaydını gireceksin?";
       $("hcards").innerHTML='<button type="button" class="btn ghost hback" data-homeback="1">‹ Ana sayfa</button>'+
         '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
-        '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Elemanlar</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
+        '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Eleman ve Makineler</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
         SECTIONS.map(function(x){
           return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'"><div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
         }).join("");
