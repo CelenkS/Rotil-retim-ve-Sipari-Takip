@@ -640,6 +640,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .mppick{margin-top:10px}
 .mpcats{margin:8px 0}
 .mplist{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow:auto}
+.mplist.full{max-height:none;overflow:visible;margin-top:2px}
+.mppickfull{display:flex;flex-direction:column;gap:8px}
+.sheet:has(.mppickfull){max-height:96%;height:96%}
+.mppfhead{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);padding:6px 0 8px;border-bottom:1px solid var(--line)}
+.mppfhead b{display:block;font:800 20px var(--font-head)}
+.mppfhead small{display:block;font:600 12.5px var(--font-ui);color:var(--ink2)}
+.mppfhead .btn{padding:12px 22px}
+.mpitem.added{opacity:.55;border-color:#2FA66E}
+.mpok b{color:#2FA66E!important}
 .mpi1{display:flex;align-items:center;gap:10px}
 .mpst{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
 .mps{position:relative;border:1.5px solid var(--line);border-radius:10px;padding:5px 7px 8px;overflow:hidden;background:var(--surface) linear-gradient(var(--line),var(--line)) bottom/100% 3px no-repeat}
@@ -1249,7 +1258,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:59</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:07</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2093,7 +2102,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function planAssignMergedMap(){
     var k=planKey(planScope), out={};
-    planFor(planScope,k).forEach(function(pe){out[pe.oid]={mid:pe.mid||"",eid:pe.eid||""}});
+    planFor(planScope,k).forEach(function(pe){if(!out[pe.oid])out[pe.oid]={mid:pe.mid||"",eid:pe.eid||""}});
     if(planAssignDraft)Object.keys(planAssignDraft).forEach(function(oid){out[oid]=planAssignDraft[oid]});
     return out;
   }
@@ -2119,7 +2128,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     // satırların değerlerini üstüne yaz.
     var k=planKey(planScope), pmap={};
     if(planDraft){Object.keys(planDraft).forEach(function(pk){pmap[pk]=planDraft[pk]})}
-    else planFor(planScope,k).forEach(function(pe){pmap[pe.oid]=pe.q});
+    else planFor(planScope,k).forEach(function(pe){if(pmap[pe.oid]===undefined)pmap[pe.oid]=pe.q});
     [].forEach.call($("sheet").querySelectorAll("[data-planq]"),function(inp){
       var q=cleanNum(inp.value,999999,true);
       if(q>0)pmap[inp.dataset.planq]=q; else delete pmap[inp.dataset.planq];
@@ -2151,6 +2160,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var a=amap[oid]||{}, e={oid:oid,q:pmap[oid]};
       if(a.mid)e.mid=a.mid; if(a.eid)e.eid=a.eid;
       return e;
+    });
+    // Aynı ürün birden fazla makineye planlanabilir (Yerleşim ekranından): form her ürün için tek satır
+    // gösterir, o yüzden ikinci ve sonraki makine satırlarını (formda hâlâ planlı ürünler için) aynen koru.
+    var seenO={}; planFor(planScope,k).forEach(function(pe){
+      if(seenO[pe.oid]&&pmap[pe.oid]!==undefined)arr.push(Object.assign({},pe)); seenO[pe.oid]=1;
     });
     if(!plans[planScope])plans[planScope]={};
     plans[planScope][k]=arr; pdirty=true; planDraft=null; planAssignDraft=null; lsSet(); scheduleSave(); closeSheet(); renderHero();
@@ -2316,7 +2330,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     // geçilmiş olsa bile burası ondan etkilenmesin diye planKey değil doğrudan
     // curWeekKey kullanılıyor.
     var wk=curWeekKey(), P=plansOfSec(secId), pmap={};
-    ((P.week&&P.week[wk])||[]).forEach(function(pe){pmap[pe.oid]=pe.q});
+    ((P.week&&P.week[wk])||[]).forEach(function(pe){pmap[pe.oid]=(pmap[pe.oid]||0)+pe.q});
     return pmap;
   }
   function plansOfSec(secId){return (inApp()&&secId===sec.id)?plans:(pmPlans[secId+"|"+key()]||normPlans(null))}
@@ -2818,7 +2832,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else if(sheetMode==="planform"){
       var k=planKey(planScope), pmap={};
       if(planDraft){Object.keys(planDraft).forEach(function(pk){pmap[pk]=planDraft[pk]})}
-      else planFor(planScope,k).forEach(function(pe){pmap[pe.oid]=pe.q});
+      else planFor(planScope,k).forEach(function(pe){if(pmap[pe.oid]===undefined)pmap[pe.oid]=pe.q});
       var si2=stageIdx(sec.id);
       var plistAll=orders.filter(function(o){return (o.st||[])[si2]}).map(function(o){
         var dn2=doneOf(o.id,sec.id).q, nd2=need(o,sec.id), price2=+((o.pr||[])[si2])||0;
@@ -3023,6 +3037,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         var fmImg=jobThumb(fm.job);
         var fmSt=floorScope==="day"?jobDayStats(fm,floorDayIso()):null, fmToday=floorDayIso()===todayIso, fmDayLbl=fmToday?"Bugün":isoDayLabel(floorDayIso());
         var fmWst=floorScope==="week"?jobWeekStats(fm,floorWeekMonday()):null, fmWkLbl=isoWeekLabel(floorWeekMonday());
+        if(MP.pick&&MP.mid===fm.id&&mpMacSecs(fm).length){
+          html+='<div class="form">'+mpPickerFull(fm)+'</div>';
+        }else{
         html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(macLabel(fm))+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div></div>'+
           '<div class="form">'+
           mpHtml(fm)+
@@ -3048,6 +3065,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           '<button type="button" class="btn ghost" id="mdopen" style="margin-top:8px;width:100%">Makine kartını aç →</button>'+
           '<button type="button" class="btn ghost" id="mddone" style="margin-top:8px;width:100%">Kapat</button>'+
           '</div>';
+        }
       }else{
         html+='<div class="shead"><div><h2 id="sh-title">'+esc(floorLabel)+'</h2><small>Henüz oluşturulmadı</small></div></div>'+
           '<div class="form"><div class="note">Bu kutu yerleşimde var ama makine listesinde henüz yok. Oluşturursan bölüm(ler)i otomatik "'+esc(floorSecsForNew.map(secNameOf).join(" + "))+'" olarak atanır.</div>'+
@@ -6260,19 +6278,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function mpCandidates(m,secId){
     var si=stageIdx(secId); if(si<0)return {list:[],hidden:0};
-    var used={}, other=0, mine={};
-    mpListOf(secId).forEach(function(pe){ if(pe.mid===m.id)mine[pe.oid]=1; else if(pe.mid)used[pe.oid]=1; });
+    var other={}, mine={};
+    mpListOf(secId).forEach(function(pe){ if(pe.mid===m.id)mine[pe.oid]=1; else if(pe.mid)other[pe.oid]=(other[pe.oid]||0)+1; });
     var q=fold(MP.q.trim()), list=[];
     orders.forEach(function(o){
-      if(!(o.st||[])[si]||mine[o.id])return;
-      if(used[o.id]){other++; return}
-      var kal=mpKalan(o,secId); if(kal<=0)return;
+      if(!(o.st||[])[si])return;
+      var kal=mpKalan(o,secId); if(kal<=0&&!mine[o.id])return;
       if(MP.cat!==null&&(+o.cat||0)!==MP.cat)return;
       if(q&&fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)<0)return;
-      list.push({o:o,kal:kal});
+      list.push({o:o,kal:kal,mine:!!mine[o.id],oth:other[o.id]||0});
     });
-    list.sort(function(a,b){return (b.o.ts||0)-(a.o.ts||0)});
-    return {list:list,hidden:other};
+    list.sort(function(a,b){return (a.mine-b.mine)||((b.o.ts||0)-(a.o.ts||0))});
+    return {list:list,hidden:0};
   }
   function mpStagesHtml(o,curSec){
     var cells=STAGES.map(function(stg,i){
@@ -6287,12 +6304,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var c=mpCandidates(m,secId);
     return (c.list.length?c.list.slice(0,40).map(function(x){
       var o=x.o, im=jobThumb({oid:o.id});
-      return '<button type="button" class="mpitem" data-mpadd="'+secId+'|'+o.id+'"><span class="mpi1">'+
+      return '<button type="button" class="mpitem'+(x.mine?' added':'')+'" data-mpadd="'+secId+'|'+o.id+'"><span class="mpi1">'+
         (im?'<img class="mdjimg" alt="" src="'+im+'">':'<span class="mdjimg ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</span>')+
-        '<span class="mpit"><b>'+esc(o.code)+'</b><small>'+esc((o.cust||"Müşteri yok")+" · "+(ORDER_CATS[o.cat]||""))+'</small></span>'+
-        '<span class="mpkal"><b>'+nf.format(x.kal)+'</b><small>kalan</small></span></span>'+mpStagesHtml(o,secId)+'</button>';
-    }).join("")+(c.list.length>40?'<div class="note">İlk 40 sonuç gösteriliyor — aramayı daralt.</div>':''):'<div class="empty">Uygun sipariş yok.</div>')+
-      (c.hidden?'<div class="note">'+c.hidden+' sipariş başka makineye planlı olduğu için gizlendi.</div>':'');
+        '<span class="mpit"><b>'+esc(o.code)+'</b><small>'+esc((o.cust||"Müşteri yok")+" · "+(ORDER_CATS[o.cat]||"")+(x.oth?" · "+x.oth+" makinede planlı":""))+'</small></span>'+
+        (x.mine?'<span class="mpkal mpok"><b>✓</b><small>eklendi</small></span>':'<span class="mpkal"><b>'+nf.format(x.kal)+'</b><small>kalan</small></span>')+'</span>'+mpStagesHtml(o,secId)+'</button>';
+    }).join("")+(c.list.length>40?'<div class="note">İlk 40 sonuç gösteriliyor — aramayı daralt.</div>':''):'<div class="empty">Uygun sipariş yok.</div>');
+  }
+  function mpPickerFull(m){
+    var secs=mpMacSecs(m), secId=mpSecNow(m), isDay=mpScope()==="day";
+    var when=isDay?(floorDayIso()===todayIso?"Bugün":isoDayLabel(floorDayIso())):isoWeekLabel(floorWeekMonday());
+    return '<div class="mppickfull">'+
+      '<div class="mppfhead"><div><b>Ürün ekle</b><small>'+esc(macLabel(m))+' · '+esc(when)+'</small></div><button type="button" class="btn" data-mppick="0">Bitti</button></div>'+
+      (secs.length>1?'<div class="chiprow mpsecs">'+secs.map(function(sid){return '<button type="button" data-mpsec="'+sid+'" aria-pressed="'+(sid===secId)+'">'+esc(secNameOf(sid))+'</button>'}).join("")+'</div>':'')+
+      '<input class="search" id="mpsrch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu / müşteri ara…" value="'+esc(MP.q)+'">'+
+      '<div class="chiprow mpcats"><button type="button" data-mpcat="" aria-pressed="'+(MP.cat===null)+'">Hepsi</button>'+ORDER_CATS.map(function(n,i){return '<button type="button" data-mpcat="'+i+'" aria-pressed="'+(MP.cat===i)+'">'+esc(n)+'</button>'}).join("")+'</div>'+
+      '<div id="mplist" class="mplist full">'+mpPickListHtml(m,secId)+'</div>'+
+      (MP.stat?'<div class="mpstat">'+esc(MP.stat)+'</div>':'')+
+      '</div>';
   }
   function mpHtml(m){
     var secs=mpMacSecs(m);
@@ -6329,12 +6357,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       wkInfo+
       (rows||'<div class="mpempty">Bu '+(isDay?"gün":"hafta")+' için planlı iş yok.</div>')+
       (ents.length?'<div class="mptot">Toplam planlanan <b>'+nf.format(tot)+'</b> · yapılan <b>'+nf.format(tdone)+'</b></div>':'')+
-      (MP.pick?
-        ('<div class="mppick"><input class="search" id="mpsrch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu / müşteri ara…" value="'+esc(MP.q)+'">'+
-         '<div class="chiprow mpcats"><button type="button" data-mpcat="" aria-pressed="'+(MP.cat===null)+'">Hepsi</button>'+ORDER_CATS.map(function(n,i){return '<button type="button" data-mpcat="'+i+'" aria-pressed="'+(MP.cat===i)+'">'+esc(n)+'</button>'}).join("")+'</div>'+
-         '<div id="mplist" class="mplist">'+mpPickListHtml(m,secId)+'</div>'+
-         '<button type="button" class="btn ghost" data-mppick="0" style="width:100%;margin-top:8px">Listeyi kapat</button></div>')
-        :'<button type="button" class="btn mpadd" data-mppick="1">+ Ürün ekle</button>')+
+      '<button type="button" class="btn mpadd" data-mppick="1">+ Ürün ekle</button>'+
       (MP.stat?'<div class="mpstat">'+esc(MP.stat)+'</div>':'')+
       '<button type="button" class="btn ghost" data-mdplanedit="1" style="margin-top:8px;width:100%;font-size:13px;padding:10px">Bölümün tam plan ekranında aç →</button>'+
       '</div>';
@@ -6345,16 +6368,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var t=e.target.closest("button"); if(!t)return;
     var fm=machinesList.filter(function(x){return x.id===floorMacId})[0]; if(!fm)return;
     if(t.dataset.mpsec!==undefined){MP.sec=t.dataset.mpsec; MP.q=""; MP.cat=null; renderSheet(); return}
-    if(t.dataset.mppick!==undefined){MP.pick=t.dataset.mppick==="1"; MP.q=""; MP.cat=null; renderSheet(); if(MP.pick){var sr=$("mpsrch"); if(sr)sr.scrollIntoView({block:"center"})} return}
+    if(t.dataset.mppick!==undefined){MP.pick=t.dataset.mppick==="1"; MP.q=""; MP.cat=null; renderSheet(); $("sheet").scrollTop=0; return}
     if(t.dataset.mpcat!==undefined){MP.cat=t.dataset.mpcat===""?null:+t.dataset.mpcat; renderSheet(); return}
     if(t.dataset.mpadd!==undefined){
       var a=mpSplit(t.dataset.mpadd), secId=a[0], oid=a[1], o=orders.filter(function(z){return z.id===oid})[0]; if(!o)return;
       var q0=Math.max(1,Math.min(100,mpKalan(o,secId)||100));
-      MP.stat="Kaydediliyor…"; MP.pick=false; MP.q=""; MP.cat=null;
+      MP.stat="Kaydediliyor…";
       mpWrite(secId,function(arr){
-        var hit=arr.filter(function(x){return x.oid===oid})[0];
-        if(hit){if(!hit.mid)hit.mid=fm.id;}
-        else arr.push({oid:oid,q:q0,mid:fm.id});
+        if(arr.some(function(x){return x.oid===oid&&x.mid===fm.id}))return arr;
+        var free=arr.filter(function(x){return x.oid===oid&&!x.mid})[0];   // makinesiz plan satırı varsa ona makine ata
+        if(free)free.mid=fm.id; else arr.push({oid:oid,q:q0,mid:fm.id});
         return arr;
       });
       return;
