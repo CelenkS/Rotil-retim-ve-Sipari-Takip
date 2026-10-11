@@ -922,7 +922,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 10:24</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:11</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1495,8 +1495,24 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var custTxt=cns.length>1?(cns[0]+" +"+(cns.length-1)+" diğer"):(cns[0]||"Müşteri yok");
       var imgSrc=codeThumb(code);
       var img=imgSrc?'<img class="ithumb" alt="" src="'+imgSrc+'">':'';
-      var ords=ordersOfCode(code), oq=0; ords.forEach(function(o){oq+=o.qty});
-      var strip=ords.length?'<div class="snl"><div class="nlq"><span>Sipariş adedi</span><b>'+nf.format(oq)+' adet</b>'+(ords.length>1?'<em>'+ords.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(ords,sec.id)+'</div>':'';
+      // Aynı kodun siparişleri MÜŞTERİYE göre ayrı ayrı gösterilir (müşteriler birleştirilmez):
+      // her müşterinin kendi sipariş adedi ve kendi aşama ilerlemesi ayrı kutuda. Bu kartta
+      // üretimi olan müşteriler üstte, sadece siparişi olanlar altta.
+      var ords=ordersOfCode(code), strip="";
+      if(ords.length){
+        var grp={}, gord=[], prodC={};
+        Object.keys(e.custs).forEach(function(cn){prodC[cn.toLowerCase().trim()]=1});
+        ords.forEach(function(o){
+          var cn=o.cust||"Müşteri yok", gk=cn.toLowerCase().trim();
+          if(!grp[gk]){grp[gk]={name:cn,os:[],q:0};gord.push(gk)}
+          grp[gk].os.push(o); grp[gk].q+=o.qty;
+        });
+        gord.sort(function(a,b){return (prodC[b]?1:0)-(prodC[a]?1:0)});
+        strip=gord.map(function(gk){
+          var g=grp[gk];
+          return '<div class="snl"><div class="nlq"><span>'+esc(g.name)+' · sipariş</span><b>'+nf.format(g.q)+' adet</b>'+(g.os.length>1?'<em>'+g.os.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(g.os,sec.id)+'</div>';
+        }).join("");
+      }
       return '<button type="button" class="drow" data-code="'+esc(code)+'"><div class="ltop">'+img+'<span class="code">'+esc(code)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
         '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺'+(e.last?' · son '+fmtD(e.last):'')+'</div>'+strip+'</button>';
     }).join("");
