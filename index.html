@@ -470,6 +470,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.stkc .hk{color:#E69138}
 .hcard.ordc.stkc .go{color:#E69138}
 .hcard.ordc.stkc .hs b{color:#E69138}
+.hcard.ordc.finc{border-color:rgba(70,200,140,.55)}
+.hcard.ordc.finc::after{background:rgba(70,200,140,.16)}
+.hcard.ordc.finc .hk,.hcard.ordc.finc .go{color:#46C88C}
 .hcard.ordc.stfc{border-color:rgba(94,166,230,.55)}
 .hcard.ordc.stfc::after{background:rgba(94,166,230,.16)}
 .hcard.ordc.stfc .hk{color:#5EA6E6}
@@ -952,7 +955,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:25</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:47</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1144,6 +1147,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div id="notelist" style="margin-top:10px"></div>
   <div class="status" id="ntstatus"></div>
 </div>
+<div class="wrap" id="fin" hidden style="--hero1:#2F7D5B;--hero2:#16402F">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Sadece sana özel</div><button class="tbtn" id="finback">‹ Ana sayfa</button></div>
+    <div class="obig"><span class="obl">İşçilik ve maliyet</span><b>🔒</b><span class="obs" id="finwho">bu bölümü sadece sen görürsün</span></div>
+  </section>
+  <section class="card"><div class="empty" style="margin:0">Bu bölüm şimdilik boş.<br>İşçilik, maaş, sigorta ve maliyet kalemlerini birlikte belirleyince buraya kuracağız.</div></section>
+</div>
 <div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
   <section class="hero ohero">
     <div class="hirow"><div class="oeyebrow">Elemanlar · Makineler</div><button class="tbtn" id="stfback">‹ Bölümler</button></div>
@@ -1224,6 +1234,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             try{fsDb.enablePersistence({synchronizeTabs:true}).catch(function(){})}catch(e){}
           }
           dbResolve(fsDb);
+          setTimeout(function(){try{if(window.__finFix)window.__finFix()}catch(e){}},300);
         }else{
           if(gate)gate.hidden=false;
           if(lgSubmit){lgSubmit.disabled=false;lgSubmit.textContent="Giriş yap"}
@@ -4339,7 +4350,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openOrders(){
     dbP.then(function(){
-      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
       watchOrders(); watchMaterials(); loadMCatalog(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -4510,7 +4521,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("nflist").innerHTML=items.length?items.map(function(a,ix){return nfRowHtml(a,ix,false)}).join(""):'<div class="empty">Henüz bir işlem yok.</div>';
   }
   function openNotifs(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
     renderNotifs(nfCache);
     $("nfstatus").textContent=db?"Güncel":"Bağlantı yok — sadece bu cihazda görülenler";
     try{localStorage.setItem("montaj:nfseen",String(Date.now()))}catch(e){}
@@ -4543,7 +4554,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
     watchMaterials(); renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
@@ -4771,7 +4782,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     el.textContent=purchases.length?(open.length+" bekleyen"+(urg?" · "+urg+" acil":"")):"İhtiyaç girişi ve sipariş takibi";
   }
   function openPurch(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
     watchPurch(); watchMaterials(); renderPurch();
     $("purstatus").textContent=db?"Güncel":"Bağlantı yok — kaydedilemez";
   }
@@ -4984,7 +4995,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     el.textContent=notesAll.length?(open.length+" açık not"+(late?" · "+late+" gecikmiş":"")+(today?" · "+today+" bugün":"")):"Kişisel notların ve hatırlatmaların";
   }
   function openNotes(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
     watchNotes(); renderNotes(); paintNotifPerm();
     $("ntstatus").textContent=db?noteInfoTxt():"Bağlantı yok — kaydedilemez";
   }
@@ -5278,14 +5289,24 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       $("stfstatus").textContent="Performans hesaplanamadı, tekrar dene";
     });
   }
+  // "İşçilik ve maliyet": SADECE sahibin e-postasıyla girişte görünür (maaş/sigorta gibi gizli bilgi için).
+  // Not: bu ekran gizliliğin ilk katmanı. Verinin gerçekten başkaları tarafından okunamaması için
+  // Firestore kuralları da bu bölümü sadece sahibe açmalı; o yapılmadan buraya gizli veri girilmez.
+  var FIN_OWNERS=["yusufselim.123@outlook.com"];
+  function finOwner(){var m=""; try{m=(firebase.auth().currentUser.email||"").toLowerCase()}catch(e){} return !!m&&FIN_OWNERS.indexOf(m)>-1}
+  function openFin(){
+    if(!finOwner())return;
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=false; window.scrollTo(0,0);
+  }
+  function finHome(){$("fin").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
   function openStaff(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("fin").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
     empPerf={};
     watchEmployees(); watchMachinesList(); renderStaff();
     $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function staffHome(){
-    $("staff").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+    $("staff").hidden=true; $("fin").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   function empRowHtml(e){
     var secs=(e.secs||[]).map(secNameOf).join(", ")||"Bölüm atanmadı";
@@ -5463,6 +5484,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
   }
   $("stfback").addEventListener("click",staffHome);
+  $("finback").addEventListener("click",finHome);
   $("stfTabEmp").addEventListener("click",function(){stfTab="emp";renderStaff()});
   $("stfTabMac").addEventListener("click",function(){stfTab="mac";renderStaff()});
   $("stfTabFloor").addEventListener("click",function(){stfTab="floor";renderStaff()});
@@ -6527,7 +6549,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openPlansScreen(){
     dbP.then(function(){
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null; planVQ=""; if($("pvsearch"))$("pvsearch").value="";
-      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
+      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -6829,6 +6851,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var notesC='<button type="button" class="hcard ordc notec" data-notes="1"><div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>';
     var purchC='<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>';
     var stockC='<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>';
+    var finC=finOwner()?'<button type="button" class="hcard ordc finc" data-fin="1"><div><div class="hk">Sadece sana özel</div><div class="hn">İşçilik ve maliyet</div><div class="hs">🔒 Sadece senin girişinde görünür</div></div><span class="go">›</span></button>':"";
     var prodC='<button type="button" class="hcard ordc prodc" data-prod="1"><div><div class="hk">Günlük kayıt · plan · ekip</div><div class="hn">Üretim</div><div class="hs">Bölümler, planlar ve elemanlar</div></div><span class="go">›</span></button>';
     if(homeView==="prod"){
       $("homeh1").textContent="Üretim"; $("homep").textContent="Hangi bölümün kaydını gireceksin?";
@@ -6840,11 +6863,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         }).join("");
     }else{
       $("homeh1").textContent="Ana sayfa"; $("homep").textContent="Ne yapmak istiyorsun?";
-      $("hcards").innerHTML=ordersC+notesC+purchC+stockC+prodC;
+      $("hcards").innerHTML=ordersC+notesC+purchC+stockC+prodC+finC;
     }
     paintOrdersHome();
     try{paintMyName()}catch(e){}
   }
+  window.__finFix=function(){ if(homeView==="main"&&!document.querySelector("[data-fin]")&&finOwner())buildHome() };
   function setHomeView(v){
     homeView=v; buildHome(); window.scrollTo(0,0);
     try{paintStockHome();paintPurchHome();paintNotesHome();paintStaffHome();paintMyName()}catch(e){}
@@ -6878,7 +6902,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
       gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
-      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
       if(db)watchCatalog();
       if(!catsSaved&&!db){promptShown=true;openCats()}
@@ -6892,7 +6916,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes],[data-prod],[data-homeback]"); if(!b)return;
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes],[data-prod],[data-fin],[data-homeback]"); if(!b)return;
+    if(b.dataset.fin){openFin();return}
     if(b.dataset.prod){setHomeView("prod");return}
     if(b.dataset.homeback){setHomeView("main");return}
     if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else if(b.dataset.purch)openPurch(); else if(b.dataset.notes)openNotes(); else enterSection(b.dataset.sec);
