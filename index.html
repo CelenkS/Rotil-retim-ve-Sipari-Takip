@@ -1129,6 +1129,32 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   .tot-box b{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---- Ana sayfa / bölüm kartları: yeni tasarım ---- */
+.hcards .hcard{justify-content:flex-start;gap:14px;border-radius:26px;animation:hcin .5s cubic-bezier(.2,.8,.2,1) both}
+.hcards .hcard:nth-child(2){animation-delay:.04s}.hcards .hcard:nth-child(3){animation-delay:.08s}.hcards .hcard:nth-child(4){animation-delay:.12s}.hcards .hcard:nth-child(5){animation-delay:.16s}.hcards .hcard:nth-child(6){animation-delay:.2s}.hcards .hcard:nth-child(7){animation-delay:.24s}.hcards .hcard:nth-child(8){animation-delay:.28s}.hcards .hcard:nth-child(n+9){animation-delay:.32s}
+@keyframes hcin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hcards .hcard{animation:none}}
+.hcards .hcard>div{flex:1;min-width:0;position:relative;z-index:1}
+.hcards .hcard .hic{flex:0 0 auto;width:56px;height:56px;border-radius:18px;display:grid;place-items:center;position:relative;z-index:1}
+.hcards .hcard .hic svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hcards .hcard .go{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 22px/1 var(--font-ui);padding-bottom:2px;background:rgba(255,255,255,.12);opacity:1;z-index:1;transition:transform .15s}
+.hcards .hcard:hover .go{transform:translateX(3px)}
+.hcards .hcard.ordc{--ac:#FFC454;min-height:112px;padding:18px 16px 18px 20px;border:1px solid rgba(255,255,255,.09);background:radial-gradient(130% 150% at 100% 0%,color-mix(in srgb,var(--ac) 24%,transparent) 0%,transparent 58%),linear-gradient(160deg,#25365A 0%,#0D1525 100%);box-shadow:0 14px 30px rgba(6,10,22,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+.hcards .hcard.ordc::after{display:none}
+.hcards .hcard.ordc::before{content:"";position:absolute;left:0;top:20px;bottom:20px;width:4px;border-radius:0 4px 4px 0;background:var(--ac)}
+.hcards .hcard.ordc .hic{color:var(--ac);background:color-mix(in srgb,var(--ac) 18%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ac) 40%,transparent),0 6px 16px color-mix(in srgb,var(--ac) 14%,transparent)}
+.hcards .hcard.ordc .hk{color:var(--ac);font:800 10px var(--font-ui);letter-spacing:.14em;margin-bottom:5px;opacity:.95}
+.hcards .hcard.ordc .hn{font:800 24px/1.1 var(--font-head);letter-spacing:-.01em}
+.hcards .hcard.ordc .hs{font:600 13px var(--font-ui);color:rgba(255,255,255,.78);margin-top:6px}
+.hcards .hcard.ordc .hs b{color:var(--ac)}
+.hcards .hcard.ordc .go{color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,transparent)}
+.hcards .hcard.plnc{--ac:#A78BFA}.hcards .hcard.stkc{--ac:#F0A04B}.hcards .hcard.calcc{--ac:#A58BEA}.hcards .hcard.finc{--ac:#46C88C}.hcards .hcard.stfc{--ac:#5EA6E6}.hcards .hcard.prodc{--ac:#2EC4C6}.hcards .hcard.notec{--ac:#FACC15}.hcards .hcard.purchc{--ac:#FF8A8A}
+.hcards .hcard[data-sec]{min-height:104px;padding:18px 16px 18px 18px;border:1px solid rgba(255,255,255,.18);background:radial-gradient(120% 150% at 100% 0%,rgba(255,255,255,.26) 0%,transparent 55%),linear-gradient(145deg,var(--h1),var(--h2));box-shadow:0 14px 28px color-mix(in srgb,var(--h2) 48%,transparent),inset 0 1px 0 rgba(255,255,255,.22)}
+.hcards .hcard[data-sec]::after{width:120px;height:120px;right:-30px;top:auto;bottom:-50px;background:rgba(255,255,255,.1)}
+.hcards .hcard[data-sec] .hic{color:#fff;background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.32)}
+.hcards .hcard[data-sec] .hn{font:800 21px/1.15 var(--font-head)}
+.hcards .hcard[data-sec] .hs{font:700 12.5px var(--font-ui);color:rgba(255,255,255,.92)}
 </style>
 </head>
 <body>
@@ -1165,7 +1191,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:34</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:41</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8010,21 +8036,40 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     el.textContent=AY[now.getMonth()]+": "+((sm&&(sm.a||sm.r))?nf.format(sm.a)+" adet · "+money(sm.r)+" ₺":"henüz kayıt yok");
   }
   var homeView="main";
+  var HC_ICONS={
+    orders:'<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
+    notes:'<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><path d="M15 3v6h6M8 13h8M8 17h5"/>',
+    purch:'<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>',
+    stock:'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/>',
+    prod:'<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><path d="M17 18h1M12 18h1M7 18h1"/>',
+    fin:'<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+    calc:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M16 14v.01M12 14v.01M8 14v.01M12 18v.01M8 18v.01M12 10v.01M8 10v.01M16 10v.01M16 18v.01"/>',
+    plans:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 15h3"/>',
+    staff:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    cncg:'<circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>',
+    pres:'<path d="M4 21h16M6 21v-4h12v4M8 17V9h8v8M10 9V5h4v4M12 2v3"/>',
+    cnca:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/>',
+    disacma:'<path d="M12 2v6M9 8h6M10 8v10l2 3 2-3V8M10 12h4M10 15h4"/>',
+    kaynak:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+    kaplama:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+    montaj:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'
+  };
+  function hcIcon(k){return '<span class="hic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(HC_ICONS[k]||"")+'</svg></span>'}
   function buildHome(){
-    var ordersC='<button type="button" class="hcard ordc" data-orders="1"><div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>';
-    var notesC='<button type="button" class="hcard ordc notec" data-notes="1"><div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>';
-    var purchC='<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>';
-    var stockC='<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>';
-    var finC=finOwner()?'<button type="button" class="hcard ordc finc" data-fin="1"><div><div class="hk">Sadece sana özel</div><div class="hn">İşçilik ve maliyet</div><div class="hs">🔒 Sadece senin girişinde görünür</div></div><span class="go">›</span></button>':"";
-    var calcC=finOwner()?'<button type="button" class="hcard ordc calcc" data-calc="1"><div><div class="hk">Sadece sana özel · gelecek planı</div><div class="hn">İşçilik hesaplama</div><div class="hs">🧮 Adet başı maliyet senaryoları</div></div><span class="go">›</span></button>':"";
-    var prodC='<button type="button" class="hcard ordc prodc" data-prod="1"><div><div class="hk">Günlük kayıt · plan · ekip</div><div class="hn">Üretim</div><div class="hs">Bölümler, planlar ve elemanlar</div></div><span class="go">›</span></button>';
+    var ordersC='<button type="button" class="hcard ordc" data-orders="1">'+hcIcon("orders")+'<div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>';
+    var notesC='<button type="button" class="hcard ordc notec" data-notes="1">'+hcIcon("notes")+'<div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>';
+    var purchC='<button type="button" class="hcard ordc purchc" data-purch="1">'+hcIcon("purch")+'<div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>';
+    var stockC='<button type="button" class="hcard ordc stkc" data-stock="1">'+hcIcon("stock")+'<div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>';
+    var finC=finOwner()?'<button type="button" class="hcard ordc finc" data-fin="1">'+hcIcon("fin")+'<div><div class="hk">Sadece sana özel</div><div class="hn">İşçilik ve maliyet</div><div class="hs">🔒 Sadece senin girişinde görünür</div></div><span class="go">›</span></button>':"";
+    var calcC=finOwner()?'<button type="button" class="hcard ordc calcc" data-calc="1">'+hcIcon("calc")+'<div><div class="hk">Sadece sana özel · gelecek planı</div><div class="hn">İşçilik hesaplama</div><div class="hs">🧮 Adet başı maliyet senaryoları</div></div><span class="go">›</span></button>':"";
+    var prodC='<button type="button" class="hcard ordc prodc" data-prod="1">'+hcIcon("prod")+'<div><div class="hk">Günlük kayıt · plan · ekip</div><div class="hn">Üretim</div><div class="hs">Bölümler, planlar ve elemanlar</div></div><span class="go">›</span></button>';
     if(homeView==="prod"){
       $("homeh1").textContent="Üretim"; $("homep").textContent="Hangi bölümün kaydını gireceksin?";
       $("hcards").innerHTML='<button type="button" class="btn ghost hback" data-homeback="1">‹ Ana sayfa</button>'+
-        '<button type="button" class="hcard ordc plnc" data-plans="1"><div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
-        '<button type="button" class="hcard ordc stfc" data-staff="1"><div><div class="hk">Ekip</div><div class="hn">Eleman ve Makineler</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
+        '<button type="button" class="hcard ordc plnc" data-plans="1">'+hcIcon("plans")+'<div><div class="hk">Gün + hafta</div><div class="hn">Planlar</div><div class="hs">Bölüm bölüm plan durumunu kontrol et</div></div><span class="go">›</span></button>'+
+        '<button type="button" class="hcard ordc stfc" data-staff="1">'+hcIcon("staff")+'<div><div class="hk">Ekip</div><div class="hn">Eleman ve Makineler</div><div class="hs" id="hs-staff">Eleman ve makine listesi</div></div><span class="go">›</span></button>'+
         SECTIONS.map(function(x){
-          return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'"><div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
+          return '<button type="button" class="hcard" data-sec="'+x.id+'" style="--h1:'+x.h1+';--h2:'+x.h2+'">'+hcIcon(x.id)+'<div><div class="hn">'+esc(x.name)+'</div><div class="hs" id="hs-'+x.id+'"></div></div><span class="go">›</span></button>';
         }).join("");
     }else{
       $("homeh1").textContent="Ana sayfa"; $("homep").textContent="Ne yapmak istiyorsun?";
