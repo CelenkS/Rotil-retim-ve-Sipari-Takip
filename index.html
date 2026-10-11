@@ -1443,8 +1443,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 #ords .ohero .obig b{font-size:clamp(24px,7.2vw,30px);line-height:1.1;text-shadow:none}
 #ords .ohero .obig{gap:3px;padding:2px 0}
 #ords .ohero{gap:12px}
-.ocard .stg .sp b{display:block;font:800 13px var(--font-num);color:var(--ink);letter-spacing:0}
-.ocard .stg .sp small{display:block;margin-top:1px;font:700 11px var(--font-ui);color:var(--ink2)}
+.ocard .stg .sp b{display:block;font:800 13px var(--font-ui);color:var(--ink)}
+.ocard .stg .sp small{display:block;margin-top:2px;font:700 11px var(--font-num);color:var(--ink2);white-space:nowrap}
 .ocard .stg.done .sp b{color:var(--good)}
 .wkcur{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font:800 10.5px var(--font-ui);letter-spacing:.04em;text-transform:uppercase;vertical-align:middle}
 .stgw{margin-top:10px}
@@ -1503,7 +1503,7 @@ body.st-hide .stgw .mpst{display:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 17:12</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 17:14</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5034,7 +5034,7 @@ body.st-hide .stgw .mpst{display:none}
         if(!shownStage(o,i))return '';
         var on=(o.st||[])[i], nd=o.qty*muOf(o,i), d=on?doneOf(o.id,sg.sec).q:0, pc=nd?Math.round(d/nd*100):0, so=SECTIONS.filter(function(z){return z.id===sg.sec})[0];
         var clz=on&&stClosed(o,i);
-        return '<div class="stg'+(on?'':' off')+(on&&(d>=nd||clz)?' done':'')+'" style="--sc:'+so.h1+'"><div class="sl">'+sg.short+'</div><div class="sb"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="sp">'+(on?'<b>'+nf.format(clz&&d<nd?nd:Math.min(d,nd))+' / '+nf.format(nd)+'</b><small>%'+(clz&&d<nd?100:pc)+(clz&&d<nd?' ✓':'')+'</small>':'—')+'</div></div>';
+        return '<div class="stg'+(on?'':' off')+(on&&(d>=nd||clz)?' done':'')+'" style="--sc:'+so.h1+'"><div class="sl">'+sg.short+'</div><div class="sb"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="sp">'+(on?'<b>%'+(clz&&d<nd?100:pc)+(clz&&d<nd?' ✓':'')+'</b><small>'+nf.format(clz&&d<nd?nd:Math.min(d,nd))+' / '+nf.format(nd)+' adet</small>':'—')+'</div></div>';
       }).join("")+'</div></button>';
   }
   function omLabel(){return AY[ordM]+" "+ordY}
