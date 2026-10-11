@@ -790,7 +790,37 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .dced{grid-column:1/-1;justify-self:end;border:0;background:var(--surface);color:var(--ink2);border-radius:99px;padding:5px 12px;font:700 11.5px var(--font-ui);margin-top:4px;cursor:pointer}
 .dcnone{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--soft);border-radius:14px;padding:9px 12px;margin-bottom:6px;font:700 13px var(--font-head)}
 .dcnone .dced{grid-column:auto;margin:0;flex:none}
+.lsib{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.lsib>summary{cursor:pointer;font:700 12px var(--font-ui);color:var(--ink2);padding:4px 0;list-style:none}
+.lsib>summary::-webkit-details-marker{display:none}
+.lsib>summary::before{content:"▾ ";}
+.lsib:not([open])>summary::before{content:"▸ ";}
+.lsib .lsg{margin-top:6px;padding:8px;border-radius:12px;background:var(--surface);border:1.5px solid transparent}
+.lsib .lsg.mine{border-color:var(--accent)}
+.lsib .nlq{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.lsib .nlq span{font:700 10.5px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.03em}
+.lsib .nlq b{font:800 14px var(--font-ui);color:var(--ink)}
+.lsib .nlq em{font:700 11px var(--font-ui);font-style:normal;color:var(--ink2)}
+.lsib .nlq .me{font:800 10px var(--font-ui);padding:2px 7px;border-radius:99px;background:var(--accent);color:var(--accent-ink);text-transform:none;letter-spacing:0}
+.lsib .nlst{display:grid;gap:6px;margin-top:6px}
+.lsib .nlsc{background:var(--soft);border-radius:9px;padding:5px 7px;border:1.5px solid transparent}
+.lsib .nlsc.hi{border-color:var(--accent)}
+.lsib .nlsc.hi{background:var(--soft);color:var(--ink);font:inherit}
+.lsib .nlsc .nlv{color:var(--ink)}
+.lsib .nlsc.nfin .nlv{color:#1f7a45}
+.lsib .nlsc .nll{font:700 10.5px var(--font-ui);color:var(--ink2)}
+.lsib .nlsc .nlv{font:800 12px var(--font-ui);margin:1px 0 4px;white-space:nowrap}
+.lsib .nlsc .nlsb{height:4px;border-radius:99px;background:rgba(120,130,130,.2);overflow:hidden}
+.lsib .nlsc .nlsb i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.lsib .nlsc.nfin .nlv{color:#1f7a45}
+.lsib .nlsc.nfin .nlsb i{background:#2ea05a}
+.lsib .nlsc.off{opacity:.45}
+.lsib .lnote{margin-top:6px;font:600 11.5px var(--font-ui);color:var(--ink2)}
 .lord{margin-top:8px}
+.ocust{margin-top:10px}
+.ocust select{display:block;width:100%;height:46px;border:2px solid transparent;border-radius:14px;background:var(--soft);color:var(--ink);font:700 15px var(--font-ui);padding:0 12px}
+.ocust select.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 20%,var(--surface))}
+.ocust select:focus{outline:0;border-color:var(--accent)}
 .lord .lt{display:flex;justify-content:space-between;gap:8px;font:700 12px var(--font-ui);color:var(--ink2)}
 .lord .lt b{color:var(--ink)}
 .lord .lt .ok{color:var(--good)}
@@ -922,7 +952,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:22</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:25</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1022,7 +1052,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     <div class="otabs" role="group" aria-label="Sipariş durumu"><button id="otOpen" aria-pressed="true">Açık</button><button id="otDone" aria-pressed="false">Tamamlanan</button><button id="otShip" aria-pressed="false">Gönderilen</button><button id="otAll" aria-pressed="false">Hepsi</button></div>
     <div class="osearch"><input class="search" id="osearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara…" aria-label="Sipariş ara"><button class="btn ghost" id="oref" aria-label="Yenile">Yenile</button></div>
     <div class="ocatf" id="ocatf" role="group" aria-label="Kategori filtresi"></div>
-    <div class="ocatf" id="ocustf" role="group" aria-label="Müşteri filtresi"></div>
+    <div class="ocust" id="ocustf"></div>
     <button class="btn ghost" id="osetbtn" aria-expanded="false" style="width:100%;margin-top:8px">⚙ Ayarlar / araçlar ▾</button>
     <div id="oset" hidden>
     <div class="osearch" style="margin-top:8px">
@@ -2108,6 +2138,29 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function dayToggleHtml(vm){
     return '<div class="dvtog" role="group" aria-label="Gün görünümü"><button type="button" data-dv="sum" aria-pressed="'+(vm==="sum")+'">Gün özeti</button><button type="button" data-dv="entry" aria-pressed="'+(vm==="entry")+'">Giriş / düzenle</button></div>';
   }
+  // Satırın altındaki "Aynı kodlu siparişler" kutusu: bu kodun siparişleri MÜŞTERİYE göre ayrı ayrı
+  // (birleştirilmeden) gösterilir. Sadece GÖSTERİR, hiçbir şeyi değiştirmez: üretim yalnızca satır
+  // bir siparişe bağlıysa (l.o) o siparişin adedine işlenir; müşteri seçerek girilen satır hiçbir
+  // siparişin adedini oynatmaz.
+  function lineOrdsHtml(l){
+    var ords=ordersOfCode(l.c);
+    if(!ords.length)return '<div class="lsib"><div class="lnote">Bu kodla girilmiş sipariş yok.</div></div>';
+    var lo=l.o?orders.filter(function(x){return x.id===l.o})[0]:null;
+    var mineK=lo?String(lo.cust||"Müşteri yok").toLowerCase().trim():String(l.u||"").toLowerCase().trim();
+    var mineB=custBaseName(mineK);
+    var grp={}, gord=[];
+    ords.forEach(function(o){
+      var cn=o.cust||"Müşteri yok", gk=cn.toLowerCase().trim();
+      if(!grp[gk]){grp[gk]={name:cn,os:[],q:0};gord.push(gk)}
+      grp[gk].os.push(o); grp[gk].q+=o.qty;
+    });
+    var isMine=function(gk){return !!mineK&&(gk===mineK||(!lo&&custBaseName(gk)===mineB&&mineB))};
+    gord.sort(function(a,b){return (isMine(b)?1:0)-(isMine(a)?1:0)||grp[a].name.localeCompare(grp[b].name,"tr")});
+    return '<details class="lsib" open><summary>Aynı kodlu siparişler ('+gord.length+' müşteri)</summary>'+gord.map(function(gk){
+      var g=grp[gk], me=isMine(gk);
+      return '<div class="lsg'+(me?' mine':'')+'"><div class="nlq"><span>'+esc(g.name)+' · sipariş</span><b>'+nf.format(g.q)+' adet</b>'+(g.os.length>1?'<em>'+g.os.length+' sipariş</em>':'')+(me?'<span class="me">'+(lo?'bu satır buraya işleniyor':'seçili müşteri')+'</span>':'')+'</div>'+stagesAggHtml(g.os,sec.id)+'</div>';
+    }).join("")+(lo?'':'<div class="lnote">Bu satır bir siparişe bağlı değil: yukarıdaki sipariş adetlerini değiştirmez.</div>')+'</details>';
+  }
   function renderLines(){
     var q=lineQ.trim();
     if(q){
@@ -2151,7 +2204,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             '<button type="button" data-act="inc" aria-label="Artır">+</button></div>'+
             '<span class="x">×</span>'+
             '<div class="money"><input type="number" inputmode="decimal" min="0" step="any" data-f="p" value="'+l.p+'" aria-label="'+esc(l.c)+' birim fiyat"><span>₺</span></div>'+
-            '<button type="button" class="rm" data-act="rm" aria-label="'+esc(l.c)+' satırını sil">×</button></div></div>';
+            '<button type="button" class="rm" data-act="rm" aria-label="'+esc(l.c)+' satırını sil">×</button></div>'+lineOrdsHtml(l)+'</div>';
         });
       }
     }
@@ -4271,8 +4324,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(cf)cf.innerHTML='<button type="button" data-ocf="all" aria-pressed="'+(ordCatF===null)+'">Tümü <small>'+byCat.length+'</small></button>'+
       ORDER_CATS.map(function(c,i){return (catCnt[i]||ordCatF===i)?'<button type="button" data-ocf="'+i+'" aria-pressed="'+(ordCatF===i)+'"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(c)+' <small>'+catCnt[i]+'</small></button>':''}).join("");
     var uf=$("ocustf");
-    if(uf)uf.innerHTML=custOrd.length>1||ordCustF!==null?'<button type="button" data-ocu="all" aria-pressed="'+(ordCustF===null)+'">Tüm müşteriler <small>'+byCust.length+'</small></button>'+
-      custOrd.map(function(k){return '<button type="button" data-ocu="'+esc(k)+'" aria-pressed="'+(ordCustF===k)+'">'+esc(custName[k])+' <small>'+custCnt[k]+'</small></button>'}).join(""):"";
+    if(uf)uf.innerHTML=custOrd.length>1||ordCustF!==null?'<select id="ocustsel" class="'+(ordCustF!==null?'on':'')+'" aria-label="Müşteri filtresi"><option value="all"'+(ordCustF===null?' selected':'')+'>Tüm müşteriler ('+byCust.length+')</option>'+
+      custOrd.map(function(k){return '<option value="'+esc(k)+'"'+(ordCustF===k?' selected':'')+'>'+esc(custName[k])+' ('+custCnt[k]+')</option>'}).join("")+'</select>':"";
     var grpOf=function(x){return ordTab!=="all"?0:(x.o.shipped?2:x.c?1:0)};
     tabList.filter(function(x){return (ordCatF===null||x.o.cat===ordCatF)&&(ordCustF===null||custKey(custBase(x.o.cust))===ordCustF)}).sort(function(a,b){
       if(ordTab==="all"){var ga=grpOf(a),gb=grpOf(b); if(ga!==gb)return ga-gb;
@@ -6743,9 +6796,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("otDone").addEventListener("click",function(){ordTab="done";renderOrders()});
   $("otShip").addEventListener("click",function(){ordTab="shipped";renderOrders()});
   $("otAll").addEventListener("click",function(){ordTab="all";renderOrders()});
-  $("ocustf").addEventListener("click",function(e){
-    var b=e.target.closest("[data-ocu]"); if(!b)return;
-    var v=b.dataset.ocu; if(v==="all"||ordCustF===v){ordCustF=null;ordCustName=""}else{ordCustF=v;ordCustName=(b.textContent||"").replace(/\s*\d+\s*$/,"").trim()} renderOrders();
+  $("ocustf").addEventListener("change",function(e){
+    var t=e.target; if(!t||t.id!=="ocustsel")return;
+    var v=t.value; if(v==="all"){ordCustF=null;ordCustName=""}else{ordCustF=v;ordCustName=(t.options[t.selectedIndex].text||"").replace(/\s*\(\d+\)\s*$/,"").trim()} renderOrders();
   });
   $("osearch").addEventListener("input",function(e){ordQ=e.target.value;renderOrders()});
   $("oref").addEventListener("click",function(){$("ostatus").textContent="Yenileniyor…";loadProgress(true).then(function(){renderOrders();$("ostatus").textContent="Güncel"})});
