@@ -481,6 +481,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .finrow input:focus{outline:0;border-color:var(--accent)}
 .finrow .auto{font:800 15px var(--font-num);color:var(--ink)}
 .finwrap{margin-top:12px}
+.dpg{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}
 .fsec{font:800 11.5px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:18px 4px 8px}
 .fcard{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:8px;transition:background .12s,transform .12s}
 .fcard:active{background:var(--soft);transform:scale(.99)}
@@ -1019,7 +1020,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:41</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:58</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1228,7 +1229,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   </section>
   <div class="otabs" role="group" aria-label="Elemanlar kapsamı"><button type="button" id="stfTabEmp" aria-pressed="true">Elemanlar</button><button type="button" id="stfTabMac" aria-pressed="false">Makineler</button><button type="button" id="stfTabFloor" aria-pressed="false">Yerleşim</button></div>
   <button class="btn ghost" id="stfnew" style="width:100%;margin-top:10px">+ Yeni eleman</button>
-  <button class="btn ghost" id="stfdepts" style="width:100%;margin-top:8px" hidden>⚙ Bölümleri düzenle (Rotil CNC, Rozet Preshane…)</button>
+  <button class="btn ghost" id="stfdepts" style="width:100%;margin-top:8px" hidden>⚙ Bölümleri düzenle (grup ve alt bölümler)</button>
   <button class="btn ghost" id="stfdelall" style="width:100%;margin-top:8px;color:var(--bad)" hidden>🗑 Tüm elemanları sil</button>
   <button class="btn ghost" id="stfbulk" style="width:100%;margin-top:8px" hidden>⇧ Toplu makine ekle (liste yapıştır)</button>
   <button class="btn ghost" id="stfperfbtn" style="width:100%;margin-top:8px">⚡ Bugünkü performansı hesapla</button>
@@ -2722,13 +2723,16 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="mcnote">Not</label><input class="fin" id="mcnote" autocomplete="off" value="'+esc(mc.note||"")+'"></div>'+
         '<div class="frow"><button class="btn" id="mcsave">Kaydet</button><button class="btn ghost" id="mccancel">Vazgeç</button>'+(macEditId?'<button class="btn danger" id="mcdel">Makineyi sil</button>':"")+'</div></div>';
     }else if(sheetMode==="deptmgr"){
-      html+='<div class="shead"><div><h2 id="sh-title">Bölümleri düzenle</h2><small>Her gruba istediğin alt bölümü ekle (ör. CNC, Preshane, Montaj)</small></div><button class="btn" id="dpclose">Bitti</button></div><div class="form">'+
+      html+='<div class="shead"><div><h2 id="sh-title">Bölümleri düzenle</h2><small>Grupları ve alt bölümleri sen belirle: ekle, adını değiştir, sil</small></div><button class="btn" id="dpclose">Bitti</button></div><div class="form">'+
+        (EMP_DEPTS.length?"":'<div class="note">Henüz hiç bölüm grubu yok. Aşağıdan ilk grubu ekle (ör. Rotil, Rozet, Yönetim).</div>')+
         EMP_DEPTS.map(function(g,gi){
-          var os=subDepts.filter(function(x){return x.g===g});
-          return '<div><span class="fl">'+esc(g)+'</span>'+
-            (os.length?os.map(function(x){var n=employees.filter(function(e){return e.sub===x.id}).length; return '<div class="finrow" style="padding:6px 0"><div class="fl2">'+esc(subLabel(x))+'<small>'+n+' eleman</small></div><button type="button" class="btn ghost" data-dpdel="'+x.id+'" style="min-height:36px;padding:0 12px">Sil</button></div>'}).join(""):'<div class="note" style="margin:4px 0">Henüz alt bölüm yok</div>')+
-            '<div class="frow" style="margin-top:6px"><input class="fin" id="dpn'+gi+'" autocomplete="off" placeholder="ör. '+(gi===0?'CNC':gi===1?'Preshane':'Alt bölüm adı')+'" style="flex:1"><button type="button" class="btn" data-dpadd="'+gi+'">Ekle</button></div></div>';
-        }).join("")+'<div class="note" id="dpmsg"></div></div>';
+          var os=subDepts.filter(function(x){return x.g===g}), gn=employees.filter(function(e){return e.dept===g}).length;
+          return '<div class="dpg"><div class="frow" style="gap:8px"><input class="fin" data-dpgren="'+gi+'" value="'+esc(g)+'" autocomplete="off" aria-label="Grup adı" style="flex:1;font-weight:800"><button type="button" class="btn ghost" data-dpgdel="'+gi+'" style="min-height:40px;padding:0 14px;flex:0 0 auto">Sil</button></div>'+
+            '<div class="note" style="margin:4px 0 6px">'+gn+' eleman · '+os.length+' alt bölüm</div>'+
+            os.map(function(x){var n=employees.filter(function(e){return e.sub===x.id}).length; return '<div class="frow" style="gap:8px;margin-top:6px;align-items:center"><input class="fin" data-dpsren="'+x.id+'" value="'+esc(x.n)+'" autocomplete="off" aria-label="Alt bölüm adı" style="flex:1"><small style="color:var(--ink2);white-space:nowrap">'+n+' kişi</small><button type="button" class="btn ghost" data-dpdel="'+x.id+'" style="min-height:40px;padding:0 14px;flex:0 0 auto">Sil</button></div>'}).join("")+
+            '<div class="frow" style="margin-top:8px"><input class="fin" id="dpn'+gi+'" autocomplete="off" placeholder="Yeni alt bölüm (ör. CNC Aşık)" style="flex:1"><button type="button" class="btn" data-dpadd="'+gi+'" style="flex:0 0 auto;padding:0 18px">Ekle</button></div></div>';
+        }).join("")+
+        '<div><span class="fl">Yeni bölüm grubu</span><div class="frow"><input class="fin" id="dpgn" autocomplete="off" placeholder="ör. Rotil, Rozet, Yönetim" style="flex:1"><button type="button" class="btn" id="dpgadd" style="flex:0 0 auto;padding:0 18px">Ekle</button></div></div><div class="note" id="dpmsg"></div></div>';
     }else if(sheetMode==="fempdet"){html+=finEmpSheetHtml()}else if(sheetMode==="fgdet"){html+=finGidSheetHtml()}else if(sheetMode==="macbulk"){
       html+='<div class="shead"><div><h2 id="sh-title">Toplu makine ekle</h2><small>Her satıra bir makine adı — hepsi seçtiğin bölüm(ler)e birden eklenir</small></div></div>'+
         '<div class="form">'+
@@ -3473,7 +3477,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       renderSheet(); return;
     }
     if(t.id==="emcancel"){sheetMode="list";empEditId=null;empFromFin=false;closeSheet();return}
-    if(t.id==="dpclose"){sheetMode="list";closeSheet();return}
+    if(t.id==="dpclose"){sheetMode="list";closeSheet();finNav={g:null,sub:null};if(!$("fin").hidden)renderFin();return}
     if(t.dataset.dpadd!==undefined){
       var dg=EMP_DEPTS[+t.dataset.dpadd], di=$("dpn"+t.dataset.dpadd), dn=di?di.value.trim():"";
       if(!dn){if(di)di.focus();return}
@@ -5333,15 +5337,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function watchDepts(){
     if(unsubDept||!db)return;
     unsubDept=db.doc("ayarlar/bolumler").onSnapshot(function(sn){
-      subDepts=(sn.exists&&sn.data().list)||[];
+      subDepts=(sn.exists&&sn.data().list)||[]; var gr=sn.exists&&sn.data().groups; if(Array.isArray(gr)){EMP_DEPTS.length=0; gr.forEach(function(x){EMP_DEPTS.push(x)})}
       if(!$("staff").hidden)renderStaff();
       if(!$("fin").hidden&&!(document.activeElement&&document.activeElement.tagName==="INPUT"&&$("fincontent").contains(document.activeElement)))renderFin();
-      if(!$("ov").hidden&&(sheetMode==="deptmgr"||sheetMode==="empform"))renderSheet();
+      if(!$("ov").hidden&&(sheetMode==="deptmgr"||sheetMode==="empform")&&!(document.activeElement&&document.activeElement.tagName==="INPUT"&&$("sheet").contains(document.activeElement)))renderSheet();
     },function(){});
   }
   function saveSubDepts(list){
     if(!db){return}
-    db.doc("ayarlar/bolumler").set({list:list}).catch(function(){});
+    db.doc("ayarlar/bolumler").set({list:list,groups:EMP_DEPTS.slice()},{merge:true}).catch(function(){});
   }
   function watchEmployees(){
     watchDepts();
@@ -5519,14 +5523,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(gi===null){
         var all=finSumE(employees,finMonth);
         h+=finStats([["Kişi",employees.length],["Net maaş",money(all.n)+" ₺"],["Sigorta",money(all.s)+" ₺"]]);
-        h+='<button type="button" class="btn" id="finnewemp" style="width:100%;margin-bottom:6px">+ Yeni eleman ekle</button>';
+        h+='<button type="button" class="btn" id="finnewemp" style="width:100%;margin-bottom:6px">+ Yeni eleman ekle</button><button type="button" class="btn ghost" id="fdeptmgr" style="width:100%;margin-bottom:6px">⚙ Bölümleri düzenle (grup, alt bölüm)</button>';
         h+='<div class="fsec">Bölüm grupları</div>';
         var order=EMP_DEPTS.map(function(d,i){return i}); if(finEmpsOf(-1).length)order.push(-1);
         order.forEach(function(i){
           var es=finEmpsOf(i), sm=finSumE(es,finMonth), ns=finSubsOf(i).length, col=finGCol(i), share=all.t>0?sm.t/all.t*100:0;
           h+='<div class="fcard"><button type="button" class="fgo" data-fgrp="'+(i<0?"x":i)+'"><span class="fic" style="--c:'+col+'">'+finGIcon(i)+'</span><span class="ftx"><b>'+esc(finGName(i))+'</b><small>'+es.length+' kişi'+(ns?' · '+ns+' alt bölüm':'')+'</small>'+finBar(share,col)+'</span><span class="fam">'+money(sm.t)+' ₺<small>%'+Math.round(share)+'</small></span><span class="fchev">›</span></button></div>';
         });
-        if(!employees.length)h+='<div class="empty">Henüz eleman yok. Yukarıdaki düğmeyle ilk elemanı ekle.</div>';
+        if(!EMP_DEPTS.length)h+='<div class="empty">Henüz bölüm grubu yok. “Bölümleri düzenle” ile ilk grubunu ekle.</div>'; else if(!employees.length)h+='<div class="empty">Henüz eleman yok. Yukarıdaki düğmeyle ilk elemanı ekle.</div>';
       }else{
         var col2=finGCol(gi), subs=finSubsOf(gi), sb=finNav.sub, gname=finGName(gi);
         if(sb===null){
@@ -5542,7 +5546,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
             h+='<div class="fcard"><button type="button" class="fgo" data-fsub="'+r.id+'"><span class="fic" style="--c:'+col2+'">'+(r.id?'📂':'📁')+'</span><span class="ftx"><b>'+esc(r.label)+'</b><small>'+es.length+' kişi</small>'+finBar(share,col2)+'</span><span class="fam">'+money(sm.t)+' ₺<small>%'+Math.round(share)+'</small></span><span class="fchev">›</span></button></div>';
           });
           h+='<div class="fcard"><button type="button" class="fgo" data-fsub="*"><span class="fic" style="--c:'+col2+'">👥</span><span class="ftx"><b>Hepsini listele</b><small>'+ges.length+' kişi, alt bölüme bakmadan</small></span><span class="fchev">›</span></button></div>';
-          h+='<button type="button" class="btn ghost" data-fadd style="width:100%;margin-top:6px">+ '+esc(gname)+' grubuna eleman ekle</button>';
+          h+='<button type="button" class="btn ghost" data-fadd style="width:100%;margin-top:6px">+ '+esc(gname)+' grubuna eleman ekle</button><button type="button" class="btn ghost" id="fdeptmgr" style="width:100%;margin-top:8px">⚙ Alt bölüm ekle / düzenle</button>';
         }else{
           var sub=sb==="*"||sb===""?null:subOf(sb), es3=finEmpsIn(gi,sb), ss=finSumE(es3,finMonth);
           var title=sb==="*"?gname:sb===""?"Alt bölüm seçilmedi":(sub?subLabel(sub):gname);
@@ -5799,11 +5803,53 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(d.fback!==undefined){finBack(); renderFin(); window.scrollTo(0,0); return}
     if(d.femp){finEmpId=d.femp; sheetMode="fempdet"; $("ov").hidden=false; renderSheet(); return}
     if(d.fgi){finGid=d.fgi; sheetMode="fgdet"; $("ov").hidden=false; renderSheet(); return}
+    if(b.id==="fdeptmgr"){sheetMode="deptmgr"; $("ov").hidden=false; renderSheet(); return}
     if(b.id==="finnewemp"||d.fadd!==undefined){
       empFromFin=true; floorMacId=null; empEditId=null; empSecsDraft=[]; empMacsDraft=[];
       empPreset={dept:"",sub:""};
       if(d.fadd!==undefined&&finNav.g!==null&&finNav.g>=0){empPreset.dept=EMP_DEPTS[finNav.g]; if(finNav.sub&&finNav.sub!=="*")empPreset.sub=finNav.sub}
       sheetMode="empform"; $("ov").hidden=false; renderSheet();
+    }
+  });
+  // ---- bölüm grubu / alt bölüm: ekle, adını değiştir, sil ----
+  $("sheet").addEventListener("click",function(e){
+    if(sheetMode!=="deptmgr")return;
+    var t=e.target.closest("button"); if(!t)return;
+    var msg=function(m){var x=$("dpmsg"); if(x)x.textContent=m};
+    if(t.id==="dpgadd"){
+      var inp=$("dpgn"), nm=inp?inp.value.trim().replace(/\s+/g," "):"";
+      if(!nm){if(inp)inp.focus();return}
+      if(EMP_DEPTS.some(function(x){return x.toLowerCase()===nm.toLowerCase()})){msg("Bu grup zaten var");return}
+      EMP_DEPTS.push(nm); saveSubDepts(subDepts); renderSheet(); return;
+    }
+    if(t.dataset.dpgdel!==undefined){
+      var gi=+t.dataset.dpgdel, gn=EMP_DEPTS[gi]; if(gn===undefined)return;
+      var used=employees.filter(function(x){return x.dept===gn||subDepts.some(function(sd){return sd.g===gn&&sd.id===x.sub})}).length;
+      if(used){msg("“"+gn+"” grubunda "+used+" eleman var. Önce onları başka bölüme taşı ya da sil.");return}
+      EMP_DEPTS.splice(gi,1); subDepts=subDepts.filter(function(x){return x.g!==gn}); saveSubDepts(subDepts); renderSheet(); return;
+    }
+  });
+  $("sheet").addEventListener("change",function(e){
+    if(sheetMode!=="deptmgr")return;
+    var el=e.target, msg=function(m){var x=$("dpmsg"); if(x)x.textContent=m};
+    if(el.dataset.dpgren!==undefined){
+      var gi=+el.dataset.dpgren, old=EMP_DEPTS[gi], nn=el.value.trim().replace(/\s+/g," ");
+      if(old===undefined)return;
+      if(!nn||nn===old){el.value=old;return}
+      if(EMP_DEPTS.some(function(x,i){return i!==gi&&x.toLowerCase()===nn.toLowerCase()})){msg("Bu isimde başka bir grup var");el.value=old;return}
+      EMP_DEPTS[gi]=nn;
+      subDepts=subDepts.map(function(x){return x.g===old?{id:x.id,g:nn,n:x.n}:x});
+      var affected=employees.filter(function(x){return x.dept===old});
+      affected.forEach(function(x){x.dept=nn});
+      if(db&&affected.length){var bt=db.batch(); affected.forEach(function(x){bt.update(db.doc("employees/"+x.id),{dept:nn})}); bt.commit().catch(function(){})}
+      saveSubDepts(subDepts); msg("Grup adı değişti"); return;
+    }
+    if(el.dataset.dpsren!==undefined){
+      var sid=el.dataset.dpsren, sd=subOf(sid), sn=el.value.trim().replace(/\s+/g," ");
+      if(!sd)return;
+      if(!sn||sn===sd.n){el.value=sd.n;return}
+      if(subDepts.some(function(x){return x.id!==sid&&x.g===sd.g&&x.n.toLowerCase()===sn.toLowerCase()})){msg("Bu grupta aynı isimde alt bölüm var");el.value=sd.n;return}
+      subDepts=subDepts.map(function(x){return x.id===sid?{id:x.id,g:x.g,n:sn}:x}); saveSubDepts(subDepts); msg("Alt bölüm adı değişti");
     }
   });
   $("sheet").addEventListener("click",function(e){
