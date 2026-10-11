@@ -470,6 +470,28 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.stkc .hk{color:#E69138}
 .hcard.ordc.stkc .go{color:#E69138}
 .hcard.ordc.stkc .hs b{color:#E69138}
+.finmon{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 2px}
+.finmon b{font:800 16px var(--font-head);color:#fff;min-width:120px;text-align:center}
+.finnav{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font:800 18px var(--font-ui)}
+.finrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.finrow:last-child{border-bottom:0}
+.finrow .fl2{font:700 14px var(--font-ui);color:var(--ink)}
+.finrow .fl2 small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2);margin-top:2px}
+.finrow input{width:130px;height:40px;border:2px solid transparent;border-radius:12px;background:var(--soft);color:var(--ink);font:800 15px var(--font-num);text-align:right;padding:0 10px}
+.finrow input:focus{outline:0;border-color:var(--accent)}
+.finrow .auto{font:800 15px var(--font-num);color:var(--ink)}
+.fintot{display:flex;justify-content:space-between;padding:12px 0 2px;font:800 16px var(--font-head)}
+.fingrp{margin-top:14px}
+.fingrp h3{margin:0 0 4px;font:800 15px var(--font-head)}
+.fingrp .gs{font:600 12px var(--font-ui);color:var(--ink2);margin-bottom:6px}
+.finemp{padding:10px 0;border-bottom:1px solid var(--line)}
+.finemp:last-child{border-bottom:0}
+.finemp .en2{font:800 14px var(--font-ui)}
+.finemp .es2{font:600 11.5px var(--font-ui);color:var(--ink2)}
+.finemp .inp2{display:flex;gap:8px;margin-top:6px}
+.finemp .inp2 label{flex:1;font:700 11px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.finemp .inp2 input{display:block;width:100%;height:40px;margin-top:3px;border:2px solid transparent;border-radius:12px;background:var(--soft);color:var(--ink);font:800 15px var(--font-num);text-align:right;padding:0 10px;box-sizing:border-box}
+.finemp .inp2 input:focus{outline:0;border-color:var(--accent)}
 .hcard.ordc.finc{border-color:rgba(70,200,140,.55)}
 .hcard.ordc.finc::after{background:rgba(70,200,140,.16)}
 .hcard.ordc.finc .hk,.hcard.ordc.finc .go{color:#46C88C}
@@ -955,7 +977,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 11:47</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1149,10 +1171,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 </div>
 <div class="wrap" id="fin" hidden style="--hero1:#2F7D5B;--hero2:#16402F">
   <section class="hero ohero">
-    <div class="hirow"><div class="oeyebrow">Sadece sana özel</div><button class="tbtn" id="finback">‹ Ana sayfa</button></div>
-    <div class="obig"><span class="obl">İşçilik ve maliyet</span><b>🔒</b><span class="obs" id="finwho">bu bölümü sadece sen görürsün</span></div>
+    <div class="hirow"><div class="oeyebrow">Sadece sana özel · 🔒</div><button class="tbtn" id="finback">‹ Ana sayfa</button></div>
+    <div class="finmon"><button type="button" class="finnav" id="finprev" aria-label="Önceki ay">‹</button><b id="finmonlbl"></b><button type="button" class="finnav" id="finnext" aria-label="Sonraki ay">›</button></div>
+    <div class="obig"><span class="obl">Bu ayın toplam gideri</span><b id="fintotal">0 ₺</b><span class="obs" id="finsub"></span></div>
   </section>
-  <section class="card"><div class="empty" style="margin:0">Bu bölüm şimdilik boş.<br>İşçilik, maaş, sigorta ve maliyet kalemlerini birlikte belirleyince buraya kuracağız.</div></section>
+  <div id="finwarn" class="impnote err" style="margin-top:10px" hidden>⚠ Gizlilik katmanı (Firebase kuralları ya da şifreleme) henüz kurulmadı. O zamana kadar buraya maaş gibi gizli bilgi girme.</div>
+  <div class="otabs" role="group" aria-label="Bölüm"><button type="button" id="finTabG" aria-pressed="true">Giderler</button><button type="button" id="finTabM" aria-pressed="false">Maaşlar</button></div>
+  <section class="card" style="margin-top:10px"><div id="fincontent"></div><div class="status" id="finstatus" style="margin-top:8px"></div></section>
 </div>
 <div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
   <section class="hero ohero">
@@ -5294,9 +5319,80 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // Firestore kuralları da bu bölümü sadece sahibe açmalı; o yapılmadan buraya gizli veri girilmez.
   var FIN_OWNERS=["yusufselim.123@outlook.com"];
   function finOwner(){var m=""; try{m=(firebase.auth().currentUser.email||"").toLowerCase()}catch(e){} return !!m&&FIN_OWNERS.indexOf(m)>-1}
+  // ---- İşçilik ve maliyet: aylık giderler + maaşlar (özel koleksiyon "fin_ay", belge = "YYYY-MM") ----
+  // fin_ay/{ay} = {gider:{kira,elektrik,yemek,mazot,kart,genel}, maas:{eleman_id:{n:net maaş, s:sigorta}}}
+  // Maaş girilmemiş bir ayda, o elemanın en son girilmiş (önceki ay) değeri geçerli sayılır.
+  var FIN_RULES_OK=true; // gizlilik katmanı (Firebase kuralları / şifreleme) kurulunca true yapılacak
+  var FIN_ITEMS=[["kira","Kira"],["elektrik","Elektrik"],["yemek","Yemek"],["mazot","Mazot"],["kart","Kart"],["genel","Genel giderler"]];
+  var finMonth="", finTab="gider", finDocs={}, unsubFin=null;
+  function finNowKey(){return now.getFullYear()+"-"+pad(now.getMonth()+1)}
+  function finShift(k,d){var a=k.split("-"),y=+a[0],m=+a[1]-1+d; y+=Math.floor(m/12); m=((m%12)+12)%12; return y+"-"+pad(m+1)}
+  function finMaasOf(eid,mk){
+    var ks=Object.keys(finDocs).filter(function(k){return k<=mk}).sort().reverse();
+    for(var i=0;i<ks.length;i++){var m=(finDocs[ks[i]].maas||{})[eid]; if(m&&(m.n||m.s))return {n:+m.n||0,s:+m.s||0,from:ks[i]}}
+    return {n:0,s:0,from:""};
+  }
+  function finTotals(mk){
+    var n=0,s=0; employees.forEach(function(e){var m=finMaasOf(e.id,mk); n+=m.n; s+=m.s});
+    var g=(finDocs[mk]||{}).gider||{}, man=0; FIN_ITEMS.forEach(function(it){man+=+g[it[0]]||0});
+    return {n:n,s:s,man:man,total:n+s+man};
+  }
+  function watchFin(){
+    if(unsubFin||!db)return;
+    unsubFin=db.collection("fin_ay").onSnapshot(function(snap){
+      finDocs={}; snap.docs.forEach(function(d){finDocs[d.id]=d.data()});
+      if(!$("fin").hidden){var ae=document.activeElement; if(ae&&ae.tagName==="INPUT"&&$("fincontent").contains(ae)){paintFinTotals()}else renderFin()}
+    },function(){$("finstatus").textContent="Okunamadı (bağlantı ya da yetki)"});
+  }
+  function paintFinTotals(){
+    var t=finTotals(finMonth);
+    $("fintotal").textContent=money(t.total)+" ₺";
+    $("finsub").textContent="Maaş "+money(t.n)+" ₺ · Sigorta "+money(t.s)+" ₺ · Diğer "+money(t.man)+" ₺";
+  }
+  function finInp(attrs,val){return '<input type="number" inputmode="decimal" min="0" step="any" '+attrs+' value="'+(val?val:"")+'" placeholder="0">'}
+  function renderFin(){
+    if(!finOwner())return;
+    if(!finMonth)finMonth=finNowKey();
+    var a=finMonth.split("-"); $("finmonlbl").textContent=AY[+a[1]-1]+" "+a[0];
+    $("finwarn").hidden=FIN_RULES_OK;
+    $("finTabG").setAttribute("aria-pressed",finTab==="gider"); $("finTabM").setAttribute("aria-pressed",finTab==="maas");
+    var t=finTotals(finMonth), g=(finDocs[finMonth]||{}).gider||{}, h="";
+    if(finTab==="gider"){
+      h+='<div class="finrow"><div class="fl2">Maaşlar (net)<small>Maaşlar sekmesinden otomatik · '+employees.length+' kişi</small></div><div class="auto">'+money(t.n)+' ₺</div></div>'+
+         '<div class="finrow"><div class="fl2">Sigortalar<small>Maaşlar sekmesinden otomatik</small></div><div class="auto">'+money(t.s)+' ₺</div></div>'+
+         FIN_ITEMS.map(function(it){return '<div class="finrow"><div class="fl2">'+it[1]+'</div>'+finInp('data-fg="'+it[0]+'" aria-label="'+it[1]+'"',+g[it[0]]||0)+'</div>'}).join("")+
+         '<div class="fintot"><span>Toplam gider</span><span>'+money(t.total)+' ₺</span></div>';
+    }else{
+      if(!employees.length)h='<div class="empty">Eleman yok. Önce Üretim → Elemanlar bölümünden eleman ekle.</div>';
+      else{
+        var grp={}, order=[];
+        SECTIONS.forEach(function(x){grp[x.id]=[]; order.push(x.id)}); grp["_"]=[]; order.push("_");
+        employees.forEach(function(e){var s0=(e.secs||[])[0]; (grp[s0&&grp[s0]?s0:"_"]).push(e)});
+        order.forEach(function(sid){
+          var es=grp[sid]; if(!es.length)return;
+          var sn=0,ss=0; es.forEach(function(e){var m=finMaasOf(e.id,finMonth); sn+=m.n; ss+=m.s});
+          h+='<div class="fingrp"><h3>'+esc(sid==="_"?"Bölüm atanmadı":secNameOf(sid))+'</h3><div class="gs">'+es.length+' kişi · maaş '+money(sn)+' ₺ · sigorta '+money(ss)+' ₺ · toplam '+money(sn+ss)+' ₺</div>'+
+            es.map(function(e){
+              var m=finMaasOf(e.id,finMonth), own=((finDocs[finMonth]||{}).maas||{})[e.id], carried=m.from&&m.from!==finMonth;
+              var other=(e.secs||[]).slice(1).map(secNameOf).join(", ");
+              return '<div class="finemp"><div class="en2">'+esc(e.name)+'</div><div class="es2">'+(other?'Diğer bölümler: '+esc(other)+' · ':'')+(carried?'önceki aydan ('+AY[+m.from.split("-")[1]-1]+')':(own?'bu ay girildi':'henüz girilmedi'))+'</div>'+
+                '<div class="inp2"><label>Net maaş (₺)'+finInp('data-fe="'+e.id+'" data-ff="n"',m.n)+'</label><label>Sigorta (₺)'+finInp('data-fe="'+e.id+'" data-ff="s"',m.s)+'</label></div></div>';
+            }).join("")+'</div>';
+        });
+      }
+    }
+    $("fincontent").innerHTML=h; paintFinTotals();
+  }
+  function finSave(patch){
+    if(!db||!finOwner()){$("finstatus").textContent="Bağlantı yok, kaydedilemedi";return}
+    $("finstatus").textContent="Kaydediliyor…";
+    db.doc("fin_ay/"+finMonth).set(patch,{merge:true}).then(function(){$("finstatus").textContent="Kaydedildi"}).catch(function(){$("finstatus").textContent="Kaydedilemedi, tekrar dene"});
+  }
   function openFin(){
     if(!finOwner())return;
     closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=false; window.scrollTo(0,0);
+    if(!finMonth)finMonth=finNowKey();
+    watchEmployees(); watchFin(); renderFin();
   }
   function finHome(){$("fin").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
   function openStaff(){
@@ -5485,6 +5581,25 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   $("stfback").addEventListener("click",staffHome);
   $("finback").addEventListener("click",finHome);
+  $("finprev").addEventListener("click",function(){finMonth=finShift(finMonth||finNowKey(),-1);renderFin()});
+  $("finnext").addEventListener("click",function(){finMonth=finShift(finMonth||finNowKey(),1);renderFin()});
+  $("finTabG").addEventListener("click",function(){finTab="gider";renderFin()});
+  $("finTabM").addEventListener("click",function(){finTab="maas";renderFin()});
+  $("fincontent").addEventListener("change",function(e){
+    var el=e.target; if(!el||el.tagName!=="INPUT")return;
+    var v=cleanNum(el.value,999999999,false);
+    if(el.dataset.fg){
+      var gd=(finDocs[finMonth]=finDocs[finMonth]||{}); gd.gider=Object.assign({},gd.gider); gd.gider[el.dataset.fg]=v;
+      var p={gider:{}}; p.gider[el.dataset.fg]=v; finSave(p);
+    }else if(el.dataset.fe){
+      var eid=el.dataset.fe, f=el.dataset.ff, cur=finMaasOf(eid,finMonth);
+      var md=(finDocs[finMonth]=finDocs[finMonth]||{}); md.maas=Object.assign({},md.maas);
+      var nw={n:cur.n,s:cur.s}; nw[f]=v; md.maas[eid]=nw;
+      var p2={maas:{}}; p2.maas[eid]=nw; finSave(p2);
+    }
+    renderFin();
+  });
+
   $("stfTabEmp").addEventListener("click",function(){stfTab="emp";renderStaff()});
   $("stfTabMac").addEventListener("click",function(){stfTab="mac";renderStaff()});
   $("stfTabFloor").addEventListener("click",function(){stfTab="floor";renderStaff()});
