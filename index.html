@@ -1450,9 +1450,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .nlsc .nlp{margin-top:3px;font:800 11px var(--font-ui);opacity:.9}
 .nli .nlsc.nfin .nlp,.lsib .nlsc.nfin .nlp{color:#1f7a45}
 .snl .nlsc.nfin .nlp,.needdrop .nli .nlsc.nfin .nlp{color:#A8F0C6}
-.brk .bar{height:26px}
-.brk .bar i{display:flex;align-items:center;justify-content:center;overflow:hidden}
-.brk .bar i b{font:800 11.5px var(--font-ui);color:rgba(10,20,30,.78);white-space:nowrap;letter-spacing:0}
+#app .brk .bar{height:44px;border-radius:14px}
+.brk .bar i{display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:0 3px;line-height:1.15}
+.brk .bar i b{font:800 12px var(--font-ui);color:rgba(10,20,30,.82);white-space:nowrap;letter-spacing:0}
+.brk .bar i em{font:700 10px var(--font-ui);font-style:normal;color:rgba(10,20,30,.7);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wkcur{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font:800 10.5px var(--font-ui);letter-spacing:.04em;text-transform:uppercase;vertical-align:middle}
 .stgw{margin-top:10px}
 .stgl{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:5px 10px 5px 0;-webkit-tap-highlight-color:transparent}
@@ -1510,7 +1511,7 @@ body.st-hide .stgw .mpst{display:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 17:22</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 17:25</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2307,7 +2308,7 @@ body.st-hide .stgw .mpst{display:none}
     sheetMode="form"; $("ov").hidden=false; renderSheet();
   }
   function bar(el,items,t){
-    el.innerHTML=t?items.map(function(x){var p=x.v/t*100; return '<i style="width:'+p+'%;background:'+x.c+'"'+(p>0?' title="%'+Math.round(p)+'"':'')+'>'+(p>=7?'<b>%'+Math.round(p)+'</b>':'')+'</i>'}).join(""):"";
+    el.innerHTML=t?items.map(function(x){var p=x.v/t*100; return '<i style="width:'+p+'%;background:'+x.c+'"'+(p>0?' title="%'+Math.round(p)+'"':'')+'>'+(p>=7?'<b>%'+Math.round(p)+'</b>'+(p>=12&&x.n?'<em>'+esc(x.n)+'</em>':''):'')+'</i>'}).join(""):"";
   }
   function renderHero(){
     var ds=periodDays(), ca=zero(), cr=zero(), cu={}, order=[];
@@ -2341,7 +2342,7 @@ body.st-hide .stgw .mpst{display:none}
     var items=[], html="";
     for(var i=0;i<COLS.length;i++){
       var val=byR?cr[i]:ca[i];
-      items.push({v:val,c:"var(--p"+i+")"});
+      items.push({v:val,c:"var(--p"+i+")",n:COLS[i]});
     }
     bar($("bar"),items,t);
     if(catDrill!==null&&catDrill<COLS.length){
@@ -2358,7 +2359,7 @@ body.st-hide .stgw .mpst{display:none}
     var citems=[], chtml="";
     order.forEach(function(n){
       var val=byR?cu[n].r:cu[n].a, c=custColor(n);
-      citems.push({v:val,c:c});
+      citems.push({v:val,c:c,n:n||"Müşteri yok"});
       chtml+=bkRowCust(c,n||"Müşteri belirtilmemiş",n,cu[n].a,cu[n].r,t?val/t*100:0,t);
     });
     bar($("cbar"),citems,t);
