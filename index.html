@@ -1437,6 +1437,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 #plans #pvlist>*{animation:cin .45s cubic-bezier(.2,.8,.2,1) both}
 
 
+#plans .mnav button{width:40px;height:40px;border:0;border-radius:50%;background:var(--soft);color:var(--ink);font:800 20px var(--font-ui);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;padding:0}
+#plans .mnav h1{flex:1;text-align:center;margin:0;color:var(--ink)}
+:is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff) .chiprow:empty{display:none}
+.wkcur{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font:800 10.5px var(--font-ui);letter-spacing:.04em;text-transform:uppercase;vertical-align:middle}
 .stgw{margin-top:10px}
 .stgl{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:5px 10px 5px 0;-webkit-tap-highlight-color:transparent}
 .stgl::after{content:"▴";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:99px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line);font-size:10px;letter-spacing:0}
@@ -1493,7 +1497,7 @@ body.st-hide .stgw .mpst{display:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 17:07</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1658,7 +1662,7 @@ body.st-hide .stgw .mpst{display:none}
   <div id="stklist"></div>
   <div class="status" id="stkstatus"></div>
 </div>
-<div class="wrap" id="purch" hidden style="--hero1:#C0392B;--hero2:#7B1F16">
+<div class="wrap" id="purch" hidden style="--hero1:#3F7BE0;--hero2:#1F3A8A">
   <section class="hero ohero">
     <div class="hirow"><div class="oeyebrow">Satın alma</div><button class="tbtn" id="purback">‹ Bölümler</button></div>
     <div class="obig"><span class="obl">Bekleyen ihtiyaç</span><b id="purcount">0</b><span class="obs" id="purobs">üretimin ihtiyaçlarını gir, sipariş ve geliş durumunu takip et</span></div>
@@ -2617,6 +2621,7 @@ body.st-hide .stgw .mpst{display:none}
     if(scope==="day"){var p=selParts(); return p.d+" "+AY[p.m]+" "+GUN[(new Date(p.y,p.m,p.d).getDay()+6)%7]}
     return isoWeekLabel(planWeekKey||curWeekKey());
   }
+  function wkNavLbl(k){return isoWeekLabel(k)+(k===isoWeekMonday(todayIso)?'<small class="wkcur">bu hafta</small>':'')}
   function planRange(scope,k){return scope==="day"?[k]:isoWeekRange(k)}
   function planFor(scope,k){return (plans[scope]&&plans[scope][k])||[]}
   function weekPlanMap(secId){
@@ -3199,7 +3204,7 @@ body.st-hide .stgw .mpst{display:none}
       }).sort(function(a,b){return (b.pq>0?1:0)-(a.pq>0?1:0)||(a.fin?1:0)-(b.fin?1:0)||((b.o.ts||0)-(a.o.ts||0))});
       html+='<div class="shead"><div><h2 id="sh-title">Plan</h2><small>'+esc(planLabel(planScope))+' · '+esc(sec.name)+' · hangi siparişten ne kadar üreteceksin?</small></div></div>';
       html+='<div class="otabs" role="group" aria-label="Plan kapsamı"><button type="button" data-plsc="day" aria-pressed="'+(planScope==="day")+'">Günlük</button><button type="button" data-plsc="week" aria-pressed="'+(planScope==="week")+'">Haftalık</button></div>';
-      if(planScope==="week")html+='<div class="mnav" style="margin-top:8px"><button type="button" id="plwkprev" aria-label="Önceki hafta">‹</button><h1 style="font-size:15px">'+esc(isoWeekLabel(planWeekKey||curWeekKey()))+'</h1><button type="button" id="plwknext" aria-label="Sonraki hafta">›</button></div>'+
+      if(planScope==="week")html+='<div class="mnav" style="margin-top:8px"><button type="button" id="plwkprev" aria-label="Önceki hafta">‹</button><h1 style="font-size:15px">'+wkNavLbl(planWeekKey||curWeekKey())+'</h1><button type="button" id="plwknext" aria-label="Sonraki hafta">›</button></div>'+
         (planWeekKey?'<button type="button" class="tbtn" id="plwktoday" style="margin-top:6px">Bu haftaya dön</button>':'');
       else html+='<div class="mnav" style="margin-top:8px"><button type="button" id="pldayprev" aria-label="Önceki gün">‹</button><h1 style="font-size:15px">'+esc(planLabel("day"))+'</h1><button type="button" id="pldaynext" aria-label="Sonraki gün">›</button></div>'+
         (selected!==todayIso?'<button type="button" class="tbtn" id="pldaytoday" style="margin-top:6px">Bugüne dön</button>':'');
@@ -3234,7 +3239,7 @@ body.st-hide .stgw .mpst{display:none}
     }else if(sheetMode==="planview"){
       var k6=planKey(planScope), pr6=planProgressFor(sec.id,planScope,k6), pc6=pr6.tq?Math.round(pr6.dq/pr6.tq*100):0;
       html+='<div class="shead"><div><h2 id="sh-title">'+(planScope==="day"?"Günlük plan":"Haftalık plan")+'</h2><small>'+esc(planLabel(planScope))+' · '+esc(sec.name)+'</small></div><button class="btn ghost" id="pvclose">Kapat</button></div>';
-      if(planScope==="week")html+='<div class="mnav" style="margin-top:2px"><button type="button" id="plwkprev" aria-label="Önceki hafta">‹</button><h1 style="font-size:14px;color:var(--ink2)">'+(planWeekKey?'':'bu hafta')+'</h1><button type="button" id="plwknext" aria-label="Sonraki hafta">›</button></div>'+
+      if(planScope==="week")html+='<div class="mnav" style="margin-top:2px"><button type="button" id="plwkprev" aria-label="Önceki hafta">‹</button><h1 style="font-size:14px">'+wkNavLbl(planWeekKey||curWeekKey())+'</h1><button type="button" id="plwknext" aria-label="Sonraki hafta">›</button></div>'+
         (planWeekKey?'<button type="button" class="tbtn" id="plwktoday" style="margin-top:4px">Bu haftaya dön</button>':'');
       else html+='<div class="mnav" style="margin-top:2px"><button type="button" id="pldayprev" aria-label="Önceki gün">‹</button><h1 style="font-size:14px;color:var(--ink2)">'+(selected===todayIso?'bugün':esc(isoDayLabel(selected)))+'</h1><button type="button" id="pldaynext" aria-label="Sonraki gün">›</button></div>'+
         (selected!==todayIso?'<button type="button" class="tbtn" id="pldaytoday" style="margin-top:4px">Bugüne dön</button>':'');
@@ -8454,9 +8459,11 @@ body.st-hide .stgw .mpst{display:none}
   var plOpenSec={};
   function renderPlansScreen(){
     $("pvDay").setAttribute("aria-pressed",planScope==="day"); $("pvWeek").setAttribute("aria-pressed",planScope==="week");
-    var scope=planScope, k=scope==="day"?selected:curWeekKey(), rows="", tot={tq:0,dq:0,tp:0,dr:0};
+    var scope=planScope, k=scope==="day"?selected:(planWeekKey||curWeekKey()), rows="", tot={tq:0,dq:0,tp:0,dr:0};
     var navHtml=scope==="day"?('<div class="mnav" style="margin:-4px 0 14px"><button type="button" id="pvDayPrev" aria-label="Önceki gün">‹</button><h1 style="font-size:15px">'+(selected===todayIso?"Bugün":esc(isoDayLabel(selected)))+'</h1><button type="button" id="pvDayNext" aria-label="Sonraki gün">›</button></div>'+
-      (selected!==todayIso?'<button type="button" class="tbtn" id="pvDayToday" style="margin:-8px auto 14px;display:block">Bugüne dön</button>':'')):"";
+      (selected!==todayIso?'<button type="button" class="tbtn" id="pvDayToday" style="margin:-8px auto 14px;display:block">Bugüne dön</button>':'')):
+      ('<div class="mnav" style="margin:-4px 0 14px"><button type="button" id="pvWkPrev" aria-label="Önceki hafta">‹</button><h1 style="font-size:15px">'+wkNavLbl(k)+'</h1><button type="button" id="pvWkNext" aria-label="Sonraki hafta">›</button></div>'+
+      (k!==isoWeekMonday(todayIso)?'<button type="button" class="tbtn" id="pvWkToday" style="margin:-8px auto 14px;display:block">Bu haftaya dön</button>':''));
     var vq=fold(planVQ.trim());
     SECTIONS.forEach(function(x){
       var pr=planProgressFor(x.id,scope,k); if(!pr.tq)return;
@@ -8473,13 +8480,14 @@ body.st-hide .stgw .mpst{display:none}
             '<div class="obody"><div class="code" style="font:700 15px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
             '<div class="oq2">planlanan<b>'+nf.format(it.plan)+'</b></div></div>'+
             '<div class="pg"><div class="pgt"><span>yapılan '+nf.format(it.done)+' / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div></div>'+
+            mpStagesHtml(o,x.id,"Tüm işlemler · yapılan / gereken")+
             '<button type="button" class="edit" data-planedit="'+o.id+'" data-plansec="'+x.id+'" style="margin-top:8px">✎ Planlanan adedi düzenle</button>'+
             '</div>';
         }).join("")+'</div>'+
         '<button type="button" class="btn ghost" data-editplan="'+x.id+'" style="margin-top:12px;width:100%">Planı düzenle</button>'):'')+
         '</section>';
     });
-    $("pvlist").innerHTML=navHtml+(rows||'<div class="empty">'+(vq?'“'+esc(planVQ.trim())+'” ile eşleşen bir ürün yok.':((scope==="day"?(selected===todayIso?"Bugün":esc(isoDayLabel(selected))):"Bu hafta")+' için henüz plan girilmemiş.<br>Bir bölüme gir, “Plan” ile başla.'))+'</div>');
+    $("pvlist").innerHTML=navHtml+(rows||'<div class="empty">'+(vq?'“'+esc(planVQ.trim())+'” ile eşleşen bir ürün yok.':((scope==="day"?(selected===todayIso?"Bugün":esc(isoDayLabel(selected))):esc(isoWeekLabel(k)))+' için henüz plan girilmemiş.<br>Bir bölüme gir, “Plan” ile başla.'))+'</div>');
     var pc2=tot.tq?Math.round(tot.dq/tot.tq*100):0;
     $("pvpc").textContent="%"+pc2;
     $("pvsub").textContent=(tot.tq?(nf.format(tot.dq)+" / "+nf.format(tot.tq)+" adet · "):"")+esc(planLabel(scope));
@@ -8496,6 +8504,9 @@ body.st-hide .stgw .mpst{display:none}
     loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="floorall")renderSheet()});
   });
   $("pvlist").addEventListener("click",function(e){
+    if(e.target.closest("#pvWkPrev")||e.target.closest("#pvWkNext")){
+      planWeekKey=isoAdd(planWeekKey||curWeekKey(),e.target.closest("#pvWkPrev")?-7:7); if(planWeekKey===isoWeekMonday(todayIso))planWeekKey=null; renderPlansScreen(); loadProgress(true).then(function(){if(!$("plans").hidden)renderPlansScreen()}); return}
+    if(e.target.closest("#pvWkToday")){planWeekKey=null; renderPlansScreen(); return}
     if(e.target.closest("#pvDayPrev")){selected=isoAdd(selected,-1); renderPlansScreen(); return}
     if(e.target.closest("#pvDayNext")){selected=isoAdd(selected,1); renderPlansScreen(); return}
     if(e.target.closest("#pvDayToday")){selected=todayIso; renderPlansScreen(); return}
