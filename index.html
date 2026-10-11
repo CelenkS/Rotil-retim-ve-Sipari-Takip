@@ -1259,7 +1259,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:10</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:17</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2733,7 +2733,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("ov").hidden=false;renderSheet();
     if(orders.length)loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="list"&&(addTab==="order"||addTab==="plan")&&document.activeElement!==$("ssearch")){var sc=$("sheet").scrollTop;renderSheet();$("sheet").scrollTop=sc}});
   }
-  function closeSheet(){$("ov").hidden=true}
+  function closeSheet(){$("ov").hidden=true; if(typeof MP!=="undefined"&&MP)MP.pick=false}
   function todayQty(it){
     var q=0; lines(selected).forEach(function(l){if(l.c===it.code&&l.k===it.k&&l.p===it.p&&(l.u||"")===curCust&&(l.e||"")===curEmp&&(l.m||"")===curMac)q+=l.q}); return q;
   }
@@ -3041,7 +3041,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         if(MP.pick&&MP.mid===fm.id&&mpMacSecs(fm).length){
           html+='<div class="form">'+mpPickerFull(fm)+'</div>';
         }else{
-        html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(macLabel(fm))+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div></div>'+
+        html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(macLabel(fm))+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div><button type="button" class="btn ghost" id="mddone2">Kapat</button></div>'+
           '<div class="form">'+
           mpHtml(fm)+
           '<div class="capsel" style="margin:0 0 8px">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mddept="'+d+'" style="--cc:'+(d==="Rotil"?"#2A6FB0":d==="Rozet"?"#B07CE8":"#E8A24B")+'" aria-pressed="'+(macDeptOf(fm)===d)+'">'+d+'</button>'}).join("")+'</div>'+
@@ -3078,7 +3078,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var secsOpt=(fm2&&fm2.secs)||[];
       var jq=fold(jobSearch.trim());
       var jSecObj=SECTIONS.filter(function(x){return x.id===jobDraftSec})[0]; var jSc=jSecObj?jSecObj.h1:"#3B78E0";
-      html+='<div class="shead"><div><h2 id="sh-title">İş ata</h2><small>'+esc(fm2?macLabel(fm2):"")+'</small></div></div>'+
+      html+='<div class="shead"><div><h2 id="sh-title">İş ata</h2><small>'+esc(fm2?macLabel(fm2):"")+'</small></div><button type="button" class="btn ghost" id="jcancel2">‹ Geri</button></div>'+
         '<div class="form">'+
         (secsOpt.length>1?'<div><span class="fl">Bölüm</span><div class="chiprow">'+secsOpt.map(function(sid){return '<button type="button" data-jsec="'+sid+'" aria-pressed="'+(jobDraftSec===sid)+'">'+esc(secNameOf(sid))+'</button>'}).join("")+'</div></div>':'');
       if(jobDraftSec){
@@ -3131,7 +3131,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else if(sheetMode==="opassign"){
       var fm3=floorMacId?machinesList.filter(function(x){return x.id===floorMacId})[0]:null;
       var cand=employees.filter(function(e){return !fm3||!fm3.secs||!fm3.secs.length||(e.secs||[]).some(function(s){return fm3.secs.indexOf(s)>-1})});
-      html+='<div class="shead"><div><h2 id="sh-title">Operatör ata</h2><small>'+esc(fm3?macLabel(fm3):"")+'</small></div></div>'+
+      html+='<div class="shead"><div><h2 id="sh-title">Operatör ata</h2><small>'+esc(fm3?macLabel(fm3):"")+'</small></div><button type="button" class="btn ghost" id="opcancel2">‹ Geri</button></div>'+
         '<div class="form"><div class="chiprow" style="flex-wrap:wrap">'+cand.map(function(e){return '<button type="button" data-optog="'+e.id+'" aria-pressed="'+(opAssignDraft.indexOf(e.id)>-1)+'">'+esc(e.name)+'</button>'}).join("")+'</div>'+
         (cand.length?'':'<div class="note">Bu bölüm(ler)de tanımlı eleman yok.</div>')+
         '<div class="frow" style="margin-top:12px"><button class="btn" id="opsave">Kaydet</button><button class="btn ghost" id="opcancel">Vazgeç</button></div></div>';
@@ -3330,7 +3330,20 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("addItem").addEventListener("click",openSheet);
   $("tedit").addEventListener("click",function(){sheetMode="tform";$("ov").hidden=false;renderSheet()});
   $("tfloor").addEventListener("click",function(){floorMacId=null;floorLabel=null;floorDayKey=null;floorScope="day";floorWeekKey=null;sheetMode="floorsec";$("ov").hidden=false;renderSheet();loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="floorsec")renderSheet()});});
-  $("ov").addEventListener("click",function(e){if(e.target===$("ov")&&(sheetMode==="list"||sheetMode==="odetail"||sheetMode==="planview"||sheetMode==="floorsec"||sheetMode==="floorall"))closeSheet()});
+  // Makine kartından çıkış: yerleşim ekranından geldiyse oraya, değilse tamamen kapat.
+  function mdBack(){
+    if(typeof MP!=="undefined"&&MP)MP.pick=false;
+    floorMacId=null;floorLabel=null;
+    if(floorFrom==="floorsec"||floorFrom==="floorall"){sheetMode=floorFrom;renderSheet();}else{sheetMode="list";closeSheet();}
+  }
+  $("ov").addEventListener("click",function(e){
+    if(e.target!==$("ov"))return;
+    if(sheetMode==="list"||sheetMode==="odetail"||sheetMode==="planview"||sheetMode==="floorsec"||sheetMode==="floorall"){closeSheet();return}
+    // Boşluğa dokununca bir adım geri (telefonda "takılı kalma" olmasın) — makine kartındaki her şey otomatik kaydolduğu için veri kaybı yok.
+    if(sheetMode==="macdetail"){ if(MP&&MP.pick){MP.pick=false;renderSheet();return} mdBack(); return }
+    if(sheetMode==="jobassign"||sheetMode==="opassign"){sheetMode="macdetail";renderSheet();return}
+    if(sheetMode==="empdet"){sheetMode="list";closeSheet();return}
+  });
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("ov").hidden){if(sheetMode==="form"){sheetMode="list";renderSheet()}else closeSheet()}});
   $("sheet").addEventListener("input",function(e){
     if(e.target.dataset&&e.target.dataset.planq!==undefined){refreshPlanFoot();return}
@@ -3855,11 +3868,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       floorFrom=(sheetMode==="floorall")?"floorall":"floorsec"; sheetMode="macdetail"; renderSheet();
       return;
     }
-    if(t.id==="mddone"){
-      floorMacId=null;floorLabel=null;
-      if(floorFrom==="floorsec"||floorFrom==="floorall"){sheetMode=floorFrom;renderSheet();}else{sheetMode="list";closeSheet();}
-      return;
-    }
+    if(t.id==="mddone"||t.id==="mddone2"){mdBack();return}
     if(t.id==="mdcreate"){
       if(!db)return;
       t.disabled=true; t.textContent="Oluşturuluyor…";
@@ -3949,7 +3958,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var fmj3=machinesList.filter(function(x){return x.id===floorMacId})[0]; if(fmj3)fmj3.job=jjob3;
       sheetMode="macdetail"; renderSheet(); return;
     }
-    if(t.id==="jcancel"){sheetMode="macdetail"; renderSheet(); return}
+    if(t.id==="jcancel"||t.id==="jcancel2"){sheetMode="macdetail"; renderSheet(); return}
     if(t.dataset.opassign!==undefined){
       opAssignDraft=employees.filter(function(e){return (e.machines||[]).indexOf(floorMacId)>-1}).map(function(e){return e.id});
       sheetMode="opassign"; renderSheet(); return;
@@ -3959,7 +3968,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(oidx>-1)opAssignDraft.splice(oidx,1); else opAssignDraft.push(oid);
       renderSheet(); return;
     }
-    if(t.id==="opcancel"){sheetMode="macdetail"; renderSheet(); return}
+    if(t.id==="opcancel"||t.id==="opcancel2"){sheetMode="macdetail"; renderSheet(); return}
     if(t.id==="opsave"){
       if(!db){sheetMode="macdetail";renderSheet();return}
       var mid=floorMacId;
