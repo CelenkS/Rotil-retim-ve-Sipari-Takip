@@ -1054,6 +1054,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .oc2 .oadd .addbtn{flex:1;height:44px;border-radius:12px;background:var(--sc);color:#fff;font:800 15px var(--font-head)}
 .ltop{gap:8px}
 .lthumb{flex:0 0 34px;width:34px;height:34px;border-radius:9px;object-fit:contain;background:#fff;border:1px solid var(--line);cursor:zoom-in}
+.wkmode #addItem,.wkmode #manual{display:none}
+.dcdays{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.dcday{border:1.5px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:4px 10px;font:700 11.5px var(--font-ui);cursor:pointer}
+.dcday:active{border-color:var(--accent,#3B78E0);color:var(--ink)}
 .dvtog{display:flex;gap:4px;padding:4px;border-radius:99px;background:var(--soft);margin:2px 0 6px}
 .dvtog button{flex:1;border:0;border-radius:99px;background:none;color:var(--ink2);padding:9px 6px;font:700 13px var(--font-head)}
 .dvtog button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
@@ -1271,7 +1275,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:27</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:31</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2243,6 +2247,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("pHafta").setAttribute("aria-pressed",p==="hafta");
     $("pAy").setAttribute("aria-pressed",p==="ay");
     renderHero();
+    renderEditorHead(); renderLines();
   }
   $("pGun").addEventListener("click",function(){setPeriod("gun")});
   $("pHafta").addEventListener("click",function(){setPeriod("hafta")});
@@ -2376,8 +2381,19 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("etg").textContent=T.da?" / "+nf.format(T.da):""; $("erg").textContent=T.dr?" / "+money(T.dr)+" ₺":"";
   }
   function renderEditorHead(){
-    var p=selParts(), w=(new Date(p.y,p.m,p.d).getDay()+6)%7;
-    $("edate").textContent=p.d+" "+AY[p.m]+" "+GUN[w];
+    var p=selParts(), w=(new Date(p.y,p.m,p.d).getDay()+6)%7, wkm=(period==="hafta");
+    $("app").classList.toggle("wkmode",wkm);
+    var eh=$("edate").parentNode.querySelector("small"); if(eh)eh.textContent=wkm?"Seçili hafta":"Seçili gün";
+    var sh3=document.querySelector("#app .sec h3"); if(sh3)sh3.textContent=wkm?"Haftanın ürünleri":"Yapılan ürünler";
+    $("edate").textContent=wkm?periodLabel():p.d+" "+AY[p.m]+" "+GUN[w];
+    if(wkm){
+      var wa=0, wr=0; periodDays().forEach(function(iso){wa+=sum(vals(iso)); wr+=sum(rvals(iso))});
+      $("etotal").textContent=nf.format(wa); $("erev").textContent=money(wr)+" ₺";
+      $("etotal").className=""; $("erev").className="";
+      $("etg").textContent=targets.wa?" / "+nf.format(targets.wa):""; $("erg").textContent=targets.wr?" / "+money(targets.wr)+" ₺":"";
+      $("gotoday").hidden=(selected===todayIso); renderWeekSum();
+      return;
+    }
     renderDayPills();
     $("gotoday").hidden=(selected===todayIso);
     renderWeekSum();
@@ -2544,12 +2560,52 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       return '<div class="lsg'+(me?' mine':'')+'"><div class="nlq"><span>'+esc(g.name)+' · sipariş</span><b>'+nf.format(g.q)+' adet</b>'+(g.os.length>1?'<em>'+g.os.length+' sipariş</em>':'')+(me?'<span class="me">'+(lo?'bu satır buraya işleniyor':'seçili müşteri')+'</span>':'')+'</div>'+stagesAggHtml(g.os,sec.id)+'</div>';
     }).join("")+(lo?'':'<div class="lnote">Bu satır bir siparişe bağlı değil: yukarıdaki sipariş adetlerini değiştirmez.</div>')+'</details>';
   }
+  // Hafta seçiliyken giriş kartı o günün değil TÜM haftanın özetini gösterir (salt okunur; düzenlemek için güne dokun).
+  function weekAgg(){
+    var map={}, out=[];
+    periodDays().forEach(function(iso){
+      lines(iso).forEach(function(l){
+        if(!(l.q>0))return;
+        var key=(l.o||"")+"|"+l.c+"|"+(l.u||"")+"|"+l.k, g=map[key];
+        if(!g){g=map[key]={l:Object.assign({},l,{q:0}),rev:0,days:[]}; out.push(g)}
+        g.l.q+=l.q; g.rev+=l.q*l.p; g.days.push({iso:iso,q:l.q}); if((l.t||0)>(g.l.t||0))g.l.t=l.t;
+      });
+    });
+    out.forEach(function(g){g.l.p=g.l.q?g.rev/g.l.q:g.l.p});
+    return out;
+  }
+  function weekSummaryHtml(){
+    var made=weekAgg(), tq=0, tr=0; made.forEach(function(x){tq+=x.l.q; tr+=x.rev});
+    var h='<div class="dsumtop"><div><span>Yapılan</span><b>'+nf.format(tq)+'</b><small>adet</small></div><div><span>Çeşit</span><b>'+made.length+'</b><small>ürün</small></div><div><span>Ciro</span><b>'+money(tr)+'</b><small>₺</small></div></div>';
+    if(!made.length)h+='<div class="gnote">Bu hafta için henüz adet girilmemiş.</div>';
+    for(var k=-1;k<COLS.length;k++){
+      var g=made.filter(function(x){var kk=(x.l.k>=0&&x.l.k<COLS.length)?x.l.k:-1; return kk===k});
+      if(!g.length)continue;
+      var gq=0, gr=0; g.forEach(function(x){gq+=x.l.q; gr+=x.rev});
+      var cls=k===-1?"d0":("d"+k);
+      h+='<div class="ghead '+cls+'"><span class="dot"></span>'+esc(k===-1?"Kategori dışı":COLS[k])+'<span class="gsum">'+nf.format(gq)+' adet · '+money(gr)+' ₺</span></div>';
+      g.sort(function(a,b){return b.l.q-a.l.q}).forEach(function(x){
+        var l=x.l, od=l.o?orders.filter(function(o){return o.id===l.o})[0]:null, img=(od&&od.th)||codeThumb(l.c);
+        var emp=nameOf(employees,l.e), mac=(function(){var mo=machinesList.filter(function(y){return y.id===l.m})[0]; return mo?macLabel(mo):""})();
+        var dchips=x.days.map(function(d){return '<button type="button" class="dcday" data-wday="'+d.iso+'">'+(+d.iso.slice(8))+' '+AY[+d.iso.slice(5,7)-1]+' · '+nf.format(d.q)+'</button>'}).join("");
+        h+='<div class="dcard '+cls+'">'+
+          (img?'<img class="dcth" alt="" src="'+img+'">':'<div class="dcth ph">'+esc((l.c||"?").charAt(0).toUpperCase())+'</div>')+
+          '<div class="dcb"><div class="dcc"><b>'+esc(l.c)+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
+          '<div class="dcu">'+esc(l.u||"Müşteri yok")+'</div>'+
+          '<div class="dcdays">'+dchips+'</div></div>'+
+          '<div class="dcr"><b>'+nf.format(l.q)+'</b><small>adet</small><em>'+money(x.rev)+' ₺</em></div>'+
+          lineOrdHtml(l)+'</div>';
+      });
+    }
+    return h+'<div class="gnote" style="margin-top:8px">Bir güne dokunursan o günün satırları açılır; düzenleme gün içinde yapılır.</div>';
+  }
   function renderLines(){
     var q=lineQ.trim();
     if(q){
       renderGlobalSearch(q);
       return;
     }
+    if(period==="hafta"){$("lines").innerHTML=weekSummaryHtml(); return}
     var ls=lines(selected), html="", secEmps=empsInSec(sec.id), secMacs=machinesInSec(sec.id), showEM=secEmps.length||secMacs.length;
     var vm=curDayView();
     if(ls.length&&vm==="sum"){$("lines").innerHTML=dayToggleHtml(vm)+daySummaryHtml(ls); return}
@@ -2633,6 +2689,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(tgt){tgt.scrollIntoView({block:"center",behavior:"smooth"}); tgt.style.outline="2px solid var(--c)"; setTimeout(function(){tgt.style.outline=""},1400)}
       return;
     }
+    var wd2=e.target.closest("[data-wday]");
+    if(wd2){selected=wd2.dataset.wday; period="gun"; dayViewFor=selected; dayViewPref="sum"; setPeriod("gun"); renderDay(); return}
     var g=e.target.closest(".gline"); if(g){jumpToDate(g.dataset.date);return}
     if(e.target.closest("#emptyAdd")){openSheet();return}
     if(e.target.classList.contains("lthumb")){
