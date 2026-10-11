@@ -1020,7 +1020,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:01</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:05</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1446,7 +1446,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var m=$("emsubmsg"); if(m&&d&&!subDepts.some(function(x){return x.g===d}))m.textContent="“"+d+"” grubunda henüz alt bölüm yok. Yukarıdaki kutuya yazıp ekle.";
   }
   function subOf(id){return subDepts.filter(function(x){return x.id===id})[0]||null}
-  function subLabel(x){return x?(x.g+" "+x.n):""}
+  function subLabel(x){return x?(x.g+" - "+x.n):""}
   var employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
   var empSecsDraft=[], empMacsDraft=[], mcSecsDraft=[], macBulkSecsDraft=[];
   // Eleman/makine üretim girişine bağlanıyor: her bölümün kendi curEmp/curMac'i var (müşteri
@@ -5588,7 +5588,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var e=employees.filter(function(x){return x.id===finEmpId})[0];
     if(!e)return '<div class="shead"><div><h2 id="sh-title">Eleman bulunamadı</h2></div><button class="btn" id="fdclose">Kapat</button></div>';
     var m=finMaasOf(e.id,finMonth), own=((finDocs[finMonth]||{}).maas||{})[e.id], carried=m.from&&m.from!==finMonth, gi=finGi(e), col=finGCol(gi), sub=subOf(e.sub);
-    var where=[finGName(gi)==="Bölüm grubu seçilmedi"?"":finGName(gi),sub?subLabel(sub):"",e.role||""].filter(Boolean).join(" · ");
+    var where=[sub?subLabel(sub):(finGName(gi)==="Bölüm grubu seçilmedi"?"":finGName(gi)),e.role||""].filter(Boolean).join(" · ");
     var secs=(e.secs||[]).map(secNameOf).filter(Boolean).join(", ");
     return '<div class="shead"><div style="display:flex;align-items:center;gap:12px;min-width:0"><span class="fav" style="--c:'+col+'">'+esc(finInitial(e.name))+'</span><div style="min-width:0"><h2 id="sh-title">'+esc(e.name)+'</h2><small>'+esc(where||"Bölüm / görev girilmedi")+'</small></div></div><button class="btn" id="fdclose">Kapat</button></div>'+
       '<div class="form">'+
