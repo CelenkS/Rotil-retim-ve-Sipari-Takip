@@ -481,6 +481,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .finrow input:focus{outline:0;border-color:var(--accent)}
 .finrow .auto{font:800 15px var(--font-num);color:var(--ink)}
 .finwrap{margin-top:12px}
+.hcard.ordc.calcc{border-color:rgba(123,92,196,.6)}
+.hcard.ordc.calcc::after{background:rgba(123,92,196,.18)}
+.hcard.ordc.calcc .hk,.hcard.ordc.calcc .go{color:#A58BEA}
+.crow{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.crow .fin{min-width:0}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cgrid label{display:block;font:700 11px var(--font-ui);color:var(--ink2);margin-bottom:3px}
+.copc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:10px}
+.cres{display:flex;justify-content:space-between;gap:10px;font:600 13px var(--font-ui);color:var(--ink2);padding:5px 0;border-top:1px solid var(--line)}
+.cres b{font:800 14px var(--font-num);color:var(--ink);white-space:nowrap}
+.cbig{font:800 32px var(--font-num);color:var(--ink);margin:2px 0 8px}
+.cx{flex:0 0 auto;background:none;border:0;color:var(--ink2);font:700 18px var(--font-ui);padding:6px 8px;cursor:pointer}
+.cmn{background:var(--soft);color:var(--ink)}
+.clx{flex:0 0 auto;width:20px;height:20px;accent-color:var(--accent)}
+
 .dpg{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}
 .fsec{font:800 11.5px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:18px 4px 8px}
 .fcard{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:8px;transition:background .12s,transform .12s}
@@ -1020,7 +1035,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:12</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:26</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1221,6 +1236,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div id="finwarn" class="impnote err" style="margin-top:10px" hidden>⚠ Gizlilik katmanı (Firebase kuralları ya da şifreleme) henüz kurulmadı. O zamana kadar buraya maaş gibi gizli bilgi girme.</div>
   <div class="otabs" role="group" aria-label="Bölüm"><button type="button" id="finTabG" aria-pressed="true">Giderler</button><button type="button" id="finTabM" aria-pressed="false">Maaşlar</button></div>
   <section class="finwrap"><div id="fincontent"></div><div class="status" id="finstatus" style="margin-top:8px"></div></section>
+</div>
+<div class="wrap" id="calc" hidden style="--hero1:#7B5CC4;--hero2:#3E2B73">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Sadece sana özel · 🔒</div><button class="tbtn" id="calcback">‹ Ana sayfa</button></div>
+    <div class="obig"><span class="obl" id="calcobl">İşçilik hesaplama</span><b id="calcbig"></b><span class="obs" id="calcobs"></span></div>
+  </section>
+  <section class="finwrap"><div id="calccontent"></div><div class="status" id="calcstatus" style="margin-top:8px"></div></section>
 </div>
 <div class="wrap" id="staff" hidden style="--hero1:#2A6FB0;--hero2:#173F63">
   <section class="hero ohero">
@@ -4481,7 +4503,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openOrders(){
     dbP.then(function(){
-      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("ords").hidden=false; window.scrollTo(0,0);
       watchOrders(); watchMaterials(); loadMCatalog(); renderOrders(); $("ostatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderOrders();$("ostatus").textContent=db?"Güncel · tüm bölümlerdeki girişlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -4652,7 +4674,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("nflist").innerHTML=items.length?items.map(function(a,ix){return nfRowHtml(a,ix,false)}).join(""):'<div class="empty">Henüz bir işlem yok.</div>';
   }
   function openNotifs(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("notifs").hidden=false; window.scrollTo(0,0);
     renderNotifs(nfCache);
     $("nfstatus").textContent=db?"Güncel":"Bağlantı yok — sadece bu cihazda görülenler";
     try{localStorage.setItem("montaj:nfseen",String(Date.now()))}catch(e){}
@@ -4685,7 +4707,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
     watchMaterials(); renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
@@ -4913,7 +4935,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     el.textContent=purchases.length?(open.length+" bekleyen"+(urg?" · "+urg+" acil":"")):"İhtiyaç girişi ve sipariş takibi";
   }
   function openPurch(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("purch").hidden=false; window.scrollTo(0,0);
     watchPurch(); watchMaterials(); renderPurch();
     $("purstatus").textContent=db?"Güncel":"Bağlantı yok — kaydedilemez";
   }
@@ -5126,7 +5148,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     el.textContent=notesAll.length?(open.length+" açık not"+(late?" · "+late+" gecikmiş":"")+(today?" · "+today+" bugün":"")):"Kişisel notların ve hatırlatmaların";
   }
   function openNotes(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("notes").hidden=false; window.scrollTo(0,0);
     watchNotes(); renderNotes(); paintNotifPerm();
     $("ntstatus").textContent=db?noteInfoTxt():"Bağlantı yok — kaydedilemez";
   }
@@ -5690,19 +5712,178 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function openFin(){
     if(!finOwner())return;
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("calc").hidden=true; $("fin").hidden=false; window.scrollTo(0,0);
     if(!finMonth)finMonth=finNowKey();
     watchEmployees(); watchFin(); renderFin();
   }
-  function finHome(){$("fin").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
+  function finHome(){$("fin").hidden=true; $("calc").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
+  /* ---------- İşçilik hesaplama (geleceğe dönük senaryo; güncel gider/eleman verisiyle KARIŞMAZ) ---------- */
+  // Kayıtlar fin_ay/senaryo/items/{id} altında durur: fin_ay kuralı gereği sadece sahip okuyabilir/yazabilir.
+  var calcList=[], unsubCalc=null, calcCur=null, calcSaveT=null, calcDelArm=false, calcPullArm=false;
+  var nf2=new Intl.NumberFormat("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
+  function calcCol(){return db.collection("fin_ay/senaryo/items")}
+  function calcN(v){return +v||0}
+  function calcDateLbl(ts){var d=new Date(ts||Date.now()); return d.getDate()+" "+AY[d.getMonth()]+" "+d.getFullYear()}
+  function watchCalc(){
+    if(unsubCalc||!db)return;
+    unsubCalc=calcCol().onSnapshot(function(snap){
+      calcList=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).sort(function(a,b){return (b.upd||b.ts||0)-(a.upd||a.ts||0)});
+      if(!$("calc").hidden&&!calcCur)renderCalc();
+    },function(){$("calcstatus").textContent="Okunamadı (bağlantı ya da yetki)"});
+  }
+  function calcCompute(c){
+    var days=calcN(c.days);
+    var ops=(c.ops||[]).map(function(o){var mo=calcN(o.d)*days, cost=calcN(o.p)*calcN(o.c); return {o:o,mo:mo,cost:cost,pp:mo>0?cost/mo:0}});
+    var lab=0,labTotal=0; ops.forEach(function(x){lab+=x.pp; labTotal+=x.cost});
+    var gt=0; (c.lines||[]).forEach(function(l){if(!l.ex)gt+=calcN(l.v)});
+    var auto=ops.length?ops[ops.length-1].mo:0, qty=calcN(c.qty)>0?calcN(c.qty):auto;
+    var gp=qty>0?gt/qty:0;
+    var dbl=ops.some(function(x){return x.cost>0})&&(c.lines||[]).some(function(l){return !l.ex&&calcN(l.v)>0&&/maaş|maas|sigorta/i.test(l.n||"")});
+    return {ops:ops,lab:lab,labTotal:labTotal,gt:gt,auto:auto,qty:qty,gp:gp,total:lab+gp,dbl:dbl};
+  }
+  function calcPullLines(mk){
+    var t=finTotals(mk), g=(finDocs[mk]||{}).gider||{};
+    return [{id:uid(),n:"Maaşlar (net)",v:t.n,ex:0},{id:uid(),n:"Sigortalar",v:t.s,ex:0}].concat(FIN_ITEMS.map(function(it){return {id:uid(),n:it[1],v:calcN(g[it[0]]),ex:0}}));
+  }
+  function calcNew(kind){
+    var mk=finMonth||finNowKey(), nw=new Date();
+    var c={t:kind,title:"Yeni hesaplama · "+calcDateLbl(nw.getTime()),ts:nw.getTime(),upd:nw.getTime(),month:mk,days:22,qty:0,lines:[],ops:[],pulled:""};
+    if(kind==="real"){c.lines=calcPullLines(mk); c.pulled=mk}
+    else{
+      c.ops=["Rotil gövde işleme","Rotil pres aşık baskı","Rotil aşık işleme","Rotil montaj"].map(function(n){return {id:uid(),n:n,d:0,c:0,p:0}});
+      c.lines=["Maaşlar","Sigortalar","Kira","Elektrik","Yemek","Mazot","Kart","Genel giderler"].map(function(n){return {id:uid(),n:n,v:0,ex:0}});
+    }
+    calcCur=c; calcDelArm=false; calcPullArm=false; calcSaveNow(); renderCalc();
+  }
+  function calcSaveNow(){
+    if(calcSaveT){clearTimeout(calcSaveT); calcSaveT=null}
+    if(!calcCur||!db||!finOwner())return;
+    calcCur.upd=Date.now();
+    $("calcstatus").textContent="Kaydediliyor…";
+    calcCol().doc(calcCur.id||(calcCur.id=calcCol().doc().id)).set(JSON.parse(JSON.stringify(calcCur))).then(function(){$("calcstatus").textContent="Kaydedildi"}).catch(function(){$("calcstatus").textContent="Kaydedilemedi, tekrar dene"});
+  }
+  function calcSaveSoon(){if(calcSaveT)clearTimeout(calcSaveT); calcSaveT=setTimeout(calcSaveNow,700)}
+  function calcCInp(attrs,val,ph){return '<input class="fin" type="text" inputmode="decimal" data-money="1" autocomplete="off" '+attrs+' value="'+finMoneyStr(val)+'" placeholder="'+(ph||"0")+'">'}
+  function calcResHtml(c){
+    var r=calcCompute(c), h='<div class="fcompbox"><small style="color:var(--ink2);font:700 12px var(--font-ui)">Adet başı toplam maliyet</small><div class="cbig">'+nf2.format(r.total)+' ₺</div>';
+    if(r.ops.length)h+='<div class="cres"><span>İşçilik / adet (operasyonlar)</span><b>'+nf2.format(r.lab)+' ₺</b></div>';
+    h+='<div class="cres"><span>Genel gider / adet</span><b>'+nf2.format(r.gp)+' ₺</b></div>'+
+       '<div class="cres"><span>Aylık üretim adedi'+(calcN(c.qty)>0?'':(r.ops.length?' (son operasyondan)':''))+'</span><b>'+money(r.qty)+'</b></div>'+
+       '<div class="cres"><span>Toplam aylık gider</span><b>'+money(r.gt)+' ₺</b></div>'+
+       (r.ops.length?'<div class="cres"><span>Toplam aylık işçilik</span><b>'+money(r.labTotal)+' ₺</b></div>':'');
+    if(r.ops.length)h+='<div class="fsec" style="margin:12px 0 4px">Operasyon başına işçilik</div>'+r.ops.map(function(x){return '<div class="cres"><span>'+esc(x.o.n||"Operasyon")+'</span><b>'+nf2.format(x.pp)+' ₺</b></div>'}).join("");
+    if(!r.qty)h+='<div class="note" style="margin-top:8px;color:#C98A12">Adet girilmedi: genel gider adet başına bölünemiyor.</div>';
+    if(r.dbl)h+='<div class="note" style="margin-top:8px;color:#C98A12">Dikkat: hem operasyonlarda kişi maliyeti hem de Maaş/Sigorta gider satırı var, işçilik iki kez sayılıyor olabilir.</div>';
+    return h+'</div>';
+  }
+  function calcPaint(){
+    if(!calcCur)return; var c=calcCur, r=calcCompute(c);
+    if($("clres"))$("clres").innerHTML=calcResHtml(c);
+    $("calcbig").textContent=nf2.format(r.total)+" ₺ / adet"; $("calcobs").textContent=c.title||"";
+    r.ops.forEach(function(x){var el=document.querySelector('[data-opres="'+x.o.id+'"]'); if(el)el.textContent="Aylık "+money(x.mo)+" adet · aylık işçilik "+money(x.cost)+" ₺ · adet başı "+nf2.format(x.pp)+" ₺"});
+    (c.lines||[]).forEach(function(l){var el=document.querySelector('[data-lres="'+l.id+'"]'); if(el)el.textContent=(!l.ex&&r.qty>0&&calcN(l.v)>0)?nf2.format(calcN(l.v)/r.qty)+" ₺ / adet":""});
+  }
+  function calcEditorHtml(c){
+    var scen=c.t==="scen", h='';
+    h+='<button type="button" class="fback" data-cback>‹ Hesaplamalar</button>';
+    h+='<div><label class="fl" for="cltitle">Başlık</label><input class="fin" id="cltitle" data-cf="title" autocomplete="off" value="'+esc(c.title||"")+'" placeholder="ör. Rotil 100.000 adet senaryosu"></div>';
+    h+='<div id="clres" style="margin-top:12px"></div>';
+    h+='<div class="fsec">Üretim</div><div class="copc"><div class="cgrid" style="grid-template-columns:1fr 1fr">'+
+      (scen?'<div><label>Çalışılan gün sayısı (günlük adedi bununla çarparım)</label>'+calcCInp('data-cf="days"',c.days,"22")+'</div>':'')+
+      '<div><label>'+(scen?'Aylık ürün adedi (boşsa son operasyondan)':'Aylık üretim adedi')+'</label>'+calcCInp('data-cf="qty"',c.qty,scen?"otomatik":"0")+'</div></div></div>';
+    if(scen){
+      h+='<div class="fsec">Operasyonlar</div>';
+      (c.ops||[]).forEach(function(o){
+        h+='<div class="copc"><div class="crow"><input class="fin" data-co="'+o.id+'" data-cof="n" autocomplete="off" value="'+esc(o.n||"")+'" placeholder="Operasyon adı" style="flex:1;font-weight:800"><button type="button" class="cx" data-copdel="'+o.id+'" aria-label="Operasyonu sil">✕</button></div>'+
+          '<div class="cgrid"><div><label>Günlük adet</label>'+calcCInp('data-co="'+o.id+'" data-cof="d"',o.d)+'</div><div><label>Kaç kişi</label>'+calcCInp('data-co="'+o.id+'" data-cof="c"',o.c)+'</div><div><label>Kişi başı aylık maliyet ₺</label>'+calcCInp('data-co="'+o.id+'" data-cof="p"',o.p)+'</div></div>'+
+          '<div class="note" data-opres="'+o.id+'" style="margin-top:6px"></div></div>';
+      });
+      h+='<button type="button" class="btn ghost" data-copadd style="width:100%">+ Operasyon ekle</button>';
+    }
+    h+='<div class="fsec">Giderler'+(scen?' (elle gir — güncel Giderler sayfasından bağımsız)':'')+'</div>';
+    h+='<div class="copc"><div class="crow" style="justify-content:space-between"><div class="finmon" style="margin:0;gap:8px"><button type="button" class="finnav cmn" data-cmon="-1" aria-label="Önceki ay">‹</button><b style="color:var(--ink);min-width:110px;text-align:center">'+esc(finMonLabel(c.month||finNowKey()))+'</b><button type="button" class="finnav cmn" data-cmon="1" aria-label="Sonraki ay">›</button></div>'+
+      '<button type="button" class="btn ghost" data-cpull style="flex:0 0 auto;padding:0 12px">'+(calcPullArm?'Mevcut satırlar silinir — tekrar dokun':'↻ Güncel giderlerden çek')+'</button></div>'+
+      (c.pulled?'<div class="note" style="margin-top:6px">Son çekilen: '+esc(finMonLabel(c.pulled))+' ayının güncel giderleri (o günün kopyası, sonradan değişmez)</div>':'')+'</div>';
+    (c.lines||[]).forEach(function(l){
+      h+='<div class="copc" style="padding:10px"><div class="crow"><input type="checkbox" class="clx" data-clx="'+l.id+'" '+(l.ex?'':'checked')+' aria-label="Toplama dahil"><input class="fin" data-cl="'+l.id+'" data-clf="n" autocomplete="off" value="'+esc(l.n||"")+'" placeholder="Gider adı" style="flex:1;min-width:0">'+
+        '<div style="width:122px">'+calcCInp('data-cl="'+l.id+'" data-clf="v"',l.v)+'</div><button type="button" class="cx" data-cldel="'+l.id+'" aria-label="Satırı sil">✕</button></div><div class="note" data-lres="'+l.id+'" style="margin:2px 0 0 28px;text-align:right"></div></div>';
+    });
+    h+='<button type="button" class="btn ghost" data-cladd style="width:100%">+ Gider satırı ekle</button>';
+    h+='<div class="fsec">Notlar</div><textarea class="fin" data-cf="note" rows="3" placeholder="Varsayımların, notların…">'+esc(c.note||"")+'</textarea>';
+    h+='<button type="button" class="btn ghost" data-cdel style="width:100%;margin-top:14px;color:var(--bad)">'+(calcDelArm?'Emin misin? Bu hesaplama silinecek — tekrar dokun':'🗑 Bu hesaplamayı sil')+'</button>';
+    return h;
+  }
+  function renderCalc(){
+    if(!finOwner())return;
+    var h='';
+    if(calcCur){
+      $("calcobs").textContent=calcCur.title||""; $("calcobl").textContent=calcCur.t==="scen"?"Ürün işçilik senaryosu":"Gerçek giderlerden hesap";
+      h=calcEditorHtml(calcCur); $("calccontent").innerHTML=h; calcPaint(); return;
+    }
+    $("calcobl").textContent="Kaydedilen hesaplamalar"; $("calcbig").textContent=calcList.length+" hesaplama"; $("calcobs").textContent="geleceğe dönük, güncel giderlerle karışmaz";
+    h+='<div class="note" style="margin-bottom:10px">Burası gelecekte “şu kadar üretirsem adet başı maliyetim ne olur” diye hesaplamak için. Giderler ve Maaşlar ekranındaki gerçek verilere dokunmaz.</div>';
+    h+='<button type="button" class="btn" data-cnew="scen" style="width:100%;margin-bottom:8px">+ Ürün işçilik senaryosu (operasyonlarla)</button>';
+    h+='<button type="button" class="btn ghost" data-cnew="real" style="width:100%">+ Güncel giderlerden / adet hesabı</button>';
+    h+='<div class="fsec">Kayıtlı hesaplamalar</div>';
+    if(!calcList.length)h+='<div class="empty">Henüz kayıtlı hesaplama yok.</div>';
+    else h+=calcList.map(function(c){
+      var r=calcCompute(c);
+      return '<div class="fcard"><button type="button" class="fgo" data-copen="'+c.id+'"><span class="fic" style="--c:#7B5CC4">'+(c.t==="scen"?'🧮':'📊')+'</span><span class="ftx"><b>'+esc(c.title||"Başlıksız")+'</b><small>'+(c.t==="scen"?'Senaryo · '+(c.ops||[]).length+' operasyon':'Gerçek giderlerden')+' · '+esc(calcDateLbl(c.upd||c.ts))+'</small></span><span class="fam">'+nf2.format(r.total)+' ₺<small>adet başı</small></span><span class="fchev">›</span></button></div>';
+    }).join("");
+    $("calccontent").innerHTML=h;
+  }
+  function openCalc(){
+    if(!finOwner())return;
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=false; window.scrollTo(0,0);
+    calcCur=null; watchEmployees(); watchFin(); watchCalc(); renderCalc();
+  }
+  function calcHome(){calcSaveNow(); calcCur=null; $("calc").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
+  $("calcback").addEventListener("click",function(){if(calcCur){calcSaveNow(); calcCur=null; renderCalc(); window.scrollTo(0,0)}else calcHome()});
+  $("calccontent").addEventListener("click",function(e){
+    if(!finOwner())return;
+    var b=e.target.closest("button"); if(!b)return; var d=b.dataset;
+    if(d.cnew){calcNew(d.cnew); window.scrollTo(0,0); return}
+    if(d.copen){var c0=calcList.filter(function(x){return x.id===d.copen})[0]; if(c0){calcCur=JSON.parse(JSON.stringify(c0)); calcDelArm=false; calcPullArm=false; renderCalc(); window.scrollTo(0,0)} return}
+    if(!calcCur)return; var c=calcCur;
+    if(d.cback!==undefined){calcSaveNow(); calcCur=null; renderCalc(); window.scrollTo(0,0); return}
+    if(d.copadd!==undefined){c.ops.push({id:uid(),n:"",d:0,c:0,p:0}); calcSaveSoon(); renderCalc(); return}
+    if(d.copdel){c.ops=c.ops.filter(function(o){return o.id!==d.copdel}); calcSaveSoon(); renderCalc(); return}
+    if(d.cladd!==undefined){c.lines.push({id:uid(),n:"",v:0,ex:0}); calcSaveSoon(); renderCalc(); return}
+    if(d.cldel){c.lines=c.lines.filter(function(l){return l.id!==d.cldel}); calcSaveSoon(); renderCalc(); return}
+    if(d.cmon){c.month=finShift(c.month||finNowKey(),+d.cmon); calcPullArm=false; calcSaveSoon(); renderCalc(); return}
+    if(d.cpull!==undefined){
+      var has=(c.lines||[]).some(function(l){return calcN(l.v)>0});
+      if(has&&!calcPullArm){calcPullArm=true; renderCalc(); setTimeout(function(){if(calcPullArm){calcPullArm=false; if(calcCur)renderCalc()}},5000); return}
+      calcPullArm=false; c.lines=calcPullLines(c.month||finNowKey()); c.pulled=c.month||finNowKey(); calcSaveNow(); renderCalc(); return;
+    }
+    if(d.cdel!==undefined){
+      if(!calcDelArm){calcDelArm=true; renderCalc(); setTimeout(function(){if(calcDelArm){calcDelArm=false; if(calcCur)renderCalc()}},5000); return}
+      var did=c.id; calcCur=null; calcDelArm=false; if(calcSaveT){clearTimeout(calcSaveT);calcSaveT=null}
+      if(did&&db)calcCol().doc(did).delete().catch(function(){$("calcstatus").textContent="Silinemedi, tekrar dene"});
+      calcList=calcList.filter(function(x){return x.id!==did}); renderCalc(); window.scrollTo(0,0);
+    }
+  });
+  $("calccontent").addEventListener("input",function(e){
+    if(!calcCur)return; var el=e.target, d=el.dataset, c=calcCur; if(!d)return;
+    var isNum=!!d.money, v=isNum?finMoneyParse(el.value):el.value;
+    if(d.cf){c[d.cf]=(d.cf==="title"||d.cf==="note")?el.value:v}
+    else if(d.co){var o=c.ops.filter(function(x){return x.id===d.co})[0]; if(!o)return; o[d.cof]=d.cof==="n"?el.value:v}
+    else if(d.cl){var l=c.lines.filter(function(x){return x.id===d.cl})[0]; if(!l)return; l[d.clf]=d.clf==="n"?el.value:v}
+    else return;
+    calcPaint(); calcSaveSoon();
+  });
+  $("calccontent").addEventListener("change",function(e){
+    if(!calcCur)return; var el=e.target;
+    if(el.dataset&&el.dataset.clx){var l=calcCur.lines.filter(function(x){return x.id===el.dataset.clx})[0]; if(l){l.ex=el.checked?0:1; calcPaint(); calcSaveSoon()}}
+  });
   function openStaff(){
-    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("fin").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
+    closeSheet(); $("home").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("staff").hidden=false; window.scrollTo(0,0);
     empPerf={};
     watchEmployees(); watchMachinesList(); renderStaff();
     $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function staffHome(){
-    $("staff").hidden=true; $("fin").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
+    $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   function empRowHtml(e){
     var secs=(e.secs||[]).map(secNameOf).join(", ")||"Bölüm atanmadı";
@@ -7122,7 +7303,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function openPlansScreen(){
     dbP.then(function(){
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; planWeekKey=null; planVQ=""; if($("pvsearch"))$("pvsearch").value="";
-      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
+      closeSheet(); $("home").hidden=true; $("app").hidden=true; $("ords").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("plans").hidden=false; window.scrollTo(0,0);
       watchOrders(); renderPlansScreen(); $("pvstatus").textContent="Yükleniyor…";
       chain.then(function(){return loadProgress(false)}).then(function(){renderPlansScreen();$("pvstatus").textContent=db?"Güncel · tüm bölümlerden hesaplandı":"Bu cihazdaki kayıtlardan hesaplandı"});
     });
@@ -7425,6 +7606,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var purchC='<button type="button" class="hcard ordc purchc" data-purch="1"><div><div class="hk">Üretim ihtiyaçları</div><div class="hn">Satın alma</div><div class="hs" id="hs-purch">İhtiyaç girişi ve sipariş takibi</div></div><span class="go">›</span></button>';
     var stockC='<button type="button" class="hcard ordc stkc" data-stock="1"><div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>';
     var finC=finOwner()?'<button type="button" class="hcard ordc finc" data-fin="1"><div><div class="hk">Sadece sana özel</div><div class="hn">İşçilik ve maliyet</div><div class="hs">🔒 Sadece senin girişinde görünür</div></div><span class="go">›</span></button>':"";
+    var calcC=finOwner()?'<button type="button" class="hcard ordc calcc" data-calc="1"><div><div class="hk">Sadece sana özel · gelecek planı</div><div class="hn">İşçilik hesaplama</div><div class="hs">🧮 Adet başı maliyet senaryoları</div></div><span class="go">›</span></button>':"";
     var prodC='<button type="button" class="hcard ordc prodc" data-prod="1"><div><div class="hk">Günlük kayıt · plan · ekip</div><div class="hn">Üretim</div><div class="hs">Bölümler, planlar ve elemanlar</div></div><span class="go">›</span></button>';
     if(homeView==="prod"){
       $("homeh1").textContent="Üretim"; $("homep").textContent="Hangi bölümün kaydını gireceksin?";
@@ -7436,12 +7618,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         }).join("");
     }else{
       $("homeh1").textContent="Ana sayfa"; $("homep").textContent="Ne yapmak istiyorsun?";
-      $("hcards").innerHTML=ordersC+notesC+purchC+stockC+prodC+finC;
+      $("hcards").innerHTML=ordersC+notesC+purchC+stockC+prodC+finC+calcC;
     }
     paintOrdersHome();
     try{paintMyName()}catch(e){}
   }
-  window.__finFix=function(){ if(homeView==="main"&&!document.querySelector("[data-fin]")&&finOwner())buildHome() };
+  window.__finFix=function(){ if(homeView==="main"&&(!document.querySelector("[data-fin]")||!document.querySelector("[data-calc]"))&&finOwner())buildHome() };
   function setHomeView(v){
     homeView=v; buildHome(); window.scrollTo(0,0);
     try{paintStockHome();paintPurchHome();paintNotesHome();paintStaffHome();paintMyName()}catch(e){}
@@ -7475,7 +7657,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
       gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
-      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
+      $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
       if(db)watchCatalog();
       if(!catsSaved&&!db){promptShown=true;openCats()}
@@ -7489,8 +7671,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes],[data-prod],[data-fin],[data-homeback]"); if(!b)return;
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-staff],[data-purch],[data-notes],[data-prod],[data-fin],[data-calc],[data-homeback]"); if(!b)return;
     if(b.dataset.fin){openFin();return}
+    if(b.dataset.calc){openCalc();return}
     if(b.dataset.prod){setHomeView("prod");return}
     if(b.dataset.homeback){setHomeView("main");return}
     if(b.dataset.orders)openOrders(); else if(b.dataset.plans)openPlansScreen(); else if(b.dataset.notifs)openNotifs(); else if(b.dataset.stock)openStock(); else if(b.dataset.staff)openStaff(); else if(b.dataset.purch)openPurch(); else if(b.dataset.notes)openNotes(); else enterSection(b.dataset.sec);
