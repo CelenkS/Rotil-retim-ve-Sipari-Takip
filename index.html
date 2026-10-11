@@ -977,7 +977,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:09</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 12:21</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1186,6 +1186,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   </section>
   <div class="otabs" role="group" aria-label="Elemanlar kapsamı"><button type="button" id="stfTabEmp" aria-pressed="true">Elemanlar</button><button type="button" id="stfTabMac" aria-pressed="false">Makineler</button><button type="button" id="stfTabFloor" aria-pressed="false">Yerleşim</button></div>
   <button class="btn ghost" id="stfnew" style="width:100%;margin-top:10px">+ Yeni eleman</button>
+  <button class="btn ghost" id="stfdepts" style="width:100%;margin-top:8px" hidden>⚙ Bölümleri düzenle (Rotil CNC, Rozet Preshane…)</button>
+  <button class="btn ghost" id="stfdelall" style="width:100%;margin-top:8px;color:var(--bad)" hidden>🗑 Tüm elemanları sil</button>
   <button class="btn ghost" id="stfbulk" style="width:100%;margin-top:8px" hidden>⇧ Toplu makine ekle (liste yapıştır)</button>
   <button class="btn ghost" id="stfperfbtn" style="width:100%;margin-top:8px">⚡ Bugünkü performansı hesapla</button>
   <div id="stflist"></div>
@@ -1380,6 +1382,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // girişlerinin hangi elemana/makineye ait olduğunu işaretleme ve buna göre otomatik
   // hedef/performans (yeşil-kırmızı) hesabı henüz burada değil — o, görsel gelip üretim
   // girişi akışının nasıl etiketleneceği netleşince eklenecek.
+  var EMP_DEPTS=["Rotil","Rozet","Yönetim","Ofis / İdari İşler"];
+  // Alt bölümler (ör. "Rotil CNC", "Rozet Preshane") elle eklenir: ayarlar/bolumler = {list:[{id,g:grup,n:ad}]}
+  var subDepts=[], unsubDept=null;
+  function subOf(id){return subDepts.filter(function(x){return x.id===id})[0]||null}
+  function subLabel(x){return x?(x.g+" "+x.n):""}
   var employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
   var empSecsDraft=[], empMacsDraft=[], mcSecsDraft=[], macBulkSecsDraft=[];
   // Eleman/makine üretim girişine bağlanıyor: her bölümün kendi curEmp/curMac'i var (müşteri
@@ -2650,9 +2657,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else if(sheetMode==="empform"){
       var em=employees.filter(function(x){return x.id===empEditId})[0]||{name:"",note:""};
       var empMacSeen={}, empMacOptions=empSecsDraft.reduce(function(acc,sid){return acc.concat(machinesInSec(sid))},[]).filter(function(m){return empMacSeen[m.id]?false:(empMacSeen[m.id]=1)});
-      html+='<div class="shead"><div><h2 id="sh-title">'+(empEditId?"Elemanı düzenle":"Yeni eleman")+'</h2><small>Ad, çalıştığı bölüm(ler) ve makine(ler)</small></div></div>'+
+      html+='<div class="shead"><div><h2 id="sh-title">'+(empEditId?"Elemanı düzenle":"Yeni eleman")+'</h2><small>Ad, bölüm grubu, görev, çalıştığı bölüm(ler) ve makine(ler)</small></div></div>'+
         '<div class="form">'+
         '<div><label class="fl" for="emname">Ad Soyad</label><input class="fin" id="emname" autocomplete="off" value="'+esc(em.name)+'"></div>'+
+        '<div><label class="fl" for="emdept">Bölüm grubu</label><select class="fin" id="emdept"><option value="">Seçilmedi</option>'+EMP_DEPTS.map(function(d){return '<option value="'+esc(d)+'"'+(em.dept===d?' selected':'')+'>'+esc(d)+'</option>'}).join("")+'</select></div>'+
+        '<div><label class="fl" for="emsub">Alt bölüm</label><select class="fin" id="emsub"><option value="">Seçilmedi</option>'+EMP_DEPTS.map(function(d){var os=subDepts.filter(function(x){return x.g===d}); return os.length?'<optgroup label="'+esc(d)+'">'+os.map(function(x){return '<option value="'+x.id+'"'+(em.sub===x.id?' selected':'')+'>'+esc(subLabel(x))+'</option>'}).join("")+'</optgroup>':''}).join("")+'</select><small style="color:var(--ink2)">Listede yoksa Elemanlar ekranındaki “Bölümleri düzenle” ile ekle</small></div>'+
+        '<div><label class="fl" for="emrole">Görev</label><input class="fin" id="emrole" autocomplete="off" list="emroledl" placeholder="ör. CNC operatörü, mühendis, muhasebe, şoför, aşçı" value="'+esc(em.role||"")+'"><datalist id="emroledl">'+["Operatör","Mühendis","Pazarlama","Muhasebe","Şoför","Aşçı / Yemekhane","Temizlik","Güvenlik","Usta başı","Müdür"].map(function(r){return '<option value="'+esc(r)+'">'}).join("")+'</datalist></div>'+
         '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
         '<div><label class="fl" for="emnote">Not</label><textarea class="fin" id="emnote" rows="2" placeholder="ör. vardiye, iletişim…">'+esc(em.note||"")+'</textarea></div>'+
@@ -2668,6 +2678,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="mcyear">Model yılı</label><input class="fin" id="mcyear" autocomplete="off" placeholder="ör. 2023-08" value="'+esc(mc.modelYear||"")+'"></div>'+
         '<div><label class="fl" for="mcnote">Not</label><input class="fin" id="mcnote" autocomplete="off" value="'+esc(mc.note||"")+'"></div>'+
         '<div class="frow"><button class="btn" id="mcsave">Kaydet</button><button class="btn ghost" id="mccancel">Vazgeç</button>'+(macEditId?'<button class="btn danger" id="mcdel">Makineyi sil</button>':"")+'</div></div>';
+    }else if(sheetMode==="deptmgr"){
+      html+='<div class="shead"><div><h2 id="sh-title">Bölümleri düzenle</h2><small>Her gruba istediğin alt bölümü ekle (ör. CNC, Preshane, Montaj)</small></div><button class="btn" id="dpclose">Bitti</button></div><div class="form">'+
+        EMP_DEPTS.map(function(g,gi){
+          var os=subDepts.filter(function(x){return x.g===g});
+          return '<div><span class="fl">'+esc(g)+'</span>'+
+            (os.length?os.map(function(x){var n=employees.filter(function(e){return e.sub===x.id}).length; return '<div class="finrow" style="padding:6px 0"><div class="fl2">'+esc(subLabel(x))+'<small>'+n+' eleman</small></div><button type="button" class="btn ghost" data-dpdel="'+x.id+'" style="min-height:36px;padding:0 12px">Sil</button></div>'}).join(""):'<div class="note" style="margin:4px 0">Henüz alt bölüm yok</div>')+
+            '<div class="frow" style="margin-top:6px"><input class="fin" id="dpn'+gi+'" autocomplete="off" placeholder="ör. '+(gi===0?'CNC':gi===1?'Preshane':'Alt bölüm adı')+'" style="flex:1"><button type="button" class="btn" data-dpadd="'+gi+'">Ekle</button></div></div>';
+        }).join("")+'<div class="note" id="dpmsg"></div></div>';
     }else if(sheetMode==="macbulk"){
       html+='<div class="shead"><div><h2 id="sh-title">Toplu makine ekle</h2><small>Her satıra bir makine adı — hepsi seçtiğin bölüm(ler)e birden eklenir</small></div></div>'+
         '<div class="form">'+
@@ -3412,11 +3430,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       renderSheet(); return;
     }
     if(t.id==="emcancel"){sheetMode="list";empEditId=null;closeSheet();return}
+    if(t.id==="dpclose"){sheetMode="list";closeSheet();return}
+    if(t.dataset.dpadd!==undefined){
+      var dg=EMP_DEPTS[+t.dataset.dpadd], di=$("dpn"+t.dataset.dpadd), dn=di?di.value.trim():"";
+      if(!dn){if(di)di.focus();return}
+      if(subDepts.some(function(x){return x.g===dg&&x.n.toLowerCase()===dn.toLowerCase()})){$("dpmsg").textContent="Bu alt bölüm zaten var"; return}
+      var nl=subDepts.concat([{id:uid(),g:dg,n:dn}]); subDepts=nl; saveSubDepts(nl); renderSheet(); return;
+    }
+    if(t.dataset.dpdel){
+      var used=employees.filter(function(e){return e.sub===t.dataset.dpdel}).length;
+      if(used){$("dpmsg").textContent="Bu alt bölümde "+used+" eleman var. Önce onları başka bölüme taşı ya da sil."; return}
+      var nl2=subDepts.filter(function(x){return x.id!==t.dataset.dpdel}); subDepts=nl2; saveSubDepts(nl2); renderSheet(); return;
+    }
     if(t.id==="emsave"){
       var ename=$("emname").value.trim(); if(!ename){$("emname").focus();return}
       var enote=($("emnote")?$("emnote").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
-      var edata={name:ename,secs:empSecsDraft.slice(),machines:empMacsDraft.slice(),note:enote};
+      var edata={name:ename,secs:empSecsDraft.slice(),machines:empMacsDraft.slice(),note:enote,dept:(function(){var sb=subOf($("emsub")?$("emsub").value:""); return sb?sb.g:($("emdept")?$("emdept").value:"")})(),sub:($("emsub")?$("emsub").value:""),role:($("emrole")?$("emrole").value.trim():"")};
       if(empEditId)db.doc("employees/"+empEditId).set(edata).catch(function(){});
       else db.collection("employees").add(edata).catch(function(){});
       empEditId=null; closeSheet(); return;
@@ -5249,7 +5279,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   });
   $("notelist").addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.hasAttribute&&e.target.hasAttribute("data-nedit")){e.preventDefault();noteOpenForm(e.target.dataset.nedit)}});
   /* ---------- elemanlar / makineler ---------- */
+  function watchDepts(){
+    if(unsubDept||!db)return;
+    unsubDept=db.doc("ayarlar/bolumler").onSnapshot(function(sn){
+      subDepts=(sn.exists&&sn.data().list)||[];
+      if(!$("staff").hidden)renderStaff();
+      if(!$("fin").hidden&&!(document.activeElement&&document.activeElement.tagName==="INPUT"&&$("fincontent").contains(document.activeElement)))renderFin();
+      if(!$("ov").hidden&&(sheetMode==="deptmgr"||sheetMode==="empform"))renderSheet();
+    },function(){});
+  }
+  function saveSubDepts(list){
+    if(!db){return}
+    db.doc("ayarlar/bolumler").set({list:list}).catch(function(){});
+  }
   function watchEmployees(){
+    watchDepts();
     if(unsubEmp||!db)return;
     unsubEmp=db.collection("employees").onSnapshot(function(snap){
       employees=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
@@ -5365,19 +5409,26 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else{
       if(!employees.length)h='<div class="empty">Eleman yok. Önce Üretim → Elemanlar bölümünden eleman ekle.</div>';
       else{
-        var grp={}, order=[];
-        SECTIONS.forEach(function(x){grp[x.id]=[]; order.push(x.id)}); grp["_"]=[]; order.push("_");
-        employees.forEach(function(e){var s0=(e.secs||[])[0]; (grp[s0&&grp[s0]?s0:"_"]).push(e)});
+        var grp={}, order=EMP_DEPTS.concat(["_"]);
+        order.forEach(function(d){grp[d]=[]});
+        employees.forEach(function(e){(grp[e.dept&&grp[e.dept]?e.dept:"_"]).push(e)});
         order.forEach(function(sid){
           var es=grp[sid]; if(!es.length)return;
           var sn=0,ss=0; es.forEach(function(e){var m=finMaasOf(e.id,finMonth); sn+=m.n; ss+=m.s});
-          h+='<div class="fingrp"><h3>'+esc(sid==="_"?"Bölüm atanmadı":secNameOf(sid))+'</h3><div class="gs">'+es.length+' kişi · maaş '+money(sn)+' ₺ · sigorta '+money(ss)+' ₺ · toplam '+money(sn+ss)+' ₺</div>'+
-            es.map(function(e){
+          h+='<div class="fingrp"><h3>'+esc(sid==="_"?"Bölüm grubu seçilmedi":sid)+'</h3><div class="gs">'+es.length+' kişi · maaş '+money(sn)+' ₺ · sigorta '+money(ss)+' ₺ · toplam '+money(sn+ss)+' ₺</div>';
+          var subs=subDepts.filter(function(x){return x.g===sid}).map(function(x){return {id:x.id,label:subLabel(x)}}); subs.push({id:"",label:subs.length?"Alt bölüm seçilmedi":""});
+          subs.forEach(function(sb){
+            var ses=es.filter(function(e){return sb.id?e.sub===sb.id:!subs.some(function(z){return z.id&&z.id===e.sub})});
+            if(!ses.length)return;
+            if(sb.label){var a2=0,b2=0; ses.forEach(function(e){var m=finMaasOf(e.id,finMonth); a2+=m.n; b2+=m.s}); h+='<div class="gs" style="margin-top:8px;font-weight:800;color:var(--ink)">'+esc(sb.label)+' · '+ses.length+' kişi · '+money(a2+b2)+' ₺</div>'}
+            h+=ses.map(function(e){
               var m=finMaasOf(e.id,finMonth), own=((finDocs[finMonth]||{}).maas||{})[e.id], carried=m.from&&m.from!==finMonth;
-              var other=(e.secs||[]).slice(1).map(secNameOf).join(", ");
-              return '<div class="finemp"><div class="en2">'+esc(e.name)+'</div><div class="es2">'+(other?'Diğer bölümler: '+esc(other)+' · ':'')+(carried?'önceki aydan ('+AY[+m.from.split("-")[1]-1]+')':(own?'bu ay girildi':'henüz girilmedi'))+'</div>'+
+              var other=[e.role].concat((e.secs||[]).map(secNameOf)).filter(Boolean).join(", ");
+              return '<div class="finemp"><div class="en2">'+esc(e.name)+'</div><div class="es2">'+(other?esc(other)+' · ':'')+(carried?'önceki aydan ('+AY[+m.from.split("-")[1]-1]+')':(own?'bu ay girildi':'henüz girilmedi'))+'</div>'+
                 '<div class="inp2"><label>Net maaş (₺)'+finInp('data-fe="'+e.id+'" data-ff="n"',m.n)+'</label><label>Sigorta (₺)'+finInp('data-fe="'+e.id+'" data-ff="s"',m.s)+'</label></div></div>';
-            }).join("")+'</div>';
+            }).join("");
+          });
+          h+='</div>';
         });
       }
     }
@@ -5413,7 +5464,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       pfHtml='<div style="margin-top:6px;font:600 12px var(--font-ui);color:var(--ink2)">Bugün: <b>'+nf.format(Math.round(pf.mins))+' dk</b> / '+SHIFT_MIN+' dk · %'+pct+
         ' · <span style="color:'+(ok?"var(--good)":"var(--bad)")+';font-weight:800">'+(ok?"✓ Hedefte":"● Düşük")+'</span></div>';
     }
-    return '<div class="emprow"><div class="etop"><div><div class="en">'+esc(e.name)+'</div><div class="esub">'+esc(secs)+(macs?' · '+esc(macs):'')+'</div>'+pfHtml+'</div><button type="button" class="eedit" data-empedit="'+e.id+'">düzenle</button></div></div>';
+    var sb0=subOf(e.sub), dr=[sb0?subLabel(sb0):e.dept,e.role].filter(Boolean).join(" · ");
+    return '<div class="emprow"><div class="etop"><div><div class="en">'+esc(e.name)+'</div>'+(dr?'<div class="esub" style="font-weight:800;color:var(--ink)">'+esc(dr)+'</div>':'')+'<div class="esub">'+esc(secs)+(macs?' · '+esc(macs):'')+'</div>'+pfHtml+'</div><button type="button" class="eedit" data-empedit="'+e.id+'">düzenle</button></div></div>';
   }
   function macRowHtml(m){
     var secs=(m.secs||[]).map(secNameOf).join(" + ")||"Bölüm atanmadı";
@@ -5549,6 +5601,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     loadProgress(true).then(function(){jobProgBusy=false; renderSheet()}).catch(function(){jobProgBusy=false; renderSheet()});
     loadJobCat(secId);
   }
+  var stfDelArm=false;
   function renderStaff(){
     $("stfcount").textContent=employees.length;
     $("stfTabEmp").setAttribute("aria-pressed",stfTab==="emp");
@@ -5556,6 +5609,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("stfTabFloor").setAttribute("aria-pressed",stfTab==="floor");
     $("stfnew").hidden=stfTab==="floor"; $("stfnew").textContent=stfTab==="emp"?"+ Yeni eleman":"+ Yeni makine";
     $("stfbulk").hidden=stfTab!=="mac";
+    $("stfdepts").hidden=stfTab!=="emp";
+    $("stfdelall").hidden=!(stfTab==="emp"&&employees.length); if(stfDelArm&&stfTab!=="emp")stfDelArm=false; if(!stfDelArm)$("stfdelall").textContent="🗑 Tüm elemanları sil";
     $("stfperfbtn").hidden=stfTab!=="emp";
     if(stfTab==="emp"){
       $("stflist").innerHTML=employees.length?employees.map(empRowHtml).join(""):'<div class="empty">Henüz eleman tanımlı değil.<br>“+ Yeni eleman” ile ilkini ekle.</div>';
@@ -5609,6 +5664,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var m=floorMachine(lbl);
     if(m){floorMacId=m.id; floorLabel=null;} else {floorMacId=null; floorLabel=lbl; floorSecsForNew=slot?slot.secs:[];}
     floorFrom="list"; floorScope="day"; sheetMode="macdetail"; $("ov").hidden=false; renderSheet();
+  });
+  $("stfdepts").addEventListener("click",function(){sheetMode="deptmgr";$("ov").hidden=false;renderSheet()});
+  $("stfdelall").addEventListener("click",function(){
+    var b=$("stfdelall");
+    if(!stfDelArm){stfDelArm=true; b.textContent="Emin misin? "+employees.length+" eleman KALICI silinecek — tekrar dokun"; setTimeout(function(){if(stfDelArm){stfDelArm=false;renderStaff()}},6000); return}
+    stfDelArm=false;
+    if(!db){$("stfstatus").textContent="Bağlantı yok, silinemedi"; return}
+    var batch=db.batch(); employees.forEach(function(e){batch.delete(db.doc("employees/"+e.id))});
+    batch.commit().then(function(){$("stfstatus").textContent="Tüm elemanlar silindi"}).catch(function(){$("stfstatus").textContent="Silinemedi, tekrar dene"});
   });
   $("stfbulk").addEventListener("click",function(){macBulkSecsDraft=[];sheetMode="macbulk";$("ov").hidden=false;renderSheet();});
   $("stfperfbtn").addEventListener("click",computeEmpPerf);
