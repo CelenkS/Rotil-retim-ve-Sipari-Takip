@@ -481,6 +481,63 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .finrow input:focus{outline:0;border-color:var(--accent)}
 .finrow .auto{font:800 15px var(--font-num);color:var(--ink)}
 .finwrap{margin-top:12px}
+.ctitle{width:100%;border:0;background:transparent;color:var(--ink);font:800 22px var(--font-head);padding:6px 2px;margin:8px 0 6px;border-bottom:2px solid var(--line);border-radius:0}
+.ctitle:focus{outline:0;border-bottom-color:var(--accent)}
+.csum{position:sticky;top:6px;z-index:6;background:linear-gradient(135deg,#7B5CC4,#3E2B73);color:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 8px 24px rgba(40,20,90,.28);margin:6px 0 4px}
+.csum small{display:block;font:700 11.5px var(--font-ui);opacity:.82}
+.csum .cbig{color:#fff;font:800 34px var(--font-num);margin:2px 0 0}
+.csum .cbig span{font-size:20px;opacity:.85}
+.cs-chips{display:flex;gap:8px;margin-top:8px}
+.cs-chips span{flex:1;min-width:0;background:rgba(255,255,255,.14);border-radius:12px;padding:7px 9px}
+.cs-chips b{display:block;font:800 14px var(--font-num);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csum .fcbar{background:rgba(255,255,255,.2)}
+.cs-warn{margin-top:9px;background:rgba(255,255,255,.95);color:#B3261E;border-radius:10px;padding:6px 10px;font:800 12.5px var(--font-ui)}
+.cplan label,.cbody label{display:block;font:700 11.5px var(--font-ui);color:var(--ink2);margin-bottom:4px}
+.cplan label small,.cbody label small{font-weight:600;opacity:.8}
+.cgrid3{display:grid;gap:8px}
+.cgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cin{position:relative}
+.cin input{width:100%;height:46px;padding:0 44px 0 12px;font:800 16px var(--font-num);border-radius:14px}
+.cin span{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:700 12px var(--font-ui);color:var(--ink2);pointer-events:none}
+.cin input:disabled{opacity:.75}
+.cstep{display:flex;gap:6px;align-items:stretch}
+.cstep .cin{flex:1;min-width:0}
+.cstep .cin input{text-align:center;padding:0 30px 0 8px}
+.cstep>button{flex:0 0 42px;border:0;border-radius:14px;background:var(--soft);color:var(--ink);font:800 22px var(--font-ui);cursor:pointer}
+.cstep>button:active{background:var(--sel)}
+.cchips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cchips span{font:700 12px var(--font-ui);color:var(--ink2)}
+.cchips button{border:0;border-radius:99px;padding:6px 13px;background:var(--soft);color:var(--ink);font:800 13px var(--font-ui);cursor:pointer}
+.cchips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.cacc{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c,#888);border-radius:18px;margin-bottom:10px;overflow:hidden}
+.chead{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:13px 12px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.cdot{flex:0 0 auto;width:12px;height:12px;border-radius:50%;background:var(--c,#888)}
+.ctt{flex:1;min-width:0}
+.ctt b{display:block;font:800 15px var(--font-ui);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctt small{display:block;font:600 12px var(--font-ui);color:var(--ink2);margin-top:2px}
+.cval{text-align:right;white-space:nowrap}
+.cval b{display:block;font:800 15px var(--font-num);color:var(--ink)}
+.cval small{display:block;font:600 11px var(--font-ui);color:var(--ink2)}
+.cwarn{display:block;font:800 11px var(--font-ui);color:#D9534F;font-style:normal}
+.cchev{color:var(--ink2);font:800 16px var(--font-ui)}
+.cbody{padding:2px 14px 14px;border-top:1px solid var(--line)}
+.cfld{margin-top:10px}
+.csec{margin:16px 0 8px;font:800 12px var(--font-ui);letter-spacing:.04em;color:var(--ink2);text-transform:uppercase}
+.cneed{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--soft);border-radius:14px;padding:9px 12px;margin-top:10px;font:600 12.5px var(--font-ui);color:var(--ink)}
+.cneed b{font-weight:800}
+.cneed .btn{flex:0 0 auto;min-height:34px;padding:0 12px;font-size:12.5px}
+.cdelop{width:100%;margin-top:12px;border:0;background:transparent;color:var(--bad);font:700 13px var(--font-ui);padding:8px;cursor:pointer}
+.clrow{padding:8px 0;border-bottom:1px solid var(--line)}
+.clrow .fin{font-size:14px}
+.clrow .cin input{padding:0 26px 0 8px;font-size:15px}
+.clrow:last-of-type{border-bottom:0}
+.cbrk{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.cbrk .ctt small{margin-bottom:0}
+.cbv{font:800 15px var(--font-num);color:var(--ink);white-space:nowrap}
+.ctiles{display:grid;gap:10px}
+.ctile{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px dashed var(--c);border-radius:20px;padding:14px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.ctile:active{background:var(--soft)}
+
 .hcard.ordc.calcc{border-color:rgba(123,92,196,.6)}
 .hcard.ordc.calcc::after{background:rgba(123,92,196,.18)}
 .hcard.ordc.calcc .hk,.hcard.ordc.calcc .go{color:#A58BEA}
@@ -494,7 +551,6 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .cbig{font:800 32px var(--font-num);color:var(--ink);margin:2px 0 8px}
 .cx{flex:0 0 auto;background:none;border:0;color:var(--ink2);font:700 18px var(--font-ui);padding:6px 8px;cursor:pointer}
 .cmn{background:var(--soft);color:var(--ink)}
-.cneed{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--soft);border-radius:12px;padding:8px 10px;font:700 12.5px var(--font-ui);color:var(--ink)}
 .clx{flex:0 0 auto;width:20px;height:20px;accent-color:var(--accent)}
 
 .dpg{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}
@@ -1036,7 +1092,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:36</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:45</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5764,7 +5820,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       c.ops=["Rotil gövde işleme","Rotil pres aşık baskı","Rotil aşık işleme","Rotil montaj"].map(function(n){return {id:uid(),n:n,d:0,c:0,p:0}});
       c.lines=["Maaşlar","Sigortalar","Kira","Elektrik","Yemek","Mazot","Kart","Genel giderler"].map(function(n){return {id:uid(),n:n,v:0,ex:0}});
     }
-    calcCur=c; calcDelArm=false; calcPullArm=false; calcSaveNow(); renderCalc();
+    calcCur=c; calcDelArm=false; calcPullArm=false; calcOpen=kind==="real"?{g:1}:{}; if(kind==="scen"&&c.ops[0])calcOpen[c.ops[0].id]=1; calcSaveNow(); renderCalc();
   }
   function calcSaveNow(){
     if(calcSaveT){clearTimeout(calcSaveT); calcSaveT=null}
@@ -5774,71 +5830,108 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     calcCol().doc(calcCur.id||(calcCur.id=calcCol().doc().id)).set(JSON.parse(JSON.stringify(calcCur))).then(function(){$("calcstatus").textContent="Kaydedildi"}).catch(function(){$("calcstatus").textContent="Kaydedilemedi, tekrar dene"});
   }
   function calcSaveSoon(){if(calcSaveT)clearTimeout(calcSaveT); calcSaveT=setTimeout(calcSaveNow,700)}
-  function calcCInp(attrs,val,ph){return '<input class="fin" type="text" inputmode="decimal" data-money="1" autocomplete="off" '+attrs+' value="'+finMoneyStr(val)+'" placeholder="'+(ph||"0")+'">'}
-  function calcResHtml(c){
-    var r=calcCompute(c), h='<div class="fcompbox"><small style="color:var(--ink2);font:700 12px var(--font-ui)">Adet başı toplam maliyet</small><div class="cbig">'+nf2.format(r.total)+' ₺</div>';
-    if(r.ops.length)h+='<div class="cres"><span>İşçilik / adet (operasyonlar)</span><b>'+nf2.format(r.lab)+' ₺</b></div>';
+  var CALC_COLS=["#7B5CC4","#E8A24B","#46C88C","#5EA6E6","#E36B6B","#3FBFB5","#E3B93C","#9B7BE8"], calcOpen={};
+  function calcOpColor(c,id){var i=0; (c.ops||[]).forEach(function(o,ix){if(o.id===id)i=ix}); return CALC_COLS[i%CALC_COLS.length]}
+  function calcCInp(attrs,val,ph,unit){return '<div class="cin"><input class="fin" type="text" inputmode="decimal" data-money="1" autocomplete="off" '+attrs+' value="'+finMoneyStr(val)+'" placeholder="'+(ph||"0")+'">'+(unit?'<span>'+unit+'</span>':'')+'</div>'}
+  function calcStep(attrs,val,ph,unit,tag){return '<div class="cstep"><button type="button" data-cst="'+tag+':-1" aria-label="Azalt">−</button>'+calcCInp(attrs,val,ph,unit)+'<button type="button" data-cst="'+tag+':1" aria-label="Artır">+</button></div>'}
+  function calcSumHtml(c,r){
+    var segs=r.ops.map(function(x){return [x.pp,calcOpColor(c,x.o.id),x.o.n||"Operasyon"]}); if(r.gp>0)segs.push([r.gp,"#8892A6","Genel gider"]);
+    var tot=0; segs.forEach(function(s){tot+=s[0]}); var short=r.ops.filter(function(x){return x.short}).length;
+    return '<div class="csum"><div class="cs-top"><div><small>Adet başı toplam maliyet</small><div class="cbig">'+nf2.format(r.total)+' <span>₺</span></div></div></div>'+
+      '<div class="cs-chips"><span><small>İşçilik</small><b>'+nf2.format(r.lab)+' ₺</b></span><span><small>Genel gider</small><b>'+nf2.format(r.gp)+' ₺</b></span><span><small>Aylık adet</small><b>'+money(r.qty)+'</b></span></div>'+
+      '<div class="fcbar" style="margin-top:10px">'+(tot>0?segs.filter(function(s){return s[0]>0}).map(function(s){return '<i style="width:'+(s[0]/tot*100)+'%;background:'+s[1]+'" title="'+esc(s[2])+'"></i>'}).join(""):'<i style="width:100%;background:var(--line)"></i>')+'</div>'+
+      (short?'<div class="cs-warn">⚠ '+short+' operasyonda kapasite yetmiyor</div>':'')+'</div>';
+  }
+  function calcBrkHtml(c,r){
+    var tot=r.total||0, h='<div class="fsec">Maliyet dökümü</div><div class="copc">';
+    r.ops.forEach(function(x){
+      var col=calcOpColor(c,x.o.id);
+      h+='<div class="cbrk"><span class="cdot" style="--c:'+col+'"></span><div class="ctt"><b>'+esc(x.o.n||"Operasyon")+'</b><small>'+money(x.mk)+' makine'+(x.needCeil?' · gerekli en az '+x.needCeil:'')+(x.short?' · <span style="color:#D9534F;font-weight:800">kapasite yetmiyor</span>':'')+'</small>'+finBar(tot>0?x.pp/tot*100:0,col)+'</div><b class="cbv">'+nf2.format(x.pp)+' ₺</b></div>';
+    });
+    if(r.ops.length)h+='<div class="cres"><span>İşçilik / adet</span><b>'+nf2.format(r.lab)+' ₺</b></div>';
     h+='<div class="cres"><span>Genel gider / adet</span><b>'+nf2.format(r.gp)+' ₺</b></div>'+
-       '<div class="cres"><span>Aylık üretim adedi'+(calcN(c.qty)>0?'':(r.ops.length?' (son operasyondan, ürün cinsinden)':''))+'</span><b>'+money(r.qty)+'</b></div>'+
+       '<div class="cres"><span>Aylık hedef adet'+(calcN(c.qty)>0?'':(r.ops.length?' (son operasyonun kapasitesi)':''))+'</span><b>'+money(r.qty)+'</b></div>'+
        '<div class="cres"><span>Toplam aylık gider</span><b>'+money(r.gt)+' ₺</b></div>'+
        (r.ops.length?'<div class="cres"><span>Toplam aylık işçilik</span><b>'+money(r.labTotal)+' ₺</b></div>':'');
-    if(r.ops.length)h+='<div class="fsec" style="margin:12px 0 4px">Operasyon başına işçilik</div>'+r.ops.map(function(x){return '<div class="cres"><span>'+esc(x.o.n||"Operasyon")+'<br><small style="font-weight:600">'+money(x.mk)+' makine'+(x.needCeil?' (gerekli en az '+x.needCeil+')':'')+(x.short?' · <span style="color:#D9534F">kapasite yetmiyor</span>':'')+'</small></span><b>'+nf2.format(x.pp)+' ₺</b></div>'}).join("");
     if(!r.qty)h+='<div class="note" style="margin-top:8px;color:#C98A12">Adet girilmedi: genel gider adet başına bölünemiyor.</div>';
-    if(r.dbl)h+='<div class="note" style="margin-top:8px;color:#C98A12">Dikkat: hem operasyonlarda kişi maliyeti hem de Maaş/Sigorta gider satırı var, işçilik iki kez sayılıyor olabilir.</div>';
+    if(r.dbl)h+='<div class="note" style="margin-top:8px;color:#C98A12">Dikkat: hem operasyonlarda kişi maliyeti hem Maaş/Sigorta gider satırı var, işçilik iki kez sayılıyor olabilir.</div>';
     return h+'</div>';
   }
   function calcPaint(){
     if(!calcCur)return; var c=calcCur, r=calcCompute(c);
-    if($("clres"))$("clres").innerHTML=calcResHtml(c);
+    if($("clres"))$("clres").innerHTML=calcSumHtml(c,r);
+    if($("clbrk"))$("clbrk").innerHTML=calcBrkHtml(c,r);
     $("calcbig").textContent=nf2.format(r.total)+" ₺ / adet"; $("calcobs").textContent=c.title||"";
     r.ops.forEach(function(x){
-      var el=document.querySelector('[data-opres="'+x.o.id+'"]'), di=document.querySelector('[data-co="'+x.o.id+'"][data-cof="d"]'), bySn=calcN(x.o.s)>0;
+      var id=x.o.id, q=function(a){return document.querySelector(a)};
+      var hn=q('[data-ophn="'+id+'"]'); if(hn)hn.textContent=x.o.n||"Operasyon";
+      var hs=q('[data-ophs="'+id+'"]'); if(hs)hs.textContent=money(x.mk)+" makine · "+money(calcN(x.o.c))+" kişi";
+      var hv=q('[data-ophv="'+id+'"]'); if(hv)hv.innerHTML=(x.short?'<em class="cwarn">⚠ yetmiyor</em>':'')+'<b>'+nf2.format(x.pp)+' ₺</b><small>ürün başı</small>';
+      var di=q('[data-co="'+id+'"][data-cof="d"]'), bySn=calcN(x.o.s)>0;
       if(di){ if(bySn){di.value=money(x.perM); di.disabled=true} else if(di.disabled){di.disabled=false; di.value=finMoneyStr(x.o.d)} }
-      var nb=document.querySelector('[data-opneed="'+x.o.id+'"]');
+      var nb=q('[data-opneed="'+id+'"]');
       if(nb){
         var sp=nb.querySelector("span"), bt=nb.querySelector("button");
         if(r.qty>0&&x.perM>0&&calcN(c.days)>0){
-          sp.textContent="Hedef "+money(r.qty)+" ürün için gerekli: "+nf1.format(x.need)+" makine (en az "+x.needCeil+")";
-          if(x.mk!==x.needCeil&&calcN(x.o.m)!==x.needCeil){bt.hidden=false; bt.textContent=x.needCeil+" makine yaz"}else bt.hidden=true;
-        }else{sp.textContent="Gerekli makine: hedef adet ve makine başı süre/adet yazınca çıkar"; bt.hidden=true}
+          sp.innerHTML='Hedef <b>'+money(r.qty)+'</b> ürün için gerekli: <b>'+nf1.format(x.need)+' makine</b> (en az '+x.needCeil+')';
+          if(calcN(x.o.m)!==x.needCeil){bt.hidden=false; bt.textContent=x.needCeil+" makine yaz"}else bt.hidden=true;
+        }else{sp.textContent="Hedef adet ve makine başı süre/adet girince gerekli makine burada çıkar"; bt.hidden=true}
       }
+      var el=q('[data-opres="'+id+'"]');
       if(el)el.innerHTML=(x.short?'<span style="color:#D9534F;font-weight:800">Kapasite yetmiyor: '+money(Math.floor(x.cap))+' ürün/ay yapar. </span>':'')+"Makine başı günlük "+money(x.perM)+" × "+money(x.mk)+" makine = günlük "+money(x.dd)+" · aylık "+money(x.mo)+" parça"+(x.kk!==1?" (ürün cinsinden "+money(Math.floor(x.cap))+")":"")+" · aylık işçilik "+money(x.cost)+" ₺ · ürün başı "+nf2.format(x.pp)+" ₺";
     });
+    var gs=document.querySelector('[data-ghs]'); if(gs)gs.textContent="Toplam aylık "+money(r.gt)+" ₺";
+    var gv=document.querySelector('[data-ghv]'); if(gv)gv.innerHTML='<b>'+nf2.format(r.gp)+' ₺</b><small>adet başı</small>';
     (c.lines||[]).forEach(function(l){var el=document.querySelector('[data-lres="'+l.id+'"]'); if(el)el.textContent=(!l.ex&&r.qty>0&&calcN(l.v)>0)?nf2.format(calcN(l.v)/r.qty)+" ₺ / adet":""});
+    [].forEach.call(document.querySelectorAll("[data-cq]"),function(b){var p=b.dataset.cq.split(":"); b.setAttribute("aria-pressed",calcN(c[p[0]])===+p[1]||(p[0]==="hrs"&&!calcN(c.hrs)&&+p[1]===8))});
+  }
+  function calcOpHtml(c,o){
+    var open=!!calcOpen[o.id], col=calcOpColor(c,o.id), id=o.id;
+    var h='<div class="cacc'+(open?' open':'')+'" style="--c:'+col+'"><button type="button" class="chead" data-ctog="'+id+'"><span class="cdot"></span><span class="ctt"><b data-ophn="'+id+'"></b><small data-ophs="'+id+'"></small></span><span class="cval" data-ophv="'+id+'"></span><span class="cchev">'+(open?'⌃':'⌄')+'</span></button>';
+    if(open){
+      h+='<div class="cbody">'+
+        '<div class="cfld"><label>Operasyon adı</label><input class="fin" data-co="'+id+'" data-cof="n" autocomplete="off" value="'+esc(o.n||"")+'" placeholder="ör. Rotil gövde işleme" style="font-weight:800"></div>'+
+        '<div class="csec">⏱ Süre ve makine</div>'+
+        '<div class="cgrid2"><div><label>Makine başı: bir parça</label>'+calcCInp('data-co="'+id+'" data-cof="s"',o.s,"süre","sn")+'</div><div><label>Makine başı günlük</label>'+calcCInp('data-co="'+id+'" data-cof="d"',o.d,"0","adet")+'</div></div>'+
+        '<div class="cneed" data-opneed="'+id+'"><span></span><button type="button" class="btn" data-cmuse="'+id+'" hidden></button></div>'+
+        '<div class="cfld"><label>Kaç makine kullanacağım?</label>'+calcStep('data-co="'+id+'" data-cof="m"',o.m,"1","makine",id+":m")+'</div>'+
+        '<div class="csec">👷 Personel</div>'+
+        '<div class="cgrid2"><div><label>Kaç kişi</label>'+calcStep('data-co="'+id+'" data-cof="c"',o.c,"0","kişi",id+":c")+'</div><div><label>Kişi başı aylık maliyet</label>'+calcCInp('data-co="'+id+'" data-cof="p"',o.p,"0","₺")+'</div></div>'+
+        '<div class="csec">🔗 Ürün içinde</div>'+
+        '<div class="cfld"><label>Üründe kaç tane gerekiyor? <small>(Z-Rot’ta gövde 2, montaj 1)</small></label>'+calcStep('data-co="'+id+'" data-cof="k"',o.k,"1","tane",id+":k")+'</div>'+
+        '<div class="note" data-opres="'+id+'"></div>'+
+        '<button type="button" class="cdelop" data-copdel="'+id+'">🗑 Bu operasyonu sil</button></div>';
+    }
+    return h+'</div>';
   }
   function calcEditorHtml(c){
     var scen=c.t==="scen", h='';
-    h+='<button type="button" class="fback" data-cback>‹ Hesaplamalar</button>';
-    h+='<div><label class="fl" for="cltitle">Başlık</label><input class="fin" id="cltitle" data-cf="title" autocomplete="off" value="'+esc(c.title||"")+'" placeholder="ör. Rotil 100.000 adet senaryosu"></div>';
-    h+='<div id="clres" style="margin-top:12px"></div>';
-    h+='<div class="fsec">Üretim</div><div class="copc"><div class="cgrid" style="grid-template-columns:1fr 1fr">'+
-      (scen?'<div><label>Çalışılan gün sayısı (günlük adedi bununla çarparım)</label>'+calcCInp('data-cf="days"',c.days,"22")+'</div><div><label>Günlük çalışma saati (saniyeden adet için)</label>'+calcCInp('data-cf="hrs"',c.hrs||8,"8")+'</div>':'')+
-      '<div><label>'+(scen?'Aylık hedef ürün adedi (boşsa son operasyonun kapasitesi)':'Aylık üretim adedi')+'</label>'+calcCInp('data-cf="qty"',c.qty,scen?"otomatik":"0")+'</div></div></div>';
+    h+='<div class="crow" style="justify-content:space-between"><button type="button" class="fback" data-cback style="margin:0">‹ Hesaplamalar</button><small style="color:var(--ink2);font:600 12px var(--font-ui)">'+(scen?'Ürün işçilik senaryosu':'Gerçek giderlerden')+'</small></div>';
+    h+='<input class="ctitle" id="cltitle" data-cf="title" autocomplete="off" value="'+esc(c.title||"")+'" placeholder="Hesaplamaya bir başlık ver" aria-label="Başlık">';
+    h+='<div id="clres"></div>';
+    h+='<div class="fsec">Plan</div><div class="copc"><div class="cgrid3" style="grid-template-columns:'+(scen?'1.3fr 1fr 1fr':'1fr')+'">'+
+      '<div><label>Aylık hedef adet</label>'+calcCInp('data-cf="qty"',c.qty,scen?"otomatik":"0","adet")+'</div>'+
+      (scen?'<div><label>Çalışılan gün</label>'+calcCInp('data-cf="days"',c.days,"22","gün")+'</div><div><label>Günlük saat</label>'+calcCInp('data-cf="hrs"',c.hrs||8,"8","saat")+'</div>':'')+'</div>'+
+      (scen?'<div class="cchips"><span>Gün</span>'+[20,22,26].map(function(v){return '<button type="button" data-cq="days:'+v+'" aria-pressed="false">'+v+'</button>'}).join("")+'<span style="margin-left:10px">Saat</span>'+[8,10].map(function(v){return '<button type="button" data-cq="hrs:'+v+'" aria-pressed="false">'+v+'</button>'}).join("")+'</div><div class="note" style="margin-top:8px">Hedef adedi boş bırakırsan son operasyonun kapasitesi kullanılır.</div>':'')+'</div>';
     if(scen){
-      h+='<div class="fsec">Operasyonlar</div>';
-      (c.ops||[]).forEach(function(o){
-        h+='<div class="copc"><div class="crow"><input class="fin" data-co="'+o.id+'" data-cof="n" autocomplete="off" value="'+esc(o.n||"")+'" placeholder="Operasyon adı" style="flex:1;font-weight:800"><button type="button" class="cx" data-copdel="'+o.id+'" aria-label="Operasyonu sil">✕</button></div>'+
-          '<div class="cgrid" style="grid-template-columns:1fr 1fr">'+
-          '<div><label>Makine başı: bir parça kaç saniye?</label>'+calcCInp('data-co="'+o.id+'" data-cof="s"',o.s,"saniye")+'</div>'+
-          '<div><label>Makine başı günlük adet (saniye yazarsan otomatik)</label>'+calcCInp('data-co="'+o.id+'" data-cof="d"',o.d)+'</div>'+
-          '<div class="cneed" data-opneed="'+o.id+'"><span></span><button type="button" class="btn ghost" data-cmuse="'+o.id+'" hidden style="flex:0 0 auto;min-height:32px;padding:0 10px"></button></div>'+
-          '<div><label>Kaç makine kullanacağım?</label>'+calcCInp('data-co="'+o.id+'" data-cof="m"',o.m,"1")+'</div>'+
-          '<div><label>Kaç kişi</label>'+calcCInp('data-co="'+o.id+'" data-cof="c"',o.c)+'</div>'+
-          '<div><label>Kişi başı aylık maliyet ₺</label>'+calcCInp('data-co="'+o.id+'" data-cof="p"',o.p)+'</div>'+
-          '<div><label>Üründe kaç tane gerekiyor? (ör. gövde 2)</label>'+calcCInp('data-co="'+o.id+'" data-cof="k"',o.k,"1")+'</div></div>'+
-          '<div class="note" data-opres="'+o.id+'" style="margin-top:6px"></div></div>';
-      });
+      h+='<div class="fsec">Operasyonlar · '+(c.ops||[]).length+'</div>';
+      (c.ops||[]).forEach(function(o){h+=calcOpHtml(c,o)});
       h+='<button type="button" class="btn ghost" data-copadd style="width:100%">+ Operasyon ekle</button>';
     }
-    h+='<div class="fsec">Giderler'+(scen?' (elle gir — güncel Giderler sayfasından bağımsız)':'')+'</div>';
-    h+='<div class="copc"><div class="crow" style="justify-content:space-between"><div class="finmon" style="margin:0;gap:8px"><button type="button" class="finnav cmn" data-cmon="-1" aria-label="Önceki ay">‹</button><b style="color:var(--ink);min-width:110px;text-align:center">'+esc(finMonLabel(c.month||finNowKey()))+'</b><button type="button" class="finnav cmn" data-cmon="1" aria-label="Sonraki ay">›</button></div>'+
-      '<button type="button" class="btn ghost" data-cpull style="flex:0 0 auto;padding:0 12px">'+(calcPullArm?'Mevcut satırlar silinir — tekrar dokun':'↻ Güncel giderlerden çek')+'</button></div>'+
-      (c.pulled?'<div class="note" style="margin-top:6px">Son çekilen: '+esc(finMonLabel(c.pulled))+' ayının güncel giderleri (o günün kopyası, sonradan değişmez)</div>':'')+'</div>';
-    (c.lines||[]).forEach(function(l){
-      h+='<div class="copc" style="padding:10px"><div class="crow"><input type="checkbox" class="clx" data-clx="'+l.id+'" '+(l.ex?'':'checked')+' aria-label="Toplama dahil"><input class="fin" data-cl="'+l.id+'" data-clf="n" autocomplete="off" value="'+esc(l.n||"")+'" placeholder="Gider adı" style="flex:1;min-width:0">'+
-        '<div style="width:122px">'+calcCInp('data-cl="'+l.id+'" data-clf="v"',l.v)+'</div><button type="button" class="cx" data-cldel="'+l.id+'" aria-label="Satırı sil">✕</button></div><div class="note" data-lres="'+l.id+'" style="margin:2px 0 0 28px;text-align:right"></div></div>';
-    });
-    h+='<button type="button" class="btn ghost" data-cladd style="width:100%">+ Gider satırı ekle</button>';
+    var gopen=!!calcOpen.g;
+    h+='<div class="fsec">Giderler</div><div class="cacc'+(gopen?' open':'')+'" style="--c:#8892A6"><button type="button" class="chead" data-ctog="g"><span class="cdot"></span><span class="ctt"><b>📒 Aylık giderler</b><small data-ghs></small></span><span class="cval" data-ghv></span><span class="cchev">'+(gopen?'⌃':'⌄')+'</span></button>';
+    if(gopen){
+      h+='<div class="cbody"><div class="note" style="margin-bottom:8px">'+(scen?'Elle yazdıkların, güncel Giderler sayfasından bağımsızdır.':'Seçtiğin ayın güncel giderleri.')+'</div>'+
+        '<div class="crow" style="justify-content:space-between"><div class="finmon" style="margin:0;gap:8px"><button type="button" class="finnav cmn" data-cmon="-1" aria-label="Önceki ay">‹</button><b style="color:var(--ink);min-width:104px;text-align:center">'+esc(finMonLabel(c.month||finNowKey()))+'</b><button type="button" class="finnav cmn" data-cmon="1" aria-label="Sonraki ay">›</button></div>'+
+        '<button type="button" class="btn ghost" data-cpull style="flex:0 0 auto;padding:0 12px;min-height:38px">'+(calcPullArm?'Satırlar silinir — tekrar dokun':'↻ Güncelden çek')+'</button></div>'+
+        (c.pulled?'<div class="note" style="margin:6px 0">Son çekilen: '+esc(finMonLabel(c.pulled))+' (kopya, sonradan değişmez)</div>':'');
+      (c.lines||[]).forEach(function(l){
+        h+='<div class="clrow"><div class="crow" style="margin:0"><input type="checkbox" class="clx" data-clx="'+l.id+'" '+(l.ex?'':'checked')+' aria-label="Toplama dahil"><input class="fin" data-cl="'+l.id+'" data-clf="n" autocomplete="off" value="'+esc(l.n||"")+'" placeholder="Gider adı" style="flex:1;min-width:0"><div style="width:112px">'+calcCInp('data-cl="'+l.id+'" data-clf="v"',l.v,"0","₺")+'</div><button type="button" class="cx" data-cldel="'+l.id+'" aria-label="Satırı sil">✕</button></div><div class="note" data-lres="'+l.id+'" style="margin:2px 0 0;text-align:right"></div></div>';
+      });
+      h+='<button type="button" class="btn ghost" data-cladd style="width:100%;margin-top:8px">+ Gider satırı ekle</button></div>';
+    }
+    h+='</div>';
+    h+='<div id="clbrk"></div>';
     h+='<div class="fsec">Notlar</div><textarea class="fin" data-cf="note" rows="3" placeholder="Varsayımların, notların…">'+esc(c.note||"")+'</textarea>';
     h+='<button type="button" class="btn ghost" data-cdel style="width:100%;margin-top:14px;color:var(--bad)">'+(calcDelArm?'Emin misin? Bu hesaplama silinecek — tekrar dokun':'🗑 Bu hesaplamayı sil')+'</button>';
     return h;
@@ -5847,18 +5940,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!finOwner())return;
     var h='';
     if(calcCur){
-      $("calcobs").textContent=calcCur.title||""; $("calcobl").textContent=calcCur.t==="scen"?"Ürün işçilik senaryosu":"Gerçek giderlerden hesap";
+      $("calcobl").textContent=calcCur.t==="scen"?"Ürün işçilik senaryosu":"Gerçek giderlerden hesap";
       h=calcEditorHtml(calcCur); $("calccontent").innerHTML=h; calcPaint(); return;
     }
     $("calcobl").textContent="Kaydedilen hesaplamalar"; $("calcbig").textContent=calcList.length+" hesaplama"; $("calcobs").textContent="geleceğe dönük, güncel giderlerle karışmaz";
-    h+='<div class="note" style="margin-bottom:10px">Burası gelecekte “şu kadar üretirsem adet başı maliyetim ne olur” diye hesaplamak için. Giderler ve Maaşlar ekranındaki gerçek verilere dokunmaz.</div>';
-    h+='<button type="button" class="btn" data-cnew="scen" style="width:100%;margin-bottom:8px">+ Ürün işçilik senaryosu (operasyonlarla)</button>';
-    h+='<button type="button" class="btn ghost" data-cnew="real" style="width:100%">+ Güncel giderlerden / adet hesabı</button>';
+    h+='<div class="ctiles"><button type="button" class="ctile" data-cnew="scen" style="--c:#7B5CC4"><span class="fic" style="--c:#7B5CC4">🧮</span><span class="ftx"><b>Ürün işçilik senaryosu</b><small>Operasyon, makine ve kişiye göre adet başı maliyet</small></span><span class="fchev">+</span></button>'+
+      '<button type="button" class="ctile" data-cnew="real" style="--c:#46C88C"><span class="fic" style="--c:#46C88C">📊</span><span class="ftx"><b>Güncel giderlerden</b><small>Seçtiğin ayın giderleri ÷ üretilen adet</small></span><span class="fchev">+</span></button></div>';
     h+='<div class="fsec">Kayıtlı hesaplamalar</div>';
-    if(!calcList.length)h+='<div class="empty">Henüz kayıtlı hesaplama yok.</div>';
+    if(!calcList.length)h+='<div class="empty">Henüz kayıtlı hesaplama yok.<br>Yukarıdan ilkini başlat.</div>';
     else h+=calcList.map(function(c){
-      var r=calcCompute(c);
-      return '<div class="fcard"><button type="button" class="fgo" data-copen="'+c.id+'"><span class="fic" style="--c:#7B5CC4">'+(c.t==="scen"?'🧮':'📊')+'</span><span class="ftx"><b>'+esc(c.title||"Başlıksız")+'</b><small>'+(c.t==="scen"?'Senaryo · '+(c.ops||[]).length+' operasyon':'Gerçek giderlerden')+' · '+esc(calcDateLbl(c.upd||c.ts))+'</small></span><span class="fam">'+nf2.format(r.total)+' ₺<small>adet başı</small></span><span class="fchev">›</span></button></div>';
+      var r=calcCompute(c), scen=c.t==="scen";
+      return '<div class="fcard"><button type="button" class="fgo" data-copen="'+c.id+'"><span class="fic" style="--c:'+(scen?'#7B5CC4':'#46C88C')+'">'+(scen?'🧮':'📊')+'</span><span class="ftx"><b>'+esc(c.title||"Başlıksız")+'</b><small>'+(scen?(c.ops||[]).length+' operasyon':'Gerçek giderlerden')+' · '+esc(calcDateLbl(c.upd||c.ts))+'</small></span><span class="fam">'+nf2.format(r.total)+' ₺<small>adet başı</small></span><span class="fchev">›</span></button></div>';
     }).join("");
     $("calccontent").innerHTML=h;
   }
@@ -5873,12 +5965,27 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!finOwner())return;
     var b=e.target.closest("button"); if(!b)return; var d=b.dataset;
     if(d.cnew){calcNew(d.cnew); window.scrollTo(0,0); return}
-    if(d.copen){var c0=calcList.filter(function(x){return x.id===d.copen})[0]; if(c0){calcCur=JSON.parse(JSON.stringify(c0)); calcDelArm=false; calcPullArm=false; renderCalc(); window.scrollTo(0,0)} return}
+    if(d.copen){var c0=calcList.filter(function(x){return x.id===d.copen})[0]; if(c0){calcCur=JSON.parse(JSON.stringify(c0)); calcDelArm=false; calcPullArm=false; calcOpen={}; renderCalc(); window.scrollTo(0,0)} return}
     if(!calcCur)return; var c=calcCur;
     if(d.cback!==undefined){calcSaveNow(); calcCur=null; renderCalc(); window.scrollTo(0,0); return}
-    if(d.copadd!==undefined){c.ops.push({id:uid(),n:"",d:0,c:0,p:0}); calcSaveSoon(); renderCalc(); return}
-    if(d.cmuse){var mo2=c.ops.filter(function(o){return o.id===d.cmuse})[0], rx=calcCompute(c).ops.filter(function(x){return x.o.id===d.cmuse})[0]; if(mo2&&rx&&rx.needCeil){mo2.m=rx.needCeil; calcSaveSoon(); renderCalc()} return}
-    if(d.copdel){c.ops=c.ops.filter(function(o){return o.id!==d.copdel}); calcSaveSoon(); renderCalc(); return}
+    if(d.ctog){
+      var op=!calcOpen[d.ctog]; if(op&&d.ctog!=="g"){Object.keys(calcOpen).forEach(function(k){if(k!=="g")delete calcOpen[k]})}
+      if(op)calcOpen[d.ctog]=1; else delete calcOpen[d.ctog];
+      var y=window.scrollY; renderCalc(); window.scrollTo(0,y); return;
+    }
+    if(d.cst){
+      var p=d.cst.split(":"), o3=c.ops.filter(function(o){return o.id===p[0]})[0]; if(!o3)return;
+      var f=p[1], dl=+p[2], cur=calcN(o3[f]), base=(f==="c")?cur:(cur>0?cur:1), nv=Math.max(f==="c"?0:1,Math.round((base+dl)*100)/100);
+      o3[f]=nv; var inp=document.querySelector('[data-co="'+p[0]+'"][data-cof="'+f+'"]'); if(inp)inp.value=money(nv);
+      calcPaint(); calcSaveSoon(); return;
+    }
+    if(d.cq){
+      var q=d.cq.split(":"); c[q[0]]=+q[1]; var qi=document.querySelector('[data-cf="'+q[0]+'"]'); if(qi)qi.value=money(+q[1]);
+      calcPaint(); calcSaveSoon(); return;
+    }
+    if(d.copadd!==undefined){var no={id:uid(),n:"",d:0,c:0,p:0}; c.ops.push(no); Object.keys(calcOpen).forEach(function(k){if(k!=="g")delete calcOpen[k]}); calcOpen[no.id]=1; calcSaveSoon(); renderCalc(); return}
+    if(d.cmuse){var mo2=c.ops.filter(function(o){return o.id===d.cmuse})[0], rx=calcCompute(c).ops.filter(function(x){return x.o.id===d.cmuse})[0]; if(mo2&&rx&&rx.needCeil){mo2.m=rx.needCeil; var mi=document.querySelector('[data-co="'+d.cmuse+'"][data-cof="m"]'); if(mi)mi.value=money(rx.needCeil); calcPaint(); calcSaveSoon()} return}
+    if(d.copdel){c.ops=c.ops.filter(function(o){return o.id!==d.copdel}); delete calcOpen[d.copdel]; calcSaveSoon(); renderCalc(); return}
     if(d.cladd!==undefined){c.lines.push({id:uid(),n:"",v:0,ex:0}); calcSaveSoon(); renderCalc(); return}
     if(d.cldel){c.lines=c.lines.filter(function(l){return l.id!==d.cldel}); calcSaveSoon(); renderCalc(); return}
     if(d.cmon){c.month=finShift(c.month||finNowKey(),+d.cmon); calcPullArm=false; calcSaveSoon(); renderCalc(); return}
