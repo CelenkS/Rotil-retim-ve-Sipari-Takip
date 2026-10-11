@@ -1055,6 +1055,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .ltop{gap:8px}
 .lthumb{flex:0 0 34px;width:34px;height:34px;border-radius:9px;object-fit:contain;background:#fff;border:1px solid var(--line);cursor:zoom-in}
 .wkmode #addItem,.wkmode #manual{display:none}
+.dcdet summary{cursor:pointer;font:700 12px var(--font-ui);color:var(--ink2);margin-top:6px}
 .dcdays{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .dcday{border:1.5px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:4px 10px;font:700 11.5px var(--font-ui);cursor:pointer}
 .dcday:active{border-color:var(--accent,#3B78E0);color:var(--ink)}
@@ -1275,7 +1276,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:31</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:34</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1839,10 +1840,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(idx<0){var h=0;for(var i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;idx=h}
     return "var(--k"+(idx%8)+")";
   }
-  function periodDays(){
+  function periodDays(pm){
+    pm=pm||period;
     var n=dim(), out=[], d;
-    if(period==="gun")return [selected];
-    if(period==="hafta"){
+    if(pm==="gun")return [selected];
+    if(pm==="hafta"){
       var p=selParts(), w=(new Date(p.y,p.m,p.d).getDay()+6)%7;
       for(d=Math.max(1,p.d-w);d<=Math.min(n,p.d-w+6);d++)out.push(isoOf(d));
       return out;
@@ -1850,11 +1852,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     for(d=1;d<=n;d++)out.push(isoOf(d));
     return out;
   }
-  function periodLabel(){
+  function periodLabel(pm){
+    pm=pm||period;
     var p=selParts();
-    if(period==="gun")return p.d+" "+AY[p.m]+" "+GUN[(new Date(p.y,p.m,p.d).getDay()+6)%7];
-    if(period==="hafta"){
-      var ds=periodDays(), a=+ds[0].slice(8), b=+ds[ds.length-1].slice(8);
+    if(pm==="gun")return p.d+" "+AY[p.m]+" "+GUN[(new Date(p.y,p.m,p.d).getDay()+6)%7];
+    if(pm==="hafta"){
+      var ds=periodDays("hafta"), a=+ds[0].slice(8), b=+ds[ds.length-1].slice(8);
       return (a===b?a:a+"–"+b)+" "+AY[p.m]+" haftası";
     }
     return AY[M]+" "+Y;
@@ -2241,17 +2244,20 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   $("tUrun").addEventListener("click",function(){setBrk("urun")});
   $("tMus").addEventListener("click",function(){setBrk("mus")});
-  function setPeriod(p){
-    period=p;
+  // Giriş kartının görünümü: sadece kullanıcı Gün/Hafta/Ay'a (ya da tablodaki satıra) kendisi dokununca özet olur;
+  // bölüme girişte ve varsayılan akışta her zaman o günün giriş kartı açılır.
+  var cardMode="gun";
+  function setPeriod(p,explicit){
+    period=p; cardMode=explicit?p:"gun";
     $("pGun").setAttribute("aria-pressed",p==="gun");
     $("pHafta").setAttribute("aria-pressed",p==="hafta");
     $("pAy").setAttribute("aria-pressed",p==="ay");
     renderHero();
     renderEditorHead(); renderLines();
   }
-  $("pGun").addEventListener("click",function(){setPeriod("gun")});
-  $("pHafta").addEventListener("click",function(){setPeriod("hafta")});
-  $("pAy").addEventListener("click",function(){setPeriod("ay")});
+  $("pGun").addEventListener("click",function(){setPeriod("gun",true)});
+  $("pHafta").addEventListener("click",function(){setPeriod("hafta",true)});
+  $("pAy").addEventListener("click",function(){setPeriod("ay",true)});
   $("legend").addEventListener("click",function(e){
     var back=e.target.closest("#catDrillBack");
     if(back){catDrill=null; codeDrill=null; renderHero(); return}
@@ -2381,16 +2387,17 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("etg").textContent=T.da?" / "+nf.format(T.da):""; $("erg").textContent=T.dr?" / "+money(T.dr)+" ₺":"";
   }
   function renderEditorHead(){
-    var p=selParts(), w=(new Date(p.y,p.m,p.d).getDay()+6)%7, wkm=(period==="hafta");
+    var p=selParts(), w=(new Date(p.y,p.m,p.d).getDay()+6)%7, wkm=(cardMode!=="gun"), mon=(cardMode==="ay");
     $("app").classList.toggle("wkmode",wkm);
-    var eh=$("edate").parentNode.querySelector("small"); if(eh)eh.textContent=wkm?"Seçili hafta":"Seçili gün";
-    var sh3=document.querySelector("#app .sec h3"); if(sh3)sh3.textContent=wkm?"Haftanın ürünleri":"Yapılan ürünler";
-    $("edate").textContent=wkm?periodLabel():p.d+" "+AY[p.m]+" "+GUN[w];
+    var eh=$("edate").parentNode.querySelector("small"); if(eh)eh.textContent=mon?"Seçili ay":wkm?"Seçili hafta":"Seçili gün";
+    var sh3=document.querySelector("#app .sec h3"); if(sh3)sh3.textContent=mon?"Ayın ürünleri":wkm?"Haftanın ürünleri":"Yapılan ürünler";
+    $("edate").textContent=wkm?periodLabel(cardMode):p.d+" "+AY[p.m]+" "+GUN[w];
     if(wkm){
-      var wa=0, wr=0; periodDays().forEach(function(iso){wa+=sum(vals(iso)); wr+=sum(rvals(iso))});
+      var wa=0, wr=0; periodDays(cardMode).forEach(function(iso){wa+=sum(vals(iso)); wr+=sum(rvals(iso))});
       $("etotal").textContent=nf.format(wa); $("erev").textContent=money(wr)+" ₺";
       $("etotal").className=""; $("erev").className="";
-      $("etg").textContent=targets.wa?" / "+nf.format(targets.wa):""; $("erg").textContent=targets.wr?" / "+money(targets.wr)+" ₺":"";
+      var tga=mon?targets.ma:targets.wa, tgr=mon?targets.mr:targets.wr;
+      $("etg").textContent=tga?" / "+nf.format(tga):""; $("erg").textContent=tgr?" / "+money(tgr)+" ₺":"";
       $("gotoday").hidden=(selected===todayIso); renderWeekSum();
       return;
     }
@@ -2563,7 +2570,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // Hafta seçiliyken giriş kartı o günün değil TÜM haftanın özetini gösterir (salt okunur; düzenlemek için güne dokun).
   function weekAgg(){
     var map={}, out=[];
-    periodDays().forEach(function(iso){
+    periodDays(cardMode).forEach(function(iso){
       lines(iso).forEach(function(l){
         if(!(l.q>0))return;
         var key=(l.o||"")+"|"+l.c+"|"+(l.u||"")+"|"+l.k, g=map[key];
@@ -2577,7 +2584,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function weekSummaryHtml(){
     var made=weekAgg(), tq=0, tr=0; made.forEach(function(x){tq+=x.l.q; tr+=x.rev});
     var h='<div class="dsumtop"><div><span>Yapılan</span><b>'+nf.format(tq)+'</b><small>adet</small></div><div><span>Çeşit</span><b>'+made.length+'</b><small>ürün</small></div><div><span>Ciro</span><b>'+money(tr)+'</b><small>₺</small></div></div>';
-    if(!made.length)h+='<div class="gnote">Bu hafta için henüz adet girilmemiş.</div>';
+    if(!made.length)h+='<div class="gnote">'+(cardMode==="ay"?"Bu ay":"Bu hafta")+' için henüz adet girilmemiş.</div>';
     for(var k=-1;k<COLS.length;k++){
       var g=made.filter(function(x){var kk=(x.l.k>=0&&x.l.k<COLS.length)?x.l.k:-1; return kk===k});
       if(!g.length)continue;
@@ -2592,7 +2599,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           (img?'<img class="dcth" alt="" src="'+img+'">':'<div class="dcth ph">'+esc((l.c||"?").charAt(0).toUpperCase())+'</div>')+
           '<div class="dcb"><div class="dcc"><b>'+esc(l.c)+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
           '<div class="dcu">'+esc(l.u||"Müşteri yok")+'</div>'+
-          '<div class="dcdays">'+dchips+'</div></div>'+
+          (cardMode==="ay"?'<details class="dcdet"><summary>'+x.days.length+' gün üretildi</summary><div class="dcdays">'+dchips+'</div></details>':'<div class="dcdays">'+dchips+'</div>')+'</div>'+
           '<div class="dcr"><b>'+nf.format(l.q)+'</b><small>adet</small><em>'+money(x.rev)+' ₺</em></div>'+
           lineOrdHtml(l)+'</div>';
       });
@@ -2605,7 +2612,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       renderGlobalSearch(q);
       return;
     }
-    if(period==="hafta"){$("lines").innerHTML=weekSummaryHtml(); return}
+    if(cardMode!=="gun"){$("lines").innerHTML=weekSummaryHtml(); return}
     var ls=lines(selected), html="", secEmps=empsInSec(sec.id), secMacs=machinesInSec(sec.id), showEM=secEmps.length||secMacs.length;
     var vm=curDayView();
     if(ls.length&&vm==="sum"){$("lines").innerHTML=dayToggleHtml(vm)+daySummaryHtml(ls); return}
@@ -2690,7 +2697,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       return;
     }
     var wd2=e.target.closest("[data-wday]");
-    if(wd2){selected=wd2.dataset.wday; period="gun"; dayViewFor=selected; dayViewPref="sum"; setPeriod("gun"); renderDay(); return}
+    if(wd2){selected=wd2.dataset.wday; period="gun"; dayViewFor=selected; dayViewPref="sum"; setPeriod("gun",true); renderDay(); return}
     var g=e.target.closest(".gline"); if(g){jumpToDate(g.dataset.date);return}
     if(e.target.closest("#emptyAdd")){openSheet();return}
     if(e.target.classList.contains("lthumb")){
@@ -2781,11 +2788,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     else if(tr.dataset.wk){selected=tr.dataset.wk; period="hafta"}
     else if(tr.dataset.month){period="ay"}
     else return;
-    setPeriod(period); renderDay();
+    setPeriod(period,true); renderDay();
     window.scrollTo({top:0,behavior:"smooth"});
   });
   $("gotoday").addEventListener("click",function(){
-    flushNow(); Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; loadMonth();
+    flushNow(); Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; cardMode="gun"; loadMonth();
   });
   function shift(n){
     flushNow();
