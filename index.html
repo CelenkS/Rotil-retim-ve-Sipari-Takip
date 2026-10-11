@@ -537,6 +537,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .ctiles{display:grid;gap:10px}
 .ctile{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px dashed var(--c);border-radius:20px;padding:14px;text-align:left;font:inherit;color:inherit;cursor:pointer}
 .ctile:active{background:var(--soft)}
+.ctpls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ctpl{display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.ctpl:active{background:var(--soft)}
+.ctpl b{font:800 16px var(--font-ui);color:var(--ink)}
+.ctpl small{font:600 12px var(--font-ui);color:var(--ink2)}
 
 .hcard.ordc.calcc{border-color:rgba(123,92,196,.6)}
 .hcard.ordc.calcc::after{background:rgba(123,92,196,.18)}
@@ -1092,7 +1097,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:45</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:53</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5812,12 +5817,20 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var t=finTotals(mk), g=(finDocs[mk]||{}).gider||{};
     return [{id:uid(),n:"Maaşlar (net)",v:t.n,ex:0},{id:uid(),n:"Sigortalar",v:t.s,ex:0}].concat(FIN_ITEMS.map(function(it){return {id:uid(),n:it[1],v:calcN(g[it[0]]),ex:0}}));
   }
-  function calcNew(kind){
+  // Hazır şablonlar: uygulamadaki standart üretim aşamaları (Gövde, Pres aşık, CNC aşık, Kaynak, Kaplama, Montaj); sayı = üründe kaç tane gerekiyor
+  var CALC_STAGES=["Gövde işleme","Pres aşık baskı","CNC aşık işleme","Diş ve delik açma","Z-Rot kaynak","Kaplama","Montaj"];
+  var CALC_STD=[["Gövde işleme",1],["Pres aşık baskı",1],["CNC aşık işleme",1],["Kaplama",1],["Montaj",1]];
+  var CALC_TPL={"Rotil":CALC_STD,"Rot başı":CALC_STD,"Rot mili":CALC_STD,"Z-Rot":[["Gövde işleme",2],["Pres aşık baskı",2],["CNC aşık işleme",2],["Z-Rot kaynak",1],["Kaplama",1],["Montaj",1]]};
+  var CALC_SUF={"Gövde işleme":"gövde işleme","Pres aşık baskı":"pres aşık baskı","CNC aşık işleme":"CNC aşık işleme","Diş ve delik açma":"diş ve delik açma","Z-Rot kaynak":"kaynak","Kaplama":"kaplama","Montaj":"montaj"};
+  function calcOpName(tpl,st){return (tpl?tpl+" ":"")+(CALC_SUF[st]||st)}
+  var CALC_TPL_ICON={"Rotil":"⚙️","Rot başı":"🔩","Rot mili":"📏","Z-Rot":"🔗"};
+  function calcNew(kind,tpl){
     var mk=finMonth||finNowKey(), nw=new Date();
-    var c={t:kind,title:"Yeni hesaplama · "+calcDateLbl(nw.getTime()),ts:nw.getTime(),upd:nw.getTime(),month:mk,days:22,qty:0,lines:[],ops:[],pulled:""};
+    var c={t:kind,title:(tpl?tpl+" senaryosu":"Yeni hesaplama")+" · "+calcDateLbl(nw.getTime()),ts:nw.getTime(),upd:nw.getTime(),month:mk,days:22,qty:0,lines:[],ops:[],pulled:"",tpl:tpl||""};
     if(kind==="real"){c.lines=calcPullLines(mk); c.pulled=mk}
     else{
-      c.ops=["Rotil gövde işleme","Rotil pres aşık baskı","Rotil aşık işleme","Rotil montaj"].map(function(n){return {id:uid(),n:n,d:0,c:0,p:0}});
+      var T=CALC_TPL[tpl]||null;
+      c.ops=T?T.map(function(x){return {id:uid(),n:calcOpName(tpl,x[0]),d:0,c:0,p:0,k:x[1]>1?x[1]:0}}):["Rotil gövde işleme","Rotil pres aşık baskı","Rotil aşık işleme","Rotil montaj"].map(function(n){return {id:uid(),n:n,d:0,c:0,p:0}});
       c.lines=["Maaşlar","Sigortalar","Kira","Elektrik","Yemek","Mazot","Kart","Genel giderler"].map(function(n){return {id:uid(),n:n,v:0,ex:0}});
     }
     calcCur=c; calcDelArm=false; calcPullArm=false; calcOpen=kind==="real"?{g:1}:{}; if(kind==="scen"&&c.ops[0])calcOpen[c.ops[0].id]=1; calcSaveNow(); renderCalc();
@@ -5916,7 +5929,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(scen){
       h+='<div class="fsec">Operasyonlar · '+(c.ops||[]).length+'</div>';
       (c.ops||[]).forEach(function(o){h+=calcOpHtml(c,o)});
-      h+='<button type="button" class="btn ghost" data-copadd style="width:100%">+ Operasyon ekle</button>';
+      h+='<div class="cchips" style="margin:2px 0 8px"><span>Hızlı ekle</span>'+CALC_STAGES.map(function(n){return '<button type="button" data-cqa="'+esc(n)+'">+ '+esc(n)+'</button>'}).join("")+'</div>';
+      h+='<button type="button" class="btn ghost" data-copadd style="width:100%">+ Boş operasyon ekle</button>';
     }
     var gopen=!!calcOpen.g;
     h+='<div class="fsec">Giderler</div><div class="cacc'+(gopen?' open':'')+'" style="--c:#8892A6"><button type="button" class="chead" data-ctog="g"><span class="cdot"></span><span class="ctt"><b>📒 Aylık giderler</b><small data-ghs></small></span><span class="cval" data-ghv></span><span class="cchev">'+(gopen?'⌃':'⌄')+'</span></button>';
@@ -5944,7 +5958,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       h=calcEditorHtml(calcCur); $("calccontent").innerHTML=h; calcPaint(); return;
     }
     $("calcobl").textContent="Kaydedilen hesaplamalar"; $("calcbig").textContent=calcList.length+" hesaplama"; $("calcobs").textContent="geleceğe dönük, güncel giderlerle karışmaz";
-    h+='<div class="ctiles"><button type="button" class="ctile" data-cnew="scen" style="--c:#7B5CC4"><span class="fic" style="--c:#7B5CC4">🧮</span><span class="ftx"><b>Ürün işçilik senaryosu</b><small>Operasyon, makine ve kişiye göre adet başı maliyet</small></span><span class="fchev">+</span></button>'+
+    h+='<div class="fsec" style="margin-top:4px">Hazır şablonla başla</div><div class="ctpls">'+Object.keys(CALC_TPL).map(function(k){return '<button type="button" class="ctpl" data-cnew="scen" data-ctpl="'+esc(k)+'"><span class="fic" style="--c:#7B5CC4">'+CALC_TPL_ICON[k]+'</span><b>'+esc(k)+'</b><small>'+CALC_TPL[k].length+' operasyon'+(k==="Z-Rot"?' · gövde/aşık ×2':'')+'</small></button>'}).join("")+'</div>';
+    h+='<div class="ctiles" style="margin-top:10px"><button type="button" class="ctile" data-cnew="scen" style="--c:#7B5CC4"><span class="fic" style="--c:#7B5CC4">🧮</span><span class="ftx"><b>Boş senaryo</b><small>Operasyonları kendin belirle</small></span><span class="fchev">+</span></button>'+
       '<button type="button" class="ctile" data-cnew="real" style="--c:#46C88C"><span class="fic" style="--c:#46C88C">📊</span><span class="ftx"><b>Güncel giderlerden</b><small>Seçtiğin ayın giderleri ÷ üretilen adet</small></span><span class="fchev">+</span></button></div>';
     h+='<div class="fsec">Kayıtlı hesaplamalar</div>';
     if(!calcList.length)h+='<div class="empty">Henüz kayıtlı hesaplama yok.<br>Yukarıdan ilkini başlat.</div>';
@@ -5964,7 +5979,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("calccontent").addEventListener("click",function(e){
     if(!finOwner())return;
     var b=e.target.closest("button"); if(!b)return; var d=b.dataset;
-    if(d.cnew){calcNew(d.cnew); window.scrollTo(0,0); return}
+    if(d.cnew){calcNew(d.cnew,d.ctpl); window.scrollTo(0,0); return}
     if(d.copen){var c0=calcList.filter(function(x){return x.id===d.copen})[0]; if(c0){calcCur=JSON.parse(JSON.stringify(c0)); calcDelArm=false; calcPullArm=false; calcOpen={}; renderCalc(); window.scrollTo(0,0)} return}
     if(!calcCur)return; var c=calcCur;
     if(d.cback!==undefined){calcSaveNow(); calcCur=null; renderCalc(); window.scrollTo(0,0); return}
@@ -5982,6 +5997,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(d.cq){
       var q=d.cq.split(":"); c[q[0]]=+q[1]; var qi=document.querySelector('[data-cf="'+q[0]+'"]'); if(qi)qi.value=money(+q[1]);
       calcPaint(); calcSaveSoon(); return;
+    }
+    if(d.cqa){
+      var tp=CALC_TPL[c.tpl]||null, kq=0; if(tp)tp.forEach(function(x){if(x[0]===d.cqa&&x[1]>1)kq=x[1]});
+      var nq={id:uid(),n:calcOpName(c.tpl,d.cqa),d:0,c:0,p:0,k:kq}; c.ops.push(nq);
+      Object.keys(calcOpen).forEach(function(k){if(k!=="g")delete calcOpen[k]}); calcOpen[nq.id]=1; calcSaveSoon(); var y2=window.scrollY; renderCalc(); window.scrollTo(0,y2); return;
     }
     if(d.copadd!==undefined){var no={id:uid(),n:"",d:0,c:0,p:0}; c.ops.push(no); Object.keys(calcOpen).forEach(function(k){if(k!=="g")delete calcOpen[k]}); calcOpen[no.id]=1; calcSaveSoon(); renderCalc(); return}
     if(d.cmuse){var mo2=c.ops.filter(function(o){return o.id===d.cmuse})[0], rx=calcCompute(c).ops.filter(function(x){return x.o.id===d.cmuse})[0]; if(mo2&&rx&&rx.needCeil){mo2.m=rx.needCeil; var mi=document.querySelector('[data-co="'+d.cmuse+'"][data-cof="m"]'); if(mi)mi.value=money(rx.needCeil); calcPaint(); calcSaveSoon()} return}
