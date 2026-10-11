@@ -1020,7 +1020,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:12</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:15</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2727,7 +2727,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="emrole">Görev</label><input class="fin" id="emrole" autocomplete="off" list="emroledl" placeholder="ör. CNC operatörü, mühendis, muhasebe, şoför, aşçı" value="'+esc(em.role||"")+'"><datalist id="emroledl">'+["Operatör","Mühendis","Pazarlama","Muhasebe","Şoför","Aşçı / Yemekhane","Temizlik","Güvenlik","Usta başı","Müdür"].map(function(r){return '<option value="'+esc(r)+'">'}).join("")+'</datalist></div>'+
         '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
-        ((empFromFin&&finOwner())?(function(){var mm=empEditId?finMaasOf(empEditId,finMonth||finNowKey()):{n:0,s:0}; return '<div style="border:2px dashed var(--accent);border-radius:14px;padding:10px"><span class="fl">🔒 Maaş ve sigorta (sadece sen görürsün, Elemanlar ekranında görünmez)</span><div style="display:flex;gap:8px;margin-top:6px"><div style="flex:1"><label class="fl" for="emnet">Net maaş (₺)</label><input class="fin" id="emnet" type="number" inputmode="decimal" min="0" step="any" value="'+(mm.n||"")+'" placeholder="0"></div><div style="flex:1"><label class="fl" for="emsig">Sigorta (₺)</label><input class="fin" id="emsig" type="number" inputmode="decimal" min="0" step="any" value="'+(mm.s||"")+'" placeholder="0"></div></div><small style="color:var(--ink2)">'+esc((function(){var a=(finMonth||finNowKey()).split("-"); return AY[+a[1]-1]+" "+a[0]})())+' ayı için kaydedilir, sonraki aylara taşınır</small></div>'})():'')+
+        ((empFromFin&&finOwner())?(function(){var mm=empEditId?finMaasOf(empEditId,finMonth||finNowKey()):{n:0,s:0}; return '<div style="border:2px dashed var(--accent);border-radius:14px;padding:10px"><span class="fl">🔒 Maaş ve sigorta (sadece sen görürsün, Elemanlar ekranında görünmez)</span><div style="display:flex;gap:8px;margin-top:6px"><div style="flex:1"><label class="fl" for="emnet">Net maaş (₺)</label><input class="fin" id="emnet" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(mm.n)+'" placeholder="0"></div><div style="flex:1"><label class="fl" for="emsig">Sigorta (₺)</label><input class="fin" id="emsig" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(mm.s)+'" placeholder="0"></div></div><small style="color:var(--ink2)">'+esc((function(){var a=(finMonth||finNowKey()).split("-"); return AY[+a[1]-1]+" "+a[0]})())+' ayı için kaydedilir, sonraki aylara taşınır</small></div>'})():'')+
         '<div><label class="fl" for="emnote">Not</label><textarea class="fin" id="emnote" rows="2" placeholder="ör. vardiye, iletişim…">'+esc(em.note||"")+'</textarea></div>'+
         '<div class="frow"><button class="btn" id="emsave">Kaydet</button><button class="btn ghost" id="emcancel">Vazgeç</button>'+(empEditId?'<button class="btn danger" id="emdel">Elemanı sil</button>':"")+'</div></div>';
     }else if(sheetMode==="macform"){
@@ -3517,7 +3517,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       eRef.set(edata).catch(function(){});
       // Maaş SADECE "İşçilik ve maliyet"ten açılan formda ve sahibe yazılır; özel fin_ay koleksiyonuna gider, employees belgesine ASLA.
       if(empFromFin&&finOwner()&&$("emnet")){
-        var sn2=cleanNum($("emnet").value,999999999,false), ss2=cleanNum($("emsig").value,999999999,false);
+        var sn2=finMoneyParse($("emnet").value), ss2=finMoneyParse($("emsig").value);
         var fmk=finMonth||finNowKey();
         var fdoc=(finDocs[fmk]=finDocs[fmk]||{}); fdoc.maas=Object.assign({},fdoc.maas); fdoc.maas[eRef.id]={n:sn2,s:ss2};
         var fp={maas:{}}; fp.maas[eRef.id]={n:sn2,s:ss2};
@@ -5469,7 +5469,23 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     $("fintotal").textContent=money(t.total)+" ₺";
     $("finsub").textContent="Maaş "+money(t.n)+" ₺ · Sigorta "+money(t.s)+" ₺ · Diğer "+money(t.man)+" ₺";
   }
-  function finInp(attrs,val){return '<input type="number" inputmode="decimal" min="0" step="any" '+attrs+' value="'+(val?val:"")+'" placeholder="0">'}
+  // Para kutuları: yazarken binlik nokta (60.000), ondalık için virgül (1.234,50)
+  function finMoneyStr(n){n=+n||0; return n>0?money(n):""}
+  function finMoneyParse(v){var n=parseFloat(String(v==null?"":v).replace(/\./g,"").replace(",",".")); return isFinite(n)&&n>0?Math.min(999999999,Math.round(n*100)/100):0}
+  function finMoneyFmt(raw){
+    var t=String(raw).replace(/[^\d,]/g,""), i=t.indexOf(","), ip=i<0?t:t.slice(0,i), dp=i<0?null:t.slice(i+1).replace(/,/g,"").slice(0,2);
+    ip=ip.replace(/^0+(?=\d)/,"").replace(/\B(?=(\d{3})+(?!\d))/g,".");
+    return dp===null?ip:ip+","+dp;
+  }
+  document.addEventListener("input",function(e){
+    var el=e.target; if(!el||!el.dataset||!el.dataset.money)return;
+    var pos=el.selectionStart==null?el.value.length:el.selectionStart, k=el.value.slice(0,pos).replace(/[^\d,]/g,"").length, nv=finMoneyFmt(el.value);
+    if(nv===el.value)return;
+    el.value=nv;
+    var c=0, np=0; while(np<nv.length&&c<k){if(/[\d,]/.test(nv.charAt(np)))c++; np++}
+    try{el.setSelectionRange(np,np)}catch(x){}
+  });
+  function finInp(attrs,val){return '<input type="text" inputmode="decimal" data-money="1" autocomplete="off" '+attrs+' value="'+finMoneyStr(val)+'" placeholder="0">'}
   // ---- İşçilik ve maliyet: yeni görünüm (kartlar + içine girme) ----
   var FIN_ICON={maas:"👥",sigorta:"🛡️",kira:"🏠",elektrik:"⚡",yemek:"🍽️",mazot:"⛽",kart:"💳",genel:"🧾"};
   var FIN_COL={maas:"#2F9E6E",sigorta:"#5EA6E6",kira:"#E8A24B",elektrik:"#E3B93C",yemek:"#E36B6B",mazot:"#9B7BE8",kart:"#3FBFB5",genel:"#8892A6"};
@@ -5634,8 +5650,8 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     return '<div class="shead"><div style="display:flex;align-items:center;gap:12px;min-width:0"><span class="fav" style="--c:'+col+'">'+esc(finInitial(e.name))+'</span><div style="min-width:0"><h2 id="sh-title">'+esc(e.name)+'</h2><small>'+esc(where||"Bölüm / görev girilmedi")+'</small></div></div><button class="btn" id="fdclose">Kapat</button></div>'+
       '<div class="form">'+
       '<div class="fdtotbox"><small>'+esc(finMonLabel(finMonth))+' · aylık maliyet</small><b id="fdtot">'+money(m.n+m.s)+' ₺</b><small id="fdsrc">'+(carried?'önceki aydan taşındı ('+AY[+m.from.split("-")[1]-1]+')':(own?'bu ay girildi':'henüz girilmedi'))+'</small></div>'+
-      '<div class="frow" style="gap:10px"><div style="flex:1"><label class="fl" for="fdnet">Net maaş (₺)</label><input class="fin" id="fdnet" type="number" inputmode="decimal" min="0" step="any" value="'+(m.n||"")+'" placeholder="0"></div>'+
-      '<div style="flex:1"><label class="fl" for="fdsig">Sigorta (₺)</label><input class="fin" id="fdsig" type="number" inputmode="decimal" min="0" step="any" value="'+(m.s||"")+'" placeholder="0"></div></div>'+
+      '<div class="frow" style="gap:10px"><div style="flex:1"><label class="fl" for="fdnet">Net maaş (₺)</label><input class="fin" id="fdnet" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(m.n)+'" placeholder="0"></div>'+
+      '<div style="flex:1"><label class="fl" for="fdsig">Sigorta (₺)</label><input class="fin" id="fdsig" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(m.s)+'" placeholder="0"></div></div>'+
       '<div class="note">Girdiğin tutar '+esc(finMonLabel(finMonth))+' ayı için kaydedilir, sonraki aylara aynen taşınır.</div>'+
       '<div><span class="fl">Son 6 ay (maaş + sigorta)</span><div class="fhist" id="fdhist">'+finHist(finEmpHistVals(e.id),col)+'</div></div>'+
       (secs?'<div class="note">Üretimde çalıştığı bölümler: <b>'+esc(secs)+'</b></div>':'')+
@@ -5646,7 +5662,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(!it)return '<div class="shead"><div><h2 id="sh-title">Bulunamadı</h2></div><button class="btn" id="fdclose">Kapat</button></div>';
     var v=+((finDocs[finMonth]||{}).gider||{})[it[0]]||0, pv=+((finDocs[finShift(finMonth,-1)]||{}).gider||{})[it[0]]||0;
     return '<div class="shead"><div style="display:flex;align-items:center;gap:12px;min-width:0"><span class="fic" style="--c:'+FIN_COL[it[0]]+'">'+FIN_ICON[it[0]]+'</span><div style="min-width:0"><h2 id="sh-title">'+esc(it[1])+'</h2><small>'+esc(finMonLabel(finMonth))+'</small></div></div><button class="btn" id="fdclose">Kapat</button></div>'+
-      '<div class="form"><div><label class="fl" for="fgval">'+esc(finMonLabel(finMonth))+' tutarı (₺)</label><input class="fin" id="fgval" type="number" inputmode="decimal" min="0" step="any" value="'+(v||"")+'" placeholder="0"></div>'+
+      '<div class="form"><div><label class="fl" for="fgval">'+esc(finMonLabel(finMonth))+' tutarı (₺)</label><input class="fin" id="fgval" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(v)+'" placeholder="0"></div>'+
       '<div class="note" id="fgdelta">'+esc(finDelta(v,pv))+'</div>'+
       '<div><span class="fl">Son 6 ay</span><div class="fhist" id="fdhist">'+finHist(finGidVals(it[0]),FIN_COL[it[0]])+'</div></div></div>';
   }
@@ -5976,14 +5992,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("sheet").addEventListener("change",function(e){
     var el=e.target; if(!el||!finOwner())return;
     if(sheetMode==="fempdet"&&(el.id==="fdnet"||el.id==="fdsig")){
-      var eid=finEmpId, nw={n:cleanNum($("fdnet").value,999999999,false),s:cleanNum($("fdsig").value,999999999,false)};
+      var eid=finEmpId, nw={n:finMoneyParse($("fdnet").value),s:finMoneyParse($("fdsig").value)};
       var md=(finDocs[finMonth]=finDocs[finMonth]||{}); md.maas=Object.assign({},md.maas); md.maas[eid]=nw;
       var p={maas:{}}; p.maas[eid]=nw; finSave(p);
       $("fdtot").textContent=money(nw.n+nw.s)+" ₺"; $("fdsrc").textContent="bu ay girildi";
       var ee2=employees.filter(function(x){return x.id===eid})[0]; $("fdhist").innerHTML=finHist(finEmpHistVals(eid),finGCol(ee2?finGi(ee2):-1));
       renderFin();
     }else if(sheetMode==="fgdet"&&el.id==="fgval"){
-      var v=cleanNum(el.value,999999999,false), gd=(finDocs[finMonth]=finDocs[finMonth]||{}); gd.gider=Object.assign({},gd.gider); gd.gider[finGid]=v;
+      var v=finMoneyParse(el.value), gd=(finDocs[finMonth]=finDocs[finMonth]||{}); gd.gider=Object.assign({},gd.gider); gd.gider[finGid]=v;
       var p2={gider:{}}; p2.gider[finGid]=v; finSave(p2);
       $("fgdelta").textContent=finDelta(v,+((finDocs[finShift(finMonth,-1)]||{}).gider||{})[finGid]||0);
       $("fdhist").innerHTML=finHist(finGidVals(finGid),FIN_COL[finGid]);
@@ -5994,7 +6010,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("finTabM").addEventListener("click",function(){finTab="maas";renderFin()});
   $("fincontent").addEventListener("change",function(e){
     var el=e.target; if(!el||el.tagName!=="INPUT")return;
-    var v=cleanNum(el.value,999999999,false);
+    var v=finMoneyParse(el.value);
     if(el.dataset.fg){
       var gd=(finDocs[finMonth]=finDocs[finMonth]||{}); gd.gider=Object.assign({},gd.gider); gd.gider[el.dataset.fg]=v;
       var p={gider:{}}; p.gider[el.dataset.fg]=v; finSave(p);
