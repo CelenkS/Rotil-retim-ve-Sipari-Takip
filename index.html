@@ -692,6 +692,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .floorwrap .flabel{position:absolute;left:14px;bottom:10px;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
 .floorgrid{display:grid;grid-template-columns:repeat(7,minmax(74px,1fr));--rh:118px;--gh:20px;grid-auto-rows:var(--rh);gap:6px;min-width:760px}
 .fbox{border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:800 10.5px var(--font-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px;cursor:pointer;gap:2px;line-height:1.2}
+.fbox{position:relative}
+.fbox:has(.fbd){padding-top:12px;padding-bottom:13px}
+.fbox .fbd{position:absolute;top:3px;left:0;right:0;text-align:center;font:800 9px var(--font-ui);font-style:normal;letter-spacing:.03em;color:var(--dc);pointer-events:none}
+.fbox .fbm{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:3px;pointer-events:none}
+.fbox .fbm u{width:9px;height:9px;border-radius:50%;text-decoration:none;display:block;box-shadow:0 0 0 1.5px var(--surface)}
+.floorwrap.flbig .fbox .fbd{font-size:9.5px;top:5px}
+.floorwrap.flbig .fbox .fbm u{width:10px;height:10px}
+.fllegend{display:flex;flex-direction:column;gap:6px;margin:8px 0;font:700 11.5px var(--font-ui);color:var(--ink2)}
+.fllegend>div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.fllegend b{font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.06em;margin-right:2px}
+.fllegend span{display:inline-flex;align-items:center;gap:5px;color:var(--ink)}
+.fllegend span i{width:9px;height:9px;border-radius:50%;background:var(--dc);display:inline-block}
 .fbox.vert span{writing-mode:vertical-rl;text-orientation:mixed}
 .fbox.empty{border-style:dashed;color:var(--ink2);opacity:.55;background:none}
 .fbox.busy{background:color-mix(in srgb,var(--accent) 20%,var(--surface));border-color:var(--accent)}
@@ -1153,7 +1165,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:29</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:34</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1614,9 +1626,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     for(var i=1;i<=6;i++)out.push({label:"CNC "+i,col:1,row:fr(i),cs:1,rs:1,secs:["cncg","cnca"]});
     for(var i=1;i<=6;i++)out.push({label:"CNC "+(6+i),col:2,row:fr(i),cs:1,rs:1,secs:["cncg","cnca"]});
     for(var i=1;i<=4;i++)out.push({label:"CNC "+(12+i),col:3,row:fr(i),cs:1,rs:1,secs:["cncg","cnca"]});
-    out.push({label:"Hİ 1",col:4,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
-    out.push({label:"Hİ 2",col:5,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
-    out.push({label:"Hİ 3",col:6,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
+    out.push({label:"H.TESTERE 1",col:4,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
+    out.push({label:"H.TESTERE 2",col:5,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
+    out.push({label:"H.TESTERE 3",col:6,row:1,cs:1,rs:5,secs:["cncg","cnca"],vert:true});
     out.push({label:"OVALAMA",col:7,row:1,cs:1,rs:1,secs:["pres"]});
     out.push({label:"D.PRES 1",col:7,row:2,cs:1,rs:1,secs:["pres"]});
     out.push({label:"D.PRES 2",col:7,row:4,cs:1,rs:1,secs:["pres"]});
@@ -3064,7 +3076,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           (flToday?'':'<button type="button" class="tbtn" id="flDayToday" style="margin:6px auto 0;display:block">Bugüne dön</button>'))
         )+
         '<div class="note" style="margin-top:8px">'+(floorScope==="week"?'Kutucuklarda o haftaya ait planlanan/yapılan adet ve siparişten kalan görünür — plan Planlar ekranından veya bir makineye dokunup "Plan yap"tan girilir.':'Kutucuklarda o güne ait planlanan/yapılan adet ve siparişten kalan görünür — plan Planlar ekranından veya bir makineye dokunup "Plan yap"tan girilir.')+'</div>'+
-        flZoomHtml()+
+        flZoomHtml()+floorLegendHtml()+
         '<div class="'+flWrapCls()+'" style="margin-top:2px"><div class="floorgrid"'+floorGridStyle(fsBoxes)+'>'+fsHtml+'</div><div class="flabel">'+esc(sec.name)+'</div></div></div>';
     }else if(sheetMode==="floorall"){
       // Planlar ekranından açılan, TÜM bölümlerin krokisini bir arada gösteren ekran:
@@ -3091,7 +3103,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           (flToday3?'':'<button type="button" class="tbtn" id="flDayToday" style="margin:6px auto 0;display:block">Bugüne dön</button>'))
         )+
         '<div class="note" style="margin-top:8px">'+(floorScope==="week"?'Bir makineye dokunup "Plan yap"tan o haftanın planını gir; kutucuklarda o haftaya ait planlanan/yapılan adet görünür.':'Bir makineye dokunup "Plan yap"tan o günün/haftanın planını gir; kutucuklarda planlanan/yapılan adet ve siparişten kalan görünür.')+'</div>'+
-        flZoomHtml()+
+        flZoomHtml()+floorLegendHtml()+
         faGroups.map(function(g){
           var gname=g.secs.map(secNameOf).join(" + ");
           return '<div class="fl" style="margin-top:18px">'+esc(gname.toUpperCase())+'</div>'+
@@ -6266,9 +6278,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var totalPlan=0,totalDone=0; items.forEach(function(it){totalPlan+=it.planQ; totalDone+=it.wdone});
     return {items:items,totalPlan:totalPlan,totalDone:totalDone};
   }
+  var MAC_DEPT_COL={"Rotil":"#2A6FB0","Rozet":"#B07CE8","Ortak":"#E8A24B"};
   function floorBoxHtml(s,scope){
     var h=floorBoxHtml0(s,scope), fm0=floorMachine(s.label);
-    return (fm0&&macFault(fm0))?h.replace('class="fbox','class="fbox fault'):h;
+    if(!fm0)return h;
+    if(macFault(fm0))h=h.replace('class="fbox','class="fbox fault');
+    var dp=macDeptOf(fm0), dots=macCapsOf(fm0).map(function(c){return '<u style="background:'+c.c+'"></u>'}).join("");
+    var extra='<i class="fbd" style="--dc:'+(MAC_DEPT_COL[dp]||"#888")+'">'+esc(dp.toLocaleUpperCase("tr"))+'</i>'+(dots?'<em class="fbm">'+dots+'</em>':'');
+    var i=h.lastIndexOf('</button>'); return i>-1?h.slice(0,i)+extra+h.slice(i):h;
+  }
+  function floorLegendHtml(){
+    return '<div class="fllegend"><div><b>Bölüm</b>'+MAC_DEPTS.map(function(d){return '<span style="--dc:'+MAC_DEPT_COL[d]+'"><i></i>'+d+'</span>'}).join("")+'</div>'+
+      '<div><b>Yapabildiği ürün</b>'+MAC_CAPS.map(function(c){return '<span style="--dc:'+c.c+'"><i></i>'+esc(c.n)+'</span>'}).join("")+'</div></div>';
   }
   function floorBoxHtml0(s,scope){
     var m=floorMachine(s.label);
@@ -6297,7 +6318,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   }
   function renderFloor(){
     var html=FLOOR_CIVATA.map(floorBoxHtml).join("");
-    $("stflist").innerHTML='<div class="floorwrap"><div class="floorgrid"'+floorGridStyle(FLOOR_CIVATA)+'>'+html+'</div><div class="flabel">Rotil-Civata Bölümü</div></div>';
+    $("stflist").innerHTML=floorLegendHtml()+'<div class="floorwrap"><div class="floorgrid"'+floorGridStyle(FLOOR_CIVATA)+'>'+html+'</div><div class="flabel">Rotil-Civata Bölümü</div></div>';
   }
   function loadJobCat(secId){
     if(jobCatalogCache[secId]){jobCat=jobCatalogCache[secId]; renderSheet(); return}
