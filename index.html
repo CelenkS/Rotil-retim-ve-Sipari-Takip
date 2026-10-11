@@ -1020,7 +1020,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:15</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:19</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1426,6 +1426,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // hedef/performans (yeşil-kırmızı) hesabı henüz burada değil — o, görsel gelip üretim
   // girişi akışının nasıl etiketleneceği netleşince eklenecek.
   var EMP_DEPTS=["Rotil","Rozet","Yönetim","Ofis / İdari İşler"];
+  var EMP_NATS=["Türk","Azeri","Türkmen","İranlı"]; // Türk dışındakiler "yabancı uyruklu" sayılır
   // Alt bölümler (ör. "Rotil CNC", "Rozet Preshane") elle eklenir: ayarlar/bolumler = {list:[{id,g:grup,n:ad}]}
   var subDepts=[], unsubDept=null, empFromFin=false; // empFromFin: eleman formu "İşçilik ve maliyet"ten açıldıysa maaş alanları da çıkar (başka yerde ASLA çıkmaz)
   // Eleman formu: seçilen bölüm grubuna göre alt bölüm seçenekleri
@@ -2725,6 +2726,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           '<div class="frow" style="margin-top:8px;gap:8px"><input class="fin" id="emsubnew" autocomplete="off" placeholder="Yeni alt bölüm ekle (ör. CNC Aşık)" style="flex:1"><button type="button" class="btn ghost" id="emsubadd" style="flex:0 0 auto;padding:0 16px">+ Ekle</button></div>'+
           '<small id="emsubmsg" style="color:var(--ink2);display:block;margin-top:4px">Önce bölüm grubunu seç; alt bölüm listesinde sadece o grubunkiler çıkar. Listede yoksa buraya yazıp ekle.</small></div>'+
         '<div><label class="fl" for="emrole">Görev</label><input class="fin" id="emrole" autocomplete="off" list="emroledl" placeholder="ör. CNC operatörü, mühendis, muhasebe, şoför, aşçı" value="'+esc(em.role||"")+'"><datalist id="emroledl">'+["Operatör","Mühendis","Pazarlama","Muhasebe","Şoför","Aşçı / Yemekhane","Temizlik","Güvenlik","Usta başı","Müdür"].map(function(r){return '<option value="'+esc(r)+'">'}).join("")+'</datalist></div>'+
+        '<div><label class="fl" for="emnat">Uyruk</label><select class="fin" id="emnat"><option value="">Seçilmedi</option>'+EMP_NATS.map(function(n){return '<option value="'+esc(n)+'"'+(em.nat===n?' selected':'')+'>'+esc(n)+'</option>'}).join("")+'</select></div>'+
         '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
         ((empFromFin&&finOwner())?(function(){var mm=empEditId?finMaasOf(empEditId,finMonth||finNowKey()):{n:0,s:0}; return '<div style="border:2px dashed var(--accent);border-radius:14px;padding:10px"><span class="fl">🔒 Maaş ve sigorta (sadece sen görürsün, Elemanlar ekranında görünmez)</span><div style="display:flex;gap:8px;margin-top:6px"><div style="flex:1"><label class="fl" for="emnet">Net maaş (₺)</label><input class="fin" id="emnet" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(mm.n)+'" placeholder="0"></div><div style="flex:1"><label class="fl" for="emsig">Sigorta (₺)</label><input class="fin" id="emsig" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(mm.s)+'" placeholder="0"></div></div><small style="color:var(--ink2)">'+esc((function(){var a=(finMonth||finNowKey()).split("-"); return AY[+a[1]-1]+" "+a[0]})())+' ayı için kaydedilir, sonraki aylara taşınır</small></div>'})():'')+
@@ -3512,7 +3514,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var ename=$("emname").value.trim(); if(!ename){$("emname").focus();return}
       var enote=($("emnote")?$("emnote").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
-      var edata={name:ename,secs:empSecsDraft.slice(),machines:empMacsDraft.slice(),note:enote,dept:(function(){var sb=subOf($("emsub")?$("emsub").value:""); return sb?sb.g:($("emdept")?$("emdept").value:"")})(),sub:($("emsub")?$("emsub").value:""),role:($("emrole")?$("emrole").value.trim():"")};
+      var edata={name:ename,secs:empSecsDraft.slice(),machines:empMacsDraft.slice(),note:enote,dept:(function(){var sb=subOf($("emsub")?$("emsub").value:""); return sb?sb.g:($("emdept")?$("emdept").value:"")})(),sub:($("emsub")?$("emsub").value:""),role:($("emrole")?$("emrole").value.trim():""),nat:($("emnat")?$("emnat").value:"")};
       var eRef=empEditId?db.doc("employees/"+empEditId):db.collection("employees").doc();
       eRef.set(edata).catch(function(){});
       // Maaş SADECE "İşçilik ve maliyet"ten açılan formda ve sahibe yazılır; özel fin_ay koleksiyonuna gider, employees belgesine ASLA.
@@ -5558,7 +5560,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var gi=finNav.g;
       if(gi===null){
         var all=finSumE(employees,finMonth);
-        h+=finStats([["Kişi",employees.length],["Net maaş",money(all.n)+" ₺"],["Sigorta",money(all.s)+" ₺"]]);
+        h+=finStats([["Kişi",employees.length],["Net maaş",money(all.n)+" ₺"],["Sigorta",money(all.s)+" ₺"]])+finNatHtml(employees);
         h+='<button type="button" class="btn" id="finnewemp" style="width:100%;margin-bottom:6px">+ Yeni eleman ekle</button><button type="button" class="btn ghost" id="fdeptmgr" style="width:100%;margin-bottom:6px">⚙ Bölümleri düzenle (grup, alt bölüm)</button><button type="button" class="btn ghost" id="fimport" style="width:100%;margin-bottom:6px">📥 Listeden toplu ekle (isim + maaş)</button>';
         h+='<div class="fsec">Bölüm grupları</div>';
         var order=EMP_DEPTS.map(function(d,i){return i}); if(finEmpsOf(-1).length)order.push(-1);
@@ -5573,7 +5575,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           var ges=finEmpsOf(gi), gs=finSumE(ges,finMonth);
           h+='<button type="button" class="fback" data-fback>‹ Tüm gruplar</button>';
           h+='<div class="fhead"><span class="fic" style="--c:'+col2+'">'+finGIcon(gi)+'</span><div class="ftx"><h2>'+esc(gname)+'</h2><small>Maaşlar › '+esc(gname)+'</small></div></div>';
-          h+=finStats([["Kişi",ges.length],["Net maaş",money(gs.n)+" ₺"],["Sigorta",money(gs.s)+" ₺"]]);
+          h+=finStats([["Kişi",ges.length],["Net maaş",money(gs.n)+" ₺"],["Sigorta",money(gs.s)+" ₺"]])+finNatHtml(ges);
           h+='<div class="fsec">Alt bölümler</div>';
           var rows=subs.map(function(x){return {id:x.id,label:subLabel(x)}});
           if(finEmpsIn(gi,"").length)rows.push({id:"",label:"Alt bölüm seçilmedi"});
@@ -5588,7 +5590,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           var title=sb==="*"?gname:sb===""?"Alt bölüm seçilmedi":(sub?subLabel(sub):gname);
           h+='<button type="button" class="fback" data-fback>‹ '+esc(subs.length?gname:"Tüm gruplar")+'</button>';
           h+='<div class="fhead"><span class="fic" style="--c:'+col2+'">'+(sb==="*"?finGIcon(gi):'📂')+'</span><div class="ftx"><h2>'+esc(title)+'</h2><small>Maaşlar › '+esc(gname)+(title!==gname?' › '+esc(title):'')+'</small></div></div>';
-          h+=finStats([["Kişi",es3.length],["Net maaş",money(ss.n)+" ₺"],["Sigorta",money(ss.s)+" ₺"]]);
+          h+=finStats([["Kişi",es3.length],["Net maaş",money(ss.n)+" ₺"],["Sigorta",money(ss.s)+" ₺"]])+finNatHtml(es3);
           h+='<div class="fsec">Elemanlar</div>';
           if(!es3.length)h+='<div class="empty">Bu bölümde henüz eleman yok.</div>';
           else h+=es3.slice().sort(function(a,b){return finCostE(b)-finCostE(a)||String(a.name).localeCompare(String(b.name),"tr")}).map(finEmpCard).join("");
@@ -5639,6 +5641,15 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       '<div id="fimpprev"></div><button type="button" class="btn" id="fimpgo" disabled style="width:100%">Hepsini ekle</button><div class="note" id="fimpmsg"></div></div>';
   }
   function finImpOpen(){finImp={rows:[],busy:false}; sheetMode="finimp"; $("ov").hidden=false; renderSheet(); finImpPaint()}
+  function finNatCount(es){
+    var c={t:0,a:0,tm:0,i:0,u:0}; es.forEach(function(e){var n=e.nat; if(n==="Türk")c.t++; else if(n==="Azeri")c.a++; else if(n==="Türkmen")c.tm++; else if(n==="İranlı")c.i++; else c.u++});
+    c.f=c.a+c.tm+c.i; return c;
+  }
+  function finNatHtml(es){
+    var c=finNatCount(es), det=[]; if(c.a)det.push("Azeri "+c.a); if(c.tm)det.push("Türkmen "+c.tm); if(c.i)det.push("İranlı "+c.i);
+    return '<div class="fstats" style="grid-template-columns:1fr 1fr 1fr"><div><small>Türk</small><b style="color:#2F9E6E">'+c.t+'</b></div><div><small>Yabancı uyruklu</small><b style="color:#E8A24B">'+c.f+'</b></div><div><small>Belirtilmedi</small><b>'+c.u+'</b></div></div>'+
+      (det.length?'<div class="note" style="margin:-4px 0 12px;text-align:center">Yabancı: '+esc(det.join(" · "))+'</div>':'');
+  }
   function finCostE(e){var m=finMaasOf(e.id,finMonth); return m.n+m.s}
   // ---- eleman / gider detayı (alttan açılan pencere) ----
   function finEmpSheetHtml(){
@@ -5654,6 +5665,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       '<div style="flex:1"><label class="fl" for="fdsig">Sigorta (₺)</label><input class="fin" id="fdsig" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(m.s)+'" placeholder="0"></div></div>'+
       '<div class="note">Girdiğin tutar '+esc(finMonLabel(finMonth))+' ayı için kaydedilir, sonraki aylara aynen taşınır.</div>'+
       '<div><span class="fl">Son 6 ay (maaş + sigorta)</span><div class="fhist" id="fdhist">'+finHist(finEmpHistVals(e.id),col)+'</div></div>'+
+      '<div><span class="fl">Uyruk</span><div class="chiprow">'+EMP_NATS.map(function(n){return '<button type="button" data-fnat="'+esc(n)+'" aria-pressed="'+(e.nat===n)+'">'+esc(n)+'</button>'}).join("")+'</div></div>'+
       (secs?'<div class="note">Üretimde çalıştığı bölümler: <b>'+esc(secs)+'</b></div>':'')+
       '<button type="button" class="btn ghost" id="fdedit" style="width:100%">✎ Bilgilerini düzenle (bölüm, görev, makine…)</button></div>';
   }
@@ -5983,6 +5995,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(sheetMode!=="fempdet"&&sheetMode!=="fgdet")return;
     var t=e.target.closest("button"); if(!t)return;
     if(t.id==="fdclose"){sheetMode="list"; closeSheet(); return}
+    if(t.dataset.fnat!==undefined&&sheetMode==="fempdet"){
+      var ne=employees.filter(function(x){return x.id===finEmpId})[0]; if(!ne||!db)return;
+      var nv=ne.nat===t.dataset.fnat?"":t.dataset.fnat; ne.nat=nv;
+      db.doc("employees/"+ne.id).update({nat:nv}).catch(function(){});
+      [].forEach.call($("sheet").querySelectorAll("[data-fnat]"),function(b){b.setAttribute("aria-pressed",b.dataset.fnat===nv)});
+      renderFin(); return;
+    }
     if(t.id==="fdedit"&&finOwner()){
       var ee=employees.filter(function(x){return x.id===finEmpId})[0]; if(!ee)return;
       empFromFin=true; floorMacId=null; empEditId=ee.id; empSecsDraft=(ee.secs||[]).slice(); empMacsDraft=(ee.machines||[]).slice();
