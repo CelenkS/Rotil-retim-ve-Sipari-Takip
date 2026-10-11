@@ -1020,7 +1020,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 13:19</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 14:12</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5456,7 +5456,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function finTotals(mk){
     var n=0,s=0; employees.forEach(function(e){var m=finMaasOf(e.id,mk); n+=m.n; s+=m.s});
     var g=(finDocs[mk]||{}).gider||{}, man=0; FIN_ITEMS.forEach(function(it){man+=+g[it[0]]||0});
-    return {n:n,s:s,man:man,total:n+s+man};
+    var mn=+g.maasEl||0, ms=+g.sigEl||0; // elle girilen ek maaş / sigorta (eleman kaydı gerekmez)
+    n+=mn; s+=ms;
+    return {n:n,s:s,man:man,mn:mn,ms:ms,total:n+s+man};
   }
   function watchFin(){
     if(unsubFin||!db)return;
@@ -5549,8 +5551,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(finTab==="gider"){
       h+='<div class="fcompbox" id="fcompbox">'+finCompHtml()+'</div>';
       h+='<div class="fsec">Otomatik (Maaşlar sekmesinden)</div>';
-      h+='<div class="fcard"><button type="button" class="fgo" data-ftab="maas"><span class="fic" style="--c:'+FIN_COL.maas+'">'+FIN_ICON.maas+'</span><span class="ftx"><b>Maaşlar (net)</b><small>'+employees.length+' kişi · detay için dokun</small></span><span class="fam">'+money(t.n)+' ₺</span><span class="fchev">›</span></button></div>';
-      h+='<div class="fcard"><button type="button" class="fgo" data-ftab="maas"><span class="fic" style="--c:'+FIN_COL.sigorta+'">'+FIN_ICON.sigorta+'</span><span class="ftx"><b>Sigortalar</b><small>kişi bazında Maaşlar’da</small></span><span class="fam">'+money(t.s)+' ₺</span><span class="fchev">›</span></button></div>';
+      h+='<div class="fcard"><button type="button" class="fgo" data-ftab="maas"><span class="fic" style="--c:'+FIN_COL.maas+'">'+FIN_ICON.maas+'</span><span class="ftx"><b>Maaşlar (net)</b><small>'+employees.length+' kişi'+(t.mn?' · elle +'+money(t.mn)+' ₺':' · detay için dokun')+'</small></span><span class="fam">'+money(t.n)+' ₺</span><span class="fchev">›</span></button></div>';
+      h+='<div class="fcard"><button type="button" class="fgo" data-ftab="maas"><span class="fic" style="--c:'+FIN_COL.sigorta+'">'+FIN_ICON.sigorta+'</span><span class="ftx"><b>Sigortalar</b><small>kişi bazında Maaşlar’da'+(t.ms?' · elle +'+money(t.ms)+' ₺':'')+'</small></span><span class="fam">'+money(t.s)+' ₺</span><span class="fchev">›</span></button></div>';
+      h+='<div class="fsec">Maaş / sigortayı elle de ekleyebilirsin</div>';
+      h+='<div class="fcard"><div class="fgo" style="cursor:default"><span class="fic" style="--c:'+FIN_COL.maas+'">✍️</span><span class="ftx"><b>Elle ek maaş</b><small>eleman kaydı olmadan, toplama eklenir</small></span></div>'+finInp('data-fg="maasEl" aria-label="Elle ek maaş"',+g.maasEl||0)+'</div>';
+      h+='<div class="fcard"><div class="fgo" style="cursor:default"><span class="fic" style="--c:'+FIN_COL.sigorta+'">✍️</span><span class="ftx"><b>Elle ek sigorta</b><small>eleman kaydı olmadan, toplama eklenir</small></span></div>'+finInp('data-fg="sigEl" aria-label="Elle ek sigorta"',+g.sigEl||0)+'</div>';
       h+='<div class="fsec">Elle girdiklerin</div>';
       FIN_ITEMS.forEach(function(it){
         h+='<div class="fcard"><button type="button" class="fgo" data-fgi="'+it[0]+'"><span class="fic" style="--c:'+FIN_COL[it[0]]+'">'+FIN_ICON[it[0]]+'</span><span class="ftx"><b>'+esc(it[1])+'</b><small>'+esc(finDelta(+g[it[0]]||0,+pg[it[0]]||0))+'</small></span></button>'+
@@ -5560,7 +5565,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var gi=finNav.g;
       if(gi===null){
         var all=finSumE(employees,finMonth);
-        h+=finStats([["Kişi",employees.length],["Net maaş",money(all.n)+" ₺"],["Sigorta",money(all.s)+" ₺"]])+finNatHtml(employees);
+        h+=finStats([["Kişi",employees.length],["Net maaş",money(all.n)+" ₺"],["Sigorta",money(all.s)+" ₺"]])+finNatHtml(employees)+((t.mn||t.ms)?'<div class="note" style="margin:-4px 0 12px;text-align:center">Ayrıca Giderler sekmesinde elle girilen: maaş '+money(t.mn)+' ₺ · sigorta '+money(t.ms)+' ₺ (toplam gidere dahil)</div>':'');
         h+='<button type="button" class="btn" id="finnewemp" style="width:100%;margin-bottom:6px">+ Yeni eleman ekle</button><button type="button" class="btn ghost" id="fdeptmgr" style="width:100%;margin-bottom:6px">⚙ Bölümleri düzenle (grup, alt bölüm)</button><button type="button" class="btn ghost" id="fimport" style="width:100%;margin-bottom:6px">📥 Listeden toplu ekle (isim + maaş)</button>';
         h+='<div class="fsec">Bölüm grupları</div>';
         var order=EMP_DEPTS.map(function(d,i){return i}); if(finEmpsOf(-1).length)order.push(-1);
@@ -6041,6 +6046,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
     if(finTab==="gider"&&$("fcompbox"))$("fcompbox").innerHTML=finCompHtml();
     paintFinTotals();
+    if(el.dataset.fg==="maasEl"||el.dataset.fg==="sigEl")setTimeout(function(){var ae=document.activeElement; if(!(ae&&ae.tagName==="INPUT"&&$("fincontent").contains(ae)))renderFin()},350);
   });
 
   $("stfTabEmp").addEventListener("click",function(){stfTab="emp";renderStaff()});
