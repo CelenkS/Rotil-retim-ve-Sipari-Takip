@@ -1153,7 +1153,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:24</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 15:29</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2011,7 +2011,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // Plan listelerinde (planview, Planlar özeti) her satırın altında hangi makine/elemana
   // atandığını gösteren ortak satır.
   function planAssignLine(mid,eid){
-    var mn=mid?((machinesList.filter(function(m){return m.id===mid})[0]||{}).name||""):"";
+    var mn=mid?machineNameOf(mid):"";
     var en=eid?((employees.filter(function(e){return e.id===eid})[0]||{}).name||""):"";
     var mo=mid?machinesList.filter(function(m){return m.id===mid})[0]:null, cps=mo?macCapsOf(mo).map(function(c){return c.n}).join(", "):"";
     return '<div class="osub" style="margin-top:2px">'+(mn?esc(mn)+(mo&&macFault(mo)?' <span style="color:var(--bad);font-weight:800">⚠ arızalı</span>':'')+(cps?' <span style="opacity:.8">('+esc(cps)+')</span>':''):'<span style="color:var(--bad)">makine atanmadı</span>')+(en?' · '+esc(en):'')+'</div>';
@@ -2286,7 +2286,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(ex)ms=ms.concat([ex]);
     }
     return '<option value=""'+(sel===""?" selected":"")+'>Makine yok</option>'+
-      ms.map(function(m){return '<option value="'+esc(m.id)+'"'+(m.id===sel?" selected":"")+'>'+esc(m.name)+'</option>'}).join("");
+      ms.map(function(m){return '<option value="'+esc(m.id)+'"'+(m.id===sel?" selected":"")+'>'+esc(macLabel(m))+'</option>'}).join("");
   }
   // Arama kutusuna bir şey yazılınca artık sadece seçili günün/haftanın içinde değil,
   // TÜM bölüm geçmişinde (kod, müşteri veya kategori adına göre) arıyoruz — sonuçlara
@@ -2374,7 +2374,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       h+='<div class="ghead '+cls+'"><span class="dot"></span>'+esc(k===-1?"Kategori dışı":COLS[k])+'<span class="gsum">'+nf.format(gq)+' adet · '+money(gr)+' ₺</span></div>';
       g.sort(function(a,b){return b.l.q-a.l.q}).forEach(function(x){
         var l=x.l, od=l.o?orders.filter(function(o){return o.id===l.o})[0]:null, img=(od&&od.th)||codeThumb(l.c);
-        var emp=nameOf(employees,l.e), mac=nameOf(machinesList,l.m), tm=fmtTime(l.t);
+        var emp=nameOf(employees,l.e), mac=(function(){var mo=machinesList.filter(function(y){return y.id===l.m})[0]; return mo?macLabel(mo):""})(), tm=fmtTime(l.t);
         h+='<div class="dcard '+cls+'">'+
           (img?'<img class="dcth" alt="" src="'+img+'">':'<div class="dcth ph">'+esc((l.c||"?").charAt(0).toUpperCase())+'</div>')+
           '<div class="dcb"><div class="dcc"><b>'+esc(l.c)+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
@@ -2762,7 +2762,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           (x.pq>0&&macOpts.length?(
             '<div class="plnwrap" style="margin-top:6px"><label class="plnlbl">Hangi makine yapacak</label><select class="fin" data-planmid="'+o.id+'" style="height:40px;font-size:13px">'+
               '<option value="">Seçilmedi</option>'+
-              macOpts.map(function(mm){var cn=macCapsOf(mm).map(function(c){return c.n}).join(", "); return '<option value="'+mm.id+'"'+(asg.mid===mm.id?" selected":"")+'>'+esc(mm.name)+(macFault(mm)?" ⚠ ARIZALI":"")+(cn?" · "+esc(cn):"")+'</option>'}).join("")+
+              macOpts.map(function(mm){var cn=macCapsOf(mm).map(function(c){return c.n}).join(", "); return '<option value="'+mm.id+'"'+(asg.mid===mm.id?" selected":"")+'>'+esc(macLabel(mm))+(macFault(mm)?" ⚠ ARIZALI":"")+(cn?" · "+esc(cn):"")+'</option>'}).join("")+
             '</select>'+(selMac?(macFault(selMac)?'<div class="note" style="color:var(--bad);margin:6px 0 0;font-weight:800">⚠ Bu makine arızalı'+(selMac.faultNote?': '+esc(selMac.faultNote):'')+'</div>':'')+macCapChips(selMac,true):'')+'</div>'+
             '<div class="plnwrap" style="margin-top:6px"><label class="plnlbl">Hangi eleman yapacak</label><select class="fin" data-planeid="'+o.id+'" style="height:40px;font-size:13px">'+
               '<option value="">Seçilmedi</option>'+
@@ -2884,7 +2884,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         '<div><label class="fl" for="emrole">Görev</label><input class="fin" id="emrole" autocomplete="off" list="emroledl" placeholder="ör. CNC operatörü, mühendis, muhasebe, şoför, aşçı" value="'+esc(em.role||"")+'"><datalist id="emroledl">'+["Operatör","Mühendis","Pazarlama","Muhasebe","Şoför","Aşçı / Yemekhane","Temizlik","Güvenlik","Usta başı","Müdür"].map(function(r){return '<option value="'+esc(r)+'">'}).join("")+'</datalist></div>'+
         '<div><label class="fl" for="emnat">Uyruk</label><select class="fin" id="emnat"><option value="">Seçilmedi</option>'+EMP_NATS.map(function(n){return '<option value="'+esc(n)+'"'+(em.nat===n?' selected':'')+'>'+esc(n)+'</option>'}).join("")+'</select></div>'+
         '<div><span class="fl">Çalıştığı bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-empsec="'+x.id+'" aria-pressed="'+(empSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
-        (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(m.name)+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
+        (empMacOptions.length?'<div><span class="fl">Atandığı makine(ler)</span><div class="chiprow">'+empMacOptions.map(function(m){return '<button type="button" data-empmac="'+m.id+'" aria-pressed="'+(empMacsDraft.indexOf(m.id)>-1)+'">'+esc(macLabel(m))+'</button>'}).join("")+'</div></div>':(empSecsDraft.length?'<div class="note">Bu bölüm(ler)de henüz makine tanımlı değil.</div>':''))+
         ((empFromFin&&finOwner())?(function(){var mm=empEditId?finMaasOf(empEditId,finMonth||finNowKey()):{n:0,s:0}; return '<div style="border:2px dashed var(--accent);border-radius:14px;padding:10px"><span class="fl">🔒 Maaş ve sigorta (sadece sen görürsün, Elemanlar ekranında görünmez)</span><div style="display:flex;gap:8px;margin-top:6px"><div style="flex:1"><label class="fl" for="emnet">Net maaş (₺)</label><input class="fin" id="emnet" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(mm.n)+'" placeholder="0"></div><div style="flex:1"><label class="fl" for="emsig">Sigorta (₺)</label><input class="fin" id="emsig" type="text" inputmode="decimal" data-money="1" autocomplete="off" value="'+finMoneyStr(mm.s)+'" placeholder="0"></div></div><small style="color:var(--ink2)">'+esc((function(){var a=(finMonth||finNowKey()).split("-"); return AY[+a[1]-1]+" "+a[0]})())+' ayı için kaydedilir, sonraki aylara taşınır</small></div>'})():'')+
         '<div><label class="fl" for="emnote">Not</label><textarea class="fin" id="emnote" rows="2" placeholder="ör. vardiye, iletişim…">'+esc(em.note||"")+'</textarea></div>'+
         '<div class="frow"><button class="btn" id="emsave">Kaydet</button><button class="btn ghost" id="emcancel">Vazgeç</button>'+(empEditId?'<button class="btn danger" id="emdel">Elemanı sil</button>':"")+'</div></div>';
@@ -2893,6 +2893,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       html+='<div class="shead"><div><h2 id="sh-title">'+(macEditId?"Makineyi düzenle":"Yeni makine")+'</h2><small>Ad ve bölüm(ler) — aynı makine birden fazla bölümde (ör. ortak bir CNC havuzu) kullanılıyorsa hepsini seç</small></div></div>'+
         '<div class="form">'+
         '<div><label class="fl" for="mcname">Makine adı</label><input class="fin" id="mcname" autocomplete="off" placeholder="ör. CNC 1" value="'+esc(mc.name)+'"></div>'+
+        '<div><label class="fl" for="mcdept">Hangi bölümün makinesi</label><select class="fin" id="mcdept">'+MAC_DEPTS.map(function(d){return '<option value="'+d+'"'+(macDeptOf(mc)===d?" selected":"")+'>'+d+(d==="Ortak"?" (Rotil + Rozet ortak)":"")+'</option>'}).join("")+'</select></div>'+
         '<div><label class="fl" for="mctype">Makine türü (makine bölümü)</label><input class="fin" id="mctype" autocomplete="off" list="mctypedl" placeholder="ör. CNC, Transfer, Testere, Pres — boşsa addan bulunur" value="'+esc(mc.tp||"")+'"><datalist id="mctypedl">'+(function(){var seen={},o=["CNC","Transfer","Testere","Pres","Ovalama"]; machinesList.forEach(function(m){o.push(macTypeOf(m))}); return o.filter(function(x){var k=fold(x); if(seen[k])return false; seen[k]=1; return true}).map(function(x){return '<option value="'+esc(x)+'">'}).join("")})()+'</datalist></div>'+
         '<div><span class="fl">Bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-mcsec="'+x.id+'" aria-pressed="'+(mcSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         '<div><label class="fl" for="mcbrand">Marka</label><input class="fin" id="mcbrand" autocomplete="off" placeholder="ör. Fanuc Series 0i-TF Plus" value="'+esc(mc.brand||"")+'"></div>'+
@@ -2926,8 +2927,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
         var fmImg=jobThumb(fm.job);
         var fmSt=floorScope==="day"?jobDayStats(fm,floorDayIso()):null, fmToday=floorDayIso()===todayIso, fmDayLbl=fmToday?"Bugün":isoDayLabel(floorDayIso());
         var fmWst=floorScope==="week"?jobWeekStats(fm,floorWeekMonday()):null, fmWkLbl=isoWeekLabel(floorWeekMonday());
-        html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(fm.name)+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div></div>'+
+        html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(macLabel(fm))+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div></div>'+
           '<div class="form">'+
+          '<div class="capsel" style="margin:0 0 8px">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mddept="'+d+'" style="--cc:'+(d==="Rotil"?"#2A6FB0":d==="Rozet"?"#B07CE8":"#E8A24B")+'" aria-pressed="'+(macDeptOf(fm)===d)+'">'+d+'</button>'}).join("")+'</div>'+
           '<div class="mdst"><button type="button" data-mdst="ok" aria-pressed="'+!macFault(fm)+'">● Çalışıyor</button><button type="button" data-mdst="ariza" aria-pressed="'+macFault(fm)+'">⚠ Arızalı</button></div>'+
           (macFault(fm)?'<div><label class="fl" for="mdfnote">Arıza notu — ne sorunu var?</label><textarea class="fin" id="mdfnote" rows="2" placeholder="ör. spindle ısınıyor, yağ kaçırıyor, parça bekleniyor…">'+esc(fm.faultNote||"")+'</textarea>'+(fm.faultTs?'<small style="color:var(--ink2)">Arıza başlangıcı: '+esc(new Date(fm.faultTs).toLocaleDateString("tr-TR",{day:"numeric",month:"long"}))+'</small>':"")+'</div>':"")+
           '<div><label class="fl" for="mdnote">Makine notu</label><textarea class="fin" id="mdnote" rows="2" placeholder="ör. bakım tarihi, ayar bilgisi…">'+esc(fm.note||"")+'</textarea></div>'+
@@ -2988,7 +2990,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var secsOpt=(fm2&&fm2.secs)||[];
       var jq=fold(jobSearch.trim());
       var jSecObj=SECTIONS.filter(function(x){return x.id===jobDraftSec})[0]; var jSc=jSecObj?jSecObj.h1:"#3B78E0";
-      html+='<div class="shead"><div><h2 id="sh-title">İş ata</h2><small>'+esc(fm2?fm2.name:"")+'</small></div></div>'+
+      html+='<div class="shead"><div><h2 id="sh-title">İş ata</h2><small>'+esc(fm2?macLabel(fm2):"")+'</small></div></div>'+
         '<div class="form">'+
         (secsOpt.length>1?'<div><span class="fl">Bölüm</span><div class="chiprow">'+secsOpt.map(function(sid){return '<button type="button" data-jsec="'+sid+'" aria-pressed="'+(jobDraftSec===sid)+'">'+esc(secNameOf(sid))+'</button>'}).join("")+'</div></div>':'');
       if(jobDraftSec){
@@ -3041,7 +3043,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }else if(sheetMode==="opassign"){
       var fm3=floorMacId?machinesList.filter(function(x){return x.id===floorMacId})[0]:null;
       var cand=employees.filter(function(e){return !fm3||!fm3.secs||!fm3.secs.length||(e.secs||[]).some(function(s){return fm3.secs.indexOf(s)>-1})});
-      html+='<div class="shead"><div><h2 id="sh-title">Operatör ata</h2><small>'+esc(fm3?fm3.name:"")+'</small></div></div>'+
+      html+='<div class="shead"><div><h2 id="sh-title">Operatör ata</h2><small>'+esc(fm3?macLabel(fm3):"")+'</small></div></div>'+
         '<div class="form"><div class="chiprow" style="flex-wrap:wrap">'+cand.map(function(e){return '<button type="button" data-optog="'+e.id+'" aria-pressed="'+(opAssignDraft.indexOf(e.id)>-1)+'">'+esc(e.name)+'</button>'}).join("")+'</div>'+
         (cand.length?'':'<div class="note">Bu bölüm(ler)de tanımlı eleman yok.</div>')+
         '<div class="frow" style="margin-top:12px"><button class="btn" id="opsave">Kaydet</button><button class="btn ghost" id="opcancel">Vazgeç</button></div></div>';
@@ -3707,7 +3709,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       var mcnote=($("mcnote")?$("mcnote").value.trim():"");
       var mcbrand=($("mcbrand")?$("mcbrand").value.trim():""), mcmodel=($("mcmodel")?$("mcmodel").value.trim():""), mcyear=($("mcyear")?$("mcyear").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
-      var mcdata={name:mcname,tp:($("mctype")?$("mctype").value.trim():""),secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
+      var mcdata={name:mcname,dept:($("mcdept")?$("mcdept").value:"Rotil"),tp:($("mctype")?$("mctype").value.trim():""),secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
       // Makinede henüz floorSlot yoksa (ör. toplu eklenen eski CNC 1-18 gibi, hâlâ ada göre
       // eşleşiyordu) — hangi ekrandan düzenlendiğine bakmaksızın (kroki kartından VEYA düz
       // Makineler listesinden "düzenle"), eski adı bir kroki kutusu etiketiyle birebir
@@ -3750,7 +3752,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       if(!macBulkSecsDraft.length){$("stfstatus").textContent="En az bir bölüm seç";return}
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
       t.disabled=true; t.textContent="Ekleniyor…";
-      Promise.all(names.map(function(nm){return db.collection("machines").add({name:nm,secs:macBulkSecsDraft.slice(),note:""})})).then(function(){
+      Promise.all(names.map(function(nm){return db.collection("machines").add({name:nm,dept:"Rotil",secs:macBulkSecsDraft.slice(),note:""})})).then(function(){
         closeSheet();
       }).catch(function(){
         t.disabled=false; t.textContent="Hepsini ekle"; $("stfstatus").textContent="Bazıları eklenemedi, tekrar dene";
@@ -3775,7 +3777,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       t.disabled=true; t.textContent="Oluşturuluyor…";
       // floorSlot: kroki kutusuyla kalıcı bağ — makinenin adı sonradan değişse/düzenlense
       // bile (Makine kartını aç → ad, marka, model vs.) kutu bu makineyi bulmaya devam eder.
-      db.collection("machines").add({name:floorLabel,secs:floorSecsForNew.slice(),note:"",floorSlot:floorLabel}).then(function(ref){
+      db.collection("machines").add({name:floorLabel,dept:"Rotil",secs:floorSecsForNew.slice(),note:"",floorSlot:floorLabel}).then(function(ref){
         floorMacId=ref.id; floorLabel=null; renderSheet();
       }).catch(function(){t.disabled=false; t.textContent='+ "'+floorLabel+'" makinesini oluştur';});
       return;
@@ -5563,7 +5565,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   // aşık işleniyor) — bu yüzden makinenin bölümü "sec" (tekil) değil "secs" (liste).
   function machinesInSec(secId){return machinesList.filter(function(m){return (m.secs||[]).indexOf(secId)>-1})}
   function secNameOf(id){var s=SECTIONS.filter(function(x){return x.id===id})[0]; return s?s.name:id}
-  function machineNameOf(id){var m=machinesList.filter(function(x){return x.id===id})[0]; return m?m.name:""}
+  function machineNameOf(id){var m=machinesList.filter(function(x){return x.id===id})[0]; return m?macLabel(m):""}
   function computeEmpPerf(){
     if(empPerfBusy)return;
     if(!employees.length)return;
@@ -6143,6 +6145,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       (chips.length?'<div class="stfchips">'+chips.slice(0,4).map(function(c){return '<span>'+esc(c)+'</span>'}).join("")+(chips.length>4?'<span>+'+(chips.length-4)+'</span>':'')+'</div>':'')+'</div>'+pfHtml+
       '<span class="fchev">›</span></button><button type="button" class="fedit" data-empedit="'+e.id+'" aria-label="Düzenle">✎</button></div>';
   }
+  var MAC_DEPTS=["Rotil","Rozet","Ortak"];
+  function macDeptOf(m){return (m&&m.dept)||"Rotil"}
+  function macLabel(m){return m?macDeptOf(m)+" - "+(m.name||""):""}
   function macFault(m){return m&&m.st==="ariza"}
   function macTypeOf(m){var t=String(m.tp||"").trim(); if(!t)t=String(m.name||"").replace(/[\s\-_.]*\d+\s*$/,"").trim()||String(m.name||"Diğer").trim()||"Diğer"; return t.toLocaleUpperCase("tr")}
   function macTypeKey(m){return fold(macTypeOf(m))}
@@ -6153,7 +6158,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     var sub=bad&&m.faultNote?'<small style="color:var(--bad);font-weight:800;white-space:normal">⚠ '+esc(m.faultNote)+'</small>':'<small>'+esc(meta||secs.map(secNameOf).join(" + ")||"Bölüm atanmadı")+'</small>';
     var nt=(!bad||!m.faultNote)&&m.note?'<small style="white-space:normal">📝 '+esc(m.note)+'</small>':'';
     return '<div class="fcard'+(bad?' mbad':'')+'"><button type="button" class="fgo" data-macdet="'+m.id+'"><div class="fic" style="--c:'+(bad?"#E36B6B":col)+'">'+(bad?"⚠️":"⚙️")+'</div>'+
-      '<div class="ftx"><b>'+esc(m.name)+'</b>'+sub+nt+macCapChips(m)+'</div>'+
+      '<div class="ftx"><b>'+esc(macLabel(m))+'</b>'+sub+nt+macCapChips(m)+'</div>'+
       '<span class="stfpill '+(bad?'bad':'on')+'">'+(bad?"Arızalı":"Çalışıyor")+'</span><span class="fchev">›</span></button>'+
       '<button type="button" class="fedit" data-macedit="'+m.id+'" aria-label="Düzenle">✎</button></div>';
   }
@@ -6370,17 +6375,18 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
           '<div class="mb"><u style="width:'+Math.round(ok/t.all.length*100)+'%"></u></div></button>';
       }).join(""):"";
       var secsUsed=SECTIONS.filter(function(x){return machinesList.some(function(m){return (m.secs||[]).indexOf(x.id)>-1})});
-      var mf=[{k:"",l:"Hepsi",n:machinesList.length},{k:"__ok",l:"Çalışıyor",n:nok},{k:"__bad",l:"Arızalı",n:nbad}].concat(MAC_CAPS.map(function(c){return {k:"cap:"+c.id,l:c.n,n:machinesList.filter(function(m){return (m.caps||[]).indexOf(c.id)>-1}).length}})).concat(secsUsed.map(function(x){return {k:x.id,l:x.name}}));
+      var mf=[{k:"",l:"Hepsi",n:machinesList.length},{k:"__ok",l:"Çalışıyor",n:nok},{k:"__bad",l:"Arızalı",n:nbad}].concat(MAC_DEPTS.map(function(d){return {k:"dp:"+d,l:d,n:machinesList.filter(function(m){return macDeptOf(m)===d}).length}})).concat(MAC_CAPS.map(function(c){return {k:"cap:"+c.id,l:c.n,n:machinesList.filter(function(m){return (m.caps||[]).indexOf(c.id)>-1}).length}})).concat(secsUsed.map(function(x){return {k:x.id,l:x.name}}));
       if(stfMF.indexOf("tp:")!==0&&mf.every(function(x){return x.k!==stfMF}))stfMF="";
       $("stffilt").innerHTML=stfFiltHtml(mf,stfMF,"data-smf");
       var ml=machinesList.filter(function(m){
         if(stfMF==="__ok"&&macFault(m))return false;
         if(stfMF==="__bad"&&!macFault(m))return false;
         if(stfMF.indexOf("tp:")===0){if(macTypeKey(m)!==stfMF.slice(3))return false}
+        else if(stfMF.indexOf("dp:")===0){if(macDeptOf(m)!==stfMF.slice(3))return false}
         else if(stfMF.indexOf("cap:")===0){if((m.caps||[]).indexOf(stfMF.slice(4))<0)return false}
         else if(stfMF&&stfMF.indexOf("__")!==0&&(m.secs||[]).indexOf(stfMF)<0)return false;
         if(!q)return true;
-        return fold([m.name,m.brand,m.model,m.note,m.faultNote,macTypeOf(m),macCapsOf(m).map(function(c){return c.n}).join(" "),(m.secs||[]).map(secNameOf).join(" ")].join(" ")).indexOf(q)>-1;
+        return fold([macLabel(m),m.brand,m.model,m.note,m.faultNote,macTypeOf(m),macCapsOf(m).map(function(c){return c.n}).join(" "),(m.secs||[]).map(secNameOf).join(" ")].join(" ")).indexOf(q)>-1;
       });
       var html="";
       torder.forEach(function(k){
@@ -6566,6 +6572,9 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("sheet").addEventListener("click",function(e){
     if(sheetMode!=="macdetail"||!floorMacId)return;
     var t=e.target.closest("button"); if(!t)return;
+    if(t.dataset.mddept!==undefined){
+      macSaveFields(floorMacId,{dept:t.dataset.mddept}); renderSheet(); if(!$("staff").hidden)renderStaff(); return;
+    }
     if(t.dataset.mdcap!==undefined){
       var cm=machinesList.filter(function(x){return x.id===floorMacId})[0]; if(!cm)return;
       var cl=(cm.caps||[]).slice(), ci=cl.indexOf(t.dataset.mdcap); if(ci>-1)cl.splice(ci,1); else cl.push(t.dataset.mdcap);
