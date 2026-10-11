@@ -650,6 +650,22 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .mpitem.added{opacity:.55;border-color:#2FA66E}
 .mpok b{color:#2FA66E!important}
 .mpi1{display:flex;align-items:center;gap:10px}
+.cdchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cdchip{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.12);color:#fff;border-radius:99px;padding:4px 10px;font:700 11.5px var(--font-ui);cursor:pointer}
+.cdchip:hover{background:rgba(255,255,255,.22)}
+.cdrow{cursor:default}
+.pvbadge{flex:0 0 auto;align-self:flex-start;border-radius:99px;padding:5px 12px;background:var(--soft);border:1px solid var(--line);font:800 13px var(--font-head);color:var(--ink2)}
+.pvbadge.ok{background:color-mix(in srgb,var(--good) 16%,var(--surface));border-color:color-mix(in srgb,var(--good) 40%,var(--line));color:var(--good)}
+.pvcmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.pvc{border-radius:14px;padding:9px 10px 8px;background:var(--soft);border:1px solid var(--line);text-align:center}
+.pvc span{display:block;font:800 10px var(--font-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.pvc b{display:block;margin-top:2px;font:800 22px/1.1 var(--font-head);color:var(--ink)}
+.pvc.dn{background:color-mix(in srgb,var(--sc,var(--accent)) 14%,var(--surface));border-color:color-mix(in srgb,var(--sc,var(--accent)) 38%,var(--line))}
+.pvc.kl.ok b{color:var(--good)}
+.oc2 .pvcmp+.pgb{margin-top:10px}
+.pvsl{margin:12px 0 0;font:700 10.5px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.oc2 .pvsl+.mpst{margin-top:6px}
+.dcprog .mpst{margin-top:10px}
 .mpst{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
 .mps{position:relative;border:1.5px solid var(--line);border-radius:10px;padding:5px 7px 8px;overflow:hidden;background:var(--surface) linear-gradient(var(--line),var(--line)) bottom/100% 3px no-repeat}
 .mps span{display:block;font:700 10.5px var(--font-ui);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1395,7 +1411,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:40</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 16:48</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1788,7 +1804,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   var now=new Date();
   var todayIso=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
   var Y=now.getFullYear(), M=now.getMonth();
-  var selected=todayIso, brkTab="urun", lineQ="", lineQFor=null, catDrill=null, codeDrill=null;
+  var selected=todayIso, brkTab="urun", lineQ="", lineQFor=null, catDrill=null, codeDrill=null, custDrill=null;
   ordY=now.getFullYear(); ordM=now.getMonth();
   try{brkTab=localStorage.getItem("montaj:brk")==="mus"?"mus":"urun"}catch(e){}
   var days={}, rev={}, lns={};       // manual counts, manual revenue, product lines per day
@@ -1990,6 +2006,41 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     if(match&&match.img)return match.img;
     var om=orders.filter(function(o){return (o.code||"").toLowerCase().trim()===cd&&o.th})[0];
     return (om&&om.th)||"";
+  }
+  function bkRowCust(color,name,key,a,r,pct,t){
+    return '<button type="button" class="bk bkcat" data-cust="'+esc(key)+'"><span class="dot" style="background:'+color+'"></span><span class="nm">'+esc(name)+'</span>'+
+      '<span class="sub">'+nf.format(a)+' adet · '+money(r)+' ₺</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(a?'<small>ort. '+money(r/a)+' ₺</small>':'')+'<i class="chevmini">›</i></span></button>';
+  }
+  // Müşteriye göre: bir müşteriye dokununca o müşterinin seçili dönemdeki ürünleri (kod bazında), hangi günlerde
+  // ne kadar üretildiği ve siparişlerinin işlem durumu listelenir.
+  function custDrillHtml(name,ds,cu,t,byR){
+    var byCode={}, order=[], manQ=0, manR=0;
+    ds.forEach(function(iso){
+      if(name==="")manQ+=sum(mvals(iso)), manR+=sum(mrvals(iso));
+      lines(iso).forEach(function(l){
+        if((l.u||"")!==name)return;
+        var key=l.c+"|"+l.k;
+        if(!byCode[key]){byCode[key]={c:l.c,k:l.k,q:0,r:0,days:{},last:iso,o:{}};order.push(key)}
+        var e=byCode[key]; e.q+=l.q; e.r+=l.q*l.p; e.days[iso]=(e.days[iso]||0)+l.q; if(iso>e.last)e.last=iso; if(l.o)e.o[l.o]=1;
+      });
+    });
+    order.sort(function(x,y){return byCode[y].q-byCode[x].q});
+    var c=cu[name]||{a:0,r:0}, pct=t?(byR?c.r:c.a)/t*100:0, col=custColor(name);
+    var head='<button type="button" class="catback" id="custDrillBack">‹ Tüm müşteriler</button>'+
+      '<div class="bk"><span class="dot" style="background:'+col+'"></span><span class="nm">'+esc(name||"Müşteri belirtilmemiş")+'</span>'+
+      '<span class="sub">'+nf.format(c.a)+' adet · '+money(c.r)+' ₺ · '+order.length+' ürün</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(c.a?'<small>ort. '+money(c.r/c.a)+' ₺</small>':'')+'</span></div>';
+    var rows=order.map(function(key){
+      var e=byCode[key], imgSrc=codeThumb(e.c), img=imgSrc?'<img class="ithumb" alt="" src="'+imgSrc+'">':'';
+      var ds2=Object.keys(e.days).sort();
+      var chips=ds2.map(function(iso){return '<button type="button" class="cdchip" data-cjump="'+iso+'">'+(+iso.slice(8))+' '+AY[+iso.slice(5,7)-1]+' · '+nf.format(e.days[iso])+'</button>'}).join("");
+      var ords=ordersOfCode(e.c).filter(function(o){return fold(o.cust||"")===fold(name||"")}), strip="";
+      if(ords.length)strip='<div class="snl"><div class="nlq"><span>sipariş</span><b>'+nf.format(ords.reduce(function(a,o){return a+o.qty},0))+' adet</b>'+(ords.length>1?'<em>'+ords.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(ords,sec.id)+'</div>';
+      return '<div class="drow cdrow"><div class="ltop">'+img+'<span class="code">'+esc(e.c)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
+        '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(COLS[e.k]||"Kategori dışı")+' · ort. '+money(e.r/(e.q||1))+' ₺ · son '+fmtD(e.last)+'</div>'+
+        '<div class="cdchips">'+chips+'</div>'+strip+'</div>';
+    }).join("");
+    if(manQ)rows+='<div class="drow"><div class="ltop"><span class="code">Elle girilen toplam</span><span class="amt">'+money(manR)+' ₺</span></div><div class="dsub">'+nf.format(manQ)+' adet · ürün bazında detay yok</div></div>';
+    return head+(rows||'<div class="empty" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)">Bu dönemde bu müşteriden üretim kaydı yok.</div>');
   }
   function bkRow(color,name,a,r,pct,t){
     return '<div class="bk"><span class="dot" style="background:'+color+'"></span><span class="nm">'+esc(name)+'</span>'+
@@ -2209,10 +2260,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     order.forEach(function(n){
       var val=byR?cu[n].r:cu[n].a, c=custColor(n);
       citems.push({v:val,c:c});
-      chtml+=bkRow(c,n||"Müşteri belirtilmemiş",cu[n].a,cu[n].r,t?val/t*100:0,t);
+      chtml+=bkRowCust(c,n||"Müşteri belirtilmemiş",n,cu[n].a,cu[n].r,t?val/t*100:0,t);
     });
     bar($("cbar"),citems,t);
-    $("clegend").innerHTML=chtml||'<div class="bk none">Bu dönemde kayıt yok.</div>';
+    if(custDrill!==null&&cu[custDrill]===undefined)custDrill=null;
+    $("clegend").innerHTML=custDrill!==null?custDrillHtml(custDrill,ds,cu,t,byR):(chtml||'<div class="bk none">Bu dönemde kayıt yok.</div>');
     renderNeed(); renderPlanBox();
   }
   function renderPlanBox(){
@@ -2356,7 +2408,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     }
   }
   function setBrk(t){
-    brkTab=t; catDrill=null; codeDrill=null;
+    brkTab=t; catDrill=null; codeDrill=null; custDrill=null;
     $("tUrun").setAttribute("aria-pressed",t==="urun"); $("tMus").setAttribute("aria-pressed",t==="mus");
     $("bUrun").hidden=(t!=="urun"); $("bMus").hidden=(t!=="mus");
     try{localStorage.setItem("montaj:brk",t)}catch(e){}
@@ -2377,6 +2429,11 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   $("pGun").addEventListener("click",function(){setPeriod("gun",true)});
   $("pHafta").addEventListener("click",function(){setPeriod("hafta",true)});
   $("pAy").addEventListener("click",function(){setPeriod("ay",true)});
+  $("clegend").addEventListener("click",function(e){
+    if(e.target.closest("#custDrillBack")){custDrill=null; renderHero(); return}
+    var cj=e.target.closest("[data-cjump]"); if(cj){jumpToDate(cj.dataset.cjump); return}
+    var cb=e.target.closest(".bkcat[data-cust]"); if(cb){custDrill=cb.dataset.cust; renderHero()}
+  });
   $("legend").addEventListener("click",function(e){
     var back=e.target.closest("#catDrillBack");
     if(back){catDrill=null; codeDrill=null; renderHero(); return}
@@ -2605,7 +2662,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
     });
   }
   function jumpToDate(iso){
-    lineQ=""; var ls0=$("lsearch"); if(ls0)ls0.value=""; catDrill=null; codeDrill=null;
+    lineQ=""; var ls0=$("lsearch"); if(ls0)ls0.value=""; catDrill=null; codeDrill=null; custDrill=null;
     var y=+iso.slice(0,4), m=+iso.slice(5,7)-1, changed=(y!==Y||m!==M);
     if(changed)flushNow();
     Y=y; M=m; selected=iso; lineQFor=iso;
@@ -2625,7 +2682,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
   function lineOrdHtml(l){
     var od=l.o?orders.filter(function(x){return x.id===l.o})[0]:null; if(!od)return "";
     var si=stageIdx(sec.id), nd=need(od,sec.id), mu=muOf(od,si), dn=doneOf(od.id,sec.id).q, rem=stClosed(od,si)?0:Math.max(0,nd-dn), pc=nd?Math.min(100,Math.round(dn/nd*100)):0;
-    return '<div class="dcprog"><div class="dcpt"><span>Sipariş hedefi <b>'+nf.format(nd)+'</b>'+(mu>1?' ('+nf.format(od.qty)+'×'+mu+')':'')+' · toplam yapılan <b>'+nf.format(dn)+'</b></span><span class="'+(rem?'':'ok')+'"><b>'+(rem?'Kalan '+nf.format(rem):'✓ Tamam')+'</b></span></div><div class="dcpb"><i style="width:'+pc+'%"></i></div></div>';
+    return '<div class="dcprog"><div class="dcpt"><span>Sipariş hedefi <b>'+nf.format(nd)+'</b>'+(mu>1?' ('+nf.format(od.qty)+'×'+mu+')':'')+' · toplam yapılan <b>'+nf.format(dn)+'</b></span><span class="'+(rem?'':'ok')+'"><b>'+(rem?'Kalan '+nf.format(rem):'✓ Tamam')+'</b></span></div><div class="dcpb"><i style="width:'+pc+'%"></i></div>'+mpStagesHtml(od,sec.id)+'</div>';
   }
   function daySummaryHtml(ls){
     var made=[], none=[]; ls.forEach(function(l,i){(l.q>0?made:none).push({l:l,i:i})});
@@ -3090,11 +3147,14 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       html+='<div class="needrow" style="--c:'+sec.h1+'"><span class="nn"><span class="dot" style="background:'+sec.h1+'"></span>Toplam</span><span class="nv">'+nf.format(pr6.dq)+' / '+nf.format(pr6.tq)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc6)+'%"></i></div><div class="nsub">%'+pc6+' tamamlandı'+(pr6.tp?' · '+money(pr6.dr)+' / '+money(pr6.tp)+' ₺':'')+'</div></div>';
       html+='<div class="items" style="margin-top:12px">'+(pr6.items.length?pr6.items.map(function(it){
         var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
+        var ikal=Math.max(0,it.plan-it.done), iover=Math.max(0,it.done-it.plan);
         return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
           (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
           '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
-          '<div class="oq2">planlanan<b>'+nf.format(it.plan)+'</b></div></div>'+
-          '<div class="pg"><div class="pgt"><span>yapılan '+nf.format(it.done)+' / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div></div>'+
+          '<span class="pvbadge'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div>'+
+          '<div class="pvcmp"><div class="pvc"><span>Planlanan</span><b>'+nf.format(it.plan)+'</b></div><div class="pvc dn"><span>Yapılan</span><b>'+nf.format(it.done)+'</b></div><div class="pvc kl'+(fin?' ok':'')+'"><span>'+(iover?'Fazla':'Kalan')+'</span><b>'+nf.format(iover||ikal)+'</b></div></div>'+
+          '<div class="pgb"><i style="width:'+ipc+'%"></i></div>'+
+          '<div class="pvsl">Siparişin tüm işlemleri · toplam yapılan / gereken</div>'+mpStagesHtml(o,sec.id)+
           '<button type="button" class="planrm" data-plrm="'+o.id+'">Plandan sil</button>'+
           '</div>';
       }).join(""):'<div class="empty">Henüz plan girilmedi.<br>“+ Plana ekle” ile başla.</div>')+'</div>';
@@ -8622,7 +8682,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
       try{curEmp=localStorage.getItem(secPrefix(sec.id)+"emp")||""}catch(e){curEmp=""}
       try{curMac=localStorage.getItem(secPrefix(sec.id)+"mac")||""}catch(e){curMac=""}
       Y=now.getFullYear(); M=now.getMonth(); selected=todayIso; promptShown=false; sheetMode="list";
-      gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null;
+      gsCache={sec:null,data:null,promise:null}; lineQ=""; lineQFor=null; catDrill=null; codeDrill=null; custDrill=null;
       $("app").style.setProperty("--hero1",sec.h1); $("app").style.setProperty("--hero2",sec.h2);
       $("home").hidden=true; $("ords").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("app").hidden=false; window.scrollTo(0,0);
       loadMonth(); setPeriod("ay");
