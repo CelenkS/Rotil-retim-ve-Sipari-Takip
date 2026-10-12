@@ -1491,6 +1491,18 @@ body.st-hide .stgw .mpst{display:none}
 .mssh{font:800 11px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);padding:8px 0 2px}
 .msrow2{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font:600 13.5px var(--font-ui)}
 .msrow2:last-child{border-bottom:0}
+button.msrow2{width:100%;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);text-align:left;cursor:pointer}
+button.msrow2.go em{font-style:normal;color:var(--ink2);font-size:18px}
+button.msrow2:active{background:var(--soft)}
+.stfsum>div[data-msdept]{cursor:pointer}
+.stfsum>div[data-msdept]:active{background:var(--soft)}
+button.msrow2.tot{border-top:2px solid var(--line)}
+.msdp{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:6px 6px 8px}
+.msdph{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--ink);text-align:left;padding:6px;cursor:pointer}
+.msdph .fav{width:36px;height:36px;font-size:13px}
+.msdl{display:flex;gap:10px;padding:7px 8px;border-top:1px solid var(--line);font:600 12.5px var(--font-ui)}
+.msdl>b{flex:0 0 54px;font:800 12.5px var(--font-num)}
+.msdl>div{flex:1;min-width:0}
 .msrow2 span{flex:1;min-width:0}
 .msrow2 i{font-style:normal;color:var(--ink2);font-size:11.5px}
 .msrow2 b{font:800 14px var(--font-num)}
@@ -1542,6 +1554,24 @@ body.st-hide .stgw .mpst{display:none}
 .hcard.ordc.prodsc{border-color:rgba(47,143,131,.6)}
 .hcard.ordc.prodsc::after{background:rgba(47,143,131,.18)}
 .hcard.ordc.prodsc .hk,.hcard.ordc.prodsc .go{color:#3FBFB5}
+
+.msview{flex-basis:100%;margin-top:6px}
+.msnav{flex-wrap:wrap}
+.msjob.lk{cursor:pointer;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.mscal{margin-top:10px}
+.mscw{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.mscw span{text-align:center;font:800 10.5px var(--font-ui);color:var(--ink2);text-transform:uppercase}
+.mscg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mscd{display:flex;flex-direction:column;align-items:center;gap:1px;min-height:74px;padding:5px 2px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;min-width:0;overflow:hidden}
+.mscd.we{background:var(--soft)}
+.mscd.td{border:2px solid var(--accent)}
+.mscd.has{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.mscd b{font:800 13px var(--font-num)}
+.mscd span{font:700 9.5px var(--font-ui);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mscd .mcm{color:#B77A1E;font:800 11px var(--font-num)}
+.mscd .mcn{color:var(--ink2)}
+.mscd .mca{color:#E35050}
+.mscd .mcj{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -1578,7 +1608,7 @@ body.st-hide .stgw .mpst{display:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 12.10 13:35</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 12.10 13:43</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3208,7 +3238,7 @@ body.st-hide .stgw .mpst{display:none}
     $("ov").hidden=false;renderSheet();
     if(orders.length)loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="list"&&(addTab==="order"||addTab==="plan")&&document.activeElement!==$("ssearch")){var sc=$("sheet").scrollTop;renderSheet();$("sheet").scrollTop=sc}});
   }
-  function closeSheet(){$("ov").hidden=true; shipAskOid=null; msSub="month"; prDraft=null; if(typeof MP!=="undefined"&&MP)MP.pick=false}
+  function closeSheet(){$("ov").hidden=true; shipAskOid=null; msSub="month"; msRet=""; prDraft=null; if(typeof MP!=="undefined"&&MP)MP.pick=false}
   function todayQty(it){
     var q=0; lines(selected).forEach(function(l){if(l.c===it.code&&l.k===it.k&&l.p===it.p&&(l.u||"")===curCust&&(l.e||"")===curEmp&&(l.m||"")===curMac)q+=l.q}); return q;
   }
@@ -3816,7 +3846,7 @@ body.st-hide .stgw .mpst{display:none}
     if(sheetMode==="macdetail"){ if(MP&&MP.pick){MP.pick=false;renderSheet();return} mdBack(); return }
     if(sheetMode==="jobassign"||sheetMode==="opassign"){sheetMode="macdetail";renderSheet();return}
     if(sheetMode==="empdet"){sheetMode="list";closeSheet();return}
-    if(sheetMode==="mesai"){if(msSub==="month")closeSheet();return}
+    if(sheetMode==="mesai"){if(msSub==="month"||msSub==="dept"||msSub==="cal")closeSheet();return}
     if(sheetMode==="prod")return;
     if(sheetMode==="primp"){closeSheet();return}
   });
@@ -7280,7 +7310,7 @@ body.st-hide .stgw .mpst{display:none}
   var MS_ST=[
     {id:"normal",n:"Normal Çalışma",c:"#2FA66E",w:1,std:1,a:"08:30",b:"18:30"},
     {id:"yogun",n:"İş Yoğunluğu Mesai",c:"#E8A24B",w:1,std:1,a:"08:30",b:"18:30",ma:"19:00",mb:"23:00"},
-    {id:"hsm",n:"Hafta Sonu Mesaisi",c:"#B07CE8",w:1,a:"08:30",b:"17:30"},
+    {id:"hsm",n:"Hafta Sonu Mesaisi",c:"#B07CE8",ma:"08:30",mb:"17:30"},
     {id:"hst",n:"Hafta Sonu Tatili",c:"#8C97AD"},
     {id:"resmi",n:"Resmi Tatil",c:"#8C97AD"},
     {id:"izin",n:"İzinli",c:"#3FBFB5",abs:1},
@@ -7290,7 +7320,7 @@ body.st-hide .stgw .mpst{display:none}
   var MS_BY={}; MS_ST.forEach(function(s){MS_BY[s.id]=s});
   var GUNK=["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
   var msYm=monthKeyNow(), msWatchYm="", unsubMs=null, msDocs={};
-  var msSub="month", msEmp=null, msDay="", msDraft=null, msBulk=null, msPickQ="", msBack="month";
+  var msView="list", msCalDay="", msRet="", msSub="month", msDeptSel=null, msDeptKeys=[], msFromDept=false, msEmp=null, msDay="", msDraft=null, msBulk=null, msPickQ="", msBack="month";
   function tmin(s){var m=/^(\d{1,2}):(\d{2})/.exec(s||""); return m?(+m[1])*60+(+m[2]):null}
   function durMin(a,b){var x=tmin(a),y=tmin(b); if(x===null||y===null)return 0; var d=y-x; if(d<0)d+=1440; return d}
   function fmtHM(m){m=Math.max(0,Math.round(m||0)); return Math.floor(m/60)+":"+pad(m%60)}
@@ -7300,6 +7330,7 @@ body.st-hide .stgw .mpst{display:none}
     var o={n:0,m:0,sh:0,ad:0}, st=r&&MS_BY[r.s]; if(!st)return o;
     if(st.w){o.n=durMin(r.a,r.b); if(st.std&&o.n>0&&o.n<MS_STD)o.sh=MS_STD-o.n}
     o.m=(tmin(r.ma)!==null&&tmin(r.mb)!==null)?durMin(r.ma,r.mb):(+r.mh||0);
+    if(r.s==="hsm"&&!o.m&&tmin(r.a)!==null&&tmin(r.b)!==null)o.m=durMin(r.a,r.b); // eski kayıt uyumu
     if(r.s==="gelmedi"){o.ad=1; o.sh=MS_STD}
     return o;
   }
@@ -7318,7 +7349,7 @@ body.st-hide .stgw .mpst{display:none}
       var m={}; snap.docs.forEach(function(d){var x=d.data(); if(!x||x.ym!==ym)return; m[x.emp]=x.days||{}});
       msDocs=m;
       if(!$("staff").hidden&&stfTab==="mesai")renderStaff();
-      if(!$("ov").hidden&&sheetMode==="mesai"&&(msSub==="month"))renderSheet();
+      if(!$("ov").hidden&&sheetMode==="mesai"&&(msSub==="month"||msSub==="dept"||msSub==="cal"))renderSheet();
     },function(){});
   }
   function msSave(eid,dd,rec){
@@ -7341,23 +7372,24 @@ body.st-hide .stgw .mpst{display:none}
         '<div class="frow" style="margin-top:6px">'+[1,2,3,4,5,6].map(function(n){return '<button type="button" class="tpill" data-msh="'+n+'">'+n+' saat</button>'}).join("")+'</div>';
     }else{
       h+='<div class="dgrid" style="margin-top:8px"><input class="fin" type="time" id="'+ia+'-ma" '+fa+'="ma" value="'+esc(o.ma)+'" aria-label="Mesai giriş"><input class="fin" type="time" id="'+ia+'-mb" '+fa+'="mb" value="'+esc(o.mb)+'" aria-label="Mesai çıkış"></div>'+
-        '<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="msm-def">＋ 19:00–23:00</button></div>';
+        '<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="msm-def">＋ '+(o.s==="hsm"?"08:30–17:30":"19:00–23:00")+'</button></div>';
     }
     return h+'<div class="note" id="'+(bulk?'msb-m':'msd-m')+'" style="margin:4px 0 0">Mesai süresi: '+fmtHM(msMesaiMin(o))+'</div>'+(bulk?'':'<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="msm-none">Mesai yok</button></div>')+'</div>';
   }
   function msJobTxt(j){return j.oid||j.code?((j.code||"")+(j.cust?" · "+j.cust:"")+(j.t?" — "+j.t:"")):(j.t||"")}
   function msJobsHtml(jobs,rm){
-    return (jobs||[]).length?'<div class="msjobs">'+jobs.map(function(j,i){return '<span class="msjob">'+esc(msJobTxt(j))+(rm?'<button type="button" data-msjrm="'+i+'" aria-label="Kaldır">✕</button>':'')+'</span>'}).join("")+'</div>':'';
+    return (jobs||[]).length?'<div class="msjobs">'+jobs.map(function(j,i){return '<span class="msjob'+(j.oid&&!rm?' lk':'')+'"'+(j.oid&&!rm?' data-msoid="'+esc(j.oid)+'"':'')+'>'+esc(msJobTxt(j))+(rm?'<button type="button" data-msjrm="'+i+'" aria-label="Kaldır">✕</button>':'')+'</span>'}).join("")+'</div>':'';
   }
   function msStChip(r){var st=MS_BY[r.s]; return st?'<span class="msst" style="--c:'+st.c+'">'+esc(st.n)+'</span>':''}
 
   /* --- Mesai sekmesi (liste) --- */
   function renderMesaiTab(){
     var p=msYm.split("-");
-    $("msnav").innerHTML='<div class="msmon"><button type="button" class="tpill" data-msmon="-1" aria-label="Önceki ay">‹</button><b>'+AY[+p[1]-1]+' '+p[0]+'</b><button type="button" class="tpill" data-msmon="1" aria-label="Sonraki ay">›</button></div><button type="button" class="btn" data-msbulk="1">👥 Toplu mesai gir</button>';
+    $("msnav").innerHTML='<div class="msmon"><button type="button" class="tpill" data-msmon="-1" aria-label="Önceki ay">‹</button><b>'+AY[+p[1]-1]+' '+p[0]+'</b><button type="button" class="tpill" data-msmon="1" aria-label="Sonraki ay">›</button></div><button type="button" class="btn" data-msbulk="1">👥 Toplu mesai gir</button><div class="otabs msview"><button type="button" data-msview="list" aria-pressed="'+(msView!=="cal")+'">Liste</button><button type="button" data-msview="cal" aria-pressed="'+(msView==="cal")+'">📅 Takvim</button></div>';
     var q=fold(stfQ.trim()), rows=employees.map(function(e){return {e:e,t:msTotals(e.id)}});
     var totM=0,who=0,absD=0; rows.forEach(function(r){totM+=r.t.m; if(r.t.m>0)who++; absD+=r.t.ad});
-    $("stfsum").innerHTML='<div><b>'+fmtHM(totM)+'</b><small>Toplam mesai</small></div><div><b>'+who+'</b><small>Mesai yapan</small></div><div><b style="color:'+(absD?'#E35050':'inherit')+'">'+absD+'</b><small>Gelmedi (gün)</small></div>';
+    $("stfsum").innerHTML='<div data-msdept="all" role="button" tabindex="0"><b>'+fmtHM(totM)+'</b><small>Toplam mesai ›</small></div><div data-msdept="who" role="button" tabindex="0"><b>'+who+'</b><small>Mesai yapan ›</small></div><div data-msdept="abs" role="button" tabindex="0"><b style="color:'+(absD?'#E35050':'inherit')+'">'+absD+'</b><small>Gelmedi (gün) ›</small></div>';
+    if(msView==="cal"){$("stffilt").innerHTML=""; $("stfsearch").hidden=true; $("stflist").innerHTML=employees.length?msCalHtml():'<div class="empty">Önce Elemanlar sekmesinden eleman ekle.</div>'; return}
     var none=employees.filter(function(e){return !stfGrpName(e)}).length;
     var fl=[{k:"",l:"Hepsi",n:employees.length}].concat(EMP_DEPTS.map(function(g){return {k:g,l:g,n:employees.filter(function(e){return stfGrpName(e)===g}).length}}));
     if(none)fl.push({k:"__none",l:"Bölümü yok",n:none});
@@ -7374,8 +7406,9 @@ body.st-hide .stgw .mpst{display:none}
     var dk={}, dord=[];
     list.forEach(function(r){var k=msDeptKey(r.e); if(!dk[k]){dk[k]={m:0,c:0,n:0,gi:EMP_DEPTS.indexOf(stfGrpName(r.e))};dord.push(k)} dk[k].m+=r.t.m; dk[k].n++; if(r.t.m>0)dk[k].c++});
     dord.sort(function(a,b){var x=dk[a].gi<0?99:dk[a].gi, y=dk[b].gi<0?99:dk[b].gi; return x-y||a.localeCompare(b,"tr")});
-    var sum='<div class="mssum"><div class="mssh">Bölüm bazlı toplam mesai</div>'+dord.map(function(k){return '<div class="msrow2"><span>'+esc(k)+'</span><i>'+dk[k].c+'/'+dk[k].n+' kişi</i><b>'+fmtHM(dk[k].m)+'</b></div>'}).join("")+
-      '<div class="msrow2 tot"><span>Genel toplam</span><i>'+who+' kişi</i><b>'+fmtHM(list.reduce(function(a,r){return a+r.t.m},0))+'</b></div></div>';
+    var sum='<div class="mssum"><div class="mssh">Bölüm bazlı toplam mesai</div>'+dord.map(function(k,i){return '<button type="button" class="msrow2 go" data-msdept="'+i+'"><span>'+esc(k)+'</span><i>'+dk[k].c+'/'+dk[k].n+' kişi</i><b>'+fmtHM(dk[k].m)+'</b><em>›</em></button>'}).join("")+
+      '<button type="button" class="msrow2 tot go" data-msdept="all"><span>Genel toplam</span><i>'+who+' kişi</i><b>'+fmtHM(list.reduce(function(a,r){return a+r.t.m},0))+'</b><em>›</em></button></div>';
+    msDeptKeys=dord;
     var html=sum;
     var order=EMP_DEPTS.slice().concat([""]);
     var byG=function(g){return list.filter(function(r){return stfGrpName(r.e)===g})};
@@ -7442,7 +7475,7 @@ body.st-hide .stgw .mpst{display:none}
     var b=msBulk, h='<div class="shead"><div><h2 id="sh-title">Toplu mesai gir</h2><small>Seçtiğin kişilere aynı mesaiyi yazar</small></div><button type="button" class="tpill" id="msbcancel">Vazgeç</button></div><div class="form">'+
       '<div><label class="fl" for="msb-date">Tarih</label><input class="fin" type="date" id="msb-date" data-msbf="date" value="'+esc(b.date)+'"></div>'+
       '<div><span class="fl">Mesai türü</span><div class="msstg">'+["yogun","hsm"].map(function(id){var s=MS_BY[id]; return '<button type="button" data-msbst="'+id+'" aria-pressed="'+(b.s===id)+'" style="--c:'+s.c+'">'+esc(s.n)+'</button>'}).join("")+'</div></div>'+
-      (b.s==="hsm"?'<div><span class="fl">Çalışma saatleri</span><div class="dgrid"><input class="fin" type="time" id="msb-a" data-msbf="a" value="'+esc(b.a)+'"><input class="fin" type="time" id="msb-b" data-msbf="b" value="'+esc(b.b)+'"></div></div>':msMesaiHtml(b,true))+
+      msMesaiHtml(b,true)+
       msJobEditHtml(b.j,"msb")+
       '<div><label class="fl" for="msb-n">Not</label><textarea class="fin" id="msb-n" data-msbf="n" placeholder="Mesai notu…">'+esc(b.n)+'</textarea></div>'+
       '<div><span class="fl">Kimler? <b style="color:var(--accent)">'+Object.keys(b.ids).length+' seçili</b></span><input class="search" id="msb-q" type="search" autocomplete="off" placeholder="Eleman ara…" value="'+esc(b.q)+'"></div>';
@@ -7462,10 +7495,79 @@ body.st-hide .stgw .mpst{display:none}
   }
   function msBulkNew(){
     var dt=todayIso, dw=msDow(dt.slice(0,7),dt.slice(8,10)), s=dw>=5?"hsm":"yogun";
-    return {date:dt,s:s,a:"08:30",b:"17:30",ma:"19:00",mb:"23:00",mm:"r",mh:"",j:[],n:"",ids:{},q:""};
+    return {date:dt,s:s,a:"08:30",b:"17:30",ma:s==="hsm"?"08:30":"19:00",mb:s==="hsm"?"17:30":"23:00",mm:"r",mh:"",j:[],n:"",ids:{},q:""};
   }
   function openMesaiEmp(id){msEmp=id; msSub="month"; sheetMode="mesai"; $("ov").hidden=false; renderSheet()}
+  function msPerDay(){
+    var per={};
+    employees.forEach(function(e){
+      var recs=msDocs[e.id]||{};
+      Object.keys(recs).forEach(function(dd){
+        var r=recs[dd]; if(!r||!r.s)return; var c=msCalc(r), o=per[dd]||(per[dd]={m:0,n:0,ab:0,jobs:[],rows:[]});
+        if(c.m>0){o.m+=c.m; o.n++}
+        if(c.ad)o.ab++;
+        (r.j||[]).forEach(function(j){var t=j.code||j.t; if(t&&o.jobs.indexOf(t)<0)o.jobs.push(t)});
+        if(c.m>0||c.ad||(r.j&&r.j.length)||r.n)o.rows.push({e:e,r:r,c:c});
+      });
+    });
+    return per;
+  }
+  function msCalHtml(){
+    var nd=msMonDays(msYm), first=msDow(msYm,"01"), per=msPerDay(), tdy=msYm===monthKeyNow()?todayIso.slice(8,10):"";
+    var h='<div class="mscal"><div class="mscw">'+GUNK.map(function(g){return '<span>'+g+'</span>'}).join("")+'</div><div class="mscg">';
+    for(var i=0;i<first;i++)h+='<i></i>';
+    for(var d=1;d<=nd;d++){
+      var dd=pad(d), o=per[dd], we=msDow(msYm,dd)>=5;
+      h+='<button type="button" class="mscd'+(we?' we':'')+(dd===tdy?' td':'')+(o&&(o.m||o.ab||o.jobs.length)?' has':'')+'" data-mscal="'+dd+'"><b>'+d+'</b>'+
+        (o&&o.m?'<span class="mcm">'+fmtHM(o.m)+'</span><span class="mcn">'+o.n+' kişi</span>':'')+
+        (o&&o.ab?'<span class="mca">'+o.ab+' gelmedi</span>':'')+
+        (o&&o.jobs.length?'<span class="mcj">'+esc(o.jobs[0])+(o.jobs.length>1?' +'+(o.jobs.length-1):'')+'</span>':'')+'</button>';
+    }
+    return h+'</div></div><div class="note" style="text-align:center">Güne dokun: kim, ne için mesai yapmış görürsün.</div>';
+  }
+  function msCalSheetHtml(){
+    var dd=msCalDay, p=msYm.split("-"), dw=msDow(msYm,dd), nd=msMonDays(msYm), per=msPerDay()[dd]||{m:0,n:0,ab:0,jobs:[],rows:[]};
+    var mes=per.rows.filter(function(x){return x.c.m>0}), abs=per.rows.filter(function(x){return x.c.ad}), oth=per.rows.filter(function(x){return !(x.c.m>0)&&!x.c.ad});
+    mes.sort(function(a,b){return b.c.m-a.c.m});
+    var rowH=function(x,kind){
+      var r=x.r, e=x.e;
+      return '<div class="msdp"><button type="button" class="msdph" data-mscalemp="'+e.id+'"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div><div class="ftx"><b>'+esc(e.name)+'</b><small>'+esc(msDeptKey(e))+'</small></div>'+(kind==="m"?'<span class="stfpill on">'+fmtHM(x.c.m)+'</span>':'')+'<span class="fchev">›</span></button>'+
+        '<div class="msdl"><div style="flex:1">'+msStChip(r)+(x.c.m?'<span class="mst mm">'+((r.ma&&r.mb)?esc(r.ma)+'–'+esc(r.mb)+' · ':'')+fmtHM(x.c.m)+'</span>':'')+msJobsHtml(r.j,false)+(r.n?'<div class="msnote">'+esc(r.n)+'</div>':'')+(!(r.j&&r.j.length)&&!r.n&&kind==="m"?'<div class="note" style="margin:3px 0 0">İş/neden girilmemiş</div>':'')+'</div></div></div>';
+    };
+    var h='<div class="shead"><div><h2 id="sh-title">'+(+dd)+' '+AY[+p[1]-1]+' '+GUN[dw]+'</h2><small>O günün mesai ve devamsızlık özeti</small></div><button type="button" class="tpill" id="msclose">Kapat</button></div><div class="form">'+
+      '<div class="msmon"><button type="button" class="tpill" data-mscalnav="-1">‹</button><b>'+(+dd)+' '+AY[+p[1]-1]+'</b><button type="button" class="tpill" data-mscalnav="1">›</button></div>'+
+      '<div class="stfsum" style="margin-top:0"><div><b>'+fmtHM(per.m)+'</b><small>Toplam mesai</small></div><div><b>'+per.n+'</b><small>Mesai yapan</small></div><div><b style="color:'+(per.ab?'#E35050':'inherit')+'">'+per.ab+'</b><small>Gelmedi</small></div></div>'+
+      '<button type="button" class="btn ghost" id="mscaladd">＋ Bu güne mesai ekle</button>';
+    if(mes.length)h+='<div class="edsec">Mesai yapanlar · '+mes.length+'</div>'+mes.map(function(x){return rowH(x,"m")}).join("");
+    if(abs.length)h+='<div class="edsec">Gelmeyenler · '+abs.length+'</div>'+abs.map(function(x){return rowH(x,"a")}).join("");
+    if(oth.length)h+='<div class="edsec">Diğer kayıtlar</div>'+oth.map(function(x){return rowH(x,"o")}).join("");
+    if(!per.rows.length)h+='<div class="empty">Bu gün için mesai veya devamsızlık kaydı yok.</div>';
+    return h+'</div>';
+  }
+  function msDeptSheetHtml(){
+    var key=msDeptSel, special=key.indexOf("__")===0, all=special, p=msYm.split("-"), nd=msMonDays(msYm), ttl={"__all":"Tüm bölümler","__who":"Mesai yapanlar","__abs":"Gelmeyenler"}[key]||key;
+    var emps=employees.filter(function(e){return all||msDeptKey(e)===key}).map(function(e){return {e:e,t:msTotals(e.id)}});
+    if(key==="__who")emps=emps.filter(function(r){return r.t.m>0});
+    if(key==="__abs")emps=emps.filter(function(r){return r.t.ad>0});
+    emps.sort(function(a,b){return (key==="__abs"?b.t.ad-a.t.ad:b.t.m-a.t.m)||String(a.e.name).localeCompare(String(b.e.name),"tr")});
+    var tot=emps.reduce(function(a,r){return a+r.t.m},0), who=emps.filter(function(r){return r.t.m>0}).length, absTot=emps.reduce(function(a,r){return a+r.t.ad},0);
+    var h='<div class="shead"><div><h2 id="sh-title">'+esc(ttl)+'</h2><small>'+(key==="__abs"?"Kim hangi gün gelmedi":"Kim ne zaman, ne için mesai yaptı")+'</small></div><button type="button" class="tpill" id="msclose">Kapat</button></div><div class="form">'+
+      '<div class="msmon"><button type="button" class="tpill" data-msmon="-1">‹</button><b>'+AY[+p[1]-1]+' '+p[0]+'</b><button type="button" class="tpill" data-msmon="1">›</button></div>'+
+      '<div class="stfsum" style="margin-top:0">'+(key==="__abs"?'<div><b style="color:#E35050">'+absTot+'</b><small>Gelmedi (gün)</small></div><div><b>'+emps.length+'</b><small>Kişi</small></div>':'<div><b>'+fmtHM(tot)+'</b><small>Toplam mesai</small></div><div><b>'+who+'/'+emps.length+'</b><small>Mesai yapan</small></div>')+'</div>'+(emps.length?'':'<div class="empty">Bu ay kayıt yok.</div>');
+    emps.forEach(function(r){
+      var e=r.e, recs=msDocs[e.id]||{}, rows="";
+      for(var d=1;d<=nd;d++){
+        var dd=pad(d), x=recs[dd]; if(!x||!x.s)continue;
+        var c=msCalc(x); if(key==="__abs"){if(!c.ad)continue}else if(!(c.m>0||x.s==="hsm"||(x.j&&x.j.length)||x.n||c.ad))continue;
+        rows+='<div class="msdl"><b>'+d+' '+GUNK[msDow(msYm,dd)]+'</b><div>'+msStChip(x)+(c.m?'<span class="mst mm">Mesai '+((x.ma&&x.mb)?esc(x.ma)+'–'+esc(x.mb)+' · ':'')+fmtHM(c.m)+'</span>':'')+(x.s==="hsm"&&c.n?'<span class="mst">'+esc(x.a)+'–'+esc(x.b)+' · '+fmtHM(c.n)+'</span>':'')+msJobsHtml(x.j,false)+(x.n?'<div class="msnote">'+esc(x.n)+'</div>':'')+'</div></div>';
+      }
+      h+='<div class="msdp"><button type="button" class="msdph" data-msemp="'+e.id+'" data-msfd="1"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div><div class="ftx"><b>'+esc(e.name)+'</b><small>'+esc(msDeptKey(e))+(r.t.ad?' · '+r.t.ad+' gün gelmedi':'')+'</small></div><span class="stfpill'+(key==="__abs"?'':(r.t.m>0?' on':''))+'">'+(key==="__abs"?r.t.ad+' gün':(r.t.m>0?fmtHM(r.t.m):'—'))+'</span><span class="fchev">›</span></button>'+(rows||'<div class="note" style="margin:6px 4px 2px">Bu ay mesai kaydı yok.</div>')+'</div>';
+    });
+    return h+'</div>';
+  }
   function mesaiSheetHtml(){
+    if(msSub==="cal")return msCalSheetHtml();
+    if(msSub==="dept")return msDeptSheetHtml();
     if(msSub==="day")return msEditorHtml();
     if(msSub==="pick")return msPickHtml();
     if(msSub==="bulk")return msBulkSheetHtml();
@@ -7482,15 +7584,33 @@ body.st-hide .stgw .mpst{display:none}
     var st=MS_BY[id], dr=msDraft; dr.s=id;
     if(st.w){ if(!dr.a&&!dr.b){dr.a=st.a||"";dr.b=st.b||""} }
     else{dr.a="";dr.b=""}
-    if(st.ma&&!dr.ma&&!dr.mb){dr.ma=st.ma;dr.mb=st.mb}
+    if(st.ma&&dr.mm!=="h"&&msDefTimes(dr)){dr.ma=st.ma;dr.mb=st.mb}
   }
+  function msDefTimes(o){return (!o.ma&&!o.mb)||(o.ma==="19:00"&&o.mb==="23:00")||(o.ma==="08:30"&&o.mb==="17:30")}
   document.addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-msmon],[data-msbulk],[data-msemp],[data-msday],[data-msst],[data-msjrm],[data-mspo],[data-msbst],[data-msmm],[data-msh],[data-msbe],[data-msball],#msclose,#msfill,#msdcancel,#msdsave,#msdclear,#msm-def,#msm-none,#msd-pick,#msb-pick,#msd-freeadd,#msb-freeadd,#mspcancel,#msbcancel,#msbsave");
+    var t=e.target.closest&&e.target.closest("[data-msview],[data-mscal],[data-mscalnav],[data-mscalemp],[data-msoid],#mscaladd,[data-msdept],[data-msmon],[data-msbulk],[data-msemp],[data-msday],[data-msst],[data-msjrm],[data-mspo],[data-msbst],[data-msmm],[data-msh],[data-msbe],[data-msball],#msclose,#msfill,#msdcancel,#msdsave,#msdclear,#msm-def,#msm-none,#msd-pick,#msb-pick,#msd-freeadd,#msb-freeadd,#mspcancel,#msbcancel,#msbsave");
     if(!t)return;
     if(t.dataset.msmon){msSetMonth(+t.dataset.msmon); return}
     if(t.dataset.msbulk){msBulk=msBulkNew(); msSub="bulk"; sheetMode="mesai"; $("ov").hidden=false; renderSheet(); return}
-    if(t.dataset.msemp){openMesaiEmp(t.dataset.msemp); return}
-    if(t.id==="msclose"){msSub="month"; closeSheet(); return}
+    if(t.dataset.msview){msView=t.dataset.msview; renderStaff(); return}
+    if(t.dataset.msoid){var oo=orders.filter(function(x){return x.id===t.dataset.msoid})[0]; if(oo){openOrderDetail(oo.id)} return}
+    if(t.dataset.mscal){msCalDay=t.dataset.mscal; msRet=""; msSub="cal"; sheetMode="mesai"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0; return}
+    if(t.dataset.mscalnav){
+      var nd0=msMonDays(msYm), nx=(+msCalDay)+(+t.dataset.mscalnav);
+      if(nx<1){msSetMonth(-1); nx=msMonDays(msYm)} else if(nx>nd0){msSetMonth(1); nx=1}
+      msCalDay=pad(nx); renderSheet(); $("sheet").scrollTop=0; return;
+    }
+    if(t.dataset.mscalemp){
+      var ce=t.dataset.mscalemp, cr=(msDocs[ce]||{})[msCalDay];
+      msEmp=ce; msDay=msCalDay; msRet="cal";
+      msDraft=cr&&cr.s?{s:cr.s,a:cr.a||"",b:cr.b||"",ma:cr.ma||"",mb:cr.mb||"",mm:(+cr.mh>0&&!cr.ma)?"h":"r",mh:+cr.mh>0?hrsTxt(+cr.mh):"",n:cr.n||"",j:(cr.j||[]).map(function(x){return Object.assign({},x)})}:msBlank();
+      if(!msDraft.s)msApplyStatus(msDow(msYm,msDay)>=5?"hst":"normal");
+      msSub="day"; renderSheet(); return;
+    }
+    if(t.id==="mscaladd"){msBulk=msBulkNew(); msBulk.date=msYm+"-"+msCalDay; var bdw=msDow(msYm,msCalDay); msBulk.s=bdw>=5?"hsm":"yogun"; msBulk.ma=msBulk.s==="hsm"?"08:30":"19:00"; msBulk.mb=msBulk.s==="hsm"?"17:30":"23:00"; msSub="bulk"; renderSheet(); return}
+    if(t.dataset.msdept){var di=t.dataset.msdept; msDeptSel=(di==="all"||di==="who"||di==="abs")?"__"+di:msDeptKeys[+di]; if(msDeptSel===undefined)return; msFromDept=false; msSub="dept"; sheetMode="mesai"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0; return}
+    if(t.dataset.msemp){msFromDept=!!t.dataset.msfd; openMesaiEmp(t.dataset.msemp); return}
+    if(t.id==="msclose"){if(msSub==="month"&&msFromDept&&msDeptSel){msFromDept=false; msSub="dept"; renderSheet(); return} msSub="month"; closeSheet(); return}
     if(t.dataset.msday){
       var dd=t.dataset.msday, r=(msDocs[msEmp]||{})[dd];
       msDraft=r&&r.s?{s:r.s,a:r.a||"",b:r.b||"",ma:r.ma||"",mb:r.mb||"",mm:(+r.mh>0&&!r.ma)?"h":"r",mh:+r.mh>0?hrsTxt(+r.mh):"",n:r.n||"",j:(r.j||[]).map(function(x){return Object.assign({},x)})}:msBlank();
@@ -7498,9 +7618,9 @@ body.st-hide .stgw .mpst{display:none}
       if(!msDraft.s){var dw=msDow(msYm,dd); msApplyStatus(dw>=5?"hst":"normal")}
       msSub="day"; renderSheet(); return;
     }
-    if(t.id==="msdcancel"){msSub="month"; renderSheet(); return}
+    if(t.id==="msdcancel"){msSub=msRet==="cal"?"cal":"month"; msRet=""; renderSheet(); return}
     if(t.dataset.msst){msApplyStatus(t.dataset.msst); renderSheet(); return}
-    if(t.id==="msm-def"){var tg=msSub==="bulk"?msBulk:msDraft; tg.ma="19:00"; tg.mb="23:00"; renderSheet(); return}
+    if(t.id==="msm-def"){var tg=msSub==="bulk"?msBulk:msDraft, ds=MS_BY[tg.s]||{}; tg.ma=ds.ma||"19:00"; tg.mb=ds.mb||"23:00"; renderSheet(); return}
     if(t.id==="msm-none"){msDraft.ma=""; msDraft.mb=""; msDraft.mh=""; renderSheet(); return}
     if(t.dataset.msmm){var tg2=msSub==="bulk"?msBulk:msDraft; tg2.mm=t.dataset.msmm; var sc9=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc9; var fi=$(msSub==="bulk"?"msb-mh":"msf-mh"); if(fi&&tg2.mm==="h")fi.focus(); return}
     if(t.dataset.msh){var tg3=msSub==="bulk"?msBulk:msDraft; tg3.mh=t.dataset.msh; var sc8=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc8; return}
@@ -7520,9 +7640,9 @@ body.st-hide .stgw .mpst{display:none}
       var dr=msDraft; if(!dr||!dr.s)return;
       var fr=$("msd-free"); if(fr&&fr.value.trim()){msAddJob(dr.j,{t:fr.value.trim()})}
       var st=MS_BY[dr.s], rec={s:dr.s,a:st.w?dr.a:"",b:st.w?dr.b:"",ma:dr.mm==="h"?"":dr.ma,mb:dr.mm==="h"?"":dr.mb,mh:dr.mm==="h"?parseHrs(dr.mh):0,n:dr.n.trim(),j:dr.j};
-      msSave(msEmp,msDay,rec); msSub="month"; renderSheet(); if(!$("staff").hidden)renderStaff(); return;
+      msSave(msEmp,msDay,rec); msSub=msRet==="cal"?"cal":"month"; msRet=""; renderSheet(); if(!$("staff").hidden)renderStaff(); return;
     }
-    if(t.id==="msdclear"){msSave(msEmp,msDay,msBlank()); msSub="month"; renderSheet(); if(!$("staff").hidden)renderStaff(); return}
+    if(t.id==="msdclear"){msSave(msEmp,msDay,msBlank()); msSub=msRet==="cal"?"cal":"month"; msRet=""; renderSheet(); if(!$("staff").hidden)renderStaff(); return}
     if(t.id==="msfill"){
       var nd=msMonDays(msYm), recs=msDocs[msEmp]||{}, last=msYm===monthKeyNow()?+todayIso.slice(8,10):(msYm<monthKeyNow()?nd:0), cnt=0;
       for(var d=1;d<=last;d++){
@@ -7532,7 +7652,7 @@ body.st-hide .stgw .mpst{display:none}
       }
       renderSheet(); if(!$("staff").hidden)renderStaff(); return;
     }
-    if(t.dataset.msbst){msBulk.s=t.dataset.msbst; renderSheet(); return}
+    if(t.dataset.msbst){msBulk.s=t.dataset.msbst; var bs=MS_BY[msBulk.s]; if(bs.ma&&msBulk.mm!=="h"&&msDefTimes(msBulk)){msBulk.ma=bs.ma;msBulk.mb=bs.mb} renderSheet(); return}
     if(t.dataset.msbe){var id=t.dataset.msbe; if(msBulk.ids[id])delete msBulk.ids[id]; else msBulk.ids[id]=1; var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc; return}
     if(t.dataset.msball!==undefined){
       var g=t.dataset.msball, q2=fold(msBulk.q.trim());
@@ -7548,17 +7668,13 @@ body.st-hide .stgw .mpst{display:none}
       if(!ids.length){if(info)info.textContent="En az bir kişi seç."; return}
       var bfr=$("msb-free"); if(bfr&&bfr.value.trim())msAddJob(b.j,{t:bfr.value.trim()});
       var ym=b.date.slice(0,7), dd2=b.date.slice(8,10), wkE=msDow(ym,dd2)>=5, st2=MS_BY[b.s];
-      if(st2.id==="yogun"&&(b.mm==="h"?!parseHrs(b.mh):!(tmin(b.ma)!==null&&tmin(b.mb)!==null))){if(info)info.textContent=b.mm==="h"?"Kaç saat mesai olduğunu yaz.":"Mesai giriş ve çıkış saatini gir."; return}
-      if(st2.id==="hsm"&&!(tmin(b.a)!==null&&tmin(b.b)!==null)){if(info)info.textContent="Çalışma giriş ve çıkış saatini gir."; return}
+      if(b.mm==="h"?!parseHrs(b.mh):!(tmin(b.ma)!==null&&tmin(b.mb)!==null)){if(info)info.textContent=b.mm==="h"?"Kaç saat mesai olduğunu yaz.":"Mesai giriş ve çıkış saatini gir."; return}
       var prevYm=msYm; msYm=ym; // kayıt başka aya düşüyorsa o ayın belgelerine yaz
       ids.forEach(function(eid){
         var old=(ym===prevYm?(msDocs[eid]||{})[dd2]:null)||null;
         var rec={s:b.s,a:"",b:"",ma:"",mb:"",n:b.n.trim()||(old&&old.n)||"",j:b.j.length?b.j.map(function(x){return Object.assign({},x)}):((old&&old.j)||[])};
-        if(b.s==="yogun"){
-          rec.a=(old&&old.a)||st2.a; rec.b=(old&&old.b)||st2.b; if(b.mm==="h"){rec.ma="";rec.mb="";rec.mh=parseHrs(b.mh)}else{rec.ma=b.ma;rec.mb=b.mb;rec.mh=0}
-        }else{
-          rec.a=b.a; rec.b=b.b; rec.ma=(old&&old.ma)||""; rec.mb=(old&&old.mb)||""; rec.mh=(old&&+old.mh)||0;
-        }
+        if(b.s==="yogun"){rec.a=(old&&old.a)||st2.a; rec.b=(old&&old.b)||st2.b}
+        if(b.mm==="h"){rec.ma="";rec.mb="";rec.mh=parseHrs(b.mh)}else{rec.ma=b.ma;rec.mb=b.mb;rec.mh=0}
         var e0=employees.filter(function(x){return x.id===eid})[0];
         if(ym!==prevYm){ if(db)db.doc("mesai/"+ym+"_"+eid).set({ym:ym,emp:eid,name:e0?e0.name:"",days:(function(){var o={}; o[dd2]=rec; return o})()},{merge:true}).catch(function(){}) }
         else msSave(eid,dd2,rec);
