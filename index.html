@@ -1454,6 +1454,13 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .brk .bar i{display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:0 3px;line-height:1.15}
 .brk .bar i b{font:800 12px var(--font-ui);color:rgba(10,20,30,.82);white-space:nowrap;letter-spacing:0}
 .brk .bar i em{font:700 10px var(--font-ui);font-style:normal;color:rgba(10,20,30,.7);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.oc2 .pmac{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--sc,var(--accent)) 16%,transparent);color:var(--ink);font:800 12px var(--font-ui)}
+.oc2 .pmac.none{background:var(--soft);color:var(--ink2)}
+/* Makine Planı / Yerleşim: tam ekran */
+.sheet:has(.floorwrap){width:100%;max-width:none;height:100%;max-height:100%;border-radius:0;padding-left:max(16px,2.5vw);padding-right:max(16px,2.5vw)}
+.sheet:has(.floorwrap) .shead{position:sticky;top:-16px;z-index:5;background:var(--surface);padding:12px 0 8px;margin-top:-12px}
+.stgdc{margin-top:8px;padding:8px 10px;border-radius:12px;background:var(--surface)}
+.stgdc small{display:block;margin-top:2px;color:var(--ink2)}
 .wkcur{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font:800 10.5px var(--font-ui);letter-spacing:.04em;text-transform:uppercase;vertical-align:middle}
 .stgw{margin-top:10px}
 .stgl{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:5px 10px 5px 0;-webkit-tap-highlight-color:transparent}
@@ -1511,7 +1518,7 @@ body.st-hide .stgw .mpst{display:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 11.10 17:25</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 12.10 11:15</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1600,6 +1607,8 @@ body.st-hide .stgw .mpst{display:none}
     <h2 style="margin:0 0 4px;font:700 17px var(--font-head)">Yapmamız gereken adetler</h2>
     <p style="margin:0 0 10px;font:600 12.5px var(--font-ui);color:var(--ink2)">Bölüm bölüm, açık siparişlerden gelen toplam iş — istersen tek bir müşteriye göre süz</p>
     <div id="needlist"></div>
+    <button class="btn ghost" id="ostgd" style="width:100%;margin-top:12px">🔍 Aşamalar arası farkı göster</button>
+    <div class="impnote" id="stgdnote" hidden></div>
   </section>
   <section class="card" id="osumcard" hidden>
     <h2 style="margin:0 0 10px;font:700 17px var(--font-head)">Özet</h2>
@@ -1879,7 +1888,7 @@ body.st-hide .stgw .mpst{display:none}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||(i===4&&o.cat===0)||!!(o.st||[])[i]}
   var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
-  var orders=[], pm={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
+  var orders=[], pm={}, pmTot={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
   // Her kategorinin (COLS ile aynı sırada) standart üretim süresi — dakika/adet. Kullanıcı
@@ -2638,6 +2647,33 @@ body.st-hide .stgw .mpst{display:none}
   function wkNavLbl(k){return isoWeekLabel(k)+(k===isoWeekMonday(todayIso)?'<small class="wkcur">bu hafta</small>':'')}
   function planRange(scope,k){return scope==="day"?[k]:isoWeekRange(k)}
   function planFor(scope,k){return (plans[scope]&&plans[scope][k])||[]}
+  // "Haftalık plandan" listesi: aynı sipariş birden fazla makineye planlandıysa HER MAKİNE ayrı satır
+  // (kendi planlanan / yapılan adediyle) çıkar; böylece her makineye ayrı adet girilebilir.
+  function planRowsFor(secId,q){
+    var wk=curWeekKey(), P=plansOfSec(secId), rng=planRange("week",wk), by={}, ord=[], out=[];
+    ((P.week&&P.week[wk])||[]).forEach(function(pe){
+      if(!by[pe.oid]){by[pe.oid]={ms:[],q:{}};ord.push(pe.oid)}
+      var mk=pe.mid||""; if(by[pe.oid].q[mk]===undefined){by[pe.oid].q[mk]=0;by[pe.oid].ms.push(mk)}
+      by[pe.oid].q[mk]+=pe.q;
+    });
+    ord.forEach(function(oid){
+      var o=orders.filter(function(x){return x.id===oid})[0]; if(!o)return;
+      if(q&&fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)<0)return;
+      var g=by[oid], multi=g.ms.length>1, ev=(doneOf(oid,secId).e||[]).filter(function(en){return rng.indexOf(en.d)>-1});
+      var todayLines=(inApp()&&secId===sec.id)?lines(selected).filter(function(l){return l.o===oid}):[];
+      g.ms.forEach(function(mk){
+        var wdone=0, t=0;
+        if(!multi){ev.forEach(function(en){wdone+=en.q}); todayLines.forEach(function(l){t+=l.q})}
+        else{
+          ev.forEach(function(en){var em=en.m||""; if(mk?em===mk:(!em||g.ms.indexOf(em)<0))wdone+=en.q});
+          todayLines.forEach(function(l){var lm=l.m||""; if(mk?lm===mk:(!lm||g.ms.indexOf(lm)<0))t+=l.q});
+        }
+        var planQ=g.q[mk]||0;
+        out.push({o:o,mid:mk,multi:multi,rk:multi||mk?oid+"|"+mk:oid,planQ:planQ,wdone:wdone,rem:Math.max(0,planQ-wdone),fin:planQ>0&&wdone>=planQ,t:t,idx:out.length});
+      });
+    });
+    return out.sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))||(a.idx-b.idx)});
+  }
   function weekPlanMap(secId){
     // Üretim ekranındaki "Haftalık plandan" ve kroki/iş atamadaki plan sekmesi
     // her zaman GERÇEK bu haftayı göstermeli — Plan ekranında ileri bir haftaya
@@ -3588,25 +3624,18 @@ body.st-hide .stgw .mpst{display:none}
         }).join(""):'<div class="empty">'+(orders.length?"Bu bölüm için eşleşen sipariş yok.":"Henüz sipariş yok.<br>Ana ekrandaki “Siparişler” bölümünden sipariş gir.")+'</div>')+'</div>';
       }else if(addTab==="plan"){
         var si3=stageIdx(sec.id), wk3=curWeekKey(), pmap3=weekPlanMap(sec.id), rng3=planRange("week",wk3);
-        var pl=orders.filter(function(o){
-          return pmap3[o.id]!==undefined&&(!q||fold(o.code+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)>-1);
-        }).map(function(o){
-          var planQ=pmap3[o.id]||0, dn3=doneOf(o.id,sec.id), wdone=0;
-          (dn3.e||[]).forEach(function(en){if(rng3.indexOf(en.d)>-1)wdone+=en.q});
-          var t=0; lines(selected).forEach(function(l){if(l.o===o.id)t+=l.q});
-          return {o:o,planQ:planQ,wdone:wdone,rem:Math.max(0,planQ-wdone),fin:planQ>0&&wdone>=planQ,t:t};
-        }).sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))});
+        var pl=planRowsFor(sec.id,q);
         html+=head+emRow+srch+'<div class="items">'+(pl.length?pl.map(function(x){
-          var o=x.o, pc=x.planQ?Math.min(100,Math.round(x.wdone/x.planQ*100)):0, aq=addQ[o.id]||1;
+          var o=x.o, pc=x.planQ?Math.min(100,Math.round(x.wdone/x.planQ*100)):0, rk=x.rk, aq=addQ[rk]||1, mo=x.mid?machinesList.filter(function(y){return y.id===x.mid})[0]:null;
           return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-            '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
+            '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+(x.multi?'<div class="pmac'+(mo?'':' none')+'">🔧 '+(mo?esc(macLabel(mo)):'Makine seçilmedi')+'</div>':(mo?'<div class="pmac">🔧 '+esc(macLabel(mo))+'</div>':''))+'</div>'+
             '<div class="oq2">planlanan<b>'+nf.format(x.planQ)+'</b></div></div>'+
             '<div class="pg"><div class="pgt"><span>bu hafta yapılan '+nf.format(x.wdone)+' / '+nf.format(x.planQ)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(x.rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
             (x.t?'<div class="odates"><span class="tod">Bugün +'+nf.format(x.t)+'</span></div>':'')+
-            '<div class="oadd"><div class="step"><button type="button" data-oqd="-1" data-oid="'+o.id+'" aria-label="Azalt">−</button><input type="number" inputmode="numeric" min="1" data-oq="'+o.id+'" value="'+aq+'" aria-label="Eklenecek adet"><button type="button" data-oqd="1" data-oid="'+o.id+'" aria-label="Artır">+</button></div>'+
-            (x.rem?'<button type="button" class="rembtn" data-oqrem="'+o.id+'">Kalan</button>':'')+
-            '<button type="button" class="addbtn" data-addo="'+o.id+'">Ekle</button></div>'+startBtnHtml(o)+'</div>';
+            '<div class="oadd"><div class="step"><button type="button" data-oqd="-1" data-oid="'+rk+'" aria-label="Azalt">−</button><input type="number" inputmode="numeric" min="1" data-oq="'+rk+'" value="'+aq+'" aria-label="Eklenecek adet"><button type="button" data-oqd="1" data-oid="'+rk+'" aria-label="Artır">+</button></div>'+
+            (x.rem?'<button type="button" class="rembtn" data-oqrem="'+o.id+'" data-rk="'+rk+'" data-addm="'+x.mid+'">Kalan</button>':'')+
+            '<button type="button" class="addbtn" data-addo="'+o.id+'" data-rk="'+rk+'" data-addm="'+x.mid+'">Ekle</button></div>'+startBtnHtml(o,x.mid)+'</div>';
         }).join(""):'<div class="empty">'+(Object.keys(pmap3).length?"Aramayla eşleşen planlı ürün yok.":"Bu hafta için bu bölümde plan girilmemiş.<br>“Plan” ile haftalık planını oluştur.")+'</div>')+'</div>';
       }else{
       var list=catalog.filter(function(x){return !q||fold(x.code).indexOf(q)>-1}).sort(function(a,b){return a.k-b.k||a.code.localeCompare(b.code,"tr")});
@@ -3793,28 +3822,27 @@ body.st-hide .stgw .mpst{display:none}
     if(t.dataset.tab){addTab=t.dataset.tab; renderSheet(); return}
     if(t.dataset.startp){
       var so=orders.filter(function(x){return x.id===t.dataset.startp})[0]; if(!so)return;
-      startOrderLine(so); var sc1=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc1; return;
+      startOrderLine(so,t.dataset.addm||""); var sc1=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc1; return;
     }
     if(t.dataset.addo){
       var oo=orders.filter(function(x){return x.id===t.dataset.addo})[0]; if(!oo)return;
-      addOrderLine(oo,addQ[oo.id]||1); addQ[oo.id]=1; var sc0=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc0; return;
+      var rk0=t.dataset.rk||oo.id; addOrderLine(oo,addQ[rk0]||1,t.dataset.addm||""); addQ[rk0]=1; var sc0=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc0; return;
     }
     if(t.dataset.oqd){
       var inp=$("sheet").querySelector('input[data-oq="'+t.dataset.oid+'"]'); if(!inp)return;
       var nv=Math.max(1,(+inp.value||1)+(+t.dataset.oqd)); inp.value=nv; addQ[t.dataset.oid]=nv; return;
     }
     if(t.dataset.oqrem){
-      var o3=orders.filter(function(x){return x.id===t.dataset.oqrem})[0], inp2=$("sheet").querySelector('input[data-oq="'+t.dataset.oqrem+'"]');
+      var rkr=t.dataset.rk||t.dataset.oqrem, o3=orders.filter(function(x){return x.id===t.dataset.oqrem})[0], inp2=$("sheet").querySelector('input[data-oq="'+rkr+'"]');
       if(o3&&inp2){
         var rr;
         if(addTab==="plan"){
-          var wk4=curWeekKey(), pmap4=weekPlanMap(sec.id), rng4=planRange("week",wk4), wdone4=0;
-          (doneOf(o3.id,sec.id).e||[]).forEach(function(en){if(rng4.indexOf(en.d)>-1)wdone4+=en.q});
-          rr=Math.max(1,(pmap4[o3.id]||0)-wdone4);
+          var prow=planRowsFor(sec.id,"").filter(function(r0){return r0.rk===rkr})[0];
+          rr=Math.max(1,prow?prow.rem:1);
         }else{
           rr=Math.max(1,need(o3,sec.id)-doneOf(o3.id,sec.id).q);
         }
-        inp2.value=rr; addQ[o3.id]=rr;
+        inp2.value=rr; addQ[rkr]=rr;
       }
       return;
     }
@@ -4450,29 +4478,30 @@ body.st-hide .stgw .mpst{display:none}
     if(COLS.length<8){COLS.push(name);stdTime.push(0);catsSaved=true;saveCatalog();return COLS.length-1}
     return 0;
   }
-  function addOrderLine(o,n){n=n||1;
+  function addOrderLine(o,n,mac){n=n||1; var mc=mac||curMac;
     var si=stageIdx(sec.id), before=COLS.length, k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), price=sec.id==="kaplama"?0:(+((o.pr||[])[si])||0);
     var arr=lines(selected).slice(), hit=-1;
     // Eleman/makine farklıysa (kim yaptığı değiştiyse) aynı satıra ekleme — ayrı satır aç,
     // yoksa hangi elemanın ne kadar ürettiği karışır.
-    arr.forEach(function(l,i){if(hit<0&&l.o===o.id&&l.p===price&&l.k===k&&(l.e||"")===curEmp&&(l.m||"")===curMac)hit=i});
+    arr.forEach(function(l,i){if(hit<0&&l.o===o.id&&l.p===price&&l.k===k&&(l.e||"")===curEmp&&(l.m||"")===mc)hit=i});
     if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=n;l.t=Date.now();arr[hit]=l}
-    else{arr.push({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:curMac||"",t:Date.now()}); logActivity(sec.name+": "+o.code+" için "+nf.format(n)+" adet üretim girildi (sipariş)","prod",{oid:o.id,code:o.code,sec:sec.id})}
+    else{arr.push({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:mc||"",t:Date.now()}); logActivity(sec.name+": "+o.code+" için "+nf.format(n)+" adet üretim girildi (sipariş)","prod",{oid:o.id,code:o.code,sec:sec.id})}
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
     applyRecipeUsage(o.code,n);
   }
   // "Üretime gir": sabah hangi ürünün yapılacağını, adet YAZMADAN güne ekler (adet akşam girilir).
-  function startBtnHtml(o){
-    var inDay=lines(selected).some(function(l){return l.o===o.id});
+  function startBtnHtml(o,mid){
+    mid=mid||"";
+    var inDay=lines(selected).some(function(l){return l.o===o.id&&(!mid||(l.m||"")===mid)});
     return inDay?'<div class="startnote">✓ Bugün üretimde — adedi günün listesinden gir</div>'
-      :'<button type="button" class="startbtn" data-startp="'+o.id+'">▶ Üretime gir <small>(adet akşam yazılır)</small></button>';
+      :'<button type="button" class="startbtn" data-startp="'+o.id+'" data-addm="'+mid+'">▶ Üretime gir <small>(adet akşam yazılır)</small></button>';
   }
-  function startOrderLine(o){
-    var si=stageIdx(sec.id), k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), before=COLS.length, price=sec.id==="kaplama"?0:(+((o.pr||[])[si])||0);
+  function startOrderLine(o,mac){
+    var mc=mac||curMac, si=stageIdx(sec.id), k=catIndex(ORDER_CATS[o.cat]||ORDER_CATS[0]), before=COLS.length, price=sec.id==="kaplama"?0:(+((o.pr||[])[si])||0);
     var arr=lines(selected).slice();
-    if(arr.some(function(l){return l.o===o.id}))return false; // zaten bugün listede
-    arr.push({c:o.code,k:k,q:0,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:curMac||"",t:Date.now()});
+    if(arr.some(function(l){return l.o===o.id&&(!mac||(l.m||"")===mac)}))return false; // zaten bugün listede
+    arr.push({c:o.code,k:k,q:0,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:mc||"",t:Date.now()});
     logActivity(sec.name+": "+o.code+" üretime girdi (adet akşam girilecek)","prod",{oid:o.id,code:o.code,sec:sec.id});
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
@@ -4606,7 +4635,8 @@ body.st-hide .stgw .mpst{display:none}
         var a=acc[l.o]||(acc[l.o]={q:0,r:0,e:[]});
         a.q+=l.q; a.r+=l.q*l.p;
         var last=a.e[a.e.length-1];
-        if(last&&last.d===iso)last.q+=l.q; else a.e.push({d:iso,q:l.q});
+        var lm=l.m||"";
+        if(last&&last.d===iso&&(last.m||"")===lm)last.q+=l.q; else a.e.push(lm?{d:iso,q:l.q,m:lm}:{d:iso,q:l.q});
       });
     });
     return acc;
@@ -4614,11 +4644,13 @@ body.st-hide .stgw .mpst{display:none}
   function fetchOne(sid,k){
     if(!db){
       var o=null; try{o=JSON.parse(localStorage.getItem(secPrefix(sid)+k)||"null")}catch(e){}
-      pm[sid+"|"+k]=extractSums(o&&o.v>=2?o.l:{}); pmPlans[sid+"|"+k]=normPlans(o&&o.v>=2?o.p:null); return Promise.resolve();
+      pm[sid+"|"+k]=extractSums(o&&o.v>=2?o.l:{}); pmPlans[sid+"|"+k]=normPlans(o&&o.v>=2?o.p:null);
+      pmTot[sid+"|"+k]=o&&o.v>=2?summarize(o.d,o.l,o.r):{a:0,r:0}; return Promise.resolve();
     }
     return db.doc(secCol(sid)+"/"+k).get().then(function(sn){
       var data=sn.exists?sn.data():{};
       pm[sid+"|"+k]=extractSums(data.lines); pmPlans[sid+"|"+k]=normPlans(data.plans);
+      pmTot[sid+"|"+k]=summarize(data.days,data.lines,data.rev);
     }).catch(function(){});
   }
   function loadProgress(recent){
@@ -8284,6 +8316,51 @@ body.st-hide .stgw .mpst{display:none}
       note.innerHTML=(n-fails)+" gönderilmiş siparişte kaplama / diş-delik yapılmış sayıldı"+(fails?", "+fails+" sipariş kaydedilemedi, tekrar dene":"")+".<br><br>"+farkHtml();
       if(n-fails)logActivity("Gönderilen siparişlerde kaplama / diş-delik yapılmış sayıldı: "+(n-fails)+" sipariş","info");
     });
+  });
+    /* ---------- Aşamalar arası fark: Gövde ↔ Pres ↔ CNC aşık, hangi üründen kaç adet fark var + ciro kontrolü ---------- */
+  var STGD_PAIRS=[["cncg","pres"],["pres","cnca"],["cncg","cnca"]], stgdPair=0, stgdOpen=true;
+  function stgdName(secId){var i=stageIdx(secId); return i>-1?STAGES[i].name:secId}
+  function stgdHtml(){
+    var pr=STGD_PAIRS[stgdPair], A=pr[0], B=pr[1], ia=stageIdx(A), ib=stageIdx(B);
+    var h='<div class="otabs sm" role="group" style="margin-bottom:8px">'+STGD_PAIRS.map(function(p,i){return '<button type="button" data-stgdp="'+i+'" aria-pressed="'+(i===stgdPair)+'">'+esc(STAGES[stageIdx(p[0])].short)+' ↔ '+esc(STAGES[stageIdx(p[1])].short)+'</button>'}).join("")+'</div>';
+    h+='<div class="otabs sm" role="group" style="margin-bottom:10px"><button type="button" data-stgdo="1" aria-pressed="'+stgdOpen+'">Açık siparişler</button><button type="button" data-stgdo="0" aria-pressed="'+!stgdOpen+'">Tüm siparişler</button></div>';
+    var rows=[], tA=0,tB=0,rA=0,rB=0;
+    orders.forEach(function(o){
+      if(stgdOpen&&(o.shipped||isComplete(o)))return;
+      if(!(o.st||[])[ia]||!(o.st||[])[ib])return;
+      var da=doneOf(o.id,A), db2=doneOf(o.id,B), qa=da.q, qb=db2.q;
+      tA+=qa; tB+=qb; rA+=da.r; rB+=db2.r;
+      if(qa!==qb)rows.push({o:o,qa:qa,qb:qb,d:qa-qb,ra:da.r,rb:db2.r,na:need(o,A),nb:need(o,B)});
+    });
+    rows.sort(function(x,y){return Math.abs(y.d)-Math.abs(x.d)});
+    h+='<b>'+esc(stgdName(A))+':</b> '+nf.format(tA)+' adet · '+money(rA)+' ₺<br><b>'+esc(stgdName(B))+':</b> '+nf.format(tB)+' adet · '+money(rB)+' ₺<br><b>Fark:</b> '+(tA-tB>0?'+':'')+nf.format(tA-tB)+' adet · '+(rA-rB>0?'+':'')+money(rA-rB)+' ₺ <small>('+rows.length+' üründe fark var)</small>';
+    if(!rows.length)h+='<br><br>Bu iki aşama arasında adet farkı olan ürün yok.';
+    rows.slice(0,60).forEach(function(x){
+      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(x.o.code)+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(x.o.qty)+' adet sipariş<br><small>'+esc(STAGES[ia].short)+' '+nf.format(x.qa)+'/'+nf.format(x.na)+' · '+esc(STAGES[ib].short)+' '+nf.format(x.qb)+'/'+nf.format(x.nb)+' → <b>'+(x.d>0?'+':'')+nf.format(x.d)+' adet</b> · '+money(x.ra-x.rb)+' ₺ ciro farkı</small><span class="go">›</span></button>';
+    });
+    if(rows.length>60)h+='<br><small>İlk 60 ürün gösteriliyor.</small>';
+    // Ciro kontrolü: bölüm kartındaki aylık ciro = siparişe bağlı + elle / ürün listesinden girilen
+    var mk=monthKeyNow(), ck='<br><br><b>Ciro kontrolü · '+AY[now.getMonth()]+' (bölüm kartlarındaki rakam)</b>';
+    [A,B].forEach(function(sid){
+      var tot=pmTot[sid+"|"+mk]||{a:0,r:0}, lk=0, lr=0, sm=pm[sid+"|"+mk]||{};
+      Object.keys(sm).forEach(function(oid){lk+=sm[oid].q; lr+=sm[oid].r});
+      ck+='<div class="stgdc"><b>'+esc(stgdName(sid))+'</b>: toplam '+nf.format(tot.a)+' adet · '+money(tot.r)+' ₺<br><small>siparişe bağlı '+nf.format(lk)+' adet · '+money(lr)+' ₺ &nbsp;|&nbsp; elle / ürün listesinden girilen '+nf.format(Math.max(0,tot.a-lk))+' adet · '+money(Math.max(0,tot.r-lr))+' ₺</small></div>';
+    });
+    var ta=pmTot[A+"|"+mk]||{a:0,r:0}, tb=pmTot[B+"|"+mk]||{a:0,r:0};
+    ck+='<small>İki bölümün aylık ciro farkı: '+((ta.r-tb.r)>0?'+':'')+money(ta.r-tb.r)+' ₺. Ciro = adet × o girişteki birim fiyat; fark hem adet hem fiyat farkından gelir.</small>';
+    return h+ck;
+  }
+  $("ostgd").addEventListener("click",function(){
+    var note=$("stgdnote");
+    if(!note.hidden){note.hidden=true; return}
+    note.hidden=false; note.className="impnote"; note.textContent="Hesaplanıyor…";
+    loadProgress(true).then(function(){note.innerHTML=stgdHtml()});
+  });
+  $("stgdnote").addEventListener("click",function(e){
+    var fo=e.target.closest("[data-oid]"); if(fo){openOrderDetail(fo.dataset.oid); return}
+    var b=e.target.closest("button"); if(!b)return;
+    if(b.dataset.stgdp!==undefined){stgdPair=+b.dataset.stgdp; $("stgdnote").innerHTML=stgdHtml(); return}
+    if(b.dataset.stgdo!==undefined){stgdOpen=b.dataset.stgdo==="1"; $("stgdnote").innerHTML=stgdHtml(); return}
   });
   $("ofillimg").addEventListener("click",function(){$("fillimgnote").hidden=true; $("ofillimgf").click()});
   $("ofillimgf").addEventListener("change",function(e){
