@@ -1514,6 +1514,8 @@ body.st-hide .stgw .mpst{display:none}
 .msstg button[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#fff}
 .msfree{display:flex;gap:6px;margin-top:6px}
 .msfree .fin{height:42px;font:600 14px var(--font-ui)}
+.mshl{align-self:center;font:700 13px var(--font-ui);color:var(--ink2)}
+.msmode{margin-top:0}
 .msgrp{display:flex;align-items:center;justify-content:space-between}
 .mspeople{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .mspp{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:7px 12px;font:700 12.5px var(--font-ui)}
@@ -1576,7 +1578,7 @@ body.st-hide .stgw .mpst{display:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 12.10 12:13</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 12.10 13:35</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -7297,7 +7299,7 @@ body.st-hide .stgw .mpst{display:none}
   function msCalc(r){
     var o={n:0,m:0,sh:0,ad:0}, st=r&&MS_BY[r.s]; if(!st)return o;
     if(st.w){o.n=durMin(r.a,r.b); if(st.std&&o.n>0&&o.n<MS_STD)o.sh=MS_STD-o.n}
-    o.m=durMin(r.ma,r.mb);
+    o.m=(tmin(r.ma)!==null&&tmin(r.mb)!==null)?durMin(r.ma,r.mb):(+r.mh||0);
     if(r.s==="gelmedi"){o.ad=1; o.sh=MS_STD}
     return o;
   }
@@ -7324,7 +7326,25 @@ body.st-hide .stgw .mpst{display:none}
     msDocs[eid]=Object.assign({},msDocs[eid]||{}); msDocs[eid][dd]=rec;
     if(db){var days={}; days[dd]=rec; db.doc("mesai/"+msYm+"_"+eid).set({ym:msYm,emp:eid,name:e?e.name:"",days:days},{merge:true}).catch(function(){})}
   }
-  function msBlank(){return {s:"",a:"",b:"",ma:"",mb:"",n:"",j:[]}}
+  function msBlank(){return {s:"",a:"",b:"",ma:"",mb:"",mm:"r",mh:"",n:"",j:[]}}
+  function parseHrs(v){
+    v=String(v==null?"":v).trim().replace(",","."); if(!v)return 0;
+    var m=/^(\d+):(\d{1,2})$/.exec(v); if(m)return Math.min(1440,(+m[1])*60+(+m[2]));
+    var n=parseFloat(v); return isFinite(n)&&n>0?Math.min(1440,Math.round(n*60)):0;
+  }
+  function hrsTxt(mins){var h=mins/60; return String(Math.round(h*100)/100).replace(".",",")}
+  function msMesaiMin(o){return o.mm==="h"?parseHrs(o.mh):durMin(o.ma,o.mb)}
+  function msMesaiHtml(o,bulk){
+    var fa=bulk?"data-msbf":"data-msf", ia=bulk?"msb":"msf", h='<div><span class="fl">Mesai</span><div class="msstg msmode"><button type="button" data-msmm="r" aria-pressed="'+(o.mm!=="h")+'" style="--c:#2F8F83">Saat aralığı</button><button type="button" data-msmm="h" aria-pressed="'+(o.mm==="h")+'" style="--c:#2F8F83">Süre (saat)</button></div>';
+    if(o.mm==="h"){
+      h+='<div class="msfree" style="margin-top:8px"><input class="fin" type="text" inputmode="decimal" id="'+ia+'-mh" '+fa+'="mh" value="'+esc(o.mh)+'" placeholder="Kaç saat? ör. 5 · 2,5 · 2:30" autocomplete="off"><span class="mshl">saat</span></div>'+
+        '<div class="frow" style="margin-top:6px">'+[1,2,3,4,5,6].map(function(n){return '<button type="button" class="tpill" data-msh="'+n+'">'+n+' saat</button>'}).join("")+'</div>';
+    }else{
+      h+='<div class="dgrid" style="margin-top:8px"><input class="fin" type="time" id="'+ia+'-ma" '+fa+'="ma" value="'+esc(o.ma)+'" aria-label="Mesai giriş"><input class="fin" type="time" id="'+ia+'-mb" '+fa+'="mb" value="'+esc(o.mb)+'" aria-label="Mesai çıkış"></div>'+
+        '<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="msm-def">＋ 19:00–23:00</button></div>';
+    }
+    return h+'<div class="note" id="'+(bulk?'msb-m':'msd-m')+'" style="margin:4px 0 0">Mesai süresi: '+fmtHM(msMesaiMin(o))+'</div>'+(bulk?'':'<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="msm-none">Mesai yok</button></div>')+'</div>';
+  }
   function msJobTxt(j){return j.oid||j.code?((j.code||"")+(j.cust?" · "+j.cust:"")+(j.t?" — "+j.t:"")):(j.t||"")}
   function msJobsHtml(jobs,rm){
     return (jobs||[]).length?'<div class="msjobs">'+jobs.map(function(j,i){return '<span class="msjob">'+esc(msJobTxt(j))+(rm?'<button type="button" data-msjrm="'+i+'" aria-label="Kaldır">✕</button>':'')+'</span>'}).join("")+'</div>':'';
@@ -7386,7 +7406,7 @@ body.st-hide .stgw .mpst{display:none}
     for(var d=1;d<=nd;d++){
       var dd=pad(d), r=recs[dd], dw=msDow(msYm,dd), we=dw>=5, c=r&&r.s?msCalc(r):null;
       h+='<button type="button" class="msday'+(we?' we':'')+(r&&r.s?'':' empty')+'" data-msday="'+dd+'"><div class="msd"><b>'+d+'</b><small>'+GUNK[dw]+'</small></div><div class="msb">'+
-        (r&&r.s?'<div>'+msStChip(r)+(c.n?'<span class="mst">'+esc(r.a)+'–'+esc(r.b)+' · '+fmtHM(c.n)+'</span>':'')+(c.m?'<span class="mst mm">Mesai '+esc(r.ma)+'–'+esc(r.mb)+' · '+fmtHM(c.m)+'</span>':'')+'</div>'+msJobsHtml(r.j,false)+(r.n?'<div class="msnote">'+esc(r.n)+'</div>':''):'<span class="mst">Kayıt yok</span>')+
+        (r&&r.s?'<div>'+msStChip(r)+(c.n?'<span class="mst">'+esc(r.a)+'–'+esc(r.b)+' · '+fmtHM(c.n)+'</span>':'')+(c.m?'<span class="mst mm">Mesai '+((r.ma&&r.mb)?esc(r.ma)+'–'+esc(r.mb)+' · ':'')+fmtHM(c.m)+'</span>':'')+'</div>'+msJobsHtml(r.j,false)+(r.n?'<div class="msnote">'+esc(r.n)+'</div>':''):'<span class="mst">Kayıt yok</span>')+
         '</div><span class="fchev">›</span></button>';
     }
     return h+'</div>';
@@ -7399,9 +7419,7 @@ body.st-hide .stgw .mpst{display:none}
       '<div><span class="fl">Durum</span><div class="msstg">'+MS_ST.map(function(s){return '<button type="button" data-msst="'+s.id+'" aria-pressed="'+(dr.s===s.id)+'" style="--c:'+s.c+'">'+esc(s.n)+'</button>'}).join("")+'</div></div>';
     if(st&&st.w)h+='<div><span class="fl">Normal iş saatleri</span><div class="dgrid"><input class="fin" type="time" id="msf-a" data-msf="a" value="'+esc(dr.a)+'" aria-label="Giriş"><input class="fin" type="time" id="msf-b" data-msf="b" value="'+esc(dr.b)+'" aria-label="Çıkış"></div><div class="note" id="msd-n" style="margin:4px 0 0">Süre: '+fmtHM(durMin(dr.a,dr.b))+'</div></div>';
     if(st){
-      h+='<div><span class="fl">Mesai</span><div class="dgrid"><input class="fin" type="time" id="msf-ma" data-msf="ma" value="'+esc(dr.ma)+'" aria-label="Mesai giriş"><input class="fin" type="time" id="msf-mb" data-msf="mb" value="'+esc(dr.mb)+'" aria-label="Mesai çıkış"></div>'+
-        '<div class="note" id="msd-m" style="margin:4px 0 0">Mesai süresi: '+fmtHM(durMin(dr.ma,dr.mb))+'</div>'+
-        '<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="msm-def">＋ 19:00–23:00</button><button type="button" class="tpill" id="msm-none">Mesai yok</button></div></div>';
+      h+=msMesaiHtml(dr,false);
       h+=msJobEditHtml(dr.j,"msd")+
         '<div><label class="fl" for="msf-n">Not</label><textarea class="fin" id="msf-n" data-msf="n" placeholder="Bu gün / bu mesai için not…">'+esc(dr.n)+'</textarea></div>';
     }
@@ -7424,7 +7442,7 @@ body.st-hide .stgw .mpst{display:none}
     var b=msBulk, h='<div class="shead"><div><h2 id="sh-title">Toplu mesai gir</h2><small>Seçtiğin kişilere aynı mesaiyi yazar</small></div><button type="button" class="tpill" id="msbcancel">Vazgeç</button></div><div class="form">'+
       '<div><label class="fl" for="msb-date">Tarih</label><input class="fin" type="date" id="msb-date" data-msbf="date" value="'+esc(b.date)+'"></div>'+
       '<div><span class="fl">Mesai türü</span><div class="msstg">'+["yogun","hsm"].map(function(id){var s=MS_BY[id]; return '<button type="button" data-msbst="'+id+'" aria-pressed="'+(b.s===id)+'" style="--c:'+s.c+'">'+esc(s.n)+'</button>'}).join("")+'</div></div>'+
-      '<div><span class="fl">'+(b.s==="hsm"?'Çalışma saatleri':'Mesai saatleri')+'</span><div class="dgrid"><input class="fin" type="time" id="msb-a" data-msbf="'+(b.s==="hsm"?'a':'ma')+'" value="'+esc(b.s==="hsm"?b.a:b.ma)+'"><input class="fin" type="time" id="msb-b" data-msbf="'+(b.s==="hsm"?'b':'mb')+'" value="'+esc(b.s==="hsm"?b.b:b.mb)+'"></div></div>'+
+      (b.s==="hsm"?'<div><span class="fl">Çalışma saatleri</span><div class="dgrid"><input class="fin" type="time" id="msb-a" data-msbf="a" value="'+esc(b.a)+'"><input class="fin" type="time" id="msb-b" data-msbf="b" value="'+esc(b.b)+'"></div></div>':msMesaiHtml(b,true))+
       msJobEditHtml(b.j,"msb")+
       '<div><label class="fl" for="msb-n">Not</label><textarea class="fin" id="msb-n" data-msbf="n" placeholder="Mesai notu…">'+esc(b.n)+'</textarea></div>'+
       '<div><span class="fl">Kimler? <b style="color:var(--accent)">'+Object.keys(b.ids).length+' seçili</b></span><input class="search" id="msb-q" type="search" autocomplete="off" placeholder="Eleman ara…" value="'+esc(b.q)+'"></div>';
@@ -7444,7 +7462,7 @@ body.st-hide .stgw .mpst{display:none}
   }
   function msBulkNew(){
     var dt=todayIso, dw=msDow(dt.slice(0,7),dt.slice(8,10)), s=dw>=5?"hsm":"yogun";
-    return {date:dt,s:s,a:"08:30",b:"17:30",ma:"19:00",mb:"23:00",j:[],n:"",ids:{},q:""};
+    return {date:dt,s:s,a:"08:30",b:"17:30",ma:"19:00",mb:"23:00",mm:"r",mh:"",j:[],n:"",ids:{},q:""};
   }
   function openMesaiEmp(id){msEmp=id; msSub="month"; sheetMode="mesai"; $("ov").hidden=false; renderSheet()}
   function mesaiSheetHtml(){
@@ -7467,7 +7485,7 @@ body.st-hide .stgw .mpst{display:none}
     if(st.ma&&!dr.ma&&!dr.mb){dr.ma=st.ma;dr.mb=st.mb}
   }
   document.addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-msmon],[data-msbulk],[data-msemp],[data-msday],[data-msst],[data-msjrm],[data-mspo],[data-msbst],[data-msbe],[data-msball],#msclose,#msfill,#msdcancel,#msdsave,#msdclear,#msm-def,#msm-none,#msd-pick,#msb-pick,#msd-freeadd,#msb-freeadd,#mspcancel,#msbcancel,#msbsave");
+    var t=e.target.closest&&e.target.closest("[data-msmon],[data-msbulk],[data-msemp],[data-msday],[data-msst],[data-msjrm],[data-mspo],[data-msbst],[data-msmm],[data-msh],[data-msbe],[data-msball],#msclose,#msfill,#msdcancel,#msdsave,#msdclear,#msm-def,#msm-none,#msd-pick,#msb-pick,#msd-freeadd,#msb-freeadd,#mspcancel,#msbcancel,#msbsave");
     if(!t)return;
     if(t.dataset.msmon){msSetMonth(+t.dataset.msmon); return}
     if(t.dataset.msbulk){msBulk=msBulkNew(); msSub="bulk"; sheetMode="mesai"; $("ov").hidden=false; renderSheet(); return}
@@ -7475,15 +7493,17 @@ body.st-hide .stgw .mpst{display:none}
     if(t.id==="msclose"){msSub="month"; closeSheet(); return}
     if(t.dataset.msday){
       var dd=t.dataset.msday, r=(msDocs[msEmp]||{})[dd];
-      msDraft=r&&r.s?{s:r.s,a:r.a||"",b:r.b||"",ma:r.ma||"",mb:r.mb||"",n:r.n||"",j:(r.j||[]).map(function(x){return Object.assign({},x)})}:msBlank();
+      msDraft=r&&r.s?{s:r.s,a:r.a||"",b:r.b||"",ma:r.ma||"",mb:r.mb||"",mm:(+r.mh>0&&!r.ma)?"h":"r",mh:+r.mh>0?hrsTxt(+r.mh):"",n:r.n||"",j:(r.j||[]).map(function(x){return Object.assign({},x)})}:msBlank();
       msDay=dd;
       if(!msDraft.s){var dw=msDow(msYm,dd); msApplyStatus(dw>=5?"hst":"normal")}
       msSub="day"; renderSheet(); return;
     }
     if(t.id==="msdcancel"){msSub="month"; renderSheet(); return}
     if(t.dataset.msst){msApplyStatus(t.dataset.msst); renderSheet(); return}
-    if(t.id==="msm-def"){msDraft.ma="19:00"; msDraft.mb="23:00"; renderSheet(); return}
-    if(t.id==="msm-none"){msDraft.ma=""; msDraft.mb=""; renderSheet(); return}
+    if(t.id==="msm-def"){var tg=msSub==="bulk"?msBulk:msDraft; tg.ma="19:00"; tg.mb="23:00"; renderSheet(); return}
+    if(t.id==="msm-none"){msDraft.ma=""; msDraft.mb=""; msDraft.mh=""; renderSheet(); return}
+    if(t.dataset.msmm){var tg2=msSub==="bulk"?msBulk:msDraft; tg2.mm=t.dataset.msmm; var sc9=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc9; var fi=$(msSub==="bulk"?"msb-mh":"msf-mh"); if(fi&&tg2.mm==="h")fi.focus(); return}
+    if(t.dataset.msh){var tg3=msSub==="bulk"?msBulk:msDraft; tg3.mh=t.dataset.msh; var sc8=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc8; return}
     if(t.dataset.msjrm!==undefined){var lst=msSub==="bulk"?msBulk.j:msDraft.j; lst.splice(+t.dataset.msjrm,1); renderSheet(); return}
     if(t.id==="msd-pick"||t.id==="msb-pick"){msBack=msSub; msSub="pick"; msPickQ=""; renderSheet(); var pq=$("mspq"); if(pq)pq.focus(); return}
     if(t.id==="mspcancel"){msSub=msBack; renderSheet(); return}
@@ -7499,7 +7519,7 @@ body.st-hide .stgw .mpst{display:none}
     if(t.id==="msdsave"){
       var dr=msDraft; if(!dr||!dr.s)return;
       var fr=$("msd-free"); if(fr&&fr.value.trim()){msAddJob(dr.j,{t:fr.value.trim()})}
-      var st=MS_BY[dr.s], rec={s:dr.s,a:st.w?dr.a:"",b:st.w?dr.b:"",ma:dr.ma,mb:dr.mb,n:dr.n.trim(),j:dr.j};
+      var st=MS_BY[dr.s], rec={s:dr.s,a:st.w?dr.a:"",b:st.w?dr.b:"",ma:dr.mm==="h"?"":dr.ma,mb:dr.mm==="h"?"":dr.mb,mh:dr.mm==="h"?parseHrs(dr.mh):0,n:dr.n.trim(),j:dr.j};
       msSave(msEmp,msDay,rec); msSub="month"; renderSheet(); if(!$("staff").hidden)renderStaff(); return;
     }
     if(t.id==="msdclear"){msSave(msEmp,msDay,msBlank()); msSub="month"; renderSheet(); if(!$("staff").hidden)renderStaff(); return}
@@ -7508,7 +7528,7 @@ body.st-hide .stgw .mpst{display:none}
       for(var d=1;d<=last;d++){
         var k=pad(d); if(recs[k]&&recs[k].s)continue;
         var wk=msDow(msYm,k)>=5, s=MS_BY[wk?"hst":"normal"];
-        msSave(msEmp,k,{s:s.id,a:s.w?s.a:"",b:s.w?s.b:"",ma:"",mb:"",n:"",j:[]}); cnt++;
+        msSave(msEmp,k,{s:s.id,a:s.w?s.a:"",b:s.w?s.b:"",ma:"",mb:"",mh:0,n:"",j:[]}); cnt++;
       }
       renderSheet(); if(!$("staff").hidden)renderStaff(); return;
     }
@@ -7528,16 +7548,16 @@ body.st-hide .stgw .mpst{display:none}
       if(!ids.length){if(info)info.textContent="En az bir kişi seç."; return}
       var bfr=$("msb-free"); if(bfr&&bfr.value.trim())msAddJob(b.j,{t:bfr.value.trim()});
       var ym=b.date.slice(0,7), dd2=b.date.slice(8,10), wkE=msDow(ym,dd2)>=5, st2=MS_BY[b.s];
-      if(st2.id==="yogun"&&!(tmin(b.ma)!==null&&tmin(b.mb)!==null)){if(info)info.textContent="Mesai giriş ve çıkış saatini gir."; return}
+      if(st2.id==="yogun"&&(b.mm==="h"?!parseHrs(b.mh):!(tmin(b.ma)!==null&&tmin(b.mb)!==null))){if(info)info.textContent=b.mm==="h"?"Kaç saat mesai olduğunu yaz.":"Mesai giriş ve çıkış saatini gir."; return}
       if(st2.id==="hsm"&&!(tmin(b.a)!==null&&tmin(b.b)!==null)){if(info)info.textContent="Çalışma giriş ve çıkış saatini gir."; return}
       var prevYm=msYm; msYm=ym; // kayıt başka aya düşüyorsa o ayın belgelerine yaz
       ids.forEach(function(eid){
         var old=(ym===prevYm?(msDocs[eid]||{})[dd2]:null)||null;
         var rec={s:b.s,a:"",b:"",ma:"",mb:"",n:b.n.trim()||(old&&old.n)||"",j:b.j.length?b.j.map(function(x){return Object.assign({},x)}):((old&&old.j)||[])};
         if(b.s==="yogun"){
-          rec.a=(old&&old.a)||st2.a; rec.b=(old&&old.b)||st2.b; rec.ma=b.ma; rec.mb=b.mb;
+          rec.a=(old&&old.a)||st2.a; rec.b=(old&&old.b)||st2.b; if(b.mm==="h"){rec.ma="";rec.mb="";rec.mh=parseHrs(b.mh)}else{rec.ma=b.ma;rec.mb=b.mb;rec.mh=0}
         }else{
-          rec.a=b.a; rec.b=b.b; rec.ma=(old&&old.ma)||""; rec.mb=(old&&old.mb)||"";
+          rec.a=b.a; rec.b=b.b; rec.ma=(old&&old.ma)||""; rec.mb=(old&&old.mb)||""; rec.mh=(old&&+old.mh)||0;
         }
         var e0=employees.filter(function(x){return x.id===eid})[0];
         if(ym!==prevYm){ if(db)db.doc("mesai/"+ym+"_"+eid).set({ym:ym,emp:eid,name:e0?e0.name:"",days:(function(){var o={}; o[dd2]=rec; return o})()},{merge:true}).catch(function(){}) }
@@ -7553,10 +7573,10 @@ body.st-hide .stgw .mpst{display:none}
       msDraft[el.dataset.msf]=el.value;
       var a=$("msd-n"), m=$("msd-m");
       if(a)a.textContent="Süre: "+fmtHM(durMin(msDraft.a,msDraft.b));
-      if(m)m.textContent="Mesai süresi: "+fmtHM(durMin(msDraft.ma,msDraft.mb));
+      if(m)m.textContent="Mesai süresi: "+fmtHM(msMesaiMin(msDraft));
       return;
     }
-    if(el.dataset.msbf&&msBulk){msBulk[el.dataset.msbf]=el.value; return}
+    if(el.dataset.msbf&&msBulk){msBulk[el.dataset.msbf]=el.value; var bm=$("msb-m"); if(bm)bm.textContent="Mesai süresi: "+fmtHM(msMesaiMin(msBulk)); return}
     if(el.id==="mspq"){msPickQ=el.value; var sc=$("sheet").scrollTop, f=el.selectionStart; renderSheet(); var n=$("mspq"); if(n){n.focus(); try{n.setSelectionRange(f,f)}catch(x){}} $("sheet").scrollTop=sc; return}
     if(el.id==="msb-q"&&msBulk){msBulk.q=el.value; var sc3=$("sheet").scrollTop, f3=el.selectionStart; renderSheet(); var n3=$("msb-q"); if(n3){n3.focus(); try{n3.setSelectionRange(f3,f3)}catch(x){}} $("sheet").scrollTop=sc3; return}
   });
