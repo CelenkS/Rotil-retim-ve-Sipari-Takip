@@ -1950,6 +1950,33 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 
 /* Kırılım satırlarındaki yüzde/ort. kutusu: ürün formundaki ".pc" kart stilinden etkilenmesin */
 span.pc{background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important;border-radius:0!important}
+
+/* ---- Ana sayfa v4: aylık ciro kartı, plan ciro, mesai çipi ---- */
+.dtop{margin-bottom:10px}
+.dchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:color-mix(in srgb,var(--ink2) 10%,var(--surface));color:var(--ink2);font:700 12px var(--font-ui);padding:6px 12px;border-radius:99px;cursor:pointer}
+.dchip b{font:800 13px var(--font-num);color:var(--ink)}
+.dchip:hover{border-color:#8B7CFF}
+.dmtop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dmtop>div:first-child{min-width:0;display:flex;flex-direction:column;gap:3px}
+.ddonut{position:relative;flex:0 0 auto;width:92px;height:92px;border-radius:50%;-webkit-mask:radial-gradient(circle,transparent 54%,#000 56%);mask:radial-gradient(circle,transparent 54%,#000 56%);display:grid;place-items:center}
+.ddonut span{display:none}
+.dmrows{display:flex;flex-direction:column;gap:11px;margin-top:16px}
+.dmh{display:flex;align-items:baseline;gap:8px}
+.dmh span{display:flex;align-items:center;gap:7px;font:700 12px var(--font-ui);opacity:.95;flex:1;min-width:0}
+.dmh span i{width:9px;height:9px;border-radius:50%;background:var(--c1);box-shadow:0 0 0 2px rgba(255,255,255,.35);flex-shrink:0}
+.dmh b{font:800 13.5px var(--font-num)}
+.dmh em{font:800 11px var(--font-num);font-style:normal;opacity:.8;min-width:34px;text-align:right}
+.dmr u{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.2);margin-top:6px;overflow:hidden}
+.dmr u i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--c1),color-mix(in srgb,var(--c1) 55%,#fff))}
+.dtot .dwk{margin-top:16px}
+.dpsum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;position:relative;z-index:1}
+.dpsum>div{border-radius:14px;padding:9px 12px;background:color-mix(in srgb,var(--ink2) 10%,transparent);display:flex;flex-direction:column;gap:2px;min-width:0}
+.dpsum small{font:700 11px var(--font-ui);color:var(--ink2)}
+.dpsum b{font:800 15px var(--font-num);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dpsum .ok{background:color-mix(in srgb,#2FD6A0 16%,transparent)}.dpsum .ok b{color:var(--good)}
+.dpr{display:block;margin-top:6px;font:600 11px var(--font-ui);color:var(--ink2)}.dpr b{font:800 11.5px var(--font-num);color:var(--ink)}
+@media (min-width:1100px){.ddgrid{grid-template-columns:minmax(0,8fr) minmax(0,5fr)!important}}
+@media (max-width:600px){.dday .dboxh{flex-wrap:wrap}.dday .ddnav{width:100%;justify-content:space-between}.dday .ddnav span{flex:1}}
 </style>
 </head>
 <body>
@@ -1991,7 +2018,7 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:13</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:20</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -10715,26 +10742,41 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
     var k;
     if(scope==="day")k=todayIso;
     else{var f=Math.max(1,now.getDate()-((now.getDay()+6)%7)); k=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(f)}
-    var rng=planRange(scope,k), rows=[], tq=0, dq=0;
+    var rng=planRange(scope,k), rows=[], tq=0, dq=0, ttp=0, tdr=0;
     SECTIONS.forEach(function(x){
-      var P=pmPlans[x.id+"|"+k.slice(0,7)]||{}, items=(P[scope]&&P[scope][k])||[], q=0, d=0;
+      var P=pmPlans[x.id+"|"+k.slice(0,7)]||{}, items=(P[scope]&&P[scope][k])||[], q=0, d=0, tp=0, dc=0, si=stageIdx(x.id);
       items.forEach(function(pe){
         var o=null; for(var i=0;i<orders.length;i++){if(orders[i].id===pe.oid){o=orders[i];break}}
         if(!o)return;
         var dn=doneOf(o.id,x.id), wq=0; (dn.e||[]).forEach(function(en){if(rng.indexOf(en.d)>-1)wq+=en.q});
-        q+=pe.q; d+=wq;
+        var pr=+((o.pr||[])[si])||0;
+        q+=pe.q; d+=wq; tp+=pe.q*pr; dc+=wq*pr;
       });
-      if(q>0){tq+=q; dq+=d; rows.push({s:x,q:q,d:d})}
+      if(q>0){tq+=q; dq+=d; ttp+=tp; tdr+=dc; rows.push({s:x,q:q,d:d,tp:tp,dr:dc})}
     });
-    return {rows:rows,tq:tq,dq:dq,pc:tq?Math.round(dq/tq*100):0};
+    return {rows:rows,tq:tq,dq:dq,tp:ttp,dr:tdr,pc:tq?Math.round(dq/tq*100):0};
   }
   function dicon(k,cls){return '<span class="dic'+(cls?' '+cls:'')+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+(HC_ICONS[k]||"")+'</svg></span>'}
   function dashPlanBox(title,sub,pl,empty,ik){
     var list=pl.rows.length?pl.rows.map(function(r){
       var rp=Math.round(r.d/r.q*100), pc=Math.min(100,rp), ok=r.d>=r.q;
-      return '<button type="button" class="dpl" data-nav="plans" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><span class="dplh"><span class="dpn"><i></i>'+esc(r.s.name)+'</span><span class="dpv"><b>'+nf.format(r.d)+'</b> / '+nf.format(r.q)+'<em class="dpp'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+'%'+rp+'</em></span></span><span class="dpb"><i style="width:'+pc+'%"></i></span></button>';
-    }).join(""):'<div class="dnempty"><span class="dic big">'+'<svg viewBox="0 0 24 24" aria-hidden="true">'+HC_ICONS.plans+'</svg></span><b>'+empty+'</b><small>Planlar ekranından plan girebilirsin</small></div>';
-    return '<div class="dbox dplan"><div class="dboxh"><div class="dtitle">'+dicon(ik||"plans")+'<div><h3>'+title+'</h3><small>'+esc(sub)+'</small></div></div>'+(pl.tq?'<div class="ring'+(pl.pc>=100?' full':'')+'" style="--p:'+Math.min(100,pl.pc)+'"><b>%'+pl.pc+'</b></div>':'')+'</div><div class="dlist">'+list+'</div></div>';
+      return '<button type="button" class="dpl" data-nav="plans" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><span class="dplh"><span class="dpn"><i></i>'+esc(r.s.name)+'</span><span class="dpv"><b>'+nf.format(r.d)+'</b> / '+nf.format(r.q)+'<em class="dpp'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+'%'+rp+'</em></span></span><span class="dpb"><i style="width:'+pc+'%"></i></span>'+
+        (r.tp>0?'<span class="dpr">Ciro: <b>'+money(r.dr)+'</b> / '+money(r.tp)+' ₺</span>':'')+'</button>';
+    }).join(""):'<div class="dnempty"><span class="dic big"><svg viewBox="0 0 24 24" aria-hidden="true">'+HC_ICONS.plans+'</svg></span><b>'+empty+'</b><small>Planlar ekranından plan girebilirsin</small></div>';
+    var sum=pl.tq?'<div class="dpsum"><div><small>Planlanan ciro</small><b>'+(pl.tp>0?money(pl.tp)+' ₺':'—')+'</b></div><div class="ok"><small>Yapılan ciro</small><b>'+(pl.tp>0||pl.dr>0?money(pl.dr)+' ₺':'—')+'</b></div></div>':'';
+    return '<div class="dbox dplan"><div class="dboxh"><div class="dtitle">'+dicon(ik||"plans")+'<div><h3>'+title+'</h3><small>'+esc(sub)+'</small></div></div>'+(pl.tq?'<div class="ring'+(pl.pc>=100?' full':'')+'" style="--p:'+Math.min(100,pl.pc)+'"><b>%'+pl.pc+'</b></div>':'')+'</div>'+sum+'<div class="dlist">'+list+'</div></div>';
+  }
+  // Ana sayfadaki "toplam mesai saati" (sadece saat; maaş bilgisi yok)
+  var dashMs={ym:"",tot:null,who:0,unsub:null};
+  function dashMesaiWatch(){
+    if(!db)return; var ym=monthKeyNow(); if(dashMs.unsub&&dashMs.ym===ym)return;
+    if(dashMs.unsub){try{dashMs.unsub()}catch(e){} dashMs.unsub=null}
+    dashMs.ym=ym; dashMs.tot=null;
+    dashMs.unsub=db.collection("mesai").where("ym","==",ym).onSnapshot(function(snap){
+      var tot=0, who=0;
+      snap.docs.forEach(function(d){var x=d.data(); if(!x||x.ym!==ym)return; var t=0; Object.keys(x.days||{}).forEach(function(k){var r=x.days[k]; if(r&&r.s)t+=msCalc(r).m}); tot+=t; if(t>0)who++});
+      dashMs.tot=tot; dashMs.who=who; try{paintDash()}catch(e){}
+    },function(){dashMs.unsub=null});
   }
   function paintDash(){
     var d=$("dash"); if(!d)return;
@@ -10759,18 +10801,31 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
     var yIso=isoAdd(todayIso,-1), isY=(di===yIso), dlabel=isY?"Dün · "+isoDayLabel(di):isoDayLabel(di);
     var short={cncg:"Gövde",pres:"Pres",cnca:"CNC aşık",montaj:"Montaj"}, tr=dr.tot.r;
     var wk=dashWeekRow(di); if(wk.miss)dashLoad(false,wk.months);
-    var wtr=wk.tot.r, wmon=wk.rows.filter(function(r){return r.s.id==="montaj"})[0], isCur=(wk.mon===isoWeekMonday(todayIso));
-    var segs=wk.rows.filter(function(r){return r.r>0}).map(function(r){return '<i style="flex:'+r.r+';background:linear-gradient(90deg,'+r.s.h1+','+r.s.h2+')" title="'+esc(r.s.name)+'"></i>'}).join("");
+    var wtr=wk.tot.r, isCur=(wk.mon===isoWeekMonday(todayIso));
+    // bu ayın bölüm bazlı toplam cirosu
+    var mkn=monthKeyNow(), mmiss=false, mtot={a:0,r:0}, mrows=DASH_SECS.map(function(id){
+      var mm=pmDay[id+"|"+mkn]; if(!mm)mmiss=true; var a=0,r=0; Object.keys(mm||{}).forEach(function(k){a+=mm[k].a; r+=mm[k].r}); mtot.a+=a; mtot.r+=r; return {s:secById(id),a:a,r:r};
+    });
+    if(mmiss)dashLoad(false,[mkn]);
+    var cum=0, stops=mrows.map(function(r){var p0=cum, sh=mtot.r?r.r/mtot.r*100:0; cum+=sh; return r.s.h1+' '+p0+'% '+cum+'%'}).join(",");
+    var donut='<div class="ddonut" style="background:'+(mtot.r?'conic-gradient('+stops+')':'rgba(255,255,255,.2)')+'"><span>'+esc(AY[m].slice(0,3))+'</span></div>';
+    var mrowsHtml=mrows.map(function(r){
+      var sh=mtot.r?Math.round(r.r/mtot.r*100):0;
+      return '<div class="dmr" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><div class="dmh"><span><i></i>'+short[r.s.id]+'</span><b>'+(mmiss?'…':money(Math.round(r.r))+' ₺')+'</b><em>%'+sh+'</em></div><u><i style="width:'+(mmiss?0:sh)+'%"></i></u></div>';
+    }).join("");
     var leg=wk.rows.map(function(r){return '<span><i style="background:'+r.s.h1+'"></i>'+short[r.s.id]+'<b>'+(wk.miss?'…':money(Math.round(r.r))+' ₺')+'</b></span>'}).join("");
     var rev='<div class="dbox dday"><div class="dboxh"><div class="dtitle">'+dicon("prod")+'<div><h3>Dünün cirosu</h3><small>Bölümlere göre üretim cirosu</small></div></div>'+
       '<div class="ddnav"><button type="button" data-dday="-1" aria-label="Önceki gün">‹</button><span>'+esc(dlabel)+'</span><button type="button" data-dday="1" aria-label="Sonraki gün"'+(di>=yIso?' disabled':'')+'>›</button></div></div>'+
-      '<div class="ddgrid"><div class="dtot"><small>Montaj · '+(isCur?'bu hafta':'hafta')+' cirosu</small><b>'+(wk.miss?'…':money(wmon.r)+' ₺')+'</b><em>'+(wk.miss?'yükleniyor':nf.format(wmon.a)+' adet · '+esc(isoWeekLabel(wk.mon)))+'</em>'+
-      '<div class="dwk"><span>Haftalık toplam (4 bölüm)</span><b>'+(wk.miss?'…':money(wtr)+' ₺')+'</b></div>'+
-      '<div class="dseg'+(segs?'':' none')+'">'+segs+'</div><div class="dleg">'+leg+'</div></div>'+
+      '<div class="ddgrid">'+
       '<div class="dsecs">'+dr.rows.map(function(r){
         return '<div class="dsec" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><div class="dsh">'+dicon(r.s.id,"sm")+'<span class="dshare">'+(dr.miss?'':'%'+(tr?Math.round(r.r/tr*100):0))+'</span></div>'+
           '<small>'+esc(r.s.name)+'</small><b>'+(dr.miss?'…':money(r.r)+' ₺')+'</b><em>'+(dr.miss?'yükleniyor':(r.a?nf.format(r.a)+' adet':'üretim yok'))+'</em><u><i style="width:'+(dr.miss?0:Math.round(r.r/mxr*100))+'%"></i></u></div>';
-      }).join("")+'</div></div></div>';
+      }).join("")+'</div>'+
+      '<div class="dtot"><div class="dmtop"><div><small>'+esc(AY[m])+' ayı toplam ciro</small><b>'+(mmiss?'…':money(Math.round(mtot.r))+' ₺')+'</b><em>'+(mmiss?'yükleniyor':nf.format(mtot.a)+' adet · 4 bölüm')+'</em></div>'+donut+'</div>'+
+      '<div class="dmrows">'+mrowsHtml+'</div>'+
+      '<div class="dwk"><span>'+(isCur?'Bu hafta':'Hafta')+' · '+esc(isoWeekLabel(wk.mon).replace(" haftası",""))+'</span><b>'+(wk.miss?'…':money(Math.round(wtr))+' ₺')+'</b></div>'+
+      '<div class="dleg">'+leg+'</div></div>'+
+      '</div></div>';
     // plan kutuları
     var pd=dashPlan("day"), pw=dashPlan("week");
     var pbox=dashPlanBox("Günlük plan",isoDayLabel(todayIso),pd,"Bugün için plan yok","plans")+dashPlanBox("Haftalık plan",isoWeekLabel(isoWeekMonday(todayIso)),pw,"Bu hafta için plan yok","plans");
@@ -10784,15 +10839,15 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
     }).join("");
     var nbox='<div class="dbox dnotes"><div class="dboxh"><div class="dtitle">'+dicon("notes")+'<div><h3>Notlarım</h3><small>'+(nTot?nTot+' açık not':'Sadece sana özel')+'</small></div></div><button type="button" class="dmore" data-nav="notes">Tümü ›</button></div><div class="dlist">'+(nrows||'<button type="button" class="dnempty" data-nav="notes"><span class="dic big"><svg viewBox="0 0 24 24" aria-hidden="true">'+HC_ICONS.notes+'</svg></span><b>Açık notun yok</b><small>Yeni not eklemek için dokun</small></button>')+'</div></div>';
     d.hidden=false;
-    d.innerHTML='<div class="dtiles">'+
+    var chip=(dashMs.tot!==null)?'<div class="dtop"><button type="button" class="dchip" data-nav="staff">⏱ <b>'+fmtHM(dashMs.tot)+'</b> saat toplam mesai · '+esc(AY[m])+(dashMs.who?' · '+dashMs.who+' kişi':'')+'</button></div>':'';
+    d.innerHTML=chip+'<div class="dtiles">'+
       '<div class="dt hi"><small>Açık sipariş tutarı</small><b>'+(pend?'…':dashMoney(openAmt))+'</b><em>'+(pend?'hesaplanıyor':open+' açık sipariş'+(Object.keys(pmFail).length?' · veri eksik olabilir':''))+'</em></div>'+
       '<div class="dt'+(late&&!pend?' bad':'')+'"><small>Termini geçen</small><b>'+(pend?'…':late)+'</b><em>'+(pend?'hesaplanıyor':(late?'acil bakılması gereken':'gecikme yok'))+'</em></div>'+
       '<div class="dt"><small>'+esc(AY[m])+' gönderilen</small><b>'+dashMoney(shipA)+'</b><em>'+nf.format(shipQ)+' adet</em></div>'+
       '<div class="dt"><small>'+esc(AY[m])+' tamamlanan</small><b>'+(pend?'…':comp)+'</b><em>sipariş</em></div></div>'+
       rev+
-      '<div class="dgrid3">'+pbox+nbox+'</div>'+
-      '<div class="dgrid2"><div class="dbox"><h3>Aylık gönderilen ciro</h3><small>Son 6 ay · gönderim tarihine göre</small><div class="dbars">'+bars+'</div></div>'+
-      '<div class="dbox"><h3>Yaklaşan terminler</h3><small>Açık siparişler, en yakın tarih önce</small><div class="dlist">'+lst+'</div></div></div>';
+      '<div class="dgrid3">'+pbox+nbox+'</div>';
+
   }
   $("dash").addEventListener("click",function(e){
     var dn=e.target.closest("[data-dday]");
@@ -10836,7 +10891,7 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
     refreshHome();
   }
   function refreshHome(){
-    dbP.then(function(){homeLoad()});
+    dbP.then(function(){homeLoad(); dashMesaiWatch()});
     SECTIONS.forEach(function(x){
       var o=null; try{o=JSON.parse(localStorage.getItem(secPrefix(x.id)+monthKeyNow())||"null")}catch(e){}
       paintHome(x.id,(o&&o.v>=2)?summarize(o.d,o.l,o.r):null);
