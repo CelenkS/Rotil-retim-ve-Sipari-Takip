@@ -1947,6 +1947,9 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 :root[data-theme="glass"][data-gmode="light"] .ddnav{background:rgba(79,70,229,.08)}
 :root[data-theme="glass"][data-gmode="light"] .ddnav button{background:rgba(79,70,229,.1);color:var(--ink)}
 :root[data-theme="glass"][data-gmode="light"] .snl,:root[data-theme="glass"][data-gmode="light"] .stkrow{background:#fff}
+
+/* Kırılım satırlarındaki yüzde/ort. kutusu: ürün formundaki ".pc" kart stilinden etkilenmesin */
+span.pc{background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important;border-radius:0!important}
 </style>
 </head>
 <body>
@@ -1988,7 +1991,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:11</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:13</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
