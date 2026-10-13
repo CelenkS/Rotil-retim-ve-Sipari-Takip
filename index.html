@@ -1655,6 +1655,47 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 .rv-row .ed{font-size:12px;opacity:.55;margin-left:6px;align-self:center}
 .rv-row.chg{background:color-mix(in srgb,var(--p7) 22%,transparent)}
 .rv-row .was{display:block;font:600 11px var(--font-ui);color:var(--ink2);text-decoration:line-through;text-align:right}
+/* ---- ürün formu (sade) ---- */
+.prf{gap:12px}
+.prf .pcf{display:flex;flex-direction:column;gap:4px;min-width:0}
+.prf .pcf>span{font:600 12px var(--font-ui);color:var(--ink2);padding-left:2px}
+.prf .fin{height:44px;font:600 15px var(--font-ui);padding:0 12px;border-radius:12px;background:var(--soft);border:1.5px solid transparent}
+.prf textarea.fin{height:auto;padding:10px 12px;line-height:1.4}
+.prf .fin:focus{background:var(--surface);border-color:var(--accent)}
+.prtop{display:flex;gap:12px;align-items:flex-start}.prtop .prtf{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.prtop .imgpick{flex-direction:column;align-items:flex-start}
+.prmore{border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.prmore summary{cursor:pointer;list-style:none;padding:12px 14px;font:700 13.5px var(--font-ui);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.prmore summary::-webkit-details-marker{display:none}
+.prmore summary small{font:600 11.5px var(--font-ui);color:var(--ink2);margin-left:auto}
+.prmore summary::after{content:"▾";color:var(--ink2);font-size:12px}.prmore[open] summary::after{content:"▴"}
+.prmb{display:flex;flex-direction:column;gap:10px;padding:2px 14px 14px}
+.prsec{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:6px}.prsec b{font:800 16px var(--font-head)}.prsec span{font:600 12px var(--font-ui);color:var(--ink2)}
+.pcl-list{display:flex;flex-direction:column;gap:8px}
+.pc{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.pc.open{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));box-shadow:0 4px 16px rgba(22,48,58,.07)}
+.pc.empty{border-style:dashed;background:transparent}
+.pch{display:flex;align-items:center;gap:11px;width:100%;padding:12px 14px;background:none;border:0;text-align:left;cursor:pointer;color:var(--ink);font-family:var(--font-ui);min-height:56px}
+.pcd{flex:0 0 10px;width:10px;height:10px;border-radius:50%;background:var(--c)}
+.pct{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pct b{font:700 14.5px var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pct small{font:600 12px var(--font-ui);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcc{font:800 14px var(--font-num);white-space:nowrap}
+.pcv{color:var(--ink2);font-size:12px;width:14px;text-align:center}
+.pcb{display:flex;flex-direction:column;gap:10px;padding:2px 14px 14px;border-top:1px solid var(--line);padding-top:12px}
+.pcg{display:grid;gap:8px}.pcg.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.pcg.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pcb .prcalc{margin:0;padding:8px 10px;border-radius:10px;background:var(--soft)}
+.pcfoot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pcfoot .prcalc{background:none;padding:0}
+.pcact{display:flex;gap:14px}
+.pcl{background:none;border:0;padding:6px 0;font:700 12.5px var(--font-ui);color:var(--accent);cursor:pointer}.pcl.bad{color:var(--bad)}
+.pradd{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.pradd span{grid-column:1/-1;font:600 12px var(--font-ui);color:var(--ink2);padding-left:2px}
+.pradd button{height:46px;border-radius:14px;border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--line));background:transparent;color:var(--ink);font:700 13.5px var(--font-ui);cursor:pointer}
+.pradd button:active{background:var(--soft)}
+.prsbar{position:sticky;bottom:-1px;z-index:5;display:flex;align-items:center;gap:12px;margin:4px -4px -4px;padding:10px 12px 10px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:0 -6px 22px rgba(22,48,58,.14)}
+.prsbar .t{flex:1;display:flex;flex-direction:column;line-height:1.15}.prsbar .t small{font:600 11.5px var(--font-ui);color:var(--ink2)}.prsbar .t b{font:800 21px var(--font-num)}
+.prsbar .btn{min-height:46px;padding:0 26px}
 .prvbar{position:sticky;bottom:-1px;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px -4px -4px;padding:10px 12px;border-radius:18px;background:var(--surface);border:1px solid var(--accent);box-shadow:0 -6px 22px rgba(22,48,58,.18)}
 .prvbar .t{flex:1;min-width:150px;font:700 12.5px/1.35 var(--font-ui);color:var(--ink)}.prvbar .t small{display:block;font:600 11px var(--font-ui);color:var(--ink2)}
 .prvbar .btn{padding:0 16px;min-height:42px}
@@ -1705,7 +1746,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 15:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 16:25</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3352,7 +3393,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
         var otot=orderTotal(od), ocomp=isComplete(od);
         var im0=imgCache[od.id]||od.th;
         if(im0)html+='<img class="oimg" id="odimg" alt="" src="'+im0+'">';
-        html+='<div class="otot"><div><small>Sipariş tutarı</small><b>'+(otot?money(otot)+' ₺':'—')+'</b></div><div><small>Birim fiyat</small><b>'+(od.up?money(od.up)+' ₺':'—')+'</b></div></div>';
+        html+='<div class="otot"><div><small>Sipariş tutarı</small><b>'+(otot?money(otot)+' ₺':'—')+'</b></div><div><small>Birim fiyat</small><b>'+(od.up?money(od.up)+' ₺':'—')+'</b></div>'+(od.shipped&&shQty(od)!==od.qty?'<div><small>Gönderilen tutar ('+nf.format(shQty(od))+' adet)</small><b>'+(shTotal(od)?money(shTotal(od))+' ₺':'—')+'</b></div>':'')+'</div>';
         if(od.od||od.dd)html+='<div class="odates">'+(od.od?'<span>Sipariş '+fmtD(od.od)+'</span>':'')+dueChip(od,ocomp)+'</div>';
         var mcit=catItemByCode(od.code);
         html+='<button type="button" class="btn ghost" data-techcode="'+esc(od.code)+'" style="width:100%;margin:8px 0">📐 Teknik resim</button>';
@@ -5049,6 +5090,8 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   function custBase(n){return String(n||"Müşteri yok").replace(/\s+S\s*\d+\s*$/i,"").replace(/\s+/g," ").trim()||"Müşteri yok"}
   function custKey(b){return fold(b)}
   function orderTotal(o){return o.qty*(+o.up||0)}
+  function shQty(o){return (o.shipped&&o.shipQty>0)?o.shipQty:o.qty}
+  function shTotal(o){return shQty(o)*(+o.up||0)}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
   function daysTo(iso){if(!iso)return null; var a=iso.split("-"); return Math.round((new Date(+a[0],+a[1]-1,+a[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
   function fmtD(iso){if(!iso)return ""; var a=iso.split("-"); return (+a[2])+" "+AY[+a[1]-1]+" "+a[0]}
@@ -5139,14 +5182,14 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     });
   }
   function statRowHtml(o){
-    var c=isComplete(o), tot=orderTotal(o);
+    var c=isComplete(o), tot=o.shipped?shTotal(o):orderTotal(o);
     return '<div role="button" tabindex="0" class="nli" data-oid="'+o.id+'">'+
       (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
       '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b></div>'+
       '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
       '<div class="nlcat"><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p'+(o.cat%6)+');margin-right:5px"></span>'+esc(ORDER_CATS[o.cat]||"")+'</div>'+
       '<div class="nlchips">'+statusChips(o)+(o.shipped&&o.shipDate?'<span class="due ok">Gönderim '+fmtD(o.shipDate)+'</span>':dueChip(o,c))+'</div></div>'+
-      '<div class="nlr"><b>'+nf.format(o.qty)+'</b><small>adet</small>'+(tot?'<small>'+money(tot)+' ₺</small>':'')+'</div>'+stagesRowHtml(o,null)+'</div>';
+      '<div class="nlr"><b>'+nf.format(o.shipped?shQty(o):o.qty)+'</b><small>adet'+(o.shipped&&shQty(o)!==o.qty?' / '+nf.format(o.qty):'')+'</small>'+(tot?'<small>'+money(tot)+' ₺</small>':'')+'</div>'+stagesRowHtml(o,null)+'</div>';
   }
   function renderStatPanel(){
     var card=$("ostatcard"); if(!card)return;
@@ -5159,7 +5202,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var custNames=Object.keys(custs).sort(function(a,b){return a.localeCompare(b,"tr")});
     if(ostatCust&&!custs[ostatCust])ostatCust="";
     var list=all.filter(function(o){return (ostatCat===null||o.cat===ostatCat)&&(!ostatCust||(o.cust||"Müşteri yok")===ostatCust)});
-    var q=0,t=0; list.forEach(function(o){q+=o.qty; t+=orderTotal(o)});
+    var q=0,t=0; list.forEach(function(o){if(ostatKey==="ship"){q+=shQty(o); t+=shTotal(o)}else{q+=o.qty; t+=orderTotal(o)}});
     list.sort(function(a,b){
       if(ostatKey==="ship")return (b.shipDate||"")<(a.shipDate||"")?-1:((b.shipDate||"")>(a.shipDate||"")?1:0);
       if(ostatKey==="done")return (completionDateOf(b)||"")<(completionDateOf(a)||"")?-1:1;
@@ -5286,12 +5329,12 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     return h?'<div class="kchips">'+h+'</div>':'';
   }
   function ocardHtml(x){
-    var o=x.o, tot=orderTotal(o);
+    var o=x.o, tot=o.shipped?shTotal(o):orderTotal(o);
     return '<button type="button" class="ocard d'+o.cat+'" data-oid="'+o.id+'"><div class="orow">'+
       (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-      '<div class="obody"><div class="otop"><span class="ocode">'+esc(o.code)+(o.shipped?' <small class="shipbadge">📦</small>':'')+'</span><span class="oq">'+nf.format(o.qty)+' adet</span></div>'+
+      '<div class="obody"><div class="otop"><span class="ocode">'+esc(o.code)+(o.shipped?' <small class="shipbadge">📦</small>':'')+'</span><span class="oq">'+(o.shipped&&shQty(o)!==o.qty?nf.format(shQty(o))+' / ':'')+nf.format(o.qty)+' adet</span></div>'+
       '<div class="ocust">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+chipsHtml(o)+'</div></div>'+
-      (tot?'<div class="oamt"><small>Sipariş tutarı</small><span>'+money(tot)+' ₺</span></div>':'')+
+      (tot?'<div class="oamt"><small>'+(o.shipped?'Gönderilen tutar':'Sipariş tutarı')+'</small><span>'+money(tot)+' ₺</span></div>':'')+
       ((o.od||o.dd)?'<div class="odates">'+(o.od?'<span>Sipariş '+fmtD(o.od)+'</span>':'')+dueChip(o,x.c)+'</div>':'')+
       '<div class="stages" style="grid-template-columns:repeat('+(function(n){return n<=4?n:(n<=6?3:4)})(STAGES.filter(function(sg,i){return shownStage(o,i)}).length)+',1fr)">'+
       SORD.map(function(i){
@@ -5361,7 +5404,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     }
     var sl=list.filter(function(x){return sumAll||!x.c}), grp=function(arr){
       var gs=ORDER_CATS.map(function(){return {n:0,q:0,t:0}}), gt={n:0,q:0,t:0};
-      arr.forEach(function(x){var g=gs[x.o.cat]||gs[0]; [g,gt].forEach(function(z){z.n++;z.q+=x.o.qty;z.t+=orderTotal(x.o)})});
+      arr.forEach(function(x){var g=gs[x.o.cat]||gs[0]; [g,gt].forEach(function(z){z.n++;z.q+=(x.o.shipped?shQty(x.o):x.o.qty);z.t+=(x.o.shipped?shTotal(x.o):orderTotal(x.o))})});
       return {gs:gs,gt:gt};
     };
     var row=function(name,dot,g,cls,attr){return '<'+(attr?'button type="button"':'div')+' class="sumrow'+(cls||'')+'"'+(attr||'')+'><span class="sn">'+(dot?'<span class="dot" style="background:'+dot+'"></span>':'')+esc(name)+'</span><span class="sa">'+(g.t?money(g.t)+' ₺':'—')+'</span><span class="ss">'+g.n+' sipariş · '+nf.format(g.q)+' adet</span><span></span></'+(attr?'button':'div')+'>'};
@@ -6577,6 +6620,29 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     $("fincontent").innerHTML=h; paintFinTotals();
   }
   // ---- Listeden toplu ekle (isim + net maaş [+ sigorta]); veri koda gömülmez, dosyadan/yapıştırmadan okunur ----
+  // Excel satırlarından "isim;net;sigorta" metni üretir. Başlık satırı varsa sütunları adından bulur; yoksa 1. sütun isim, sonraki sayılar net/sigorta.
+  function finImpRowsToText(rows){
+    var nc=-1, mc=-1, sc=-1, hr=-1;
+    for(var i=0;i<Math.min(rows.length,12)&&hr<0;i++){
+      var a=rows[i], n2=-1, m2=-1, s2=-1;
+      a.forEach(function(x,j){var f=fold(x||""); if(!f)return;
+        if(n2<0&&/(ad soyad|adi soyadi|isim|personel|calisan|^ad$|^adi$)/.test(f))n2=j;
+        else if(s2<0&&/(sigorta|sgk|resmi)/.test(f))s2=j;
+        else if(m2<0&&/(net|maas|ucret|aylik)/.test(f))m2=j});
+      if(n2>=0&&m2>=0){nc=n2; mc=m2; sc=s2; hr=i}
+    }
+    function nz(x){x=String(x==null?"":x).trim(); if(/^\d+\.\d+$/.test(x)&&!/^\d{1,3}(\.\d{3})+$/.test(x))return String(Math.round(parseFloat(x)*100)/100).replace(".",","); return x}
+    var out=[];
+    rows.forEach(function(a,i){
+      if(i<=hr)return; a=a.map(nz); var nm=(a[nc>=0?nc:0]||"").trim(); if(!nm||/^\d+([.,]\d+)?$/.test(nm))return;
+      var net, sg="";
+      if(nc>=0){net=a[mc]||""; sg=sc>=0?(a[sc]||""):""}
+      else{var nums=[]; a.forEach(function(x,j){if(j!==0&&/^\d[\d.,]*$/.test(String(x||"").replace(/[₺\s]|TL/gi,"")))nums.push(x)}); net=nums[0]||""; sg=nums[1]||""}
+      if(!net&&!sg)return;
+      out.push(nm+";"+net+(sg!==""||sc>=0?";"+sg:""));
+    });
+    return out.join("\n");
+  }
   var finImp={rows:[],busy:false};
   function finImpNum(v){
     v=String(v==null?"":v).replace(/[₺\s]|TL/gi,""); if(!v)return 0;
@@ -6592,27 +6658,27 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       var c=line.split(/\t|;/); if(c.length<2&&line.indexOf(",")>-1)c=line.split(",");
       var nm=(c[0]||"").trim().replace(/\s+/g," ");
       if(!nm||/toplam/i.test(nm))return;
-      var n=finImpNum(c[1]), sg=finImpNum(c[2]);
+      var n=finImpNum(c[1]), sg=finImpNum(c[2]), hasS=c.length>2&&String(c[2]).trim()!=="";
       if(!n&&!sg&&c.length>1&&!/\d/.test(String(c[1])))return; // başlık satırı
       var key=fold(nm), ex=employees.filter(function(e){return fold(e.name)===key})[0]||null;
-      var r={name:nm,n:n,s:sg,ex:ex,dupe:!!seen[key]}; seen[key]=1; out.push(r);
+      var r={name:nm,n:n,s:hasS?sg:null,ex:ex,dupe:!!seen[key]}; seen[key]=1; out.push(r);
     });
     return out;
   }
   function finImpPaint(){
     var rows=finImp.rows, box=$("fimpprev"), go=$("fimpgo"); if(!box)return;
-    var use=rows.filter(function(r){return !r.dupe}), nw=use.filter(function(r){return !r.ex}).length, tn=0,ts=0; use.forEach(function(r){tn+=r.n;ts+=r.s});
+    var use=rows.filter(function(r){return !r.dupe}), nw=use.filter(function(r){return !r.ex}).length, tn=0,ts=0; use.forEach(function(r){tn+=r.n;ts+=(r.s||0)});
     if(!rows.length){box.innerHTML='<div class="note">Henüz liste yok. Dosya seç ya da Excel’den kopyalayıp yapıştır.</div>'; go.disabled=true; go.textContent="Hepsini ekle"; return}
     box.innerHTML='<div class="fstats"><div><small>Kişi</small><b>'+use.length+'</b></div><div><small>Yeni / mevcut</small><b>'+nw+' / '+(use.length-nw)+'</b></div><div><small>Toplam net</small><b>'+money(tn)+' ₺</b></div></div>'+
       '<div style="max-height:38vh;overflow:auto;border:1px solid var(--line);border-radius:14px">'+rows.map(function(r){
-        var cur=r.ex?finMaasOf(r.ex.id,finMonth):null, chg=cur&&(cur.n||cur.s)&&(cur.n!==r.n||cur.s!==r.s);
-        return '<div class="finrow" style="padding:8px 12px'+(r.dupe?';opacity:.45':'')+'"><div class="fl2">'+esc(r.name)+'<small>'+(r.dupe?'listede 2. kez, atlanır':r.ex?'mevcut eleman'+(chg?' · şu an '+money(cur.n+cur.s)+' ₺ → değişir':''):'yeni eleman')+(r.n?'':' · maaş yok')+'</small></div><div class="auto">'+(r.n?money(r.n)+' ₺':'—')+(r.s?'<small style="display:block;font:600 11px var(--font-ui);color:var(--ink2);text-align:right">sig. '+money(r.s)+' ₺</small>':'')+'</div></div>'}).join("")+'</div>';
+        var cur=r.ex?finMaasOf(r.ex.id,finMonth):null, chg=cur&&(cur.n||cur.s)&&(cur.n!==r.n||(r.s!==null&&cur.s!==r.s));
+        return '<div class="finrow" style="padding:8px 12px'+(r.dupe?';opacity:.45':'')+'"><div class="fl2">'+esc(r.name)+'<small>'+(r.dupe?'listede 2. kez, atlanır':r.ex?'mevcut eleman'+(chg?' · şu an '+money(cur.n+cur.s)+' ₺ → değişir':''):'yeni eleman')+(r.n?'':' · maaş yok, dokunulmaz')+'</small></div><div class="auto">'+(r.n?money(r.n)+' ₺':'—')+(r.s?'<small style="display:block;font:600 11px var(--font-ui);color:var(--ink2);text-align:right">sig. '+money(r.s)+' ₺</small>':'')+'</div></div>'}).join("")+'</div>';
     go.disabled=finImp.busy||!use.length; go.textContent="Hepsini ekle ("+use.length+" kişi)";
   }
   function finImpSheetHtml(){
     return '<div class="shead"><div><h2 id="sh-title">Listeden toplu ekle</h2><small>'+esc(finMonLabel(finMonth))+' ayı için · isim ve maaşlar</small></div><button class="btn ghost" id="fimpclose">Kapat</button></div>'+
-      '<div class="form"><div class="note">Maaşlar <b>NET</b> olarak '+esc(finMonLabel(finMonth))+' ayına girilir (sigorta yoksa 0). Bölümleri sonra tek tek sen seçersin. Aynı isimde eleman varsa yenisi açılmaz, sadece maaşı güncellenir.</div>'+
-      '<div><label class="fl" for="fimpfile">Dosya seç (.csv / .txt)</label><input class="fin" id="fimpfile" type="file" accept=".csv,.txt,.tsv,text/plain,text/csv"></div>'+
+      '<div class="form"><div class="note">Maaşlar <b>NET</b> olarak '+esc(finMonLabel(finMonth))+' ayına girilir (sigorta yoksa 0). Bölümleri sonra tek tek sen seçersin. Aynı isimde eleman varsa yenisi açılmaz, <b>sadece maaşı</b> güncellenir; bölümü, görevi ve diğer bilgilerine dokunulmaz. Listede olmayanlar bölümsüz yeni eleman olarak açılır. Sigorta sütunu yoksa mevcut sigortası da değişmez.</div>'+
+      '<div><label class="fl" for="fimpfile">Excel (.xlsx) ya da .csv seç</label><input class="fin" id="fimpfile" type="file" accept=".xlsx,.csv,.txt,.tsv,text/plain,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>'+
       '<div><label class="fl" for="fimptxt">…ya da buraya yapıştır (her satır: İsim ; Net maaş ; Sigorta)</label><textarea class="fin" id="fimptxt" rows="3" placeholder="CUMA YILDIZ;60000"></textarea></div>'+
       '<div id="fimpprev"></div><button type="button" class="btn" id="fimpgo" disabled style="width:100%">Hepsini ekle</button><div class="note" id="fimpmsg"></div></div>';
   }
@@ -7946,66 +8012,76 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   function prNewDraft(){return {id:"",code:"",name:"",cust:"",cat:1,note:"",oem:"",veh:"",nw:"",len:"",thr:"",th:"",full:null,dirty:false,parts:[]}}
   function prPartNew(k){return k==="made"?{k:"made",n:"",kal:"",d:"",l:"",f:"0",wt:"",q:"1",p:"",m:"",th:"",nt:""}:k==="coat"?{k:"coat",n:"Kaplama",wt:"",q:"1",p:"",m:"",th:"",nt:""}:k==="lab"?{k:"lab",n:"",q:"1",p:"",m:"",th:"",nt:""}:{k:"buy",n:"",q:"1",u:"adet",p:"",sup:"",m:"",th:"",nt:""}}
   function prCostTxt(p){var c=partCost(p); return c>0?'Parça maliyeti: <b>'+pf(c)+' ₺</b>'+(!pnum(p.p)&&p.m?' (bileşen fiyatından)':''):'Fiyat girilirse maliyet hesaplanır'}
-  function prPartHtml(p,i){
+  var prOpenI=-1, prAdv={}, prMoreOpen=false;
+  var PR_KCOL={made:"--p4",buy:"--p1",coat:"--p5",lab:"--p0"};
+  function prPartTitle(p){var lm=matById(p.m); var n=(p.n||"").trim()||(p.k==="buy"&&lm?lm.name:""); return n||(p.k==="made"?"Üretilen parça":p.k==="coat"?"Kaplama":p.k==="lab"?"İşçilik / masraf":"Satın alınan parça")}
+  function prPartSub(p){
     var lm=matById(p.m);
-    var h='<div class="prpart'+(p.slot&&prSlotEmpty(p)?' empty':'')+'" data-pi="'+i+'"><div class="prph"><span class="prk">'+(p.k==="made"?'⚙ Üretilen parça':p.k==="coat"?'🎨 Kaplama':p.k==="lab"?'💼 İşçilik / masraf':'🛒 Satın alınan parça')+'</span><button type="button" class="tpill bad" data-prprm="'+i+'">Sil</button></div>'+
-      '<div class="prrow"><input class="fin" type="text" data-pf="n" data-pi="'+i+'" placeholder="Parça adı" value="'+esc(p.n)+'" autocomplete="off"></div>';
+    if(p.slot&&prSlotEmpty(p))return "Boş · istersen seç, yoksa kaydedilmez";
+    if(p.k==="made"){var g=pGram(p); return [p.kal,pnum(p.d)?"Ø"+nf.format(pnum(p.d)):"",pnum(p.l)?nf.format(pnum(p.l))+(pnum(p.ek)?" +"+nf.format(pnum(p.ek)):"")+" mm":"",g>0?gFmt(g):""].filter(Boolean).join(" · ")||"Ölçü girilmedi"}
+    if(p.k==="coat")return pnum(p.wt)?nf.format(pnum(p.wt))+" kg":"Ağırlık girilmedi";
+    if(p.k==="lab")return {isc:"İşçilik",mas:"Masraf",bil:"Dövme · dış hizmet"}[labGroup(p)]||"";
+    return (lm?(lm.cat?(PR_CATLBL[lm.cat]||lm.cat)+" · ":"")+"listeye bağlı":"elle girilmiş")+" · "+nf.format(pnum(p.q)||1)+" "+(p.u||"adet");
+  }
+  function prHeadCost(p){var c=partCost(p); return c>0?pf(c)+' ₺':'—'}
+  function prPartHtml(p,i){
+    var lm=matById(p.m), open=(prOpenI===i), empty=p.slot&&prSlotEmpty(p);
+    var h='<div class="pc'+(open?' open':'')+(empty?' empty':'')+'" data-pi="'+i+'"><button type="button" class="pch" data-prpo="'+i+'" aria-expanded="'+open+'"><i class="pcd" style="--c:var('+(PR_KCOL[p.k]||"--p1")+')"></i><span class="pct"><b>'+esc(prPartTitle(p))+'</b><small id="prhs-'+i+'">'+esc(prPartSub(p))+'</small></span><span class="pcc" id="prhc-'+i+'">'+prHeadCost(p)+'</span><span class="pcv" aria-hidden="true">'+(open?'▴':'▾')+'</span></button>';
+    if(!open)return h+'</div>';
+    function F(lbl,key,extra){return '<label class="pcf"><span>'+lbl+'</span><input class="fin" type="text"'+(extra&&extra.nd?'':' inputmode="decimal"')+' data-pf="'+key+'" data-pi="'+i+'" value="'+esc(p[key]===undefined?"":p[key])+'"'+(extra&&extra.ph?' placeholder="'+extra.ph+'"':'')+' autocomplete="off"></label>'}
+    var adv=!!prAdv[i]||(p.k==="made"&&(pnum(p.f)>0||pnum(p.ek)>0||pnum(p.wt)>0))||!!p.nt||!!p.th||(p.k==="buy"&&!!p.sup);
+    h+='<div class="pcb"><label class="pcf wide"><span>Parça adı</span><input class="fin" type="text" data-pf="n" data-pi="'+i+'" placeholder="ör. Aşık, Gövde, Poşet" value="'+esc(p.n)+'" autocomplete="off"></label>';
     if(p.k==="made"){
-      h+='<div class="prgrid"><label>Kalite<input class="fin" type="text" data-pf="kal" data-pi="'+i+'" placeholder="5140" value="'+esc(p.kal||"")+'"></label>'+
-        '<label>Çap (mm)<input class="fin" type="text" inputmode="decimal" data-pf="d" data-pi="'+i+'" value="'+esc(p.d)+'"></label>'+
-        '<label>Boy (mm)<input class="fin" type="text" inputmode="decimal" data-pf="l" data-pi="'+i+'" value="'+esc(p.l)+'"></label>'+
-        '<label>Fire %<input class="fin" type="text" inputmode="decimal" data-pf="f" data-pi="'+i+'" value="'+esc(p.f)+'"></label>'+
-        '<label>Boy ekleme mm<input class="fin" type="text" inputmode="decimal" data-pf="ek" data-pi="'+i+'" value="'+esc(p.ek||"")+'" placeholder="0"></label>'+
-        '<label>Kesim ağırlığı kg<input class="fin" type="text" inputmode="decimal" data-pf="wt" data-pi="'+i+'" value="'+esc(p.wt||"")+'" placeholder="boşsa hesaplanır"></label>'+
-        '<label>Adet / ürün<input class="fin" type="text" inputmode="decimal" data-pf="q" data-pi="'+i+'" value="'+esc(p.q)+'"></label>'+
-        '<label>Fiyat ₺/kg<input class="fin" type="text" inputmode="decimal" data-pf="p" data-pi="'+i+'" value="'+esc(p.p)+'"></label></div>'+
+      h+='<div class="pcg g3">'+F("Kalite","kal",{nd:1,ph:"25K"})+F("Çap mm","d")+F("Boy mm","l")+'</div>'+
+        '<div class="pcg g2">'+F("Adet / ürün","q")+F("Fiyat ₺/kg","p")+'</div>'+
         '<div class="prcalc" id="prc-'+i+'">'+prCalcTxt(p,i)+'</div>';
-      if(p.kr||p.ce)h+='<div class="note" style="margin:0 0 6px">'+esc([p.kr?'Küre '+p.kr:'',p.ce?'Çeşit '+p.ce:''].filter(Boolean).join(' · '))+'</div>';
+      if(adv)h+='<div class="pcg g3">'+F("Fire %","f")+F("Boy ekleme mm","ek",{ph:"0"})+F("Kesim kg","wt",{ph:"otomatik"})+'</div>';
+      if(p.kr||p.ce)h+='<div class="note" style="margin:0">'+esc([p.kr?'Küre '+p.kr:'',p.ce?'Çeşit '+p.ce:''].filter(Boolean).join(' · '))+'</div>';
     }else if(p.k==="coat"){
-      h+='<div class="prgrid"><label>Ağırlık kg<input class="fin" type="text" inputmode="decimal" data-pf="wt" data-pi="'+i+'" value="'+esc(p.wt||"")+'"></label>'+
-        '<label>Kaplama ₺/kg<input class="fin" type="text" inputmode="decimal" data-pf="p" data-pi="'+i+'" value="'+esc(p.p)+'"></label>'+
-        '<label>Adet / ürün<input class="fin" type="text" inputmode="decimal" data-pf="q" data-pi="'+i+'" value="'+esc(p.q)+'"></label></div>';
+      h+='<div class="pcg g3">'+F("Ağırlık kg","wt")+F("Kaplama ₺/kg","p")+F("Adet / ürün","q")+'</div>';
     }else if(p.k==="lab"){
-      h+='<div class="prgrid" style="grid-template-columns:repeat(2,1fr)"><label>Tutar ₺<input class="fin" type="text" inputmode="decimal" data-pf="p" data-pi="'+i+'" value="'+esc(p.p)+'"></label>'+
-        '<label>Adet / ürün<input class="fin" type="text" inputmode="decimal" data-pf="q" data-pi="'+i+'" value="'+esc(p.q)+'"></label></div>'+
-        '<div class="prlgrp">'+[["isc","İşçilik"],["mas","Masraf"],["bil","Bileşen · hizmet"]].map(function(g){return '<button type="button" data-prlg="'+g[0]+'" data-prlgi="'+i+'" aria-pressed="'+(labGroup(p)===g[0])+'">'+g[1]+'</button>'}).join("")+'</div>';
+      h+='<div class="pcg g2">'+F("Tutar ₺","p")+F("Adet / ürün","q")+'</div>'+
+        '<div class="prlgrp">'+[["isc","İşçilik"],["mas","Masraf"],["bil","Dövme · hizmet"]].map(function(g){return '<button type="button" data-prlg="'+g[0]+'" data-prlgi="'+i+'" aria-pressed="'+(labGroup(p)===g[0])+'">'+g[1]+'</button>'}).join("")+'</div>';
     }else{
-      h+='<div class="prgrid"><label>Adet / ürün<input class="fin" type="text" inputmode="decimal" data-pf="q" data-pi="'+i+'" value="'+esc(p.q)+'"></label>'+
-        '<label>Birim<input class="fin" type="text" data-pf="u" data-pi="'+i+'" value="'+esc(p.u||"adet")+'"></label>'+
-        '<label>Birim fiyat ₺<input class="fin" type="text" inputmode="decimal" data-pf="p" data-pi="'+i+'" value="'+esc(p.p)+'"></label></div>'+
-        '<div class="prrow"><input class="fin" type="text" data-pf="sup" data-pi="'+i+'" placeholder="Tedarikçi" value="'+esc(p.sup||"")+'" autocomplete="off"></div>';
+      h+='<div class="pcg g3">'+F("Adet / ürün","q")+F("Birim","u",{nd:1})+F("Birim fiyat ₺","p")+'</div>';
     }
     var pl=(p.k==="made"||p.k==="buy");
-    h+='<div class="prcalc" id="prk-'+i+'">'+prCostTxt(p)+'</div>'+
-      (pl?'<div class="prlink">'+(lm?'<span class="msjob lk">'+(lm.cat?esc(PR_CATLBL[lm.cat]||lm.cat)+': ':'')+esc(lm.name)+(+lm.p>0?' · '+pf(lm.p)+' ₺':'')+'<button type="button" data-prunlink="'+i+'" aria-label="Bağlantıyı kaldır">✕</button></span>':'')+'<button type="button" class="tpill" data-prpick="'+i+'">🔗 '+(lm?'Bileşeni değiştir':(p.sc?p.sc+' seç':'Bileşen seç (cıvata, somun, toz lastik…)'))+'</button></div>':'')+
-      '<div class="prrow"><input class="fin" type="text" data-pf="nt" data-pi="'+i+'" placeholder="Parça notu (isteğe bağlı)" value="'+esc(p.nt||"")+'" autocomplete="off"></div>'+
-      (pl?'<div class="imgpick" style="margin-top:6px"><div class="pv" style="width:56px;height:56px;flex-basis:56px">'+(p.th?'<img alt="" src="'+p.th+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:12px">':'Görsel')+'</div><label class="btn ghost" for="ppimg-'+i+'">📷 Parça görseli</label><input id="ppimg-'+i+'" class="ppimg" data-pi="'+i+'" type="file" accept="image/*">'+(p.th?'<button type="button" class="tpill" data-pprmimg="'+i+'">Kaldır</button>':'')+'</div>':'')+'</div>';
+    if(pl)h+='<div class="prlink">'+(lm?'<span class="msjob lk">'+(lm.cat?esc(PR_CATLBL[lm.cat]||lm.cat)+': ':'')+esc(lm.name)+(+lm.p>0?' · '+pf(lm.p)+' ₺':'')+'<button type="button" data-prunlink="'+i+'" aria-label="Bağlantıyı kaldır">✕</button></span>':'')+'<button type="button" class="tpill" data-prpick="'+i+'">🔗 '+(lm?'Bileşeni değiştir':(p.sc?p.sc+' seç':'Bileşen listesinden seç'))+'</button></div>';
+    if(adv){
+      if(p.k==="buy")h+='<label class="pcf wide"><span>Tedarikçi</span><input class="fin" type="text" data-pf="sup" data-pi="'+i+'" value="'+esc(p.sup||"")+'" autocomplete="off"></label>';
+      h+='<label class="pcf wide"><span>Parça notu</span><input class="fin" type="text" data-pf="nt" data-pi="'+i+'" placeholder="isteğe bağlı" value="'+esc(p.nt||"")+'" autocomplete="off"></label>';
+      if(pl)h+='<div class="imgpick" style="margin-top:2px"><div class="pv" style="width:52px;height:52px;flex-basis:52px">'+(p.th?'<img alt="" src="'+p.th+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:12px">':'Görsel')+'</div><label class="btn ghost" for="ppimg-'+i+'">📷 Parça görseli</label><input id="ppimg-'+i+'" class="ppimg" data-pi="'+i+'" type="file" accept="image/*">'+(p.th?'<button type="button" class="tpill" data-pprmimg="'+i+'">Kaldır</button>':'')+'</div>';
+    }
+    h+='<div class="pcfoot"><span class="prcalc" id="prk-'+i+'">'+prCostTxt(p)+'</span><span class="pcact">'+(adv?'':'<button type="button" class="pcl" data-prpadv="'+i+'">Diğer ayarlar</button>')+'<button type="button" class="pcl bad" data-prprm="'+i+'">Parçayı sil</button></span></div></div></div>';
     return h;
   }
   function prCalcTxt(p,i){
     var g=pGram(p), ek=prEkFor(p), sg=(!pnum(p.wt)&&!pnum(p.ek)&&ek&&i!==undefined)?'<button type="button" class="tpill" data-prek="'+i+'" style="margin-right:6px">Tabloya göre +'+ek+' mm boy ekle</button>':'';
     return sg+(g>0?(pnum(p.ek)>0?'Kesim boyu: <b>'+nf.format(pnum(p.l)+pnum(p.ek))+' mm</b> · ':'')+'Gramaj: <b>'+gFmt(g)+'</b> · fireli: <b>'+gFmt(pBrut(p))+'</b>'+(pnum(p.q)>1?' · ×'+nf.format(pnum(p.q))+' = <b>'+gFmt(pBrut(p)*pnum(p.q))+'</b>':''):'Çap ve boyu girince gramaj hesaplanır');
   }
-  function prTotTxt(){var st=pSteelTotal(prDraft.parts), b=prBreak(prDraft.parts); return prDraft.parts.length?prDraft.parts.length+' parça'+(st>0?' · çelik (fireli): <b>'+gFmt(st)+'</b>':'')+(b.tot>0?' · bileşen: <b>'+pf(b.mat)+'</b> · işçilik: <b>'+pf(b.isc)+'</b> · masraf: <b>'+pf(b.mas)+'</b> · toplam: <b>'+pf(b.tot)+' ₺</b>':''):'Henüz parça eklenmedi.'}
+  function prTotTxt(){var st=pSteelTotal(prDraft.parts); return prDraft.parts.length?prDraft.parts.length+' parça'+(st>0?' · çelik '+gFmt(st):''):'Henüz parça eklenmedi'}
   function prFormHtml(){
     var d=prDraft, custs=[], seen={}; orders.forEach(function(o){if(o.cust&&!seen[o.cust]){seen[o.cust]=1;custs.push(o.cust)}});
-    var h='<div class="shead"><div><h2 id="sh-title">'+(d.id?esc(d.code||"Ürün"):"Yeni ürün")+'</h2><small>Ürün kartı ve reçete</small></div><button type="button" class="tpill" id="prcancel">Kapat</button></div><div class="form">'+
-      '<div class="imgpick"><div class="pv" id="prpv" style="width:92px;height:92px;flex-basis:92px">'+(d.th?'<img alt="" src="'+d.th+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:16px">':'Görsel yok')+'</div><div style="display:flex;flex-direction:column;gap:6px"><label class="btn ghost" for="primgf">📷 Ürün görseli</label><input id="primgf" type="file" accept="image/*"><button type="button" class="btn ghost" id="primgrm"'+(d.th?'':' hidden')+'>Görseli kaldır</button></div></div>'+
-      '<div><label class="fl" for="prf-code">Ürün kodu</label><input class="fin" type="text" id="prf-code" data-prf="code" value="'+esc(d.code)+'" autocomplete="off" placeholder="ör. 14809"></div>'+
-      '<div><label class="fl" for="prf-name">Ürün adı / açıklama</label><input class="fin" type="text" id="prf-name" data-prf="name" value="'+esc(d.name)+'" autocomplete="off"></div>'+
-      '<div><label class="fl" for="prf-cust">Müşteri</label><input class="fin" type="text" id="prf-cust" data-prf="cust" list="prcustl" value="'+esc(d.cust)+'" autocomplete="off"><datalist id="prcustl">'+custs.map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist></div>'+
-      '<div><span class="fl">Kategori</span><div class="stffilt" style="padding:0">'+ORDER_CATS.map(function(c,i){return '<button type="button" data-prfcat="'+i+'" aria-pressed="'+(d.cat===i)+'">'+esc(c)+'</button>'}).join("")+'</div></div>'+
-      '<div><label class="fl" for="prf-oem">OEM numaraları</label><input class="fin" type="text" id="prf-oem" data-prf="oem" value="'+esc(d.oem)+'" autocomplete="off"></div>'+
-      '<div><label class="fl" for="prf-veh">Kullanıldığı araçlar</label><textarea class="fin" id="prf-veh" data-prf="veh" rows="2">'+esc(d.veh)+'</textarea></div>'+
-      '<div class="dgrid"><div><label class="fl" for="prf-nw">Net ağırlık (kg)</label><input class="fin" type="text" inputmode="decimal" id="prf-nw" data-prf="nw" value="'+esc(d.nw)+'"></div><div><label class="fl" for="prf-len">Tam boy (mm)</label><input class="fin" type="text" inputmode="decimal" id="prf-len" data-prf="len" value="'+esc(d.len)+'"></div></div>'+
-      '<div><label class="fl" for="prf-thr">Diş ölçüleri</label><input class="fin" type="text" id="prf-thr" data-prf="thr" value="'+esc(d.thr)+'" autocomplete="off" placeholder="ör. Aşık M12X1,25 RHT · Gövde M14X1,5 RHT"></div>'+
-      '<div><label class="fl" for="prf-note">Not</label><textarea class="fin" id="prf-note" data-prf="note" placeholder="Ürünle ilgili notlar…">'+esc(d.note)+'</textarea></div>'+
-      '<div class="edsec" style="margin-top:6px">Reçete · parçalar</div><div class="note" id="prtot" style="margin:0">'+prTotTxt()+'</div>'+
-      d.parts.map(prPartHtml).join("")+
-      '<div class="frow"><button type="button" class="btn ghost" data-prpadd="made">＋ Üretilen parça</button><button type="button" class="btn ghost" data-prpadd="buy">＋ Satın alınan parça</button></div>'+
-      '<div class="frow"><button type="button" class="btn ghost" data-prpadd="coat">＋ Kaplama</button><button type="button" class="btn ghost" data-prpadd="lab">＋ İşçilik / masraf</button></div>'+
-      '<div id="prend">'+(d.parts.length?prEndHtml(prBreak(d.parts)):'')+'</div>'+
-      '<div class="frow" style="margin-top:8px"><button type="button" class="btn" id="prsave">Kaydet</button>'+(d.id?'<button type="button" class="btn ghost bad" id="prdel">'+(prDelArm?'Emin misin? Sil':'Ürünü sil')+'</button>':'')+'</div><div class="note" id="prfnote" style="margin:0"></div></div>';
+    var b0=prBreak(d.parts);
+    var h='<div class="shead"><div><h2 id="sh-title">'+(d.id?esc(d.code||"Ürün"):"Yeni ürün")+'</h2><small>Ürün kartı ve reçete</small></div><button type="button" class="tpill" id="prcancel">Kapat</button></div><div class="form prf">'+
+      '<div class="prtop"><div class="imgpick" style="gap:8px"><div class="pv" id="prpv" style="width:76px;height:76px;flex-basis:76px">'+(d.th?'<img alt="" src="'+d.th+'" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:16px">':'Görsel')+'</div><div style="display:flex;flex-direction:column;gap:5px"><label class="tpill" for="primgf" style="margin:0">📷 Görsel</label><input id="primgf" type="file" accept="image/*"><button type="button" class="tpill" id="primgrm"'+(d.th?'':' hidden')+'>Kaldır</button></div></div>'+
+      '<div class="prtf"><label class="pcf"><span>Ürün kodu</span><input class="fin" type="text" id="prf-code" data-prf="code" value="'+esc(d.code)+'" autocomplete="off" placeholder="ör. 14809"></label>'+
+      '<label class="pcf"><span>Ürün adı</span><input class="fin" type="text" id="prf-name" data-prf="name" value="'+esc(d.name)+'" autocomplete="off"></label></div></div>'+
+      '<label class="pcf wide"><span>Müşteri</span><input class="fin" type="text" id="prf-cust" data-prf="cust" list="prcustl" value="'+esc(d.cust)+'" autocomplete="off"><datalist id="prcustl">'+custs.map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist></label>'+
+      '<div class="stffilt" style="padding:0">'+ORDER_CATS.map(function(c,i){return '<button type="button" data-prfcat="'+i+'" aria-pressed="'+(d.cat===i)+'">'+esc(c)+'</button>'}).join("")+'</div>'+
+      '<details class="prmore" id="prmore"'+(prMoreOpen?' open':'')+'><summary>Diğer bilgiler <small>OEM, araçlar, ağırlık, diş, not</small></summary><div class="prmb">'+
+      '<label class="pcf wide"><span>OEM numaraları</span><input class="fin" type="text" id="prf-oem" data-prf="oem" value="'+esc(d.oem)+'" autocomplete="off"></label>'+
+      '<label class="pcf wide"><span>Kullanıldığı araçlar</span><textarea class="fin" id="prf-veh" data-prf="veh" rows="2">'+esc(d.veh)+'</textarea></label>'+
+      '<div class="pcg g2"><label class="pcf"><span>Net ağırlık kg</span><input class="fin" type="text" inputmode="decimal" id="prf-nw" data-prf="nw" value="'+esc(d.nw)+'"></label><label class="pcf"><span>Tam boy mm</span><input class="fin" type="text" inputmode="decimal" id="prf-len" data-prf="len" value="'+esc(d.len)+'"></label></div>'+
+      '<label class="pcf wide"><span>Diş ölçüleri</span><input class="fin" type="text" id="prf-thr" data-prf="thr" value="'+esc(d.thr)+'" autocomplete="off" placeholder="ör. Aşık M12X1,25 RHT · Gövde M14X1,5 RHT"></label>'+
+      '<label class="pcf wide"><span>Not</span><textarea class="fin" id="prf-note" data-prf="note" placeholder="Ürünle ilgili notlar…">'+esc(d.note)+'</textarea></label></div></details>'+
+      '<div class="prsec"><b>Reçete</b><span id="prtot">'+prTotTxt()+'</span></div>'+
+      '<div class="pcl-list">'+d.parts.map(prPartHtml).join("")+'</div>'+
+      '<div class="pradd"><span>Parça ekle</span><button type="button" data-prpadd="made">⚙ Üretilen</button><button type="button" data-prpadd="buy">🛒 Satın alınan</button><button type="button" data-prpadd="coat">🎨 Kaplama</button><button type="button" data-prpadd="lab">💼 İşçilik / masraf</button></div>'+
+      '<div id="prend">'+(d.parts.length?prEndHtml(b0):'')+'</div>'+
+      (d.id?'<div class="frow"><button type="button" class="btn ghost bad" id="prdel">'+(prDelArm?'Emin misin? Sil':'Ürünü sil')+'</button></div>':'')+
+      '<div class="note" id="prfnote" style="margin:0"></div>'+
+      '<div class="prsbar"><div class="t"><small>Genel toplam</small><b id="prbart">'+pmon(b0.tot)+' ₺</b></div><button type="button" class="btn" id="prsave">Kaydet</button></div></div>';
     return h;
   }
   /* ---------- GRAMAJ HESAPLAYICI ----------
@@ -8124,7 +8200,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     d.parts=(src.parts||[]).map(function(x){var o=Object.assign({},x); ["d","l","f","wt","q","p"].forEach(function(k){if(o[k]!==undefined&&o[k]!==0)o[k]=String(o[k]); else if(o[k]===0)o[k]=""}); o.th=""; return o});
     return d;
   }
-  function prOpenDraft(d,note){prDraft=d; prDelArm=false; sheetMode="prod"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0; var c=$("prf-code"); if(c&&!d.id)c.focus(); if(note){var n=$("prfnote"); if(n)n.textContent=note}}
+  function prOpenDraft(d,note){prDraft=d; prDelArm=false; prOpenI=(d.id||!d.parts.length)?-1:-1; prAdv={}; sheetMode="prod"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0; var c=$("prf-code"); if(c&&!d.id)c.focus(); if(note){var n=$("prfnote"); if(n)n.textContent=note}}
   document.addEventListener("click",function(e){
     var t=e.target.closest&&e.target.closest("#prstclose,[data-prtpl],[data-prcopy]"); if(!t)return;
     if(sheetMode!=="prstart")return;
@@ -8306,7 +8382,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   function openProdForm(id){
     var p=id?products.filter(function(x){return x.id===id})[0]:null;
     prDraft=p?{id:p.id,code:p.code||"",name:p.name||"",cust:p.cust||"",cat:p.cat||0,note:p.note||"",oem:p.oem||"",veh:p.veh||"",nw:p.nw?String(p.nw):"",len:p.len?String(p.len):"",thr:p.thr||"",th:p.th||"",full:null,dirty:false,parts:(p.parts||[]).map(function(x){var o=Object.assign({},x); ["d","l","f","ek","wt","q","p"].forEach(function(k){if(o[k]!==undefined&&o[k]!==0)o[k]=String(o[k]); else if(o[k]===0)o[k]=""}); return o})}:prNewDraft();
-    prDelArm=false; sheetMode="prod"; $("ov").hidden=false; renderSheet();
+    prDelArm=false; prOpenI=-1; prAdv={}; sheetMode="prod"; $("ov").hidden=false; renderSheet();
   }
   /* --- bileşen seçici --- */
   function prPickHtml(){
@@ -8395,7 +8471,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     return o;
   }
   document.addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-prods],[data-prview],[data-prcedit],[data-prlg],[data-prek],[data-prrf],[data-prrs],#prTabR,#prvedit,#prvclose,[data-prcat],[data-prccat],[data-prfcat],[data-prpadd],[data-prprm],[data-pprmimg],[data-prpick],[data-prunlink],[data-prpcat],[data-prpm],#prnew,#prcnew,#primp,#prdata,#prback,#prcancel,#prccancel,#prcsave,#primgrm,#prsave,#prdel,#primpcancel,#primpgo,#prdcancel,#prdgo,#prpickback,#prTabP,#prTabC");
+    var t=e.target.closest&&e.target.closest("[data-prods],[data-prview],[data-prcedit],[data-prlg],[data-prek],[data-prrf],[data-prrs],#prTabR,#prvedit,#prvclose,[data-prcat],[data-prccat],[data-prfcat],[data-prpo],[data-prpadv],[data-prpadd],[data-prprm],[data-pprmimg],[data-prpick],[data-prunlink],[data-prpcat],[data-prpm],#prnew,#prcnew,#primp,#prdata,#prback,#prcancel,#prccancel,#prcsave,#primgrm,#prsave,#prdel,#primpcancel,#primpgo,#prdcancel,#prdgo,#prpickback,#prTabP,#prTabC");
     if(!t)return;
     if(t.dataset.prods){openProds(); return}
     if(t.id==="prback"){prodsHome(); return}
@@ -8467,8 +8543,10 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     if(t.dataset.prek!==undefined){var ep=prDraft.parts[+t.dataset.prek]; if(ep){var ev=prEkFor(ep); if(ev)ep.ek=String(ev)} var sce=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sce; return}
     if(t.dataset.prlg){var lp=prDraft.parts[+t.dataset.prlgi]; if(lp){lp.lg=t.dataset.prlg; var sc9=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc9} return}
     if(t.dataset.prfcat){prDraft.cat=+t.dataset.prfcat; [].forEach.call($("sheet").querySelectorAll("[data-prfcat]"),function(b){b.setAttribute("aria-pressed",b.dataset.prfcat===t.dataset.prfcat)}); return}
-    if(t.dataset.prpadd){prDraft.parts.push(prPartNew(t.dataset.prpadd)); var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc+400; return}
-    if(t.dataset.prprm!==undefined){prDraft.parts.splice(+t.dataset.prprm,1); var sc2=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc2; return}
+    if(t.dataset.prpo!==undefined){var oi=+t.dataset.prpo; prOpenI=(prOpenI===oi)?-1:oi; var sco=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sco; if(prOpenI>=0){var oe=$("sheet").querySelector('.pc[data-pi="'+oi+'"]'); if(oe&&oe.scrollIntoView)oe.scrollIntoView({block:"nearest"})} return}
+    if(t.dataset.prpadv!==undefined){prAdv[+t.dataset.prpadv]=true; var sca=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sca; return}
+    if(t.dataset.prpadd){prDraft.parts.push(prPartNew(t.dataset.prpadd)); prOpenI=prDraft.parts.length-1; renderSheet(); var ne=$("sheet").querySelector('.pc[data-pi="'+prOpenI+'"]'); if(ne&&ne.scrollIntoView)ne.scrollIntoView({block:"center"}); var nf0=ne&&ne.querySelector('input[data-pf="n"]'); if(nf0)try{nf0.focus({preventScroll:true})}catch(x){} return}
+    if(t.dataset.prprm!==undefined){prDraft.parts.splice(+t.dataset.prprm,1); prOpenI=-1; prAdv={}; var sc2=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc2; return}
     if(t.dataset.pprmimg!==undefined){prDraft.parts[+t.dataset.pprmimg].th=""; var sc3=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc3; return}
     if(t.dataset.prpick!==undefined){prPickI=+t.dataset.prpick; prPickQ=""; var sc0=prDraft.parts[prPickI]&&prDraft.parts[prPickI].sc; prPickCat=(sc0&&materials.some(function(m){return m.cat===sc0}))?sc0:""; sheetMode="prpick"; renderSheet(); $("sheet").scrollTop=0; return}
     if(t.dataset.prunlink!==undefined){prDraft.parts[+t.dataset.prunlink].m=""; var sc5=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc5; return}
@@ -8504,6 +8582,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       return;
     }
   });
+  document.addEventListener("toggle",function(e){if(e.target&&e.target.id==="prmore")prMoreOpen=e.target.open},true);
   document.addEventListener("input",function(e){
     var el=e.target; if(!el||!el.dataset)return;
     if(el.dataset.prcf&&prCDraft){prCDraft[el.dataset.prcf]=el.value; return}
@@ -8514,6 +8593,8 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       var i=+el.dataset.pi, p=prDraft.parts[i]; if(!p)return; p[el.dataset.pf]=el.value;
       var c=$("prc-"+i); if(c)c.innerHTML=prCalcTxt(p,i);
       var k=$("prk-"+i); if(k)k.innerHTML=prCostTxt(p);
+      var hc=$("prhc-"+i); if(hc)hc.textContent=prHeadCost(p); var hs=$("prhs-"+i); if(hs)hs.textContent=prPartSub(p); var ht=document.querySelector('.pc[data-pi="'+i+'"] .pct b'); if(ht)ht.textContent=prPartTitle(p);
+      var bt=$("prbart"); if(bt)bt.textContent=pmon(prBreak(prDraft.parts).tot)+" ₺";
       var tt=$("prtot"); if(tt)tt.innerHTML=prTotTxt();
       var te=$("prend"); if(te)te.innerHTML=prDraft.parts.length?prEndHtml(prBreak(prDraft.parts)):'';
       return;
@@ -8578,6 +8659,16 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   $("sheet").addEventListener("change",function(e){
     if(sheetMode!=="finimp"||e.target.id!=="fimpfile")return;
     var f=e.target.files&&e.target.files[0]; if(!f)return;
+    var nm0=String(f.name||"").toLowerCase(), msg=$("fimpmsg"); e.target.value="";
+    if(/\.xlsx$/.test(nm0)){
+      if(msg)msg.textContent="Excel okunuyor…";
+      f.arrayBuffer().then(xlsxToRows).then(function(res){
+        var txt=finImpRowsToText(res.rows); $("fimptxt").value=txt; finImp.rows=finImpParse(txt); finImpPaint();
+        if(msg)msg.textContent=finImp.rows.length?"":"Excel’de isim + maaş satırı bulamadım. İlk sütun isim, sonraki sütun net maaş olmalı.";
+      }).catch(function(err){try{console.warn("xlsx",err&&err.message,err&&err.stack)}catch(x){} if(msg)msg.textContent="Excel dosyası okunamadı. Dosyayı .xlsx olarak kaydedip tekrar dene ya da hücreleri kopyalayıp aşağıya yapıştır."});
+      return;
+    }
+    if(/\.xls$/.test(nm0)){if(msg)msg.textContent="Eski .xls biçimi okunamıyor: Excel’de Farklı kaydet → .xlsx seç. Ya da hücreleri kopyalayıp aşağıya yapıştır."; return}
     var rd=new FileReader(); rd.onload=function(){$("fimptxt").value=String(rd.result||""); finImp.rows=finImpParse($("fimptxt").value); finImpPaint()}; rd.readAsText(f,"utf-8");
   });
   $("sheet").addEventListener("click",function(e){
@@ -8592,7 +8683,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       use.forEach(function(r){
         var id;
         if(r.ex)id=r.ex.id; else{var ref=db.collection("employees").doc(); id=ref.id; bt.set(ref,{name:r.name,secs:[],machines:[],note:"",dept:"",sub:"",role:""})}
-        maas[id]={n:r.n,s:r.s};
+        var mo={}; if(r.n)mo.n=r.n; if(r.s!==null)mo.s=r.s; else if(!r.ex)mo.s=0; if(r.ex&&!r.n&&r.s===null)return; maas[id]=mo;
       });
       bt.set(db.doc("fin_ay/"+mk),{maas:maas},{merge:true});
       bt.commit().then(function(){
@@ -9624,13 +9715,13 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     });
     return {comp:comp,ship:ship,shipNotDone:shipNotDone,doneNotShip:doneNotShip};
   }
-  function sumOrders(a){var q=0,t=0; a.forEach(function(o){q+=o.qty; t+=orderTotal(o)}); return {n:a.length,q:q,t:t}}
+  function sumOrders(a,sh){var q=0,t=0; a.forEach(function(o){if(sh){q+=shQty(o); t+=shTotal(o)}else{q+=o.qty; t+=orderTotal(o)}}); return {n:a.length,q:q,t:t}}
   function farkHtml(){
-    var d=farkData(), c=sumOrders(d.comp), s=sumOrders(d.ship), sn=sumOrders(d.shipNotDone.map(function(x){return x.o})), dn=sumOrders(d.doneNotShip);
+    var d=farkData(), c=sumOrders(d.comp), s=sumOrders(d.ship,1), sn=sumOrders(d.shipNotDone.map(function(x){return x.o}),1), dn=sumOrders(d.doneNotShip);
     var h='<b>Tamamlanan:</b> '+c.n+' sipariş · '+nf.format(c.q)+' adet · '+money(c.t)+' ₺<br><b>Gönderilen:</b> '+s.n+' sipariş · '+nf.format(s.q)+' adet · '+money(s.t)+' ₺<br><i>(tüm zamanlar; aylık görünümde tarihe göre süzülür)</i>';
     h+='<br><br><b>Gönderilmiş ama tamamlanmamış görünen:</b> '+sn.n+' sipariş · '+nf.format(sn.q)+' adet · '+money(sn.t)+' ₺';
     d.shipNotDone.forEach(function(x){
-      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(x.o.code)+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(x.o.qty)+' adet · '+money(orderTotal(x.o))+' ₺<br><small>eksik: '+(x.miss.length?x.miss.map(function(m){return esc(m.name)+' %'+m.pc}).join(", "):'?')+'</small><span class="go">›</span></button>';
+      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(x.o.code)+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(shQty(x.o))+' adet · '+money(shTotal(x.o))+' ₺<br><small>eksik: '+(x.miss.length?x.miss.map(function(m){return esc(m.name)+' %'+m.pc}).join(", "):'?')+'</small><span class="go">›</span></button>';
     });
     h+='<br><br><b>Tamamlanmış ama henüz gönderilmemiş:</b> '+dn.n+' sipariş · '+nf.format(dn.q)+' adet · '+money(dn.t)+' ₺ (bu bir hata değil, bekleyen sevkiyat).';
     d.doneNotShip.forEach(function(o){
