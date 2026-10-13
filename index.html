@@ -1794,6 +1794,34 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 .snsp{flex:1}
 :root[data-theme="glass"] .pbar button[aria-pressed="true"]{background:linear-gradient(135deg,#7C6CFF,#4F46E5);color:#fff;box-shadow:0 4px 14px rgba(79,70,229,.45)}
 :root[data-theme="glass"] .pbar{background:rgba(255,255,255,.06)}
+
+/* ---- Cam görünüm: tüm ekranlar ana sayfa gibi (aynı kartlar, aynı yazı tipi) ---- */
+:root[data-theme="glass"]{--font-num:"Outfit","Nunito","Helvetica Neue",Arial,sans-serif}
+:root[data-theme="glass"] .hero{background:linear-gradient(135deg,#6D5BF5 0%,#4338CA 55%,#2E2A8F 100%)!important;border:1px solid rgba(255,255,255,.14);box-shadow:0 6px 20px rgba(76,56,230,.3)}
+:root[data-theme="glass"] .hero::before,:root[data-theme="glass"] .hero::after{background:rgba(255,255,255,.07)}
+:root[data-theme="glass"] .ohero .oeyebrow{color:rgba(255,255,255,.78)}
+:root[data-theme="glass"] .ohero .obig b,:root[data-theme="glass"] .hero h1,:root[data-theme="glass"] .hero .big{font-family:var(--font-head)}
+:root[data-theme="glass"] .tbtn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.18)}
+:root[data-theme="glass"] .tbtn.hl{background:#fff;color:#2E2A8F}
+:root[data-theme="glass"] h1,:root[data-theme="glass"] h2,:root[data-theme="glass"] h3,:root[data-theme="glass"] .fsec,:root[data-theme="glass"] .edsec,:root[data-theme="glass"] .shead h2,:root[data-theme="glass"] .hn,:root[data-theme="glass"] .hcard .hn,:root[data-theme="glass"] .fcard b,:root[data-theme="glass"] .ocode,:root[data-theme="glass"] .ocard .oq,:root[data-theme="glass"] .nlt b,:root[data-theme="glass"] .sumrow .sn,:root[data-theme="glass"] .stfsum b,:root[data-theme="glass"] .fstats b,:root[data-theme="glass"] .tot-box b,:root[data-theme="glass"] .fam,:root[data-theme="glass"] .fhead h2{font-family:var(--font-head)}
+:root[data-theme="glass"] .stfsum>div,:root[data-theme="glass"] .fstats div,:root[data-theme="glass"] .tot-box,:root[data-theme="glass"] .osumcard,:root[data-theme="glass"] .needcard,:root[data-theme="glass"] .oprog,:root[data-theme="glass"] .snl,:root[data-theme="glass"] .gcrows,:root[data-theme="glass"] .sumrow,:root[data-theme="glass"] .stkrow,:root[data-theme="glass"] .nt,:root[data-theme="glass"] .nrow,:root[data-theme="glass"] .pitem,:root[data-theme="glass"] .item,:root[data-theme="glass"] .lcard,:root[data-theme="glass"] .ccard,:root[data-theme="glass"] .fcomp,:root[data-theme="glass"] .finrow{border-radius:20px}
+:root[data-theme="glass"] .ostatcard,:root[data-theme="glass"] .needcard,:root[data-theme="glass"] .osumcard{background:linear-gradient(150deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.10);border-radius:22px}
+:root[data-theme="glass"] .otabs,:root[data-theme="glass"] .pbar,:root[data-theme="glass"] .dvtog{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:16px}
+:root[data-theme="glass"] .otabs button[aria-pressed="true"]{background:linear-gradient(135deg,#7C6CFF,#4F46E5);color:#fff;box-shadow:0 4px 14px rgba(79,70,229,.4)}
+:root[data-theme="glass"] .status{color:var(--ink2)}
+@media (min-width:1000px){
+  /* Basit başlıklı ekranlar: başlık kartı üstte tam genişlikte, içerik altında (ana sayfadaki gibi) */
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>*{grid-column:1/-1!important}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero{position:static;max-height:none;grid-row:auto;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:24px;padding:18px 24px}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero .hirow{grid-column:1/-1}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero .obig{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:6px 16px;grid-column:1/-1}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero .obig b{font-size:40px}
+  :root[data-theme="glass"] #stklist,:root[data-theme="glass"] #stflist,:root[data-theme="glass"] #prlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px;align-content:start}
+  :root[data-theme="glass"] #stklist>.empty,:root[data-theme="glass"] #stflist>.empty,:root[data-theme="glass"] #prlist>.empty,:root[data-theme="glass"] #stflist>.fsec{grid-column:1/-1}
+}
+:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;box-shadow:0 6px 18px rgba(79,70,229,.4)}
+:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;border-color:transparent!important}
+:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .hero button[aria-pressed="true"]{background:#fff!important;color:#2E2A8F!important}
 </style>
 </head>
 <body>
@@ -1821,7 +1849,8 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="hcards" id="hcards"></div>
   <button class="btn ghost" id="homesetbtn" aria-expanded="false" style="width:100%;margin-top:22px">⚙ Ayarlar ▾</button>
   <div id="homeset" hidden>
-  <button class="btn ghost" id="lookbtn" style="width:100%;margin-top:12px">🎨 Görünüm: Cam (değiştir)</button>
+  <button class="btn ghost" id="nmedset" style="width:100%;margin-top:12px">👤 Adım</button>
+  <button class="btn ghost" id="lookbtn" style="width:100%;margin-top:8px">🎨 Görünüm: Cam (değiştir)</button>
   <div class="osearch" style="margin-top:12px">
     <button class="btn ghost" id="bkExport" style="flex:1">☁ Tam yedek al (.json)</button>
     <button class="btn ghost" id="bkImport" style="flex:1">⟲ Yedekten geri yükle</button>
@@ -1834,7 +1863,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:26</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:49</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4990,16 +5019,21 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       var data=sn.exists?sn.data():{};
       pm[sid+"|"+k]=extractSums(data.lines); pmPlans[sid+"|"+k]=normPlans(data.plans);
       pmTot[sid+"|"+k]=summarize(data.days,data.lines,data.rev);
-    }).catch(function(){});
+      delete pmFail[sid+"|"+k];
+    }).catch(function(){pmFail[sid+"|"+k]=1});
   }
+  var pmFail={};
   function loadProgress(recent){
     if(!orders.length){pm={};return Promise.resolve()}
     var start=orders.map(function(o){return o.cr||monthKeyNow()}).sort()[0], keys=monthKeys(start);
-    if(recent&&pmFull)keys=keys.slice(-2);
-    var jobs=[]; SECTIONS.forEach(function(x){keys.forEach(function(k){jobs.push([x.id,k])})});
+    var jobs=[];
+    if(recent&&pmFull){
+      var rk=keys.slice(-2); SECTIONS.forEach(function(x){rk.forEach(function(k){jobs.push([x.id,k])})});
+      Object.keys(pmFail).forEach(function(f){var a=f.split("|"); if(!jobs.some(function(j){return j[0]===a[0]&&j[1]===a[1]}))jobs.push(a)}); // daha önce okunamayan aylar tekrar denenir
+    }else SECTIONS.forEach(function(x){keys.forEach(function(k){jobs.push([x.id,k])})});
     var i=0;
     function next(){if(i>=jobs.length)return Promise.resolve(); var j=jobs[i++]; return fetchOne(j[0],j[1]).then(next)}
-    return Promise.all([next(),next(),next(),next()]).then(function(){pmFull=true});
+    return Promise.all([next(),next(),next(),next()]).then(function(){pmFull=!Object.keys(pmFail).length});
   }
   function inApp(){return !$("app").hidden}
   function doneOf(oid,secId){
@@ -5252,7 +5286,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var mk=ordScope==="month"?(ordY+"-"+pad(ordM+1)):null;
     return orders.filter(function(o){
       if(key==="open"||key==="late"){
-        if(isComplete(o))return false;
+        if(isComplete(o)||o.shipped)return false;
         if(mk&&((o.od||o.cr||"").slice(0,7))!==mk)return false;
         if(key==="late"){var n=daysTo(o.dd); return n!==null&&n<0}
         return true;
@@ -5277,7 +5311,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b></div>'+
       '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
       '<div class="nlcat"><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p'+(o.cat%6)+');margin-right:5px"></span>'+esc(ORDER_CATS[o.cat]||"")+'</div>'+
-      '<div class="nlchips">'+statusChips(o)+(o.shipped&&o.shipDate?'<span class="due ok">Gönderim '+fmtD(o.shipDate)+'</span>':dueChip(o,c))+'</div></div>'+
+      '<div class="nlchips">'+statusChips(o)+(o.shipped&&o.shipDate?'<span class="due ok">Gönderim '+fmtD(o.shipDate)+'</span>':dueChip(o,c||o.shipped))+'</div></div>'+
       '<div class="nlr"><b>'+nf.format(o.shipped?shQty(o):o.qty)+'</b><small>adet'+(o.shipped&&shQty(o)!==o.qty?' / '+nf.format(o.qty):'')+'</small>'+(tot?'<small>'+money(tot)+' ₺</small>':'')+'</div>'+stagesRowHtml(o,null)+'</div>';
   }
   function renderStatPanel(){
@@ -5340,7 +5374,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   }
   function paintOrdersHome(){
     var el=$("hs-orders"); if(!el)return;
-    var op=orders.filter(function(o){return !isComplete(o)}), late=op.filter(function(o){var n=daysTo(o.dd);return n!==null&&n<0}).length;
+    var op=orders.filter(function(o){return !isComplete(o)&&!o.shipped}), late=op.filter(function(o){var n=daysTo(o.dd);return n!==null&&n<0}).length;
     el.innerHTML=orders.length?(op.length+" açık sipariş"+(late?' · <b>'+late+' termini geçti</b>':'')):"Henüz sipariş yok";
     try{paintDash()}catch(e){}
   }
@@ -5425,7 +5459,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       '<div class="obody"><div class="otop"><span class="ocode">'+esc(o.code)+(o.shipped?' <small class="shipbadge">📦</small>':'')+'</span><span class="oq">'+(o.shipped&&shQty(o)!==o.qty?nf.format(shQty(o))+' / ':'')+nf.format(o.qty)+' adet</span></div>'+
       '<div class="ocust">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+chipsHtml(o)+'</div></div>'+
       (tot?'<div class="oamt"><small>'+(o.shipped?'Gönderilen tutar':'Sipariş tutarı')+'</small><span>'+money(tot)+' ₺</span></div>':'')+
-      ((o.od||o.dd)?'<div class="odates">'+(o.od?'<span>Sipariş '+fmtD(o.od)+'</span>':'')+dueChip(o,x.c)+'</div>':'')+
+      ((o.od||o.dd)?'<div class="odates">'+(o.od?'<span>Sipariş '+fmtD(o.od)+'</span>':'')+dueChip(o,x.c||o.shipped)+'</div>':'')+
       '<div class="stages" style="grid-template-columns:repeat('+(function(n){return n<=4?n:(n<=6?3:4)})(STAGES.filter(function(sg,i){return shownStage(o,i)}).length)+',1fr)">'+
       SORD.map(function(i){
         var sg=STAGES[i];
@@ -5461,7 +5495,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var openScoped=mk?orders.filter(function(o){return ((o.od||o.cr||"").slice(0,7))===mk}):orders;
     var open=0, amt=0, late=0;
     openScoped.forEach(function(o){
-      if(isComplete(o))return;
+      if(isComplete(o)||o.shipped)return;
       open++; amt+=orderTotal(o); var n=daysTo(o.dd); if(n!==null&&n<0)late++;
     });
     var done=0, doneAmt=0, doneQty=0;
@@ -5492,7 +5526,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       $("ops").textContent=nf.format(st.done)+" / "+nf.format(st.req)+" adet";
       $("opsc").textContent="%"+spc; $("opsb").style.width=Math.min(100,spc)+"%";
     }
-    var sl=list.filter(function(x){return sumAll||!x.c}), grp=function(arr){
+    var sl=list.filter(function(x){return sumAll||(!x.c&&!x.o.shipped)}), grp=function(arr){
       var gs=ORDER_CATS.map(function(){return {n:0,q:0,t:0}}), gt={n:0,q:0,t:0};
       arr.forEach(function(x){var g=gs[x.o.cat]||gs[0]; [g,gt].forEach(function(z){z.n++;z.q+=(x.o.shipped?shQty(x.o):x.o.qty);z.t+=(x.o.shipped?shTotal(x.o):orderTotal(x.o))})});
       return {gs:gs,gt:gt};
@@ -5522,7 +5556,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     $("osum").innerHTML=sh;
     $("otOpen").setAttribute("aria-pressed",ordTab==="open"); $("otDone").setAttribute("aria-pressed",ordTab==="done"); $("otShip").setAttribute("aria-pressed",ordTab==="shipped"); $("otAll").setAttribute("aria-pressed",ordTab==="all");
     var tabList=list.filter(function(x){
-      var match=ordTab==="all"?true:ordTab==="done"?x.c:ordTab==="shipped"?!!x.o.shipped:!x.c;
+      var match=ordTab==="all"?true:ordTab==="done"?x.c:ordTab==="shipped"?!!x.o.shipped:(!x.c&&!x.o.shipped);
       return match&&(!q||fold(x.o.code+" "+(x.o.cust||"")+" "+(ORDER_CATS[x.o.cat]||"")).indexOf(q)>-1);
     });
     // Kategori çipleri: seçili sekme + aramaya göre her kategorideki sipariş sayısı; çipe basınca
@@ -5596,8 +5630,9 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     if(document.activeElement&&document.activeElement.id==="hwinp")return;
     box.hidden=(homeView!=="main");
     var n=myNameStored();
+    var nb=$("nmedset"); if(nb)nb.textContent=n?"👤 Adım: "+n+" · değiştir":"👤 Adını yaz";
     if(n&&!nameEditing){
-      box.innerHTML='<span class="hwl">👤 <b>'+esc(n)+'</b></span><button type="button" class="hwb" data-nmedit="1">değiştir</button>';
+      box.hidden=true; box.innerHTML="";
     }else{
       box.innerHTML='<label class="hwl" for="hwinp">'+(n?'Adını değiştir':'👤 Adın ve soyadın')+'</label>'+
         '<div class="hwrow"><input class="fin" id="hwinp" autocomplete="name" placeholder="Ad Soyad yaz" value="'+esc(n)+'"><button type="button" class="btn" data-nmsave="1">Kaydet</button></div>'+
@@ -6340,6 +6375,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       out.innerHTML=h; btn.disabled=false;
     });
   });
+  $("nmedset").addEventListener("click",function(){nameEditing=true; paintMyName(); window.scrollTo(0,0); var i=$("hwinp"); if(i)i.focus()});
   (function(){
     var b=$("lookbtn"); if(!b)return;
     function paint(){var g=document.documentElement.getAttribute("data-theme")==="glass"; b.textContent=g?"🎨 Görünüm: Cam · Klasik’e geç":"🎨 Görünüm: Klasik · Cam’a geç"}
@@ -10472,8 +10508,8 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var mk=monthKeyNow(), open=0, openAmt=0, late=0, comp=0, shipQ=0, shipA=0, byM={}, up=[];
     orders.forEach(function(o){
       var c=false; try{c=isComplete(o)}catch(e){}
-      if(!c){open++; openAmt+=orderTotal(o); var n=daysTo(o.dd); if(n!==null&&n<0)late++; if(o.dd)up.push({o:o,n:n})}
-      else{var cd=completionDateOf(o); if(cd&&cd.slice(0,7)===mk)comp++}
+      if(!c&&!o.shipped){open++; openAmt+=orderTotal(o); var n=daysTo(o.dd); if(n!==null&&n<0)late++; if(o.dd)up.push({o:o,n:n})}
+      else if(c){var cd=completionDateOf(o); if(cd&&cd.slice(0,7)===mk)comp++}
       if(o.shipped){var sk=(o.shipDate||"").slice(0,7); if(sk){byM[sk]=(byM[sk]||0)+shTotal(o); if(sk===mk){shipQ+=shQty(o); shipA+=shTotal(o)}}}
     });
     up.sort(function(a,b){return a.n-b.n}); up=up.slice(0,6);
