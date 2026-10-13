@@ -1727,12 +1727,13 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   --good:#34D399; --bad:#FB7185; --warn:#FBBF24;
   --p0:#FBB45C; --p1:#34D3B0; --p2:#FB7185; --p3:#A78BFA; --p4:#60A5FA; --p5:#F472B6; --p6:#A3E635; --p7:#FDE047;
 }
-:root[data-theme="glass"] body{background:#07070F;background-image:radial-gradient(900px 520px at 85% -8%,rgba(99,76,255,.30),transparent 62%),radial-gradient(760px 520px at -10% 38%,rgba(37,99,235,.20),transparent 60%),radial-gradient(700px 500px at 100% 100%,rgba(168,85,247,.16),transparent 60%);background-attachment:fixed;background-repeat:no-repeat}
+:root[data-theme="glass"] body{background:#07070F;background-image:none}
+:root[data-theme="glass"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 520px at 85% -8%,rgba(99,76,255,.28),transparent 62%),radial-gradient(760px 520px at -10% 38%,rgba(37,99,235,.18),transparent 60%),radial-gradient(700px 500px at 100% 100%,rgba(168,85,247,.14),transparent 60%);transform:translateZ(0)}
 :root[data-theme="glass"] .card,:root[data-theme="glass"] .fcard,:root[data-theme="glass"] .ocard,:root[data-theme="glass"] .oc2,:root[data-theme="glass"] .rv-sec,:root[data-theme="glass"] .rv-meta>div,:root[data-theme="glass"] .rv-info,:root[data-theme="glass"] .pc,:root[data-theme="glass"] .prmore,:root[data-theme="glass"] .stfsum>div,:root[data-theme="glass"] .fstats div,:root[data-theme="glass"] .ctile,:root[data-theme="glass"] .ctpl,:root[data-theme="glass"] .nt,:root[data-theme="glass"] .purc,:root[data-theme="glass"] .pickcard,:root[data-theme="glass"] .mssum,:root[data-theme="glass"] .msday,:root[data-theme="glass"] .frk,:root[data-theme="glass"] .emprow,:root[data-theme="glass"] .matrow,:root[data-theme="glass"] .dcard,:root[data-theme="glass"] .nli,:root[data-theme="glass"] .ccbox,:root[data-theme="glass"] .tablewrap,:root[data-theme="glass"] .gcrows,:root[data-theme="glass"] .fcompbox,:root[data-theme="glass"] .fbox{
-  background:linear-gradient(150deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.10);box-shadow:0 8px 28px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+  background:linear-gradient(150deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.10);box-shadow:0 2px 10px rgba(0,0,0,.28);}
 :root[data-theme="glass"] .pc.open{border-color:rgba(139,124,255,.55)}
-:root[data-theme="glass"] .hero,:root[data-theme="glass"] .rv-hero{background:linear-gradient(135deg,#6D5BF5 0%,#4338CA 55%,#2E2A8F 100%);box-shadow:0 14px 40px rgba(76,56,230,.35),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.14)}
-:root[data-theme="glass"] .hcard{border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.10)}
+:root[data-theme="glass"] .hero,:root[data-theme="glass"] .rv-hero{background:linear-gradient(135deg,#6D5BF5 0%,#4338CA 55%,#2E2A8F 100%);box-shadow:0 6px 18px rgba(76,56,230,.3);border:1px solid rgba(255,255,255,.14)}
+:root[data-theme="glass"] .hcard{border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 14px rgba(0,0,0,.35)}
 :root[data-theme="glass"] .hcard.ordc{background:linear-gradient(135deg,rgba(99,76,255,.55),rgba(30,27,75,.85));border:1px solid rgba(167,139,250,.45)}
 :root[data-theme="glass"] .btn:not(.ghost){background:linear-gradient(135deg,#7C6CFF,#4F46E5);color:#fff;box-shadow:0 6px 18px rgba(79,70,229,.45)}
 :root[data-theme="glass"] .btn.ghost,:root[data-theme="glass"] .tpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);color:var(--ink)}
@@ -1740,9 +1741,9 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 :root[data-theme="glass"] .stffilt button[aria-pressed="true"]{background:linear-gradient(135deg,#7C6CFF,#4F46E5);border-color:transparent;color:#fff}
 :root[data-theme="glass"] .fin,:root[data-theme="glass"] .search,:root[data-theme="glass"] select,:root[data-theme="glass"] textarea{background:rgba(255,255,255,.06);color:var(--ink);border-color:rgba(255,255,255,.08)}
 :root[data-theme="glass"] .fin:focus,:root[data-theme="glass"] .search:focus,:root[data-theme="glass"] .prf .fin:focus{background:rgba(255,255,255,.09);border-color:#8B7CFF}
-:root[data-theme="glass"] .sheet{background:rgba(18,17,38,.92);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px);border:1px solid rgba(255,255,255,.10);border-bottom:0}
-:root[data-theme="glass"] .prsbar,:root[data-theme="glass"] .prvbar{background:rgba(26,24,56,.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-color:rgba(139,124,255,.45)}
-:root[data-theme="glass"] .nfpop,:root[data-theme="glass"] #loginGate .lgcard{background:rgba(22,20,46,.96);border:1px solid rgba(255,255,255,.12)}
+:root[data-theme="glass"] .sheet{background:#12112A;border:1px solid rgba(255,255,255,.10);border-bottom:0}
+:root[data-theme="glass"] .prsbar,:root[data-theme="glass"] .prvbar{background:#1B1938;border-color:rgba(139,124,255,.45)}
+:root[data-theme="glass"] .nfpop,:root[data-theme="glass"] #loginGate .lgcard{background:#16142E;border:1px solid rgba(255,255,255,.12)}
 :root[data-theme="glass"] .rv-total,:root[data-theme="glass"] .rv-grand{background:linear-gradient(135deg,#6D5BF5,#3B2F9E)}
 :root[data-theme="glass"] .eyebrow,:root[data-theme="glass"] .lgeyebrow{color:#A5B4FC}
 :root[data-theme="glass"] h1,:root[data-theme="glass"] h2{color:#fff}
@@ -1776,7 +1777,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 .dli .dd{font:800 11px var(--font-ui);padding:4px 9px;border-radius:99px;background:var(--soft);color:var(--ink2);white-space:nowrap}
 .dli .dd.bad{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}.dli .dd.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
 @media (min-width:1100px){
-  :root[data-theme="glass"] #sidenav{display:flex;position:fixed;left:18px;top:18px;bottom:18px;width:232px;flex-direction:column;gap:2px;padding:16px 12px 12px;border-radius:26px;z-index:40;overflow-y:auto;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.10);box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);scrollbar-width:thin}
+  :root[data-theme="glass"] #sidenav{display:flex;position:fixed;left:18px;top:18px;bottom:18px;width:232px;flex-direction:column;gap:2px;padding:16px 12px 12px;border-radius:26px;z-index:40;overflow-y:auto;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.10);box-shadow:0 6px 20px rgba(0,0,0,.4);scrollbar-width:thin}
   :root[data-theme="glass"] body{padding-left:280px;padding-right:28px}
   :root[data-theme="glass"] .wrap:not(#home){grid-template-columns:minmax(340px,420px) minmax(0,1fr)}
   .dtiles{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -1833,7 +1834,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:21</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:26</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
