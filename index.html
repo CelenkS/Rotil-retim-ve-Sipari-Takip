@@ -1977,6 +1977,12 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
 .dpr{display:block;margin-top:6px;font:600 11px var(--font-ui);color:var(--ink2)}.dpr b{font:800 11.5px var(--font-num);color:var(--ink)}
 @media (min-width:1100px){.ddgrid{grid-template-columns:minmax(0,8fr) minmax(0,5fr)!important}}
 @media (max-width:600px){.dday .dboxh{flex-wrap:wrap}.dday .ddnav{width:100%;justify-content:space-between}.dday .ddnav span{flex:1}}
+
+/* Makine Planı kutuları: arızalı (kırmızı) ve iş atanmış (renkli) durumlar tema kartı stilinin üstüne çıksın */
+:root[data-theme="glass"] .fbox.busy{background:color-mix(in srgb,var(--accent) 22%,var(--surface))!important;border-color:var(--accent)!important}
+:root[data-theme="glass"] .fbox.fault,:root[data-theme="glass"] .floorgrid .fbox.fault{background:rgba(227,80,80,.24)!important;border-color:#E35050!important;box-shadow:0 0 0 1px #E35050 inset!important}
+:root[data-theme="glass"] .fbox.empty{background:none!important;box-shadow:none!important}
+.fbox.fault{background:rgba(227,80,80,.2);border-color:#E35050}
 </style>
 </head>
 <body>
@@ -2018,7 +2024,7 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:20</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:22</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
