@@ -1822,6 +1822,39 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 :root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;box-shadow:0 6px 18px rgba(79,70,229,.4)}
 :root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;border-color:transparent!important}
 :root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .hero button[aria-pressed="true"]{background:#fff!important;color:#2E2A8F!important}
+
+/* ---- Ana sayfa: dünün cirosu + plan + notlar ---- */
+.dboxh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.dboxh h3{margin:0 0 2px}.dboxh small{display:block;font:600 12px var(--font-ui);color:var(--ink2)}
+.dday{margin-top:12px}
+.ddnav{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ddnav span{font:800 12.5px var(--font-ui);color:var(--ink);min-width:0;text-align:center;padding:0 4px}
+.ddnav button{width:30px;height:30px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:800 16px var(--font-ui);cursor:pointer;line-height:1}
+.ddnav button:disabled{opacity:.35;cursor:default}
+.dsecs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dsec{position:relative;border-radius:18px;padding:12px 12px 14px 16px;background:var(--soft);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
+.dsec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--c1),var(--c2))}
+.dsec small{font:700 11.5px var(--font-ui);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsec b{font:800 19px/1.2 var(--font-num);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsec em{font:600 11.5px var(--font-ui);font-style:normal;color:var(--ink2)}
+.dsec u{display:block;height:5px;border-radius:9px;background:color-mix(in srgb,var(--ink2) 18%,transparent);margin-top:8px;overflow:hidden}
+.dsec u i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.dsum{display:flex;align-items:baseline;gap:10px;margin-top:12px;padding:11px 14px;border-radius:16px;background:linear-gradient(135deg,#6D5BF5,#3B2F9E);color:#fff}
+.dsum span{font:700 12px var(--font-ui);opacity:.85}.dsum b{font:800 18px var(--font-num);margin-left:auto}.dsum em{font:600 12px var(--font-ui);font-style:normal;opacity:.85}
+.dgrid3{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.dpc{font:800 15px var(--font-num);padding:5px 11px;border-radius:99px;background:color-mix(in srgb,#8B7CFF 20%,transparent);color:#7C6CFF;flex-shrink:0}
+.dpl{display:block;width:100%;border:0;background:none;text-align:left;padding:9px 6px;border-radius:12px;cursor:pointer;color:inherit}
+.dpl:hover{background:var(--soft)}
+.dplh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.dpn{display:flex;align-items:center;gap:8px;font:700 13px var(--font-ui);color:var(--ink);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dpn i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dpv{font:600 12px var(--font-num);color:var(--ink2);white-space:nowrap}.dpv b{font:800 13px var(--font-num);color:var(--ink)}
+.dpb{display:block;height:6px;border-radius:9px;background:color-mix(in srgb,var(--ink2) 18%,transparent);overflow:hidden}
+.dpb i{display:block;height:100%;border-radius:9px;min-width:2px}
+.dnt{padding:9px 6px}.dnc{width:4px;align-self:stretch;border-radius:4px;flex-shrink:0;min-height:26px}
+.dmore{border:0;background:none;color:#7C6CFF;font:800 12.5px var(--font-ui);cursor:pointer;padding:4px 2px;flex-shrink:0}
+@media (min-width:700px){.dsecs{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (min-width:1100px){.dgrid3{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -1863,7 +1896,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:49</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:54</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4995,6 +5028,14 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     while(y<ey||(y===ey&&m<=em)){out.push(y+"-"+pad(m+1)); m++; if(m>11){m=0;y++}}
     return out;
   }
+  var pmDay={};   // sid|ay -> {iso:{a:adet,r:ciro}} — ana sayfadaki "dünün cirosu" için
+  function daySums(d,l,r){
+    var m={}; function g(i){return m[i]||(m[i]={a:0,r:0})}
+    Object.keys(d||{}).forEach(function(i){g(i).a+=sum(d[i])});
+    Object.keys(r||{}).forEach(function(i){g(i).r+=sum(r[i])});
+    Object.keys(l||{}).forEach(function(i){(l[i]||[]).forEach(function(x){var e=g(i); e.a+=x.q; e.r+=x.q*x.p})});
+    return m;
+  }
   function extractSums(lm){
     var acc={};
     Object.keys(lm||{}).forEach(function(iso){
@@ -5013,12 +5054,12 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     if(!db){
       var o=null; try{o=JSON.parse(localStorage.getItem(secPrefix(sid)+k)||"null")}catch(e){}
       pm[sid+"|"+k]=extractSums(o&&o.v>=2?o.l:{}); pmPlans[sid+"|"+k]=normPlans(o&&o.v>=2?o.p:null);
-      pmTot[sid+"|"+k]=o&&o.v>=2?summarize(o.d,o.l,o.r):{a:0,r:0}; return Promise.resolve();
+      pmTot[sid+"|"+k]=o&&o.v>=2?summarize(o.d,o.l,o.r):{a:0,r:0}; pmDay[sid+"|"+k]=o&&o.v>=2?daySums(o.d,o.l,o.r):{}; return Promise.resolve();
     }
     return db.doc(secCol(sid)+"/"+k).get().then(function(sn){
       var data=sn.exists?sn.data():{};
       pm[sid+"|"+k]=extractSums(data.lines); pmPlans[sid+"|"+k]=normPlans(data.plans);
-      pmTot[sid+"|"+k]=summarize(data.days,data.lines,data.rev);
+      pmTot[sid+"|"+k]=summarize(data.days,data.lines,data.rev); pmDay[sid+"|"+k]=daySums(data.days,data.lines,data.rev);
       delete pmFail[sid+"|"+k];
     }).catch(function(){pmFail[sid+"|"+k]=1});
   }
@@ -6215,7 +6256,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     unsubNote=db.collection("usernotes").where("owner","==",me).onSnapshot({includeMetadataChanges:true},function(snap){
       noteSynced=!snap.metadata||!snap.metadata.fromCache;
       notesAll=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(n){return (n.owner||"").toLowerCase().trim()===me});
-      paintNotesHome();
+      paintNotesHome(); try{paintDash()}catch(e){}
       try{remCheck()}catch(e){}
       if(!$("notes").hidden)renderNotes();
     },function(err){
@@ -10502,6 +10543,66 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   try{var sideMO=new MutationObserver(paintSideActive); NAV_WRAPS.forEach(function(i){var e=$(i); if(e)sideMO.observe(e,{attributes:true,attributeFilter:["hidden"]})})}catch(e){}
   function dashMoney(v){v=Math.round(v||0); return v>=1e6?(Math.round(v/1e5)/10).toLocaleString("tr-TR")+" Mn ₺":money(v)+" ₺"}
   function dashShort(v){v=Math.round(v||0); return v>=1e6?(Math.round(v/1e5)/10).toLocaleString("tr-TR")+"Mn":v>=1e3?Math.round(v/1e3)+"B":String(v)}
+  var DASH_SECS=["cncg","pres","cnca","montaj"], dashDay=null, dashBusy=false, dashLast=0, dashAsked={};
+  function secById(id){return SECTIONS.filter(function(x){return x.id===id})[0]}
+  function dashMonthOf(iso){return iso.slice(0,7)}
+  function dashDayRow(iso){
+    var mk=dashMonthOf(iso), tot={a:0,r:0}, miss=false, rows=DASH_SECS.map(function(id){
+      var m=pmDay[id+"|"+mk]; if(!m)miss=true;
+      var e=(m&&m[iso])||{a:0,r:0}; tot.a+=e.a; tot.r+=e.r; return {s:secById(id),a:e.a,r:e.r};
+    });
+    return {rows:rows,tot:tot,miss:miss};
+  }
+  function dashPickDay(){
+    var iso=dashDay||isoAdd(todayIso,-1);
+    if(!dashDay){
+      for(var i=0;i<3;i++){
+        var p=iso.split("-").map(Number), wd=new Date(p[0],p[1]-1,p[2]).getDay(), r=dashDayRow(iso);
+        if((wd===0||wd===6)&&!r.miss&&!r.tot.a&&!r.tot.r)iso=isoAdd(iso,-1); else break;
+      }
+    }
+    return iso;
+  }
+  function dashLoad(force,extra){
+    if(dashBusy)return;
+    var mks=[], add=function(m){if(m&&mks.indexOf(m)<0)mks.push(m)};
+    add(dashMonthOf(todayIso)); add(dashMonthOf(isoAdd(todayIso,-1))); add(dashMonthOf(isoAdd(todayIso,-7))); if(dashDay)add(dashMonthOf(dashDay)); (extra||[]).forEach(add);
+    var jobs=[], t=Date.now();
+    SECTIONS.forEach(function(x){mks.forEach(function(mk){
+      var kk=x.id+"|"+mk;
+      if(force){if(t-dashLast>10000||!pmDay[kk])jobs.push([x.id,mk])}
+      else if(!pmDay[kk]&&!dashAsked[kk]){dashAsked[kk]=1; jobs.push([x.id,mk])}
+    })});
+    if(force)dashLast=t;
+    if(!jobs.length)return;
+    dashBusy=true; var i=0;
+    function next(){if(i>=jobs.length)return Promise.resolve(); var j=jobs[i++]; return fetchOne(j[0],j[1]).then(next)}
+    Promise.all([next(),next(),next(),next()]).then(function(){dashBusy=false; try{paintDash()}catch(e){}}).catch(function(){dashBusy=false});
+  }
+  function dashPlan(scope){
+    var k;
+    if(scope==="day")k=todayIso;
+    else{var f=Math.max(1,now.getDate()-((now.getDay()+6)%7)); k=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(f)}
+    var rng=planRange(scope,k), rows=[], tq=0, dq=0;
+    SECTIONS.forEach(function(x){
+      var P=pmPlans[x.id+"|"+k.slice(0,7)]||{}, items=(P[scope]&&P[scope][k])||[], q=0, d=0;
+      items.forEach(function(pe){
+        var o=null; for(var i=0;i<orders.length;i++){if(orders[i].id===pe.oid){o=orders[i];break}}
+        if(!o)return;
+        var dn=doneOf(o.id,x.id), wq=0; (dn.e||[]).forEach(function(en){if(rng.indexOf(en.d)>-1)wq+=en.q});
+        q+=pe.q; d+=wq;
+      });
+      if(q>0){tq+=q; dq+=d; rows.push({s:x,q:q,d:d})}
+    });
+    return {rows:rows,tq:tq,dq:dq,pc:tq?Math.round(dq/tq*100):0};
+  }
+  function dashPlanBox(title,sub,pl,empty){
+    var list=pl.rows.length?pl.rows.map(function(r){
+      var pc=Math.min(100,Math.round(r.d/r.q*100));
+      return '<button type="button" class="dpl" data-nav="plans"><span class="dplh"><span class="dpn"><i style="background:'+r.s.h1+'"></i>'+esc(r.s.name)+'</span><span class="dpv"><b>'+nf.format(r.d)+'</b> / '+nf.format(r.q)+'</span></span><span class="dpb"><i style="width:'+pc+'%;background:linear-gradient(90deg,'+r.s.h1+','+r.s.h2+')"></i></span></button>';
+    }).join(""):'<div class="empty">'+empty+'</div>';
+    return '<div class="dbox dplan"><div class="dboxh"><div><h3>'+title+'</h3><small>'+esc(sub)+'</small></div>'+(pl.tq?'<span class="dpc">%'+pl.pc+'</span>':'')+'</div><div class="dlist">'+list+'</div></div>';
+  }
   function paintDash(){
     var d=$("dash"); if(!d)return;
     if(homeView!=="main"||!orders.length){d.hidden=true; d.innerHTML=""; return}
@@ -10519,16 +10620,48 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var bars=ms.map(function(x){var v=byM[x.k]||0; return '<div class="dbar'+(x.k===mk?' on':'')+'"><span>'+(v?dashShort(v):'')+'</span><i style="height:'+Math.max(3,Math.round(v/mx*100))+'%"></i><u>'+x.l+'</u></div>'}).join("");
     var lst=up.length?up.map(function(x){var o=x.o, cls=x.n<0?" bad":(x.n<=3?" warn":""), t=x.n<0?(-x.n)+" gün gecikti":(x.n===0?"Bugün":x.n+" gün");
       return '<button type="button" class="dli" data-nav="orders"><div><b>'+esc(o.code)+'</b><small>'+esc(o.cust||"Müşteri yok")+' · '+nf.format(o.qty)+' adet</small></div><span class="dd'+cls+'">'+t+'</span></button>'}).join(""):'<div class="empty">Termini girilmiş açık sipariş yok.</div>';
+    // dünün (veya seçilen günün) bölüm cirosu
+    var di=dashPickDay(), dr=dashDayRow(di), mxr=Math.max.apply(null,dr.rows.map(function(r){return r.r}).concat([1]));
+    if(dr.miss)dashLoad(false,[dashMonthOf(di)]);
+    var yIso=isoAdd(todayIso,-1), isY=(di===yIso), dlabel=isY?"Dün · "+isoDayLabel(di):isoDayLabel(di);
+    var rev='<div class="dbox dday"><div class="dboxh"><div><h3>Dünün cirosu</h3><small>Bölümlere göre üretim cirosu</small></div>'+
+      '<div class="ddnav"><button type="button" data-dday="-1" aria-label="Önceki gün">‹</button><span>'+esc(dlabel)+'</span><button type="button" data-dday="1" aria-label="Sonraki gün"'+(di>=yIso?' disabled':'')+'>›</button></div></div>'+
+      '<div class="dsecs">'+dr.rows.map(function(r){
+        return '<div class="dsec" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><small>'+esc(r.s.name)+'</small><b>'+(dr.miss?'…':money(r.r)+' ₺')+'</b><em>'+(dr.miss?'yükleniyor':(r.a?nf.format(r.a)+' adet':'üretim yok'))+'</em><u><i style="width:'+(dr.miss?0:Math.round(r.r/mxr*100))+'%"></i></u></div>';
+      }).join("")+'</div>'+
+      '<div class="dsum"><span>Toplam</span><b>'+(dr.miss?'…':money(dr.tot.r)+' ₺')+'</b><em>'+(dr.miss?'':nf.format(dr.tot.a)+' adet')+'</em></div></div>';
+    // plan kutuları
+    var pd=dashPlan("day"), pw=dashPlan("week");
+    var pbox=dashPlanBox("Günlük plan",isoDayLabel(todayIso),pd,"Bugün için plan girilmemiş.")+dashPlanBox("Haftalık plan",isoWeekLabel(isoWeekMonday(todayIso)),pw,"Bu hafta için plan girilmemiş.");
+    // notlar
+    var nl=noteSorted(notesAll.filter(function(n){return !n.done})), nTot=nl.length;
+    var nrows=nl.slice(0,6).map(function(n){
+      var bk=noteBucket(n), chip="";
+      if(n.due){var dd=daysTo(n.due); chip=dd<0?'<span class="dd bad">'+(-dd)+' gün gecikti</span>':(dd===0?'<span class="dd warn">Bugün</span>':'<span class="dd">'+(dd===1?'Yarın':dd+' gün')+'</span>')}
+      var ttl=n.title||(n.text?n.text.split("\n")[0].slice(0,60):"Başlıksız not");
+      return '<button type="button" class="dli dnt" data-nav="notes"><i class="dnc" style="background:'+(n.color||'var(--line)')+'"></i><div><b>'+(n.pin?'📌 ':'')+esc(ttl)+'</b>'+(n.text&&n.title?'<small>'+esc(n.text.split("\n")[0].slice(0,70))+'</small>':'')+'</div>'+chip+'</button>';
+    }).join("");
+    var nbox='<div class="dbox"><div class="dboxh"><div><h3>Notlarım</h3><small>'+(nTot?nTot+' açık not':'Sadece sana özel')+'</small></div><button type="button" class="dmore" data-nav="notes">Tümü ›</button></div><div class="dlist">'+(nrows||'<div class="empty">Açık notun yok.</div>')+'</div></div>';
     d.hidden=false;
     d.innerHTML='<div class="dtiles">'+
       '<div class="dt hi"><small>Açık sipariş tutarı</small><b>'+dashMoney(openAmt)+'</b><em>'+open+' açık sipariş</em></div>'+
       '<div class="dt'+(late?' bad':'')+'"><small>Termini geçen</small><b>'+late+'</b><em>'+(late?'acil bakılması gereken':'gecikme yok')+'</em></div>'+
       '<div class="dt"><small>'+esc(AY[m])+' gönderilen</small><b>'+dashMoney(shipA)+'</b><em>'+nf.format(shipQ)+' adet</em></div>'+
       '<div class="dt"><small>'+esc(AY[m])+' tamamlanan</small><b>'+comp+'</b><em>sipariş</em></div></div>'+
+      rev+
+      '<div class="dgrid3">'+pbox+nbox+'</div>'+
       '<div class="dgrid2"><div class="dbox"><h3>Aylık gönderilen ciro</h3><small>Son 6 ay · gönderim tarihine göre</small><div class="dbars">'+bars+'</div></div>'+
       '<div class="dbox"><h3>Yaklaşan terminler</h3><small>Açık siparişler, en yakın tarih önce</small><div class="dlist">'+lst+'</div></div></div>';
   }
-  $("dash").addEventListener("click",function(e){var b=e.target.closest("[data-nav]"); if(b)navGo(b.dataset.nav)});
+  $("dash").addEventListener("click",function(e){
+    var dn=e.target.closest("[data-dday]");
+    if(dn){
+      if(dn.disabled)return;
+      var cur=dashPickDay(), nx=isoAdd(cur,+dn.dataset.dday), yIso=isoAdd(todayIso,-1); if(nx>yIso)return;
+      dashDay=nx; dashLoad(false,[dashMonthOf(nx)]); paintDash(); return;
+    }
+    var b=e.target.closest("[data-nav]"); if(b)navGo(b.dataset.nav);
+  });
   function buildHome(){
     var ordersC='<button type="button" class="hcard ordc" data-orders="1">'+hcIcon("orders")+'<div><div class="hk">Sipariş takibi</div><div class="hn">Siparişler</div><div class="hs" id="hs-orders"></div></div><span class="go">›</span></button>';
     var notesC='<button type="button" class="hcard ordc notec" data-notes="1">'+hcIcon("notes")+'<div><div class="hk">Sadece sana özel</div><div class="hn">Notlarım</div><div class="hs" id="hs-notes">Kişisel notların ve hatırlatmaların</div></div><span class="go">›</span></button>';
@@ -10562,6 +10695,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     refreshHome();
   }
   function refreshHome(){
+    dbP.then(function(){dashLoad(true)});
     SECTIONS.forEach(function(x){
       var o=null; try{o=JSON.parse(localStorage.getItem(secPrefix(x.id)+monthKeyNow())||"null")}catch(e){}
       paintHome(x.id,(o&&o.v>=2)?summarize(o.d,o.l,o.r):null);
