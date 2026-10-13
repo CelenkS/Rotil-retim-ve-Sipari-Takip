@@ -1896,7 +1896,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:54</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:00</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5408,7 +5408,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     if(unsubOrd||!db)return;
     unsubOrd=db.collection("orders").onSnapshot(function(snap){
       orders=snap.docs.map(function(d){return normOrder(Object.assign({id:d.id},d.data()))});
-      lsOrdersSet(); paintOrdersHome();
+      lsOrdersSet(); paintOrdersHome(); if(!$("home").hidden)homeLoad();
       if(!$("ords").hidden&&$("ov").hidden)renderOrders();
       if(!$("app").hidden)loadProgress(true).then(function(){renderHero()});
     },function(){});
@@ -5416,7 +5416,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   function paintOrdersHome(){
     var el=$("hs-orders"); if(!el)return;
     var op=orders.filter(function(o){return !isComplete(o)&&!o.shipped}), late=op.filter(function(o){var n=daysTo(o.dd);return n!==null&&n<0}).length;
-    el.innerHTML=orders.length?(op.length+" açık sipariş"+(late?' · <b>'+late+' termini geçti</b>':'')):"Henüz sipariş yok";
+    el.innerHTML=orders.length?((homeProgOk||pmFull)?(op.length+" açık sipariş"+(late?' · <b>'+late+' termini geçti</b>':'')):"Siparişler hesaplanıyor…"):"Henüz sipariş yok";
     try{paintDash()}catch(e){}
   }
   function renderStageNeeds(){
@@ -10563,6 +10563,29 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     }
     return iso;
   }
+  // Ana sayfadaki açık/geciken/tamamlanan sayıları "bölümlerdeki üretim girişlerine" bağlı
+  // (isComplete). Daha önce ana sayfa bu girişleri hiç yüklemiyordu → Siparişler'e girmeden
+  // sayılar yanlış çıkıyordu. Artık ana sayfa açılınca tüm aylar bir kez yüklenir, sonra yenilenir.
+  var homeProgOk=false, homeBusy=false, homeLast=0;
+  function homeLoad(){
+    if(homeBusy||!orders.length)return;
+    if(homeProgOk&&Date.now()-homeLast<10000)return;
+    homeBusy=true; homeLast=Date.now();
+    var tries=0;
+    var fin=function(){
+      var bad=Object.keys(pmFail);
+      if(bad.length&&tries<4){
+        // Okunamayan ay/bölüm varsa sayılar eksik çıkar → birkaç kez tekrar dene, o sırada "hesaplanıyor" göster
+        tries++;
+        setTimeout(function(){
+          Promise.all(bad.map(function(f){var a=f.split("|"); return fetchOne(a[0],a[1])})).then(fin,fin);
+        },1200*tries);
+        return;
+      }
+      pmFull=!Object.keys(pmFail).length; homeBusy=false; homeProgOk=true; try{paintOrdersHome()}catch(e){}
+    };
+    loadProgress(true).then(fin,fin);
+  }
   function dashLoad(force,extra){
     if(dashBusy)return;
     var mks=[], add=function(m){if(m&&mks.indexOf(m)<0)mks.push(m)};
@@ -10606,7 +10629,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   function paintDash(){
     var d=$("dash"); if(!d)return;
     if(homeView!=="main"||!orders.length){d.hidden=true; d.innerHTML=""; return}
-    var mk=monthKeyNow(), open=0, openAmt=0, late=0, comp=0, shipQ=0, shipA=0, byM={}, up=[];
+    var pend=!(homeProgOk||pmFull), mk=monthKeyNow(), open=0, openAmt=0, late=0, comp=0, shipQ=0, shipA=0, byM={}, up=[];
     orders.forEach(function(o){
       var c=false; try{c=isComplete(o)}catch(e){}
       if(!c&&!o.shipped){open++; openAmt+=orderTotal(o); var n=daysTo(o.dd); if(n!==null&&n<0)late++; if(o.dd)up.push({o:o,n:n})}
@@ -10644,10 +10667,10 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var nbox='<div class="dbox"><div class="dboxh"><div><h3>Notlarım</h3><small>'+(nTot?nTot+' açık not':'Sadece sana özel')+'</small></div><button type="button" class="dmore" data-nav="notes">Tümü ›</button></div><div class="dlist">'+(nrows||'<div class="empty">Açık notun yok.</div>')+'</div></div>';
     d.hidden=false;
     d.innerHTML='<div class="dtiles">'+
-      '<div class="dt hi"><small>Açık sipariş tutarı</small><b>'+dashMoney(openAmt)+'</b><em>'+open+' açık sipariş</em></div>'+
-      '<div class="dt'+(late?' bad':'')+'"><small>Termini geçen</small><b>'+late+'</b><em>'+(late?'acil bakılması gereken':'gecikme yok')+'</em></div>'+
+      '<div class="dt hi"><small>Açık sipariş tutarı</small><b>'+(pend?'…':dashMoney(openAmt))+'</b><em>'+(pend?'hesaplanıyor':open+' açık sipariş'+(Object.keys(pmFail).length?' · veri eksik olabilir':''))+'</em></div>'+
+      '<div class="dt'+(late&&!pend?' bad':'')+'"><small>Termini geçen</small><b>'+(pend?'…':late)+'</b><em>'+(pend?'hesaplanıyor':(late?'acil bakılması gereken':'gecikme yok'))+'</em></div>'+
       '<div class="dt"><small>'+esc(AY[m])+' gönderilen</small><b>'+dashMoney(shipA)+'</b><em>'+nf.format(shipQ)+' adet</em></div>'+
-      '<div class="dt"><small>'+esc(AY[m])+' tamamlanan</small><b>'+comp+'</b><em>sipariş</em></div></div>'+
+      '<div class="dt"><small>'+esc(AY[m])+' tamamlanan</small><b>'+(pend?'…':comp)+'</b><em>sipariş</em></div></div>'+
       rev+
       '<div class="dgrid3">'+pbox+nbox+'</div>'+
       '<div class="dgrid2"><div class="dbox"><h3>Aylık gönderilen ciro</h3><small>Son 6 ay · gönderim tarihine göre</small><div class="dbars">'+bars+'</div></div>'+
@@ -10695,7 +10718,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     refreshHome();
   }
   function refreshHome(){
-    dbP.then(function(){dashLoad(true)});
+    dbP.then(function(){homeLoad()});
     SECTIONS.forEach(function(x){
       var o=null; try{o=JSON.parse(localStorage.getItem(secPrefix(x.id)+monthKeyNow())||"null")}catch(e){}
       paintHome(x.id,(o&&o.v>=2)?summarize(o.d,o.l,o.r):null);
