@@ -1693,7 +1693,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 14:16</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 14:20</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2709,7 +2709,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
           if(op){
             var si1=stageIdx(sec.id), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]}).map(function(o){return {o:o,dn:doneOf(o.id,sec.id).q}}).sort(function(a,b){return (b.dn-a.dn)||((a.o.code||"").localeCompare(b.o.code||"","tr"))});
             var started=lst.filter(function(x){return x.dn>0}), notst=lst.filter(function(x){return x.dn<=0});
-            h+='<div class="needlist">'+(lst.length?('<div class="nlhead">'+lst.length+' sipariş · '+started.length+' tanesinde üretim var</div>'+started.map(function(x){return nliHtml(x.o,sec.id,i)}).join("")+(notst.length?'<div class="nlsep">Henüz başlanmayan ('+notst.length+')</div>'+notst.map(function(x){return nliHtml(x.o,sec.id,i)}).join(""):"")):'<div class="empty" style="color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)">Sipariş yok.</div>')+'</div>';
+            h+=needListHtml(lst,sec.id,i);
           }
           return h;
         }).join("")+'</div>';
@@ -5052,6 +5052,26 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     }).join("")+'</div>';
   }
   // Tek sipariş kartı (görsel, kod, durum, müşteri, sipariş adedi, seçili aşama yüzdesi, TÜM aşamalar)
+  var needQ="";
+  // lst: [{o,dn}] — önce henüz başlanmayanlar, sonra üretimi olanlar; kod / müşteri / ürün adına göre arama
+  function needListHtml(lst,secId,catIdx){
+    var q=fold(needQ.trim()), pn={};
+    if(q&&typeof products!=="undefined")products.forEach(function(p){if(p.code&&p.name)pn[String(p.code).toLowerCase()]=p.name});
+    var all=lst.length, f=lst.filter(function(x){
+      if(!q)return true;
+      var hay=[x.o.code,x.o.cust,pn[String(x.o.code||"").toLowerCase()]||""].join(" ");
+      var t=q.split(/\s+/).filter(Boolean), h=fold(hay); return t.every(function(w){return h.indexOf(w)>-1});
+    });
+    var byCode=function(a,b){return (a.o.code||"").localeCompare(b.o.code||"","tr",{numeric:true})};
+    var notst=f.filter(function(x){return x.dn<=0}).sort(byCode), started=f.filter(function(x){return x.dn>0}).sort(function(a,b){return (b.dn-a.dn)||byCode(a,b)});
+    var item=function(x){return nliHtml(x.o,secId,catIdx)};
+    return '<div class="needlist"><input class="search" id="needq" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu veya müşteri ara…" value="'+esc(needQ)+'" style="margin-bottom:8px">'+
+      (all?('<div class="nlhead">'+(q?f.length+' / ':'')+all+' sipariş · '+lst.filter(function(x){return x.dn>0}).length+' tanesinde üretim var</div>'+
+        (notst.length?'<div class="nlsep">Henüz başlanmayan ('+notst.length+')</div>'+notst.map(item).join(""):"")+
+        (started.length?'<div class="nlsep">Üretimi olan ('+started.length+')</div>'+started.map(item).join(""):"")+
+        (!f.length?'<div class="empty">Aramaya uyan sipariş yok.</div>':"")
+      ):'<div class="empty">Sipariş yok.</div>')+'</div>';
+  }
   function nliHtml(o,secId,catIdx){
     var si=stageIdx(secId), sg=STAGES[si], nd=o.qty*muOf(o,si), dn=Math.min(doneOf(o.id,secId).q,nd), pc=nd?Math.round(dn/nd*100):0, fin=nd>0&&dn>=nd;
     return '<div role="button" tabindex="0" class="nli'+(fin?' nfin':'')+'" data-oid="'+o.id+'">'+
@@ -5212,11 +5232,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
             }).sort(function(a,b){return (b.dn-a.dn)||((a.o.code||"").localeCompare(b.o.code||"","tr"))});
             var started=lst.filter(function(x){return x.dn>0}), notst=lst.filter(function(x){return x.dn<=0});
             var item=function(x){return nliHtml(x.o,sg.sec,i)};
-            h+='<div class="needlist">'+(lst.length?(
-              '<div class="nlhead">'+lst.length+' sipariş · '+started.length+' tanesinde üretim var</div>'+
-              started.map(item).join("")+
-              (notst.length?'<div class="nlsep">Henüz başlanmayan ('+notst.length+')</div>'+notst.map(item).join(""):"")
-            ):'<div class="empty">Sipariş yok.</div>')+'</div>';
+            h+=needListHtml(lst,sg.sec,i);
           }
           return h;
         }).join("")+'</div>';
@@ -9983,6 +9999,12 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var b=e.target.closest("[data-stage]"); if(!b)return;
     needOpen=needOpen===b.dataset.stage?null:b.dataset.stage; needCatOpen=null;
     renderStageNeeds();
+  });
+  document.addEventListener("input",function(e){
+    var el=e.target; if(!el||el.id!=="needq")return;
+    needQ=el.value; var f=el.selectionStart, inCard=!!el.closest("#needcard");
+    if(inCard)renderStageNeeds(); else renderNeed();
+    var n=$("needq"); if(n){n.focus(); try{n.setSelectionRange(f,f)}catch(x){}}
   });
   $("needcard").addEventListener("change",function(e){
     if(e.target.id!=="needcustf")return;
