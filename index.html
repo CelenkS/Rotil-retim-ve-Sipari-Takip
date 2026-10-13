@@ -1619,6 +1619,26 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 .rv-end .g b{margin-left:auto;font:800 28px var(--font-num)}
 .rv-end .w{padding:9px 16px;font:700 12px var(--font-ui);color:#FFD166;background:rgba(0,0,0,.18)}
 .rv-tag{display:inline-block;font:800 10px var(--font-ui);letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);margin-right:7px;vertical-align:1px;white-space:nowrap}
+
+/* Gramaj hesaplayıcı */
+.gcshapes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gcshapes button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px 9px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font:700 12px var(--font-ui);color:var(--ink)}
+.gcshapes button svg{width:34px;height:34px;stroke:var(--ink2);fill:none;stroke-width:2.2}
+.gcshapes button[aria-pressed="true"]{border-color:var(--accent);background:var(--soft)}
+.gcshapes button[aria-pressed="true"] svg{stroke:var(--accent)}
+.gcmat{display:flex;flex-wrap:wrap;gap:6px}
+.gcmat button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 12px;font:700 12.5px var(--font-ui);color:var(--ink2)}
+.gcmat button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.gcin{position:relative}.gcin .fin{padding-right:44px;font:700 16px var(--font-num)}
+.gcin em{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:600 12px var(--font-ui);font-style:normal;color:var(--ink2);pointer-events:none}
+.gclbl{display:flex;flex-direction:column;gap:3px}
+.gcdia{display:flex;flex-wrap:wrap;gap:6px}
+.gcdia button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font:700 12px var(--font-num);color:var(--ink2)}
+.gcrows{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.gcrows .r{display:flex;align-items:center;gap:8px;padding:11px 14px;border-top:1px solid var(--line);font:600 13.5px var(--font-ui);color:var(--ink2)}
+.gcrows .r:first-child{border-top:0}.gcrows .r b{margin-left:auto;font:800 14.5px var(--font-num);color:var(--ink);white-space:nowrap}
+.gcrows .r.x{background:var(--soft)}
+.gcwarn{font:700 12.5px var(--font-ui);color:var(--bad);padding:2px 4px}
 .rv-note{font:600 12px/1.4 var(--font-ui);color:var(--ink2);padding:0 4px}
 .prlgrp{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .prlgrp button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font:700 12px var(--font-ui);color:var(--ink2)}
@@ -1666,7 +1686,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 13:42</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 13:54</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1905,7 +1925,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   </section>
   <div class="otabs" role="group" aria-label="Ürünler ve bileşenler" style="margin-top:12px"><button type="button" id="prTabP" aria-pressed="true">Ürünler</button><button type="button" id="prTabR" aria-pressed="false">Reçeteliler</button><button type="button" id="prTabC" aria-pressed="false">Bileşenler</button></div>
   <div class="osearch" style="margin-top:10px"><button class="btn" id="prnew" style="flex:1">+ Yeni ürün</button><button class="btn ghost" id="primp" style="flex:1">📥 Siparişlerden getir</button><button class="btn" id="prcnew" style="flex:1" hidden>+ Yeni bileşen</button></div>
-  <button class="tpill" id="prdata" style="margin-top:8px">📦 Excel verisini içe aktar</button><input type="file" id="prdataf" accept=".json,application/json" hidden>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="tpill" id="prdata" style="margin-top:0">📦 Excel verisini içe aktar</button><button class="tpill" id="prgram" style="margin-top:0">⚖ Gramaj hesapla</button></div><input type="file" id="prdataf" accept=".json,application/json" hidden>
   <div id="prsum" class="stfsum" hidden></div>
   <input class="search" id="prsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu, ad veya müşteri ara…" aria-label="Ara" style="margin-top:8px">
   <div id="prfilt" class="stffilt"></div>
@@ -3594,7 +3614,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
             '<div class="frow" style="margin-top:8px"><input class="fin" id="dpn'+gi+'" autocomplete="off" placeholder="Yeni alt bölüm (ör. CNC Aşık)" style="flex:1"><button type="button" class="btn" data-dpadd="'+gi+'" style="flex:0 0 auto;padding:0 18px">Ekle</button></div></div>';
         }).join("")+
         '<div><span class="fl">Yeni bölüm grubu</span><div class="frow"><input class="fin" id="dpgn" autocomplete="off" placeholder="ör. Rotil, Rozet, Yönetim" style="flex:1"><button type="button" class="btn" id="dpgadd" style="flex:0 0 auto;padding:0 18px">Ekle</button></div></div><div class="note" id="dpmsg"></div></div>';
-    }else if(sheetMode==="mesai"){html+=mesaiSheetHtml()}else if(sheetMode==="prod"){html+=prFormHtml()}else if(sheetMode==="prview"){html+=prViewHtml()}else if(sheetMode==="primp"){html+=prImportSheetHtml()}else if(sheetMode==="prpick"){html+=prPickHtml()}else if(sheetMode==="comp"){html+=prCompHtml()}else if(sheetMode==="prdata"){html+=prDataHtml()}else if(sheetMode==="empdet"){html+=empDetSheetHtml()}else if(sheetMode==="finimp"){html+=finImpSheetHtml()}else if(sheetMode==="fempdet"){html+=finEmpSheetHtml()}else if(sheetMode==="fgdet"){html+=finGidSheetHtml()}else if(sheetMode==="macbulk"){
+    }else if(sheetMode==="mesai"){html+=mesaiSheetHtml()}else if(sheetMode==="prod"){html+=prFormHtml()}else if(sheetMode==="prview"){html+=prViewHtml()}else if(sheetMode==="gram"){html+=gcHtml()}else if(sheetMode==="primp"){html+=prImportSheetHtml()}else if(sheetMode==="prpick"){html+=prPickHtml()}else if(sheetMode==="comp"){html+=prCompHtml()}else if(sheetMode==="prdata"){html+=prDataHtml()}else if(sheetMode==="empdet"){html+=empDetSheetHtml()}else if(sheetMode==="finimp"){html+=finImpSheetHtml()}else if(sheetMode==="fempdet"){html+=finEmpSheetHtml()}else if(sheetMode==="fgdet"){html+=finGidSheetHtml()}else if(sheetMode==="macbulk"){
       html+='<div class="shead"><div><h2 id="sh-title">Toplu makine ekle</h2><small>Her satıra bir makine adı — hepsi seçtiğin bölüm(ler)e birden eklenir</small></div></div>'+
         '<div class="form">'+
         '<div><span class="fl">Bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-mcbsec="'+x.id+'" aria-pressed="'+(macBulkSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
@@ -7162,9 +7182,25 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     }
     return null;
   }
-  // Not: üretim kayıtları hangi makinede yapıldığını tutmuyor, bu yüzden "yapılan/kalan"
-  // ilgili SİPARİŞ ve BÖLÜM bazında hesaplanıyor (aynı gün başka bir makine de aynı
-  // siparişe çalışıyorsa rakam ikisinde de aynı görünür).
+  // Not: "Yapılan" bir siparişe birden fazla makine çalışıyorsa makine bazında (üretim satırındaki
+  // makine seçimine göre), tek makine varsa siparişin tamamı üzerinden hesaplanır; "Kalan" siparişin kalanıdır.
+  // Bir siparişe (bölüm bazında) o dönemde birden fazla makine çalışıyorsa her makinenin
+  // yaptığı adet, üretim satırındaki makine seçimine (en.m) göre ayrı hesaplanır.
+  function macSharers(oid,secId,days){
+    var ms={}, P=plansOfSec(secId), wk=isoWeekMonday(days[0]);
+    days.forEach(function(d){((P.day&&P.day[d])||[]).forEach(function(pe){if(pe.oid===oid&&pe.mid)ms[pe.mid]=1})});
+    ((P.week&&P.week[wk])||[]).forEach(function(pe){if(pe.oid===oid&&pe.mid)ms[pe.mid]=1});
+    (machinesList||[]).forEach(function(x){if(x.job&&x.job.oid===oid&&x.job.sec===secId)ms[x.id]=1});
+    return ms;
+  }
+  function macQty(m,oid,secId,days){
+    var multi=Object.keys(macSharers(oid,secId,days)).length>1, q=0;
+    (doneOf(oid,secId).e||[]).forEach(function(en){
+      if(days.indexOf(en.d)<0)return;
+      if(!multi||en.m===m.id)q+=en.q;
+    });
+    return q;
+  }
   function jobDayStats(m,dayIso){
     if(!m)return null;
     var pe=machinePlanEntry(m,dayIso), oid,secId,planQ=0,weekly=false,eid="";
@@ -7172,8 +7208,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     else if(m.job&&m.job.oid){oid=m.job.oid; secId=m.job.sec;}
     else return null;
     var ord=orders.filter(function(x){return x.id===oid})[0]; if(!ord)return null;
-    var nd=need(ord,secId), dn=doneOf(ord.id,secId), dayDone=0;
-    (dn.e||[]).forEach(function(en){if(en.d===dayIso)dayDone+=en.q});
+    var nd=need(ord,secId), dn=doneOf(ord.id,secId), dayDone=macQty(m,ord.id,secId,[dayIso]);
     return {ord:ord,secId:secId,planQ:planQ,weekly:weekly,dayDone:dayDone,kalan:stClosed(ord,stageIdx(secId))?0:Math.max(0,nd-Math.min(dn.q,nd)),eid:eid,fromPlan:!!pe};
   }
   // Bir makineye o HAFTA için planlanmış TÜM sipariş satırlarını toplar (machinePlanEntry'nin
@@ -7196,8 +7231,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     var rng=isoWeekRange(wk);
     var items=entries.map(function(x){
       var ord=orders.filter(function(o){return o.id===x.pe.oid})[0]; if(!ord)return null;
-      var nd=need(ord,x.secId), dn=doneOf(ord.id,x.secId), wdone=0;
-      (dn.e||[]).forEach(function(en){if(rng.indexOf(en.d)>-1)wdone+=en.q});
+      var nd=need(ord,x.secId), dn=doneOf(ord.id,x.secId), wdone=macQty(m,ord.id,x.secId,rng);
       return {ord:ord,secId:x.secId,planQ:x.pe.q,wdone:wdone,kalan:stClosed(ord,stageIdx(x.secId))?0:Math.max(0,nd-Math.min(dn.q,nd)),eid:x.pe.eid||""};
     }).filter(Boolean);
     if(!items.length)return null;
@@ -7932,6 +7966,86 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       '<div class="frow" style="margin-top:8px"><button type="button" class="btn" id="prsave">Kaydet</button>'+(d.id?'<button type="button" class="btn ghost bad" id="prdel">'+(prDelArm?'Emin misin? Sil':'Ürünü sil')+'</button>':'')+'</div><div class="note" id="prfnote" style="margin:0"></div></div>';
     return h;
   }
+  /* ---------- GRAMAJ HESAPLAYICI ----------
+     Ağırlık = kesit alanı × boy × yoğunluk. Çelik 7,85 g/cm³ (genel kabul). Yuvarlak: π/4·d²; kare: a²; lama: en×kalınlık;
+     altıgen: (√3/2)·AA² (AA = anahtar ağzı); boru: π·t·(D−t); sac: en×boy×kalınlık. Excel reçetelerindeki yöntem (π=3,14, ρ=7,86) ayrıca gösterilir. */
+  var GC_SHAPES=[
+    {k:"round",n:"Yuvarlak (mil)",ic:'<circle cx="12" cy="12" r="9"/>',f:[["d","Çap Ø","mm"],["l","Boy","mm"]]},
+    {k:"square",n:"Kare",ic:'<rect x="4" y="4" width="16" height="16" rx="1.5"/>',f:[["a","Kenar","mm"],["l","Boy","mm"]]},
+    {k:"flat",n:"Lama (yassı)",ic:'<rect x="2.5" y="8" width="19" height="8" rx="1.5"/>',f:[["w","Genişlik","mm"],["t","Kalınlık","mm"],["l","Boy","mm"]]},
+    {k:"hex",n:"Altıgen",ic:'<path d="M12 2.5 20.2 7.2v9.6L12 21.5 3.8 16.8V7.2z"/>',f:[["aa","Anahtar ağzı (AA)","mm"],["l","Boy","mm"]]},
+    {k:"tube",n:"Boru",ic:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.2"/>',f:[["od","Dış çap Ø","mm"],["wall","Et kalınlığı","mm"],["l","Boy","mm"]]},
+    {k:"sheet",n:"Sac / levha",ic:'<rect x="2.5" y="6" width="19" height="12" rx="1.5"/><path d="M2.5 10h19"/>',f:[["w","En","mm"],["l","Boy","mm"],["t","Kalınlık","mm"]]}
+  ];
+  var GC_MATS=[{k:"steel",n:"Çelik",d:7.85},{k:"inox",n:"Paslanmaz",d:8.0},{k:"alu",n:"Alüminyum",d:2.7},{k:"brass",n:"Pirinç",d:8.5},{k:"bronze",n:"Bronz",d:8.8},{k:"copper",n:"Bakır",d:8.96},{k:"cast",n:"Dökme demir",d:7.2},{k:"custom",n:"Özel",d:0}];
+  var gcD={shape:"round",mat:"steel",dens:"7.85",d:"16",a:"",w:"",t:"",aa:"",od:"",wall:"",l:"1000",qty:"1",fire:"0",price:""};
+  function gcArea(sh,v,PI){
+    if(sh==="round")return PI/4*v.d*v.d;
+    if(sh==="square")return v.a*v.a;
+    if(sh==="flat")return v.w*v.t;
+    if(sh==="hex")return Math.sqrt(3)/2*v.aa*v.aa;
+    if(sh==="tube")return PI*v.wall*(v.od-v.wall);
+    if(sh==="sheet")return v.w*v.t; // boy = l (sac için hacim = en×boy×kalınlık → alan×boy ile aynı mantık, "boy" l)
+    return 0;
+  }
+  // Saf hesap: ölçüler mm, yoğunluk g/cm³ → {A mm², V cm³, kg (birim), kgm (kg/m), ok, warn}
+  function gcCalc(sh,v,rho,PI){
+    var A=gcArea(sh,v,PI), L=v.l, warn="", ok=A>0&&L>0&&rho>0;
+    if(sh==="tube"&&v.wall>0&&v.od>0&&v.wall*2>=v.od){ok=false; warn="Et kalınlığı dış çapın yarısından küçük olmalı."}
+    if(!ok)return {ok:false,warn:warn};
+    var Vcm=A*L/1000, kg=Vcm*rho/1000;
+    return {ok:true,A:A,V:Vcm,kg:kg,kgm:A*1000/1000*rho/1000,warn:""};
+  }
+  function gcVals(){var v={}; ["d","a","w","t","aa","od","wall","l","qty","fire","price","dens"].forEach(function(k){v[k]=pnum(gcD[k])}); return v}
+  function gcF(n,dg){return (+n||0).toLocaleString("tr-TR",{minimumFractionDigits:0,maximumFractionDigits:dg})}
+  function gcResult(){
+    var v=gcVals(), sh=gcD.shape, r=gcCalc(sh,v,v.dens,Math.PI);
+    if(!r.ok)return '<div class="gcwarn">'+esc(r.warn||"Ölçüleri gir, sonuç burada görünür.")+'</div>';
+    var q=v.qty||1, fire=v.fire, kgF=r.kg*(1+fire/100), tot=kgF*q, sacm2=(sh==="sheet");
+    var h='<div class="rv-tot"><small class="l">Toplam ağırlık</small><div class="big">'+gcF(tot,3)+'<em>kg</em></div><div style="font:600 13px var(--font-ui);opacity:.85;margin-top:2px">'+gcF(q,0)+' adet × '+gcF(kgF,3)+' kg'+(fire>0?' (fire %'+gcF(fire,1)+' dahil)':'')+'</div></div>';
+    h+='<div class="gcrows"><div class="r"><span>Birim ağırlık (1 adet)</span><b>'+gcF(r.kg,4)+' kg · '+gcF(r.kg*1000,1)+' g</b></div>';
+    if(fire>0)h+='<div class="r"><span>Fireli birim ağırlık</span><b>'+gcF(kgF,4)+' kg · '+gcF(kgF*1000,1)+' g</b></div>';
+    h+=sacm2?'<div class="r"><span>Yüzey ağırlığı</span><b>'+gcF(v.t*v.dens,3)+' kg/m²</b></div>':'<div class="r"><span>Metre ağırlığı</span><b>'+gcF(r.A*v.dens/1000,3)+' kg/m</b></div>';
+    h+='<div class="r"><span>Hacim (birim)</span><b>'+gcF(r.V,1)+' cm³</b></div><div class="r"><span>Kesit alanı</span><b>'+gcF(r.A,2)+' mm²</b></div>';
+    if(v.price>0)h+='<div class="r"><span>Malzeme maliyeti (1 adet'+(fire>0?', fireli':'')+')</span><b>'+gcF(kgF*v.price,2)+' ₺</b></div>'+(q>1?'<div class="r"><span>Toplam malzeme maliyeti</span><b>'+gcF(tot*v.price,2)+' ₺</b></div>':'');
+    if(gcD.mat==="steel"){var x=gcCalc(sh,v,7.86,3.14); if(x.ok)h+='<div class="r x"><span>Excel yöntemiyle (π=3,14 · 7,86)</span><b>'+gcF(x.kg*1000,1)+' g</b></div>'}
+    h+='</div>';
+    h+='<button type="button" class="btn ghost" data-gccopy="1">📋 Sonucu kopyala</button>';
+    return h;
+  }
+  function gcCopyText(){
+    var v=gcVals(), sh=GC_SHAPES.filter(function(x){return x.k===gcD.shape})[0], r=gcCalc(gcD.shape,v,v.dens,Math.PI); if(!r.ok)return "";
+    var dim=sh.f.map(function(f){return f[1]+" "+gcF(v[f[0]],3)+" mm"}).join(", "), kgF=r.kg*(1+v.fire/100);
+    return sh.n+" · "+dim+" · yoğunluk "+gcF(v.dens,2)+" g/cm³\nBirim ağırlık: "+gcF(kgF,4)+" kg ("+gcF(kgF*1000,1)+" g)"+(v.qty>1?"\nToplam ("+gcF(v.qty,0)+" adet): "+gcF(kgF*v.qty,3)+" kg":"");
+  }
+  function gcHtml(){
+    var sh=GC_SHAPES.filter(function(x){return x.k===gcD.shape})[0];
+    var h='<div class="shead"><div><h2 id="sh-title">Gramaj hesapla</h2><small>Ağırlık = kesit alanı × boy × yoğunluk</small></div><button type="button" class="tpill" id="gcclose">Kapat</button></div><div class="form" style="gap:12px">';
+    h+='<div class="gcshapes">'+GC_SHAPES.map(function(x){return '<button type="button" data-gcshape="'+x.k+'" aria-pressed="'+(gcD.shape===x.k)+'"><svg viewBox="0 0 24 24" stroke-linejoin="round">'+x.ic+'</svg>'+esc(x.n)+'</button>'}).join("")+'</div>';
+    h+='<div><span class="fl">Malzeme</span><div class="gcmat">'+GC_MATS.map(function(m){return '<button type="button" data-gcmat="'+m.k+'" aria-pressed="'+(gcD.mat===m.k)+'">'+esc(m.n)+'</button>'}).join("")+'</div></div>';
+    h+='<div class="gclbl"><label class="fl" for="gc-dens">Yoğunluk</label><div class="gcin"><input class="fin" id="gc-dens" type="text" inputmode="decimal" data-gc="dens" value="'+esc(gcD.dens)+'"'+(gcD.mat==="custom"?'':' readonly')+'><em>g/cm³</em></div></div>';
+    h+='<div class="prgrid" style="grid-template-columns:repeat(2,1fr);gap:10px">'+sh.f.map(function(f){return '<div class="gclbl"><label class="fl" for="gc-'+f[0]+'">'+f[1]+'</label><div class="gcin"><input class="fin" id="gc-'+f[0]+'" type="text" inputmode="decimal" data-gc="'+f[0]+'" value="'+esc(gcD[f[0]])+'"><em>'+f[2]+'</em></div></div>'}).join("")+'</div>';
+    if(gcD.shape==="round")h+='<div><span class="fl">Yaygın çap</span><div class="gcdia">'+[6,8,10,12,14,16,18,20,22,25,30,40].map(function(d){return '<button type="button" data-gcdia="'+d+'">Ø'+d+'</button>'}).join("")+'</div></div>';
+    h+='<div class="prgrid" style="grid-template-columns:repeat(3,1fr);gap:8px"><label>Adet<input class="fin" type="text" inputmode="decimal" data-gc="qty" value="'+esc(gcD.qty)+'"></label><label>Fire %<input class="fin" type="text" inputmode="decimal" data-gc="fire" value="'+esc(gcD.fire)+'"></label><label>Fiyat ₺/kg<input class="fin" type="text" inputmode="decimal" data-gc="price" value="'+esc(gcD.price)+'"></label></div>';
+    h+='<div id="gcres" style="display:flex;flex-direction:column;gap:12px">'+gcResult()+'</div>';
+    h+='<div class="rv-note">Değerler teoriktir; tolerans ve talaş payı içermez. Yoğunluklar tipik değerlerdir (çelik 7,85 g/cm³). Özel malzeme için yoğunluğu elle gir.</div></div>';
+    return h;
+  }
+  document.addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("#prgram,#gcclose,[data-gcshape],[data-gcmat],[data-gcdia],[data-gccopy]"); if(!t)return;
+    if(t.id==="prgram"){sheetMode="gram"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0; return}
+    if(t.id==="gcclose"){closeSheet(); return}
+    if(sheetMode!=="gram")return;
+    var sc=$("sheet").scrollTop;
+    if(t.dataset.gcshape){gcD.shape=t.dataset.gcshape; renderSheet(); $("sheet").scrollTop=sc; return}
+    if(t.dataset.gcmat){gcD.mat=t.dataset.gcmat; var m=GC_MATS.filter(function(x){return x.k===gcD.mat})[0]; if(m&&m.d)gcD.dens=String(m.d); renderSheet(); $("sheet").scrollTop=sc; return}
+    if(t.dataset.gcdia){gcD.d=t.dataset.gcdia; renderSheet(); $("sheet").scrollTop=sc; return}
+    if(t.dataset.gccopy){var tx=gcCopyText(); if(!tx)return; var done=function(){t.textContent="✓ Kopyalandı"}; try{navigator.clipboard.writeText(tx).then(done,function(){})}catch(x){var ta=document.createElement("textarea"); ta.value=tx; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy"); done()}catch(y){} ta.remove()} return}
+  });
+  document.addEventListener("input",function(e){
+    var el=e.target; if(!el||!el.dataset||el.dataset.gc===undefined||sheetMode!=="gram")return;
+    gcD[el.dataset.gc]=el.value; var r=$("gcres"); if(r)r.innerHTML=gcResult();
+  });
   /* --- reçete kartı (görünüm) --- */
   var prViewId="";
   var PR_SECS=[{k:"cel",t:"Çelik · ham madde",c:"--p4",f:function(p){return p.k==="made"}},{k:"buy",t:"Satın alınan bileşenler",c:"--p1",f:function(p){return p.k==="buy"}},{k:"coat",t:"Kaplama",c:"--p5",f:function(p){return p.k==="coat"}},{k:"bil",t:"Dövme · dış hizmet",c:"--p7",f:function(p){return p.k==="lab"&&labGroup(p)==="bil"}},{k:"isc",t:"İşçilik",c:"--p0",f:function(p){return p.k==="lab"&&labGroup(p)==="isc"}},{k:"mas",t:"Masraflar",c:"--p3",f:function(p){return p.k==="lab"&&labGroup(p)==="mas"}}];
