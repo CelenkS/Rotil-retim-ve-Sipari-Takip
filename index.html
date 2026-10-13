@@ -1448,6 +1448,10 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .ocard .stg.done .sp b{color:var(--good)}
 .stg .sl .mux{display:inline-block;margin-left:2px;padding:1px 6px;border-radius:99px;background:color-mix(in srgb,var(--sc,var(--accent)) 22%,transparent);color:var(--ink);font:800 10.5px var(--font-ui)}
 .nlsc .nlp{margin-top:3px;font:800 11px var(--font-ui);opacity:.9}
+/* .hi (hero selamlama) sınıfı seçili aşama kutusunda yazıyı beyaza çekiyordu → adet görünmüyordu */
+.nlsc.hi{color:var(--ink);font:inherit}
+.nli .nlsc.hi,.lsib .nlsc.hi{color:var(--ink);font:inherit}
+.snl .nlsc.hi,.needdrop .nli .nlsc.hi{color:#fff;font:inherit}
 .nli .nlsc.nfin .nlp,.lsib .nlsc.nfin .nlp{color:#1f7a45}
 .snl .nlsc.nfin .nlp,.needdrop .nli .nlsc.nfin .nlp{color:#A8F0C6}
 #app .brk .bar{height:44px;border-radius:14px}
@@ -1693,7 +1697,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 14:20</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 14:33</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
