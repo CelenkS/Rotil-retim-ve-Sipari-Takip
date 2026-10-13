@@ -1946,7 +1946,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 :root[data-theme="glass"][data-gmode="light"] .dpc{color:#5B4BEA}
 :root[data-theme="glass"][data-gmode="light"] .ddnav{background:rgba(79,70,229,.08)}
 :root[data-theme="glass"][data-gmode="light"] .ddnav button{background:rgba(79,70,229,.1);color:var(--ink)}
-:root[data-theme="glass"][data-gmode="light"] .snl,:root[data-theme="glass"][data-gmode="light"] .stkrow{background:#fff}
+:root[data-theme="glass"][data-gmode="light"] .stkrow{background:#fff}
 
 /* Kırılım satırlarındaki yüzde/ort. kutusu: ürün formundaki ".pc" kart stilinden etkilenmesin */
 span.pc{background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important;border-radius:0!important}
@@ -1983,6 +1983,48 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
 :root[data-theme="glass"] .fbox.fault,:root[data-theme="glass"] .floorgrid .fbox.fault{background:rgba(227,80,80,.24)!important;border-color:#E35050!important;box-shadow:0 0 0 1px #E35050 inset!important}
 :root[data-theme="glass"] .fbox.empty{background:none!important;box-shadow:none!important}
 .fbox.fault{background:rgba(227,80,80,.2);border-color:#E35050}
+
+/* Hero (mor/renkli alan) içindeki aşama kutuları: açık zemin stili buraya taşmasın */
+.hero .ocard .stages .stg,.hero .ocard .stages .stg.done{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);padding:7px 8px;border-radius:12px}
+.hero .ocard .stages .stg.done{background:rgba(47,214,160,.3);border-color:#2FD6A0}
+.hero .ocard .stages .stg .sl,.hero .ocard .stages .stg .sp b{color:#fff}
+.hero .ocard .stages .stg.done .sl::before{color:#8CF5CF}
+.hero .ocard .stages .stg.done .sp b,.hero .ocard .stages .stg.done .sp{color:#8CF5CF}
+.hero .ocard .stages .stg .sp small{color:rgba(255,255,255,.8)}
+
+/* ---- Kırılım detayı (kategori/müşteri): daha dolu ve okunur tasarım ---- */
+.hero .snl{background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+.dhd{border-radius:20px;padding:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);margin-bottom:12px}
+.dhd1{display:flex;align-items:center;gap:10px}
+.dhd1 .dot{width:12px;height:12px;background:var(--c)}
+.dhd1 b{flex:1;min-width:0;font:800 19px var(--font-head);color:#fff;overflow-wrap:anywhere}
+.dhp{font:800 15px var(--font-num);padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.22);color:#fff}
+.dhs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.dhs>div{border-radius:14px;padding:9px 10px;background:rgba(0,0,0,.16);min-width:0}
+.dhs small{display:block;font:700 10.5px var(--font-ui);color:rgba(255,255,255,.75);letter-spacing:.03em}
+.dhs b{display:block;margin-top:2px;font:800 14.5px var(--font-num);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dhbar{height:7px;border-radius:9px;background:rgba(255,255,255,.2);margin-top:12px;overflow:hidden}
+.dhbar i{display:block;height:100%;border-radius:9px}
+.dhx{margin-top:8px;font:700 11.5px var(--font-ui);color:rgba(255,255,255,.8)}
+.drow{padding:12px;border-radius:18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14)}
+.drow .ltop{align-items:center;gap:11px}
+.drow .ithumb{width:46px;height:46px;flex:0 0 46px;border-radius:12px}
+.drow .ithumb.ph{display:grid;place-items:center;background:rgba(255,255,255,.2);color:#fff;font:800 18px var(--font-head)}
+.drow .dmid{flex:1;min-width:0}
+.drow .code{display:block;font:800 15px var(--font-head)}
+.drow .dsub{margin-top:3px;font:600 11.5px/1.35 var(--font-ui)}
+.drow .damt{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.drow .amt{font:800 15px var(--font-num)}
+.drow .damt small{font:800 10.5px var(--font-num);padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.2);color:#fff}
+.dpbar{height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:10px 0 2px;overflow:hidden}
+.dpbar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#fff,rgba(255,255,255,.65))}
+.drow .snl{margin-top:8px}
+.drow .snl .nlq{margin-top:4px}
+
+.dcnt{flex:0 0 auto;width:78px;height:78px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 2px rgba(255,255,255,.3)}
+.dcnt b{font:800 26px/1 var(--font-num)}.dcnt span{font:700 10.5px var(--font-ui);opacity:.85;margin-top:3px}
+.dmcap{margin:16px 0 8px;font:800 10.5px var(--font-ui);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.dmcap:first-of-type{margin-top:16px}
 </style>
 </head>
 <body>
@@ -2024,7 +2066,7 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:22</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 19:28</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2644,6 +2686,16 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
   }
   // Müşteriye göre: bir müşteriye dokununca o müşterinin seçili dönemdeki ürünleri (kod bazında), hangi günlerde
   // ne kadar üretildiği ve siparişlerinin işlem durumu listelenir.
+  function drillHead(color,name,a,r,pct,t,extra){
+    return '<div class="dhd"><div class="dhd1"><span class="dot" style="background:'+color+'"></span><b>'+esc(name)+'</b><span class="dhp">'+(t?'%'+Math.round(pct):'—')+'</span></div>'+
+      '<div class="dhs"><div><small>Adet</small><b>'+nf.format(a)+'</b></div><div><small>Ciro</small><b>'+money(r)+' ₺</b></div><div><small>Ort. fiyat</small><b>'+(a?money(r/a)+' ₺':'—')+'</b></div></div>'+
+      '<div class="dhbar"><i style="width:'+Math.min(100,Math.round(pct))+'%;background:'+color+'"></i></div>'+(extra?'<div class="dhx">'+extra+'</div>':'')+'</div>';
+  }
+  function drillRowHtml(tag,attr,cls,imgSrc,code,sub,amt,share,mid,strip){
+    var ph=imgSrc?'<img class="ithumb" alt="" src="'+imgSrc+'">':'<span class="ithumb ph">'+esc((code||"?").charAt(0).toUpperCase())+'</span>';
+    share=Math.max(0,Math.min(100,Math.round(share||0)));
+    return '<'+tag+(tag==="button"?' type="button"':'')+' class="drow '+cls+'" '+attr+'><div class="ltop">'+ph+'<div class="dmid"><span class="code">'+esc(code)+'</span><div class="dsub">'+sub+'</div></div><div class="damt"><span class="amt">'+money(amt)+' ₺</span><small>%'+share+'</small></div></div><div class="dpbar"><i style="width:'+share+'%"></i></div>'+(mid||'')+(strip||'')+'</'+tag+'>';
+  }
   function custDrillHtml(name,ds,cu,t,byR){
     var byCode={}, order=[], manQ=0, manR=0;
     ds.forEach(function(iso){
@@ -2657,18 +2709,14 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
     });
     order.sort(function(x,y){return byCode[y].q-byCode[x].q});
     var c=cu[name]||{a:0,r:0}, pct=t?(byR?c.r:c.a)/t*100:0, col=custColor(name);
-    var head='<button type="button" class="catback" id="custDrillBack">‹ Tüm müşteriler</button>'+
-      '<div class="bk"><span class="dot" style="background:'+col+'"></span><span class="nm">'+esc(name||"Müşteri belirtilmemiş")+'</span>'+
-      '<span class="sub">'+nf.format(c.a)+' adet · '+money(c.r)+' ₺ · '+order.length+' ürün</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(c.a?'<small>ort. '+money(c.r/c.a)+' ₺</small>':'')+'</span></div>';
+    var head='<button type="button" class="catback" id="custDrillBack">‹ Tüm müşteriler</button>'+drillHead(col,name||"Müşteri belirtilmemiş",c.a,c.r,pct,t,order.length+' ürün');
     var rows=order.map(function(key){
       var e=byCode[key], imgSrc=codeThumb(e.c), img=imgSrc?'<img class="ithumb" alt="" src="'+imgSrc+'">':'';
       var ds2=Object.keys(e.days).sort();
       var chips=ds2.map(function(iso){return '<button type="button" class="cdchip" data-cjump="'+iso+'">'+(+iso.slice(8))+' '+AY[+iso.slice(5,7)-1]+' · '+nf.format(e.days[iso])+'</button>'}).join("");
       var ords=ordersOfCode(e.c).filter(function(o){return fold(o.cust||"")===fold(name||"")}), strip="";
       if(ords.length)strip='<div class="snl"><div class="nlq"><span>sipariş</span><b>'+nf.format(ords.reduce(function(a,o){return a+o.qty},0))+' adet</b>'+(ords.length>1?'<em>'+ords.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(ords,sec.id)+'</div>';
-      return '<div class="drow cdrow"><div class="ltop">'+img+'<span class="code">'+esc(e.c)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
-        '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(COLS[e.k]||"Kategori dışı")+' · ort. '+money(e.r/(e.q||1))+' ₺ · son '+fmtD(e.last)+'</div>'+
-        '<div class="cdchips">'+chips+'</div>'+strip+'</div>';
+      return drillRowHtml("div","","cdrow",imgSrc,e.c,nf.format(e.q)+' adet · '+esc(COLS[e.k]||"Kategori dışı")+' · ort. '+money(e.r/(e.q||1))+' ₺ · son '+fmtD(e.last),e.r,c.r?e.r/c.r*100:0,'<div class="cdchips">'+chips+'</div>',strip);
     }).join("");
     if(manQ)rows+='<div class="drow"><div class="ltop"><span class="code">Elle girilen toplam</span><span class="amt">'+money(manR)+' ₺</span></div><div class="dsub">'+nf.format(manQ)+' adet · ürün bazında detay yok</div></div>';
     return head+(rows||'<div class="empty" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)">Bu dönemde bu müşteriden üretim kaydı yok.</div>');
@@ -2729,13 +2777,10 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
           return '<div class="snl"><div class="nlq"><span>'+esc(g.name)+' · sipariş</span><b>'+nf.format(g.q)+' adet</b>'+(g.os.length>1?'<em>'+g.os.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(g.os,sec.id)+'</div>';
         }).join("");
       }
-      return '<button type="button" class="drow" data-code="'+esc(code)+'"><div class="ltop">'+img+'<span class="code">'+esc(code)+'</span><span class="amt">'+money(e.r)+' ₺</span></div>'+
-        '<div class="dsub">'+nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺'+(e.last?' · son '+fmtD(e.last):'')+'</div>'+strip+'</button>';
+      return drillRowHtml("button",'data-code="'+esc(code)+'"',"",imgSrc,code,nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺'+(e.last?' · son '+fmtD(e.last):''),e.r,cr[i]?e.r/cr[i]*100:0,"",strip);
     }).join("");
     if(manQ)rows+='<div class="drow"><div class="ltop"><span class="code">Elle girilen toplam</span><span class="amt">'+money(manR)+' ₺</span></div><div class="dsub">'+nf.format(manQ)+' adet · ürün bazında detay yok</div></div>';
-    var head='<button type="button" class="catback" id="catDrillBack">‹ Tüm kategoriler</button>'+
-      '<div class="bk"><span class="dot" style="background:var(--p'+i+')"></span><span class="nm">'+esc(COLS[i])+'</span>'+
-      '<span class="sub">'+nf.format(ca[i])+' adet · '+money(cr[i])+' ₺</span><span class="pc"><b>'+(t?'%'+Math.round(pct):'—')+'</b>'+(ca[i]?'<small>ort. '+money(cr[i]/ca[i])+' ₺</small>':'')+'</span></div>';
+    var head='<button type="button" class="catback" id="catDrillBack">‹ Tüm kategoriler</button>'+drillHead('var(--p'+i+')',COLS[i],ca[i],cr[i],pct,t,order.length+' ürün');
     return head+(rows||'<div class="empty" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)">Bu dönemde bu kategoride üretim kaydı yok.</div>');
   }
   // Bir kategori içindeki tek ürün koduna tıklayınca: seçili dönemde hangi
@@ -10769,7 +10814,7 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
       return '<button type="button" class="dpl" data-nav="plans" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><span class="dplh"><span class="dpn"><i></i>'+esc(r.s.name)+'</span><span class="dpv"><b>'+nf.format(r.d)+'</b> / '+nf.format(r.q)+'<em class="dpp'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+'%'+rp+'</em></span></span><span class="dpb"><i style="width:'+pc+'%"></i></span>'+
         (r.tp>0?'<span class="dpr">Ciro: <b>'+money(r.dr)+'</b> / '+money(r.tp)+' ₺</span>':'')+'</button>';
     }).join(""):'<div class="dnempty"><span class="dic big"><svg viewBox="0 0 24 24" aria-hidden="true">'+HC_ICONS.plans+'</svg></span><b>'+empty+'</b><small>Planlar ekranından plan girebilirsin</small></div>';
-    var sum=pl.tq?'<div class="dpsum"><div><small>Planlanan ciro</small><b>'+(pl.tp>0?money(pl.tp)+' ₺':'—')+'</b></div><div class="ok"><small>Yapılan ciro</small><b>'+(pl.tp>0||pl.dr>0?money(pl.dr)+' ₺':'—')+'</b></div></div>':'';
+    var sum='';
     return '<div class="dbox dplan"><div class="dboxh"><div class="dtitle">'+dicon(ik||"plans")+'<div><h3>'+title+'</h3><small>'+esc(sub)+'</small></div></div>'+(pl.tq?'<div class="ring'+(pl.pc>=100?' full':'')+'" style="--p:'+Math.min(100,pl.pc)+'"><b>%'+pl.pc+'</b></div>':'')+'</div>'+sum+'<div class="dlist">'+list+'</div></div>';
   }
   // Ana sayfadaki "toplam mesai saati" (sadece saat; maaş bilgisi yok)
@@ -10808,29 +10853,30 @@ span.pc{background:none!important;border:0!important;box-shadow:none!important;o
     var short={cncg:"Gövde",pres:"Pres",cnca:"CNC aşık",montaj:"Montaj"}, tr=dr.tot.r;
     var wk=dashWeekRow(di); if(wk.miss)dashLoad(false,wk.months);
     var wtr=wk.tot.r, isCur=(wk.mon===isoWeekMonday(todayIso));
-    // bu ayın bölüm bazlı toplam cirosu
-    var mkn=monthKeyNow(), mmiss=false, mtot={a:0,r:0}, mrows=DASH_SECS.map(function(id){
-      var mm=pmDay[id+"|"+mkn]; if(!mm)mmiss=true; var a=0,r=0; Object.keys(mm||{}).forEach(function(k){a+=mm[k].a; r+=mm[k].r}); mtot.a+=a; mtot.r+=r; return {s:secById(id),a:a,r:r};
+    // bu ayın bölüm bazlı cirosu (işlem bazlı; bölümler TOPLANMAZ — aynı siparişin cirosu işlemlere bölünmüş)
+    var mkn=monthKeyNow(), mmiss=false, mrows=DASH_SECS.map(function(id){
+      var mm=pmDay[id+"|"+mkn]; if(!mm)mmiss=true; var a=0,r=0; Object.keys(mm||{}).forEach(function(k){a+=mm[k].a; r+=mm[k].r}); return {s:secById(id),a:a,r:r};
     });
     if(mmiss)dashLoad(false,[mkn]);
-    var cum=0, stops=mrows.map(function(r){var p0=cum, sh=mtot.r?r.r/mtot.r*100:0; cum+=sh; return r.s.h1+' '+p0+'% '+cum+'%'}).join(",");
-    var donut='<div class="ddonut" style="background:'+(mtot.r?'conic-gradient('+stops+')':'rgba(255,255,255,.2)')+'"><span>'+esc(AY[m].slice(0,3))+'</span></div>';
+    var mmax=Math.max.apply(null,mrows.map(function(r){return r.r}).concat([1]));
+    // aylık TAMAMLANAN sipariş cirosu (Siparişler ekranındaki "Tamamlanan sipariş cirosu" ile aynı hesap)
+    var cDone=0, cAmt=0, cQty=0;
+    if(!pend)orders.forEach(function(o){ if(!isComplete(o))return; var cd=completionDateOf(o); if(!cd||cd.slice(0,7)!==mkn)return; cDone++; cAmt+=orderTotal(o); cQty+=o.qty; });
+    var donut='<div class="dcnt"><b>'+(pend?'…':cDone)+'</b><span>sipariş</span></div>';
     var mrowsHtml=mrows.map(function(r){
-      var sh=mtot.r?Math.round(r.r/mtot.r*100):0;
-      return '<div class="dmr" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><div class="dmh"><span><i></i>'+short[r.s.id]+'</span><b>'+(mmiss?'…':money(Math.round(r.r))+' ₺')+'</b><em>%'+sh+'</em></div><u><i style="width:'+(mmiss?0:sh)+'%"></i></u></div>';
+      return '<div class="dmr" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><div class="dmh"><span><i></i>'+short[r.s.id]+'</span><b>'+(mmiss?'…':money(Math.round(r.r))+' ₺')+'</b></div><u><i style="width:'+(mmiss?0:Math.round(r.r/mmax*100))+'%"></i></u></div>';
     }).join("");
     var leg=wk.rows.map(function(r){return '<span><i style="background:'+r.s.h1+'"></i>'+short[r.s.id]+'<b>'+(wk.miss?'…':money(Math.round(r.r))+' ₺')+'</b></span>'}).join("");
     var rev='<div class="dbox dday"><div class="dboxh"><div class="dtitle">'+dicon("prod")+'<div><h3>Dünün cirosu</h3><small>Bölümlere göre üretim cirosu</small></div></div>'+
       '<div class="ddnav"><button type="button" data-dday="-1" aria-label="Önceki gün">‹</button><span>'+esc(dlabel)+'</span><button type="button" data-dday="1" aria-label="Sonraki gün"'+(di>=yIso?' disabled':'')+'>›</button></div></div>'+
       '<div class="ddgrid">'+
       '<div class="dsecs">'+dr.rows.map(function(r){
-        return '<div class="dsec" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><div class="dsh">'+dicon(r.s.id,"sm")+'<span class="dshare">'+(dr.miss?'':'%'+(tr?Math.round(r.r/tr*100):0))+'</span></div>'+
+        return '<div class="dsec" style="--c1:'+r.s.h1+';--c2:'+r.s.h2+'"><div class="dsh">'+dicon(r.s.id,"sm")+'</div>'+
           '<small>'+esc(r.s.name)+'</small><b>'+(dr.miss?'…':money(r.r)+' ₺')+'</b><em>'+(dr.miss?'yükleniyor':(r.a?nf.format(r.a)+' adet':'üretim yok'))+'</em><u><i style="width:'+(dr.miss?0:Math.round(r.r/mxr*100))+'%"></i></u></div>';
       }).join("")+'</div>'+
-      '<div class="dtot"><div class="dmtop"><div><small>'+esc(AY[m])+' ayı toplam ciro</small><b>'+(mmiss?'…':money(Math.round(mtot.r))+' ₺')+'</b><em>'+(mmiss?'yükleniyor':nf.format(mtot.a)+' adet · 4 bölüm')+'</em></div>'+donut+'</div>'+
-      '<div class="dmrows">'+mrowsHtml+'</div>'+
-      '<div class="dwk"><span>'+(isCur?'Bu hafta':'Hafta')+' · '+esc(isoWeekLabel(wk.mon).replace(" haftası",""))+'</span><b>'+(wk.miss?'…':money(Math.round(wtr))+' ₺')+'</b></div>'+
-      '<div class="dleg">'+leg+'</div></div>'+
+      '<div class="dtot"><div class="dmtop"><div><small>'+esc(AY[m])+' ayı tamamlanan sipariş cirosu</small><b>'+(pend?'…':money(Math.round(cAmt))+' ₺')+'</b><em>'+(pend?'hesaplanıyor':cDone+' sipariş · '+nf.format(cQty)+' adet')+'</em></div>'+donut+'</div>'+
+      '<div class="dmcap">İşlem bazlı ciro · '+esc(AY[m])+'</div><div class="dmrows">'+mrowsHtml+'</div>'+
+      '<div class="dmcap">Bu hafta · '+esc(isoWeekLabel(wk.mon).replace(" haftası",""))+'</div><div class="dleg">'+leg+'</div></div>'+
       '</div></div>';
     // plan kutuları
     var pd=dashPlan("day"), pw=dashPlan("week");
