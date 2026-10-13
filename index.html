@@ -1696,6 +1696,11 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 .prsbar{position:sticky;bottom:-1px;z-index:5;display:flex;align-items:center;gap:12px;margin:4px -4px -4px;padding:10px 12px 10px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:0 -6px 22px rgba(22,48,58,.14)}
 .prsbar .t{flex:1;display:flex;flex-direction:column;line-height:1.15}.prsbar .t small{font:600 11.5px var(--font-ui);color:var(--ink2)}.prsbar .t b{font:800 21px var(--font-num)}
 .prsbar .btn{min-height:46px;padding:0 26px}
+.stfsubf{margin:2px 0 4px}.stfsubf .stfsl{font:700 11px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin:8px 2px -4px}
+.stfsubf .stffilt{padding-top:8px}
+.stffilt button i{font-style:normal}
+.stfchips span.stfnat{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:800}
+.stfchips span.stfnat.fo{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
 .prvbar{position:sticky;bottom:-1px;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px -4px -4px;padding:10px 12px;border-radius:18px;background:var(--surface);border:1px solid var(--accent);box-shadow:0 -6px 22px rgba(22,48,58,.18)}
 .prvbar .t{flex:1;min-width:150px;font:700 12.5px/1.35 var(--font-ui);color:var(--ink)}.prvbar .t small{display:block;font:600 11px var(--font-ui);color:var(--ink2)}
 .prvbar .btn{padding:0 16px;min-height:42px}
@@ -1746,7 +1751,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 16:25</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 13.10 18:07</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -1974,6 +1979,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   <div id="stftypes" class="mtypes" hidden></div>
   <input class="search stfsearch" id="stfsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ara…">
   <div id="stffilt" class="stffilt"></div>
+  <div id="stffilt2" class="stfsubf" hidden></div>
   <div id="stflist"></div>
   <div class="stfdanger"><button class="tpill bad" id="stfdelall" hidden>🗑 Tüm elemanları sil</button></div>
   <div class="status" id="stfstatus"></div>
@@ -2205,7 +2211,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   }
   function subOf(id){return subDepts.filter(function(x){return x.id===id})[0]||null}
   function subLabel(x){return x?(x.g+" - "+x.n):""}
-  var stfQ="", stfGrp="", stfMF="", empDetId=null, employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
+  var stfQ="", stfGrp="", stfSub="", stfNat="", stfMF="", empDetId=null, employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
   var empSecsDraft=[], empMacsDraft=[], mcSecsDraft=[], macBulkSecsDraft=[];
   // Eleman/makine üretim girişine bağlanıyor: her bölümün kendi curEmp/curMac'i var (müşteri
   // seçimi curCust gibi), sadece o bölüme atanmış elemanlar/makineler arasından seçiliyor.
@@ -7011,7 +7017,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     }
     return '<div class="fcard"><button type="button" class="fgo" data-empdet="'+e.id+'"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div>'+
       '<div class="ftx"><b>'+esc(e.name)+'</b><small>'+esc(dr||"Bölüm atanmadı")+'</small>'+
-      (chips.length?'<div class="stfchips">'+chips.slice(0,4).map(function(c){return '<span>'+esc(c)+'</span>'}).join("")+(chips.length>4?'<span>+'+(chips.length-4)+'</span>':'')+'</div>':'')+'</div>'+pfHtml+
+      (e.nat?'<div class="stfchips"><span class="stfnat'+(EMP_NATS.indexOf(e.nat)>0||e.nat!=="Türk"?' fo':'')+'">'+esc(e.nat)+'</span></div>':'')+(chips.length?'<div class="stfchips">'+chips.slice(0,4).map(function(c){return '<span>'+esc(c)+'</span>'}).join("")+(chips.length>4?'<span>+'+(chips.length-4)+'</span>':'')+'</div>':'')+'</div>'+pfHtml+
       '<span class="fchev">›</span></button><button type="button" class="fedit" data-empedit="'+e.id+'" aria-label="Düzenle">✎</button></div>';
   }
 
@@ -7427,7 +7433,7 @@ button.msrow2.tot{border-top:2px solid var(--line)}
     $("stfdepts").hidden=stfTab!=="emp";
     $("stfdelall").hidden=!(stfTab==="emp"&&employees.length); if(stfDelArm&&stfTab!=="emp")stfDelArm=false; if(!stfDelArm)$("stfdelall").textContent="🗑 Tüm elemanları sil";
     $("stfperfbtn").hidden=stfTab!=="emp";
-    $("stftypes").hidden=stfTab!=="mac"; var sv=stfTab!=="floor"; $("stfsearch").hidden=!sv; $("stffilt").hidden=!sv; $("stfsum").hidden=!sv;
+    $("stftypes").hidden=stfTab!=="mac"; if(stfTab!=="emp")$("stffilt2").hidden=true; var sv=stfTab!=="floor"; $("stfsearch").hidden=!sv; $("stffilt").hidden=!sv; $("stfsum").hidden=!sv;
     $("stfsearch").placeholder=stfTab==="emp"||stfTab==="mesai"?"Eleman ara (ad, bölüm, görev)…":"Makine ara (ad, marka, model)…";
     var q=fold(stfQ.trim());
     if(stfTab==="emp"){
@@ -7437,17 +7443,33 @@ button.msrow2.tot{border-top:2px solid var(--line)}
       if(none)fl.push({k:"__none",l:"Bölümü yok",n:none});
       if(fl.every(function(x){return x.k!==stfGrp}))stfGrp="";
       $("stffilt").innerHTML=stfFiltHtml(fl,stfGrp,"data-sgrp");
+      // alt bölüm + uyruk süzgeçleri
+      var gEmps=employees.filter(function(e){var g=stfGrpName(e); return !stfGrp||(stfGrp==="__none"?!g:g===stfGrp)});
+      var realG=stfGrp&&stfGrp!=="__none"?stfGrp:"", gsubs=realG?subDepts.filter(function(x){return x.g===realG}):[];
+      if(!realG||!gsubs.length)stfSub=""; else if(stfSub&&stfSub!=="__nosub"&&!gsubs.some(function(x){return x.id===stfSub}))stfSub="";
+      var f2="";
+      if(gsubs.length){
+        var nsub=gEmps.filter(function(e){return !subOf(e.sub)}).length;
+        f2+='<div class="stfsl">Alt bölüm</div><div class="stffilt">'+stfFiltHtml([{k:"",l:"Tümü",n:gEmps.length}].concat(gsubs.map(function(x){return {k:x.id,l:x.n,n:gEmps.filter(function(e){return e.sub===x.id}).length}})).concat(nsub?[{k:"__nosub",l:"Alt bölüm yok",n:nsub}]:[]),stfSub,"data-ssub")+'</div>';
+      }
+      var natN=function(n){return gEmps.filter(function(e){return (e.nat||"")===n}).length}, nnat=gEmps.filter(function(e){return !e.nat}).length;
+      var otherNat=gEmps.filter(function(e){return e.nat&&EMP_NATS.indexOf(e.nat)<0}).length;
+      if(stfNat&&stfNat!=="__nonat"&&EMP_NATS.indexOf(stfNat)<0)stfNat="";
+      f2+='<div class="stfsl">Uyruk</div><div class="stffilt">'+stfFiltHtml([{k:"",l:"Tümü",n:gEmps.length}].concat(EMP_NATS.map(function(n){return {k:n,l:n,n:natN(n)}})).concat(nnat?[{k:"__nonat",l:"Belirtilmemiş",n:nnat}]:[]),stfNat,"data-snat")+'</div>';
+      $("stffilt2").innerHTML=f2; $("stffilt2").hidden=!employees.length;
       var list=employees.slice().sort(function(a,b){return String(a.name).localeCompare(String(b.name),"tr")}).filter(function(e){
         var g=stfGrpName(e);
         if(stfGrp==="__none"&&g)return false;
         if(stfGrp&&stfGrp!=="__none"&&g!==stfGrp)return false;
+        if(stfSub==="__nosub"){if(subOf(e.sub))return false}else if(stfSub&&e.sub!==stfSub)return false;
+        if(stfNat==="__nonat"){if(e.nat)return false}else if(stfNat&&(e.nat||"")!==stfNat)return false;
         if(!q)return true;
         var sb=subOf(e.sub);
         return fold([e.name,e.role,g,sb?sb.n:"",e.nat].join(" ")).indexOf(q)>-1;
       });
       if(!employees.length){$("stflist").innerHTML='<div class="empty">Henüz eleman tanımlı değil.<br>“+ Yeni eleman” ile ilkini ekle.</div>'}
       else if(!list.length){$("stflist").innerHTML='<div class="empty">Eşleşen eleman yok.</div>'}
-      else if(stfGrp||q){$("stflist").innerHTML=list.map(empRowHtml).join("")}
+      else if(stfGrp||q||stfSub||stfNat){$("stflist").innerHTML=list.map(empRowHtml).join("")}
       else{
         var gh="", order=EMP_DEPTS.slice().concat([""]);
         order.forEach(function(g){
@@ -8842,7 +8864,12 @@ button.msrow2.tot{border-top:2px solid var(--line)}
   });
   $("stffilt").addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b)return;
-    if(b.dataset.sgrp!==undefined)stfGrp=b.dataset.sgrp; else if(b.dataset.smf!==undefined)stfMF=b.dataset.smf; else return;
+    if(b.dataset.sgrp!==undefined){stfGrp=b.dataset.sgrp; stfSub=""}else if(b.dataset.smf!==undefined)stfMF=b.dataset.smf; else return;
+    renderStaff();
+  });
+  $("stffilt2").addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b)return;
+    if(b.dataset.ssub!==undefined)stfSub=b.dataset.ssub; else if(b.dataset.snat!==undefined)stfNat=b.dataset.snat; else return;
     renderStaff();
   });
   $("stflist").addEventListener("click",function(e){
