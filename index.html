@@ -2198,6 +2198,13 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .nciro b{font:800 13px var(--font-ui);color:var(--ink)}
 .nciro b,.nciro em{white-space:nowrap}.nciro b{margin-left:5px}.nciro em{font-style:normal;font-weight:700;margin-left:8px}.nciro em::before{content:"· "}
 .nciro.sm{margin-top:3px;font-size:11px}.nciro.sm b{font-size:12px}
+
+.nlqs{display:flex;flex-wrap:wrap;gap:6px}.nli .nlq,.snl .nlq{white-space:nowrap}
+.nlqs .nlq{margin-bottom:7px}
+.nli .nlq.amt{background:color-mix(in srgb,var(--good) 14%,var(--surface));border-color:color-mix(in srgb,var(--good) 45%,transparent)}
+.nli .nlq.amt b{color:var(--good)}
+.snl .nlq.amt{margin-left:6px}
+.needdrop .nli .nlq.amt b{color:#A8F0C6}
 </style>
 </head>
 <body>
@@ -2239,7 +2246,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 14:46</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 14:51</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2901,7 +2908,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var ds2=Object.keys(e.days).sort();
       var chips=ds2.map(function(iso){return '<button type="button" class="cdchip" data-cjump="'+iso+'">'+(+iso.slice(8))+' '+AY[+iso.slice(5,7)-1]+' · '+nf.format(e.days[iso])+'</button>'}).join("");
       var ords=ordersOfCode(e.c).filter(function(o){return fold(o.cust||"")===fold(name||"")}), strip="";
-      if(ords.length)strip='<div class="snl"><div class="nlq"><span>sipariş</span><b>'+nf.format(ords.reduce(function(a,o){return a+o.qty},0))+' adet</b>'+(ords.length>1?'<em>'+ords.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(ords,sec.id)+'</div>';
+      if(ords.length)strip='<div class="snl"><div class="nlq"><span>sipariş</span><b>'+nf.format(ords.reduce(function(a,o){return a+o.qty},0))+' adet</b>'+(ords.length>1?'<em>'+ords.length+' sipariş</em>':'')+'</div>'+amtChip(ords)+stagesAggHtml(ords,sec.id)+'</div>';
       return drillRowHtml("div","","cdrow",imgSrc,e.c,nf.format(e.q)+' adet · '+esc(COLS[e.k]||"Kategori dışı")+' · ort. '+money(e.r/(e.q||1))+' ₺ · son '+fmtD(e.last),e.r,c.r?e.r/c.r*100:0,'<div class="cdchips">'+chips+'</div>',strip);
     }).join("");
     if(manQ)rows+='<div class="drow"><div class="ltop"><span class="code">Elle girilen toplam</span><span class="amt">'+money(manR)+' ₺</span></div><div class="dsub">'+nf.format(manQ)+' adet · ürün bazında detay yok</div></div>';
@@ -2960,7 +2967,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         gord.sort(function(a,b){return (prodC[b]?1:0)-(prodC[a]?1:0)});
         strip=gord.map(function(gk){
           var g=grp[gk];
-          return '<div class="snl"><div class="nlq"><span>'+esc(g.name)+' · sipariş</span><b>'+nf.format(g.q)+' adet</b>'+(g.os.length>1?'<em>'+g.os.length+' sipariş</em>':'')+'</div>'+stagesAggHtml(g.os,sec.id)+'</div>';
+          return '<div class="snl"><div class="nlq"><span>'+esc(g.name)+' · sipariş</span><b>'+nf.format(g.q)+' adet</b>'+(g.os.length>1?'<em>'+g.os.length+' sipariş</em>':'')+'</div>'+amtChip(g.os)+stagesAggHtml(g.os,sec.id)+'</div>';
         }).join("");
       }
       return drillRowHtml("button",'data-code="'+esc(code)+'"',"",imgSrc,code,nf.format(e.q)+' adet · '+esc(custTxt)+' · ort. '+money(e.r/(e.q||1))+' ₺'+(e.last?' · son '+fmtD(e.last):''),e.r,cr[i]?e.r/cr[i]*100:0,"",strip);
@@ -5767,6 +5774,8 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function custBase(n){return String(n||"Müşteri yok").replace(/\s+S\s*\d+\s*$/i,"").replace(/\s+/g," ").trim()||"Müşteri yok"}
   function custKey(b){return fold(b)}
   function orderTotal(o){return o.qty*(+o.up||0)}
+  // Sipariş(ler)in toplam tutarı chip'i (birim fiyat girilmemişse gösterilmez)
+  function amtChip(os){var t=0; (os||[]).forEach(function(o){t+=orderTotal(o)}); return t>0?'<div class="nlq amt"><span>Toplam tutar</span><b>'+money(t)+' ₺</b></div>':''}
   function shQty(o){return (o.shipped&&o.shipQty>0)?o.shipQty:o.qty}
   function shTotal(o){return shQty(o)*(+o.up||0)}
   function isoToday(){return now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())}
@@ -5810,7 +5819,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
       '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b>'+statusChips(o)+'</div>'+
       '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
-      '<div class="nlq"><span>Sipariş adedi</span><b>'+nf.format(o.qty)+' adet</b></div>'+
+      '<div class="nlqs"><div class="nlq"><span>Sipariş adedi</span><b>'+nf.format(o.qty)+' adet</b></div>'+amtChip([o])+'</div>'+
       '<div class="nlbar"><i style="width:'+Math.min(100,pc)+'%;background:var(--p'+catIdx+')"></i></div></div>'+
       '<div class="nlr"><b>%'+pc+'</b><small>'+esc(sg.short)+'</small></div>'+stagesRowHtml(o,secId)+'</div>';
   }
