@@ -2162,6 +2162,19 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .dtp.ok{background:color-mix(in srgb,#2FD6A0 22%,transparent);color:var(--good)}.dtp.mid{background:color-mix(in srgb,#FBBF24 22%,transparent);color:var(--warn)}.dtp.low{background:color-mix(in srgb,#FB7185 22%,transparent);color:var(--bad)}
 .dtm.off b{opacity:.85}.dtm.off em{font:600 11px var(--font-ui);font-style:normal;color:var(--ink2)}
 @media (min-width:900px){.dtgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Aşama kutuları (sipariş kartları / Açık siparişler paneli): beyaz-üstüne-beyaz olmasın, adetler net okunsun */
+.nli .nlsc:not(.needdrop .nli .nlsc),.lsib .nlsc{background:color-mix(in srgb,var(--ink2) 11%,transparent);border:1.5px solid color-mix(in srgb,var(--ink2) 30%,transparent);padding:7px 8px;border-radius:11px}
+.nli .nlsc:not(.needdrop .nli .nlsc) .nll,.lsib .nlsc .nll{font:800 11.5px var(--font-ui);color:var(--ink)}
+.nli .nlsc:not(.needdrop .nli .nlsc) .nlv,.lsib .nlsc .nlv{font:800 14px var(--font-ui);color:var(--ink);margin:2px 0 5px}
+.nli .nlsc:not(.needdrop .nli .nlsc) .nlsb,.lsib .nlsc .nlsb{height:6px;background:color-mix(in srgb,var(--ink2) 28%,transparent)}
+.nli .nlsc:not(.needdrop .nli .nlsc) .nlp,.lsib .nlsc .nlp{font:800 12px var(--font-ui);color:var(--ink);opacity:1}
+.nli .nlsc.nfin:not(.needdrop .nli .nlsc),.lsib .nlsc.nfin{background:color-mix(in srgb,#2FD6A0 24%,var(--surface));border-color:color-mix(in srgb,#2FD6A0 85%,transparent)}
+.nli .nlsc.nfin:not(.needdrop .nli .nlsc) .nlv,.nli .nlsc.nfin:not(.needdrop .nli .nlsc) .nlp,.lsib .nlsc.nfin .nlv,.lsib .nlsc.nfin .nlp{color:var(--good)}
+.nli .nlsc.nfin:not(.needdrop .nli .nlsc) .nll::before,.lsib .nlsc.nfin .nll::before{content:"✓ ";color:var(--good)}
+.nli .nlsc.npart:not(.needdrop .nli .nlsc),.lsib .nlsc.npart{background:color-mix(in srgb,#F5B544 26%,var(--surface));border-color:#F0A52C}
+.nli .nlsc.npart:not(.needdrop .nli .nlsc) .nlv,.nli .nlsc.npart:not(.needdrop .nli .nlsc) .nlp,.lsib .nlsc.npart .nlv,.lsib .nlsc.npart .nlp{color:#B86E00}
+.nli .nlsc.hi:not(.needdrop .nli .nlsc){border-color:var(--sc,var(--accent))}
 </style>
 </head>
 <body>
@@ -2203,7 +2216,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 12:32</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 12:35</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5651,7 +5664,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var sg=STAGES[i], on=(o.st||[])[i], so=SECTIONS.filter(function(z){return z.id===sg.sec})[0];
       if(!on)return '<div class="nlsc off"><div class="nll">'+sg.short+'</div><div class="nlv">—</div></div>';
       var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, fin=nd>0&&(dn>=nd||stClosed(o,i)), pc=nd?Math.min(100,Math.round(dn/nd*100)):0;
-      return '<div class="nlsc'+(fin?' nfin':'')+(hiSec===sg.sec?' hi':'')+'" style="--sc:'+so.h1+'"><div class="nll">'+sg.short+(muOf(o,i)>1?' <em>×'+muOf(o,i)+'</em>':'')+'</div><div class="nlv">'+nf.format(dn)+' / '+nf.format(nd)+'</div><div class="nlsb"><i style="width:'+pc+'%"></i></div><div class="nlp">%'+pc+'</div></div>';
+      return '<div class="nlsc'+(fin?' nfin':(dn>0?' npart':''))+(hiSec===sg.sec?' hi':'')+'" style="--sc:'+so.h1+'"><div class="nll">'+sg.short+(muOf(o,i)>1?' <em>×'+muOf(o,i)+'</em>':'')+'</div><div class="nlv">'+nf.format(dn)+' / '+nf.format(nd)+'</div><div class="nlsb"><i style="width:'+pc+'%"></i></div><div class="nlp">%'+pc+'</div></div>';
     }).join("")+'</div>';
   }
   // Tek sipariş kartı (görsel, kod, durum, müşteri, sipariş adedi, seçili aşama yüzdesi, TÜM aşamalar)
