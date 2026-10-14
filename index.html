@@ -2179,7 +2179,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .plau{display:flex;align-items:center;gap:8px;margin-top:8px;font:700 12.5px var(--font-ui);color:var(--ink);cursor:pointer}
 .plau input{width:20px;height:20px;accent-color:var(--accent,#6D5BF5);flex:none}
 .plau small{font-weight:600;color:var(--ink2)}
-.dpbox{margin-top:10px;border-radius:18px;padding:12px 14px;background:color-mix(in srgb,var(--ink2) 10%,var(--surface));border:1.5px solid color-mix(in srgb,var(--ink2) 24%,transparent);color:var(--ink)}
+.dpbox{margin:0 0 12px;border-radius:18px;padding:12px 14px;background:color-mix(in srgb,var(--ink2) 10%,var(--surface));border:1.5px solid color-mix(in srgb,var(--ink2) 24%,transparent);color:var(--ink)}
 .dpbox[hidden]{display:none}
 .dpbox h3{margin:0;font:800 14px var(--font-head)}
 .dpbox .dph{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
@@ -2246,7 +2246,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 14:51</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 15:08</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2273,7 +2273,6 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     <div class="needbox needdrop snl" id="needcatbox" hidden></div>
     <button type="button" class="needbox planbtn" id="planboxD" hidden></button>
     <button type="button" class="needbox planbtn" id="planboxW" hidden></button>
-    <div class="dpbox" id="dayplanbox" hidden></div>
     <div class="tabs" role="group" aria-label="Dağılım">
       <button id="tUrun" aria-pressed="true">Kategoriye göre</button>
       <button id="tMus" aria-pressed="false">Müşteriye göre</button>
@@ -2288,6 +2287,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       <div class="dtotal"><span class="pill"><b id="etotal">0</b><span class="tgt" id="etg"></span> adet</span><span class="pill m"><b id="erev">0 ₺</b><span class="tgt" id="erg"></span></span></div>
     </div>
     <div class="sec"><h3>Yapılan ürünler</h3><button class="btn" id="addItem">+ Ürün ekle</button></div>
+    <div class="dpbox" id="dayplanbox" hidden></div>
     <div class="osearch" id="lsearchwrap" style="margin-bottom:10px"><input class="search" id="lsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Kod, müşteri veya kategori ara (tüm günler)…" aria-label="Yapılan üründe ara"></div>
     <div id="lines"></div>
     <details class="manual" id="manual"><summary>Koda bağlı olmayan toplu giriş</summary>
@@ -2645,7 +2645,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||(i===4&&o.cat===0)||!!(o.st||[])[i]}
   var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
-  var shipAskOid=null, orders=[], pm={}, pmTot={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
+  var shipAskOid=null, shipDateOid=null, orders=[], pm={}, pmTot={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
   // Her kategorinin (COLS ile aynı sırada) standart üretim süresi — dakika/adet. Kullanıcı
@@ -3950,7 +3950,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     $("ov").hidden=false;renderSheet();
     if(orders.length)loadProgress(true).then(function(){if(!$("ov").hidden&&sheetMode==="list"&&(addTab==="order"||addTab==="plan")&&document.activeElement!==$("ssearch")){var sc=$("sheet").scrollTop;renderSheet();$("sheet").scrollTop=sc}});
   }
-  function closeSheet(){$("ov").hidden=true; shipAskOid=null; msSub="month"; msRet=""; prDraft=null; if(typeof MP!=="undefined"&&MP)MP.pick=false}
+  function closeSheet(){$("ov").hidden=true; shipAskOid=null; shipDateOid=null; msSub="month"; msRet=""; prDraft=null; if(typeof MP!=="undefined"&&MP)MP.pick=false}
   // Alt sayfadan geri dönünce üst sayfa kaldığı yerden açılsın (ör. reçete kartı → malzeme seç → geri: en başa atmasın)
   var shStack=[], shPos={};
   var pvWant=null, ordStatWant=null, ordSort="auto"; try{ordSort=localStorage.getItem("ud_osort")||"auto"}catch(e){}
@@ -4019,7 +4019,8 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
           (od.shipped?'':'<button class="btn ghost" id="odship" data-oid="'+od.id+'">📦 Gönderildi olarak işaretle</button>')+
           '<button class="btn ghost" id="odedit">Siparişi düzenle</button></div>'+
           (shipAskOid===od.id&&!od.shipped?'<div class="ccbox"><label class="fl" for="shipq">Kaç adet gönderildi?</label><input class="fin" type="number" inputmode="numeric" min="1" id="shipq" value="'+od.qty+'"><div class="note" style="margin:6px 0 0">Sipariş adedi: '+nf.format(od.qty)+'</div><div class="frow" style="margin-top:8px"><button type="button" class="btn" id="shipyes" data-oid="'+od.id+'">Gönderildi</button><button type="button" class="btn ghost" id="shipno">Vazgeç</button></div></div>':'')+
-          (od.shipped?'<div class="note">📦 Gönderildi'+(od.shipQty>0?' · '+nf.format(od.shipQty)+(od.shipQty!==od.qty?' / '+nf.format(od.qty):'')+' adet':'')+(od.shipDate?(' · '+fmtD(od.shipDate)):'')+' — <button type="button" class="edit" id="odunship" data-oid="'+od.id+'">geri al</button></div>':'')+
+          (od.shipped?'<div class="note">📦 Gönderildi'+(od.shipQty>0?' · '+nf.format(od.shipQty)+(od.shipQty!==od.qty?' / '+nf.format(od.qty):'')+' adet':'')+(od.shipDate?(' · '+fmtD(od.shipDate)):'')+' — <button type="button" class="edit" id="odshipdate" data-oid="'+od.id+'">tarihi değiştir</button> · <button type="button" class="edit" id="odunship" data-oid="'+od.id+'">geri al</button></div>':'')+
+          (shipDateOid===od.id&&od.shipped?'<div class="ccbox"><label class="fl" for="shipdt">Gönderim tarihi</label><input class="fin" type="date" id="shipdt" value="'+(od.shipDate||todayIso)+'"><div class="note" style="margin:6px 0 0">Gönderilen tutar, seçtiğin tarihin ayına yazılır.</div><div class="frow" style="margin-top:8px"><button type="button" class="btn" id="shipdtyes" data-oid="'+od.id+'">Tarihi kaydet</button><button type="button" class="btn ghost" id="shipdtno">Vazgeç</button></div></div>':'')+
           (openOrder?'<div class="ccbox"><label class="fl">Kalan tüm bölümler hangi tarihe (haftaya/aya) eklensin?</label><input class="fin" type="date" id="ccdate" value="'+(ccDate||todayIso)+'"><div class="frow"><button type="button" class="btn" id="ccyes">Ekle</button><button type="button" class="btn ghost" id="ccno">Vazgeç</button></div></div>':'')+
           (ocomp?'<div class="note">Bu sipariş tüm bölümlerde girilen üretim sayılarıyla tamamlandı.</div>':'<div class="note">Tamamlandı işaretlersen, kalan adetler seçtiğin tarihte normal üretim girişi gibi eklenir ve o haftanın/ayın adet ve ciro toplamlarına yansır.</div>');
         if(!imgCache[od.id]&&od.th){var oid0=od.id; loadFullImg(oid0,function(u){var e=$("odimg"); if(e&&curOid===oid0&&sheetMode==="odetail")e.src=u})}
@@ -4697,6 +4698,17 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(t.id==="odedit"){openOrderForm(curOid);return}
     if(t.id==="odship"){shipAskOid=t.dataset.oid; renderSheet(); var sq0=$("shipq"); if(sq0){sq0.focus();sq0.select()} return}
     if(t.id==="shipno"){shipAskOid=null; renderSheet(); return}
+    if(t.id==="odshipdate"){shipDateOid=t.dataset.oid; renderSheet(); return}
+    if(t.id==="shipdtno"){shipDateOid=null; renderSheet(); return}
+    if(t.id==="shipdtyes"){
+      var dtoid=t.dataset.oid, dto=orders.filter(function(x){return x.id===dtoid})[0], dtv=($("shipdt")&&$("shipdt").value)||"";
+      if(!dto||!/^\d{4}-\d{2}-\d{2}$/.test(dtv)){var dti=$("shipdt"); if(dti)dti.focus(); return}
+      var dtold=dto.shipDate||"";
+      orders=orders.map(function(x){return x.id===dtoid?Object.assign({},x,{shipDate:dtv}):x}); lsOrdersSet(); shipDateOid=null;
+      if(db)db.doc("orders/"+dtoid).update({shipDate:dtv}).catch(function(){});
+      logActivity("Gönderim tarihi değişti: "+dto.code+(dto.cust?" · "+dto.cust:"")+" · "+(dtold?fmtD(dtold)+" → ":"")+fmtD(dtv),"ship",{oid:dto.id,code:dto.code});
+      renderSheet(); renderOrders(); try{paintDash()}catch(e){} return;
+    }
     if(t.id==="shipyes"){
       var soid=t.dataset.oid, so5=orders.filter(function(x){return x.id===soid})[0]; if(!so5)return;
       var sqv=cleanNum(($("shipq")&&$("shipq").value)||0,99999999,true); if(!sqv){var sq1=$("shipq"); if(sq1)sq1.focus(); return}
