@@ -2205,6 +2205,10 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .nli .nlq.amt b{color:var(--good)}
 .snl .nlq.amt{margin-left:6px}
 .needdrop .nli .nlq.amt b{color:#A8F0C6}
+
+.rv-row .nm small.rvstk{display:block;margin-top:2px;font:700 11.5px var(--font-ui);color:var(--good)}
+.rv-row .nm small.rvstk b{display:inline!important;font:800 11.5px var(--font-ui)!important;color:inherit!important}
+.rv-row .nm small.rvstk.low{color:var(--bad)}
 </style>
 </head>
 <body>
@@ -2246,7 +2250,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 15:08</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 15:31</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9094,7 +9098,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       sub=nf.format(q)+" "+(p.k==="lab"?"adet":(p.u||"adet"))+(u?" × "+pf(u)+" ₺":""); if(!u)w="fiyat girilmemiş";
     }
     var edt=(p.k==="buy"||p.k==="lab"||(p.k==="made"&&pnum(p.d)>0&&pnum(p.l)>0&&(pnum(p.wt)>0||pnum(p.wa)>0)))&&idx!==undefined, chg=orig&&JSON.stringify(orig)!==JSON.stringify(p), oc=orig?partCost(orig):0;
-    return '<div class="rv-row'+(c>0?'':' miss')+(edt?' edt':'')+(chg?' chg':'')+'"'+(edt?' role="button" tabindex="0" data-prvr="'+idx+'"':'')+'><div class="nm"><b>'+(tag?'<span class="rv-tag">'+esc(tag)+'</span>':'')+esc(nm)+(p.k==="buy"&&p.m?'<span class="lk" title="Bileşen listesine bağlı">🔗</span>':'')+'</b><small'+(w?' class="w"':'')+'>'+esc(w||sub)+'</small>'+(p.nt?'<small>'+esc(p.nt)+'</small>':'')+'</div><div class="am">'+(chg&&oc!==c?'<span class="was">'+(oc>0?pf(oc)+' ₺':'—')+'</span>':'')+(c>0?pf(c)+' ₺':'—')+'</div>'+(edt?'<span class="ed">✎</span>':'')+'</div>';
+    return '<div class="rv-row'+(c>0?'':' miss')+(edt?' edt':'')+(chg?' chg':'')+'"'+(edt?' role="button" tabindex="0" data-prvr="'+idx+'"':'')+'><div class="nm"><b>'+(tag?'<span class="rv-tag">'+esc(tag)+'</span>':'')+esc(nm)+(p.k==="buy"&&p.m?'<span class="lk" title="Bileşen listesine bağlı">🔗</span>':'')+'</b><small'+(w?' class="w"':'')+'>'+esc(w||sub)+'</small>'+(p.nt?'<small>'+esc(p.nt)+'</small>':'')+((p.k==="buy"&&lm)?(function(){var sk=+lm.stock||0, lw=(sk<=0)||(+lm.crit>0&&sk<=+lm.crit)||sk<q; return '<small class="rvstk'+(lw?' low':'')+'">📦 Stok: <b>'+nf.format(sk)+'</b> '+esc(lm.unit||"adet")+(lw?(sk<=0?' · stokta yok':' · az'):'')+'</small>'})():'')+'</div><div class="am">'+(chg&&oc!==c?'<span class="was">'+(oc>0?pf(oc)+' ₺':'—')+'</span>':'')+(c>0?pf(c)+' ₺':'—')+'</div>'+(edt?'<span class="ed">✎</span>':'')+'</div>';
   }
   function prEndHtml(b){
     function row(c,t,v,sm){return '<div class="r"><i class="rv-d" style="--c:var('+c+')"></i><span>'+t+(sm?' <small>'+sm+'</small>':'')+'</span><b>'+pmon(v)+' ₺</b></div>'}
