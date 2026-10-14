@@ -1740,6 +1740,10 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 :root[data-theme="glass"] .stffilt button,:root[data-theme="glass"] .gcshapes button,:root[data-theme="glass"] .gcmat button,:root[data-theme="glass"] .prlgrp button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--ink)}
 :root[data-theme="glass"] .stffilt button[aria-pressed="true"]{background:linear-gradient(135deg,#7C6CFF,#4F46E5);border-color:transparent;color:#fff}
 :root[data-theme="glass"] .fin,:root[data-theme="glass"] .search,:root[data-theme="glass"] select,:root[data-theme="glass"] textarea{background:rgba(255,255,255,.06);color:var(--ink);border-color:rgba(255,255,255,.08)}
+:root[data-theme="glass"] .search{background-color:rgba(255,255,255,.16)!important;border-color:rgba(255,255,255,.28)!important;color:#fff}
+:root[data-theme="glass"] .search::placeholder{color:rgba(255,255,255,.62);opacity:1}
+:root[data-theme="glass"][data-gmode="light"] .search{background-color:#fff!important;border-color:rgba(60,50,160,.28)!important;color:var(--ink)}
+:root[data-theme="glass"][data-gmode="light"] .search::placeholder{color:#7a7794}
 :root[data-theme="glass"] .fin:focus,:root[data-theme="glass"] .search:focus,:root[data-theme="glass"] .prf .fin:focus{background:rgba(255,255,255,.09);border-color:#8B7CFF}
 :root[data-theme="glass"] .sheet{background:#12112A;border:1px solid rgba(255,255,255,.10);border-bottom:0}
 :root[data-theme="glass"] .prsbar,:root[data-theme="glass"] .prvbar{background:#1B1938;border-color:rgba(139,124,255,.45)}
@@ -2199,7 +2203,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 12:19</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 12:32</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3184,7 +3188,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   }
   function pvEditHtml(it,o,fin){
     var ek=o.id+"|"+(it.mid||""), secx=sec;
-    if(pvEdit!==ek)return '<div class="pvact"><button type="button" class="pvedit" data-pvedit="'+esc(ek)+'">✎ Düzenle</button><button type="button" class="planrm" data-plrm="'+o.id+'">Plandan sil</button></div>';
+    if(pvEdit!==ek)return '<div class="pvact"><button type="button" class="pvedit" data-pvedit="'+esc(ek)+'">✎ Düzenle</button><button type="button" class="planrm" data-plrm="'+o.id+'|'+esc(it.mid||"")+'">Plandan sil</button></div>';
     var macs=machinesInSec(secx.id), emps=planEmpOptions(secx.id,it.mid);
     return '<div class="pved" data-pvk="'+esc(ek)+'"><div class="pvedt">Bu ürünün planı</div>'+
       '<label class="plnlbl" for="pved-q">Planlanan adet</label>'+
@@ -3396,14 +3400,27 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return pmap;
   }
   function plansOfSec(secId){return (inApp()&&secId===sec.id)?plans:(pmPlans[secId+"|"+key()]||normPlans(null))}
+  // Plan satırında makine seçiliyse "yapılan" SADECE o makinede girilen adettir (üretim satırındaki makine = en.m).
+  // Ürün tek bir makineye planlıysa makine belirtilmeden girilen adetler de o makineye sayılır.
+  // Makinesiz plan satırında ürünün tüm yapılanı sayılır. tot = ürünün (tüm makineler) toplam yapılanı.
+  function planDoneOn(items,pe,dn,rng){
+    var wq=0, tot=0, nm=0;
+    items.forEach(function(x){if(x.oid===pe.oid&&x.mid)nm++});
+    (dn.e||[]).forEach(function(en){
+      if(rng.indexOf(en.d)<0)return;
+      tot+=en.q;
+      if(!pe.mid)wq+=en.q;
+      else if(en.m===pe.mid||(!en.m&&nm<=1))wq+=en.q;
+    });
+    return {w:wq,tot:tot};
+  }
   function planProgressFor(secId,scope,k){
     var P=plansOfSec(secId), items=(P[scope]&&P[scope][k])||[], rng=planRange(scope,k), si=stageIdx(secId), out=[], tq=0,tp=0,dq=0,dr=0;
     items.forEach(function(pe){
       var o=orders.filter(function(x){return x.id===pe.oid})[0]; if(!o)return;
-      var price=+((o.pr||[])[si])||0, dn=doneOf(o.id,secId), wq=0;
-      (dn.e||[]).forEach(function(en){if(rng.indexOf(en.d)>-1)wq+=en.q});
+      var price=+((o.pr||[])[si])||0, dn=doneOf(o.id,secId), pd=planDoneOn(items,pe,dn,rng), wq=pd.w;
       tq+=pe.q; tp+=pe.q*price; dq+=wq; dr+=wq*price;
-      out.push({o:o,plan:pe.q,done:wq,price:price,mid:pe.mid||"",eid:pe.eid||""});
+      out.push({o:o,plan:pe.q,done:wq,tot:pd.tot,price:price,mid:pe.mid||"",eid:pe.eid||""});
     });
     return {items:out,tq:tq,tp:tp,dq:dq,dr:dr};
   }
@@ -4035,8 +4052,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
           (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
           '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
           '<span class="pvbadge'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div>'+
-          '<div class="pvcmp"><div class="pvc"><span>Planlanan</span><b>'+nf.format(it.plan)+'</b></div><div class="pvc dn"><span>Yapılan</span><b>'+nf.format(it.done)+'</b></div><div class="pvc kl'+(fin?' ok':'')+'"><span>'+(iover?'Fazla':'Kalan')+'</span><b>'+nf.format(iover||ikal)+'</b></div></div>'+
+          '<div class="pvcmp"><div class="pvc"><span>Planlanan</span><b>'+nf.format(it.plan)+'</b></div><div class="pvc dn"><span>'+(it.mid?'Bu makinede yapılan':'Yapılan')+'</span><b>'+nf.format(it.done)+'</b></div><div class="pvc kl'+(fin?' ok':'')+'"><span>'+(iover?'Fazla':'Kalan')+'</span><b>'+nf.format(iover||ikal)+'</b></div></div>'+
           '<div class="pgb"><i style="width:'+ipc+'%"></i></div>'+
+          (it.mid&&it.tot!==it.done?'<div class="osub" style="margin-top:4px;font:600 11.5px var(--font-ui);color:var(--ink2)">Ürünün tüm makinelerdeki toplam yapılanı: '+nf.format(it.tot)+'</div>':'')+
           mpStagesHtml(o,sec.id,"Tüm işlemler · yapılan / gereken")+
           pvEditHtml(it,o,fin)+
           '</div>';
@@ -4774,7 +4792,8 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(t.id==="pvbulk"){openPlanForm(planScope,true);return}
     if(t.dataset.plrm!==undefined){
       var pk3=planKey(planScope); if(!plans[planScope])plans[planScope]={};
-      plans[planScope][pk3]=(plans[planScope][pk3]||[]).filter(function(pe){return pe.oid!==t.dataset.plrm});
+      var rm3=String(t.dataset.plrm).split("|");
+      plans[planScope][pk3]=(plans[planScope][pk3]||[]).filter(function(pe){return !(pe.oid===rm3[0]&&(pe.mid||"")===(rm3[1]||""))});
       pdirty=true; lsSet(); scheduleSave(); renderSheet(); renderHero(); return;
     }
     if(t.id==="pvclearask"){pvClearOpen=true;renderSheet();return}
@@ -5291,6 +5310,8 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(timer){clearTimeout(timer);timer=null}
     if(db&&(Object.keys(dirty).length||tdirty||pdirty))flush();
   }
+  // Yazma yoldayken (flush edildi ama sunucudan onay gelmedi) eski bir anlık görüntü yerel girişi/planı ezmesin diye sayaçlar.
+  var pinfl=0, inflD={};
   function flush(){
     var ks=Object.keys(dirty); if(!ks.length&&!tdirty&&!pdirty)return;
     var patch={};
@@ -5299,7 +5320,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       ks.forEach(function(k){patch.days[k]=mvals(k);patch.rev[k]=mrvals(k);patch.lines[k]=lines(k)});
     }
     var hadT=tdirty; if(hadT)patch.targets=Object.assign({},targets);
-    var hadP=pdirty; if(hadP)patch.plans={day:Object.assign({},plans.day),week:Object.assign({},plans.week)};
+    var hadP=pdirty; if(hadP){patch.plans={day:Object.assign({},plans.day),week:Object.assign({},plans.week)}; pinfl++;
+      try{pmPlans[sec.id+"|"+key()]=normPlans(JSON.parse(JSON.stringify(patch.plans)))}catch(e){}}   // Planlar/ana sayfa hemen güncel görsün
+    ks.forEach(function(k){inflD[k]=(inflD[k]||0)+1});
     dirty={}; tdirty=false; pdirty=false;
     var ref=db.doc(secCol(sec.id)+"/"+key());
     chain=chain.then(function(){
@@ -5314,8 +5337,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       // yazar/günceller, dokunulmayan diğer tarihler olduğu gibi kalır. Belge
       // yoksa da otomatik oluşturur, bu yüzden docExists dallanmasına gerek kalmadı.
       var p=ref.set(patch,{merge:true});
-      return p.then(function(){docExists=true;setStatus("Kaydedildi")});
+      return p.then(function(){docExists=true;setStatus("Kaydedildi"); if(hadP)pinfl=Math.max(0,pinfl-1); ks.forEach(function(k){inflD[k]=Math.max(0,(inflD[k]||0)-1)})});
     }).catch(function(){
+      if(hadP)pinfl=Math.max(0,pinfl-1); ks.forEach(function(k){inflD[k]=Math.max(0,(inflD[k]||0)-1)});
       ks.forEach(function(k){dirty[k]=true}); if(hadT)tdirty=true; if(hadP)pdirty=true;
       setStatus("Kaydedilemedi — bu cihazda saklandı");
     });
@@ -5337,7 +5361,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   }
   function loadMonth(){
     if(unsub){unsub();unsub=null}
-    var l=lsGet(); days=l.d; rev=l.r; lns=l.l; targets=l.t||{}; plans=normPlans(l.p); tdirty=false; pdirty=false; docExists=false; dirty={};
+    var l=lsGet(); days=l.d; rev=l.r; lns=l.l; targets=l.t||{}; plans=normPlans(l.p); tdirty=false; pdirty=false; docExists=false; dirty={}; pinfl=0; inflD={};
     renderAll();
     if(!db){setStatus("Bu cihazda saklanıyor");return}
     setStatus("Yükleniyor…");
@@ -5351,8 +5375,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       Object.keys(rr).forEach(function(d){mr[d]=rr[d]});
       Object.keys(rl).forEach(function(d){ml[d]=rl[d]});
       Object.keys(dirty).forEach(function(d){md[d]=days[d];mr[d]=rev[d];ml[d]=lns[d]});
+      Object.keys(inflD).forEach(function(d){if(inflD[d]>0&&dirty[d]===undefined&&(lns[d]!==undefined||days[d]!==undefined)){md[d]=days[d];mr[d]=rev[d];ml[d]=lns[d]}});
       var focusedInLines=$("lines").contains(document.activeElement);
-      days=md; rev=mr; lns=ml; if(!tdirty)targets=data.targets||{}; if(!pdirty)plans=normPlans(data.plans); lsSet();
+      days=md; rev=mr; lns=ml; if(!tdirty)targets=data.targets||{}; if(!pdirty&&!pinfl)plans=normPlans(data.plans); lsSet();
       renderRows(); renderEditorHead(); syncFields();
       if(!focusedInLines&&!Object.keys(dirty).length)renderLines();
       if(!Object.keys(dirty).length)setStatus("Kaydedildi · telefon ve bilgisayarda aynı");
@@ -10587,7 +10612,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
             '<div class="obody"><div class="code" style="font:700 15px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
             '<div class="oq2">planlanan<b>'+nf.format(it.plan)+'</b></div></div>'+
-            '<div class="pg"><div class="pgt"><span>yapılan '+nf.format(it.done)+' / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div></div>'+
+            '<div class="pg"><div class="pgt"><span>'+(it.mid?'bu makinede yapılan ':'yapılan ')+'<b>'+nf.format(it.done)+'</b> / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div>'+(it.mid&&it.tot!==it.done?'<div class="osub" style="margin-top:4px;font:600 11.5px var(--font-ui);color:var(--ink2)">Ürünün tüm makinelerdeki toplam yapılanı: '+nf.format(it.tot)+'</div>':'')+'</div>'+
             mpStagesHtml(o,x.id,"Tüm işlemler · yapılan / gereken")+
             '<button type="button" class="edit" data-planedit="'+o.id+'" data-plansec="'+x.id+'" style="margin-top:8px">✎ Planlanan adedi düzenle</button>'+
             '</div>';
@@ -11115,7 +11140,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       items.forEach(function(pe){
         var o=null; for(var i=0;i<orders.length;i++){if(orders[i].id===pe.oid){o=orders[i];break}}
         if(!o)return;
-        var dn=doneOf(o.id,x.id), wq=0; (dn.e||[]).forEach(function(en){if(rng.indexOf(en.d)>-1)wq+=en.q});
+        var dn=doneOf(o.id,x.id), wq=planDoneOn(items,pe,dn,rng).w;
         var pr=+((o.pr||[])[si])||0;
         q+=pe.q; d+=wq; tp+=pe.q*pr; dc+=wq*pr;
       });
