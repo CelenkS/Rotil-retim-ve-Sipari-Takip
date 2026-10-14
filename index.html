@@ -2193,6 +2193,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .dpbox .dpok{font:800 12px var(--font-ui);color:var(--good);white-space:nowrap}
 .dpbox .dpau{border:1.5px solid color-mix(in srgb,var(--ink2) 35%,transparent);background:transparent;color:var(--ink);border-radius:99px;padding:5px 9px;font:700 11px var(--font-ui);cursor:pointer;white-space:nowrap}
 .dpbox .dpau.on{border-color:var(--good);color:var(--good)}
+
+.nciro{display:block;margin-top:5px;font:600 12px var(--font-ui);color:var(--ink2)}
+.nciro b{font:800 13px var(--font-ui);color:var(--ink)}
+.nciro b,.nciro em{white-space:nowrap}.nciro b{margin-left:5px}.nciro em{font-style:normal;font-weight:700;margin-left:8px}.nciro em::before{content:"· "}
+.nciro.sm{margin-top:3px;font-size:11px}.nciro.sm b{font-size:12px}
 </style>
 </head>
 <body>
@@ -2234,7 +2239,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 12:51</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 14:46</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5617,24 +5622,24 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return (name||"").replace(/\s+S\d+\s*$/i,"").trim();
   }
   function stageNeed(secId,cust){
-    var si=stageIdx(secId), req=0, done=0;
+    var si=stageIdx(secId), req=0, done=0, reqR=0, doneR=0;
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
       if(cust&&custBaseName(o.cust)!==cust)return;
-      var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
+      var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd), pr=+((o.pr||[])[si])||0;
       if(stClosed(o,si))nd=dn; // adette tamamlanan aşamanın kalan hedefi yok sayılır
-      req+=nd; done+=dn;
+      req+=nd; done+=dn; reqR+=nd*pr; doneR+=dn*pr;
     });
-    return {req:req,done:done,rem:req-done};
+    return {req:req,done:done,rem:req-done,reqR:reqR,doneR:doneR};
   }
   function stageNeedByCat(secId,cust){
-    var si=stageIdx(secId), gs=ORDER_CATS.map(function(){return {req:0,done:0}});
+    var si=stageIdx(secId), gs=ORDER_CATS.map(function(){return {req:0,done:0,reqR:0,doneR:0}});
     orders.forEach(function(o){
       if(si<0||!(o.st||[])[si])return;
       if(cust&&custBaseName(o.cust)!==cust)return;
-      var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd);
+      var nd=need(o,secId), dn=Math.min(doneOf(o.id,secId).q,nd), pr=+((o.pr||[])[si])||0;
       if(stClosed(o,si))nd=dn;
-      var g=gs[o.cat]||gs[0]; g.req+=nd; g.done+=dn;
+      var g=gs[o.cat]||gs[0]; g.req+=nd; g.done+=dn; g.reqR+=nd*pr; g.doneR+=dn*pr;
     });
     return gs;
   }
@@ -5947,13 +5952,13 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var n=stageNeed(sg.sec,cust||null); if(!n.req)return;
       var so=SECTIONS.filter(function(z){return z.id===sg.sec})[0], pc=Math.round(n.done/n.req*100), open=needOpen===sg.sec;
       stot.req+=n.req; stot.done+=n.done;
-      srows+='<button type="button" class="needrow click" data-stage="'+sg.sec+'" style="--c:'+so.h1+'"><span class="nn"><span class="dot" style="background:'+so.h1+'"></span>'+esc(sg.name)+'<span class="nchev">'+(open?'▾':'▸')+'</span></span><span class="nv">'+nf.format(n.done)+' / '+nf.format(n.req)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı · kalan '+nf.format(n.rem)+' adet</div></button>';
+      srows+='<button type="button" class="needrow click" data-stage="'+sg.sec+'" style="--c:'+so.h1+'"><span class="nn"><span class="dot" style="background:'+so.h1+'"></span>'+esc(sg.name)+'<span class="nchev">'+(open?'▾':'▸')+'</span></span><span class="nv">'+nf.format(n.done)+' / '+nf.format(n.req)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı · kalan '+nf.format(n.rem)+' adet</div>'+(n.reqR>0?'<div class="nciro"><span>Ciro</span><b>'+money(n.doneR)+' / '+money(n.reqR)+' ₺</b><em>kalan '+money(n.reqR-n.doneR)+' ₺</em></div>':'')+'</button>';
       if(open){
         var bycat=stageNeedByCat(sg.sec,cust||null);
         srows+='<div class="needsplit">'+bycat.map(function(g,i){
           if(!g.req)return '';
           var cpc=Math.round(g.done/g.req*100), copen=needCatOpen===sg.sec+"|"+i;
-          var h='<button type="button" class="needcatrow click" data-ncat="'+i+'" data-nstage="'+sg.sec+'"><span class="nn2"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(ORDER_CATS[i])+'<span class="nchev">'+(copen?'▾':'▸')+'</span></span><span class="nv2">'+nf.format(g.done)+' / '+nf.format(g.req)+' · %'+cpc+'</span><div class="nbar sm"><i style="width:'+Math.min(100,cpc)+'%;background:var(--p'+i+')"></i></div></button>';
+          var h='<button type="button" class="needcatrow click" data-ncat="'+i+'" data-nstage="'+sg.sec+'"><span class="nn2"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(ORDER_CATS[i])+'<span class="nchev">'+(copen?'▾':'▸')+'</span></span><span class="nv2">'+nf.format(g.done)+' / '+nf.format(g.req)+' · %'+cpc+'</span><div class="nbar sm"><i style="width:'+Math.min(100,cpc)+'%;background:var(--p'+i+')"></i></div>'+(g.reqR>0?'<div class="nciro sm"><span>Ciro</span><b>'+money(g.doneR)+' / '+money(g.reqR)+' ₺</b></div>':'')+'</button>';
           if(copen){
             var si1=stageIdx(sg.sec), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]&&(!cust||custBaseName(o.cust)===cust)}).map(function(o){
               var nd=need(o,sg.sec), dn=Math.min(doneOf(o.id,sg.sec).q,nd); return {o:o,nd:nd,dn:dn};
