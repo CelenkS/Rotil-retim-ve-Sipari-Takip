@@ -2333,7 +2333,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 16:42</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 14.10 16:50</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2594,7 +2594,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   </section>
   <div class="otabs" role="group" aria-label="Ürünler ve bileşenler" style="margin-top:12px"><button type="button" id="prTabP" aria-pressed="true">Ürünler</button><button type="button" id="prTabR" aria-pressed="false">Reçeteliler</button><button type="button" id="prTabC" aria-pressed="false">Bileşenler</button></div>
   <div class="osearch" style="margin-top:10px"><button class="btn" id="prnew" style="flex:1">+ Yeni ürün / maliyet</button><button class="btn ghost" id="primp" style="flex:1">📥 Siparişlerden getir</button><button class="btn" id="prcnew" style="flex:1" hidden>+ Yeni bileşen</button></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="tpill" id="prdata" style="margin-top:0">📦 Excel verisini içe aktar</button><button class="tpill" id="prdov" style="margin-top:0">🔨 Dövme fiyatlarını aktar</button><button class="tpill" id="prgram" style="margin-top:0">⚖ Gramaj hesapla</button><button class="tpill" id="prekb" style="margin-top:0">⚙ Aşık gramajlarını hesapla</button></div><input type="file" id="prdataf" accept=".json,application/json" hidden><input type="file" id="prdovf" accept=".json,application/json" hidden>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="tpill" id="prdata" style="margin-top:0">📦 Excel verisini içe aktar</button><button class="tpill" id="prdov" style="margin-top:0">🔨 Dövme fiyatlarını aktar (Excel)</button><button class="tpill" id="prgram" style="margin-top:0">⚖ Gramaj hesapla</button><button class="tpill" id="prekb" style="margin-top:0">⚙ Aşık gramajlarını hesapla</button></div><input type="file" id="prdataf" accept=".json,application/json" hidden><input type="file" id="prdovf" accept=".xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
   <div id="prsum" class="stfsum" hidden></div>
   <input class="search" id="prsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu, ad veya müşteri ara…" aria-label="Ara" style="margin-top:8px">
   <div id="prfilt" class="stffilt"></div>
@@ -8810,10 +8810,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       $("prcount").textContent=materials.length;
       var cats={}, order=[]; materials.forEach(function(m){var c=m.cat||"Diğer"; if(!cats[c]){cats[c]=0;order.push(c)} cats[c]++});
       order.sort(function(a,b){return cats[b]-cats[a]||a.localeCompare(b,"tr")});
-      if(prCompCat&&!cats[prCompCat])prCompCat="";
+      if(cats["Dövme"]===undefined){cats["Dövme"]=0; order.unshift("Dövme")}
+      if(prCompCat&&cats[prCompCat]===undefined)prCompCat="";
       $("prfilt").innerHTML='<button type="button" data-prccat="" aria-pressed="'+(prCompCat==="")+'">Hepsi<i>'+materials.length+'</i></button>'+order.map(function(c){return '<button type="button" data-prccat="'+esc(c)+'" aria-pressed="'+(prCompCat===c)+'">'+esc(c)+'<i>'+cats[c]+'</i></button>'}).join("");
       var l=materials.filter(function(m){return (!prCompCat||(m.cat||"Diğer")===prCompCat)&&(!q||prTok([m.name,m.cat,m.sup].join(" "),q))});
-      $("prlist").innerHTML=l.length?l.slice(0,300).map(compRowHtml).join("")+(l.length>300?'<div class="note" style="text-align:center">İlk 300 gösteriliyor — aramayı daralt.</div>':''):'<div class="empty">'+(materials.length?"Eşleşen bileşen yok.":"Henüz bileşen yok.<br>“📦 Excel verisini içe aktar” ile fiyat listelerini al ya da “+ Yeni bileşen” ekle.")+'</div>';
+      $("prlist").innerHTML=l.length?l.slice(0,300).map(compRowHtml).join("")+(l.length>300?'<div class="note" style="text-align:center">İlk 300 gösteriliyor — aramayı daralt.</div>':''):'<div class="empty">'+(prCompCat==="Dövme"&&!l.length&&!q?"Henüz dövme yok.<br>Excel’den tek seferde aktar: ürün kodu, dövme fiyatı, tedarikçi ve tarih gelir; ürün reçetelerine de otomatik bağlanır.<br><button type=\"button\" class=\"btn\" id=\"prdov\" style=\"margin-top:12px\">🔨 Dövme Excel’ini seç</button>":materials.length?"Eşleşen bileşen yok.":"Henüz bileşen yok.<br>“📦 Excel verisini içe aktar” ile fiyat listelerini al ya da “+ Yeni bileşen” ekle.")+'</div>';
       return;
     }
     $("prcount").textContent=products.length;
@@ -9176,7 +9177,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       '<div class="prgrid" style="grid-template-columns:2fr 1fr"><label>Ad<input class="fin" type="text" id="prvmn" value="'+esc(prVMN)+'" placeholder="ör. Ambalaj · kutulu"></label><label>Fiyat ₺<input class="fin" type="text" inputmode="decimal" id="prvmp" value="'+esc(prVMP)+'"></label></div><div class="frow"><button type="button" class="btn ghost" data-prvmanual="1">Elle fiyatı uygula</button></div></div>';
     return h;
   }
-  var PR_SECS=[{k:"cel",t:"Çelik · ham madde",c:"--p4",f:function(p){return p.k==="made"}},{k:"buy",t:"Satın alınan bileşenler",c:"--p1",f:function(p){return p.k==="buy"&&!isDov(p)}},{k:"coat",t:"Kaplama",c:"--p5",f:function(p){return p.k==="coat"}},{k:"bil",t:"Dövme · dış hizmet",c:"--p7",f:function(p){return isDov(p)||(p.k==="lab"&&labGroup(p)==="bil")}},{k:"isc",t:"İşçilik",c:"--p0",f:function(p){return p.k==="lab"&&labGroup(p)==="isc"}},{k:"mas",t:"Masraflar",c:"--p3",f:function(p){return p.k==="lab"&&labGroup(p)==="mas"}}];
+  var PR_SECS=[{k:"bil",t:"Dövme · dış hizmet",c:"--p7",f:function(p){return isDov(p)||(p.k==="lab"&&labGroup(p)==="bil")}},{k:"cel",t:"Çelik · ham madde",c:"--p4",f:function(p){return p.k==="made"}},{k:"buy",t:"Satın alınan bileşenler",c:"--p1",f:function(p){return p.k==="buy"&&!isDov(p)}},{k:"coat",t:"Kaplama",c:"--p5",f:function(p){return p.k==="coat"}},{k:"isc",t:"İşçilik",c:"--p0",f:function(p){return p.k==="lab"&&labGroup(p)==="isc"}},{k:"mas",t:"Masraflar",c:"--p3",f:function(p){return p.k==="lab"&&labGroup(p)==="mas"}}];
   var PR_CATLBL={"Yuva":"İç yuva","Toz lastik":"Toz lastik","Boğaz segman":"Boğaz segman","Ezme segman":"Ezme segman","Kılıt segman":"Kilit segman","Kopilya":"Kopilya","Pul":"Pul","Somun":"Somun","Cıvata":"Cıvata","Ambalaj":"Ambalaj","Koruyucu kılıf":"Koruyucu kılıf","Rotmili koruyucu kılıf":"Rot mili koruyucu kılıf","Rotmili takoz":"Rot mili takoz","Kaplama":"Kaplama","Dövme":"Dövme"};
   function prRowHtml(p,idx,orig){
     var c=partCost(p), u=partUnit(p), q=pnum(p.q)||1, lm=matById(p.m), nm=(lm&&p.k==="buy"?lm.name:p.n)||"Parça", sub="", w="", tag="";
@@ -9290,6 +9291,23 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       '<label class="msopt" style="display:flex;gap:8px;align-items:center;margin:4px 0"><input type="checkbox" id="prdovrep"'+(pl.rep?' checked':'')+'> Reçetedeki eski “Dövme” işçilik/hizmet satırlarını yenisiyle değiştir</label>'+
       '<div class="note" style="margin:0;text-align:left">Reçetelerde dövme satırı bileşene bağlı gelir; fiyat listesi güncellenince reçete maliyeti de güncellenir.</div>'+
       '<div class="frow"><button type="button" class="btn" id="prdovgo">Aktar</button></div><div class="note" id="prdovst" style="margin:0"></div></div>';
+  }
+  function dovFromRows(rows){
+    var hi=0; (rows||[]).slice(0,6).some(function(r,i){if(r&&/ref|kod/i.test(String(r[0]||""))){hi=i;return true}return false});
+    var H=(rows[hi]||[]).map(function(x){return fold(String(x||""))}), cv=1, cn=-1, c5=-1, cd=-1;
+    H.forEach(function(h,i){if(i===0)return; if(/vadeli/.test(h))cv=i; else if(/nakit/.test(h))cn=i; else if(/2025/.test(h))c5=i; else if(/tarih/.test(h))cd=i});
+    var cs=H.length>4?4:2, out=[];
+    function num(v){var n=parseFloat(String(v==null?"":v).replace(/\s/g,"").replace(",",".")); return isFinite(n)&&n>0?n:0}
+    function dt(v){var s=String(v||"").trim(); if(!s)return ""; if(/^\d{4,6}(\.\d+)?$/.test(s)){var d=new Date(Math.round((parseFloat(s)-25569)*86400000)); return isNaN(d)?"":d.toISOString().slice(0,10)}
+      var m=s.match(/^(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/); if(m)return m[3]+"-"+("0"+m[2]).slice(-2)+"-"+("0"+m[1]).slice(-2); m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); return m?m[0]:""}
+    (rows||[]).slice(hi+1).forEach(function(r){
+      if(!r)return; var code=String(r[0]||"").trim(), p=num(r[cv]); if(!code||!p)return;
+      var raw=String(r[cs]||"").trim(), U=raw.toUpperCase().replace(/İ/g,"I"), sup=U.indexOf("DORUK")>-1?"DORUK":U.indexOf("DRS")>-1?"DRS":(U.indexOf("AGALAR")>-1||raw.toUpperCase().indexOf("AĞALAR")>-1)?"AĞALAR":raw;
+      var o={c:code,p:p,s:sup,d:cd>-1?dt(r[cd]):""}, pn=cn>-1?num(r[cn]):0, p5=c5>-1?num(r[c5]):0; if(pn)o.pn=pn; if(p5)o.p5=p5;
+      var note=raw.toUpperCase()!==sup.toUpperCase()?raw:""; var m=code.match(/^(\d+)\s+(ŞEM LASTİK)$/i); if(m){o.c=m[1]; note=(m[2]+(note?" · "+note:""))}
+      if(note)o.n=note; out.push(o);
+    });
+    return {v:"dovme1",rows:out};
   }
   function dovAutoPart(code,parts){
     var k=prKey(code); if(!k)return null; var m=null; materials.forEach(function(x){if(x.cat==="Dövme"&&prKey(x.name)===k)m=x});
@@ -9406,7 +9424,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       });
       pl2.prods.forEach(function(o){
         var mid=ids[prKey(o.r.c)], parts=(o.pr.parts||[]).filter(function(x){return !(pl2.rep&&((x.k==="lab"&&labGroup(x)==="bil")||(isDov(x)&&x.m!==mid)))});
-        if(!parts.some(function(x){return x.k==="buy"&&x.m===mid}))parts.push(dovPartFor(o.r,mid));
+        if(!parts.some(function(x){return x.k==="buy"&&x.m===mid}))parts.unshift(dovPartFor(o.r,mid));
         ops2.push(["products",{parts:parts},o.pr.id,true]);
       });
       var ch2=[]; for(var i3=0;i3<ops2.length;i3+=400)ch2.push(ops2.slice(i3,i3+400)); var dn=0;
@@ -9482,7 +9500,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var dup=products.filter(function(x){return x.id!==d.id&&String(x.code||"").trim().toLowerCase()===d.code.toLowerCase()})[0];
       if(dup&&!d.dupOk){d.dupOk=true; if(nt2)nt2.textContent="Bu kodla başka bir kart var. Yine de kaydetmek için tekrar Kaydet'e bas."; return}
       var parts=d.parts.filter(function(x){return !(x.slot&&prSlotEmpty(x))}).map(prSaveDraftPart);
-      if(!d.id){var dap=dovAutoPart(d.code,parts); if(dap)parts.push(dap)}
+      if(!d.id){var dap=dovAutoPart(d.code,parts); if(dap)parts.unshift(dap)}
       var doc2={code:d.code,name:d.name.trim(),cust:d.cust.trim(),cat:d.cat,note:d.note.trim(),oem:d.oem.trim(),veh:d.veh.trim(),nw:pnum(d.nw),len:pnum(d.len),thr:d.thr.trim(),th:d.th||"",parts:parts,ts:Date.now()};
       var ref=d.id?db.doc("products/"+d.id):db.collection("products").doc(), id=ref.id;
       ref.set(doc2).then(function(){
@@ -9528,6 +9546,17 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     }
     if(el.id==="prdovf"&&el.files&&el.files[0]){
       var f9=el.files[0]; el.value=""; var rd9=new FileReader();
+      if(/\.xlsx$/i.test(f9.name||"")){
+        rd9.onload=function(){
+          xlsxToRows(rd9.result).then(function(res){
+            var dd=dovFromRows(res.rows);
+            if(!dd.rows.length){$("prstatus").textContent="Excel'de dövme satırı bulunamadı (ilk sütun ürün kodu, ikinci sütun fiyat olmalı)."; return}
+            if(!prLoaded||!matsLoaded){$("prstatus").textContent="Mevcut veriler yükleniyor, birkaç saniye sonra tekrar dene."; return}
+            prDovRaw={data:dd,name:f9.name}; prDovRep=true; prDovPlan=prDovBuild(dd,f9.name,true); sheetMode="prdov"; $("ov").hidden=false; renderSheet();
+          }).catch(function(){$("prstatus").textContent="Excel dosyası okunamadı. .xlsx olarak kaydedip tekrar dene."});
+        };
+        rd9.readAsArrayBuffer(f9); return;
+      }
       rd9.onload=function(){
         var dd=null; try{dd=JSON.parse(rd9.result)}catch(x){}
         if(!dd||dd.v!=="dovme1"||!Array.isArray(dd.rows)){$("prstatus").textContent="Bu dosya geçerli bir dövme listesi değil."; return}
