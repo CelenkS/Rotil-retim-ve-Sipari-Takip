@@ -2366,7 +2366,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 15.10 12:48</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 15.10 13:01</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2834,7 +2834,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function muOf(o,i){return (o.mu&&+o.mu[i])||1}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||(i===4&&o.cat===0)||!!(o.st||[])[i]}
-  var ORDER_CATS=["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
+  var ORDER_CATS=window.__DIV==="rozet"?["Klasik","Orkide","Menekşe","Kardelen","Kare","Irmak","Bombeli","Açılı Irmak Kapı"]:["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
   var shipAskOid=null, shipDateOid=null, orders=[], pm={}, pmTot={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
@@ -9291,7 +9291,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     }else if(p.k==="coat"){
       sub=nf.format(pnum(p.wt))+" kg"+(u?" × "+pf(u)+" ₺/kg":"")+(q>1?" × "+nf.format(q)+" adet":""); if(!u)w="kaplama fiyatı girilmemiş";
     }else{
-      sub=nf.format(q)+" "+(p.k==="lab"?"adet":(p.u||"adet"))+(u?" × "+pf(u)+" ₺":""); if(!u)w="fiyat girilmemiş";
+      sub=(q<1?q.toLocaleString("tr-TR",{maximumFractionDigits:5}):nf.format(q))+" "+(p.k==="lab"?"adet":(p.u||"adet"))+(u?" × "+pf(u)+" ₺":""); if(!u)w="fiyat girilmemiş";
     }
     var edt=(p.k==="buy"||p.k==="lab"||(p.k==="made"&&pnum(p.d)>0&&pnum(p.l)>0&&(pnum(p.wt)>0||pnum(p.wa)>0)))&&idx!==undefined, chg=orig&&JSON.stringify(orig)!==JSON.stringify(p), oc=orig?partCost(orig):0;
     return '<div class="rv-row'+(c>0?'':' miss')+(edt?' edt':'')+(chg?' chg':'')+'"'+(edt?' role="button" tabindex="0" data-prvr="'+idx+'"':'')+'><div class="nm"><b>'+(tag?'<span class="rv-tag">'+esc(tag)+'</span>':'')+esc(nm)+(p.k==="buy"&&p.m?'<span class="lk" title="Bileşen listesine bağlı">🔗</span>':'')+'</b><small'+(w?' class="w"':'')+'>'+esc(w||sub)+'</small>'+(p.nt?'<small>'+esc(p.nt)+'</small>':'')+((p.k==="buy"&&lm)?(function(){var sk=+lm.stock||0, lw=(sk<=0)||(+lm.crit>0&&sk<=+lm.crit)||sk<q; return '<small class="rvstk'+(lw?' low':'')+'">📦 Stok: <b>'+nf.format(sk)+'</b> '+esc(lm.unit||"adet")+(lw?(sk<=0?' · stokta yok':' · az'):'')+'</small>'})():'')+'</div><div class="am">'+(chg&&oc!==c?'<span class="was">'+(oc>0?pf(oc)+' ₺':'—')+'</span>':'')+(c>0?pf(c)+' ₺':'—')+'</div>'+(edt?'<span class="ed">✎</span>':'')+'</div>';
@@ -9513,8 +9513,10 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       if(!c||!c.n)return; var k=prKey(c.c)+"|"+prKey(c.n);
       if(haveM[k]||haveNoCat[prKey(c.n)]||seenC[k]){skipC++; return} seenC[k]=1; comps.push(c);
     });
+    comps.forEach(function(c){try{c._id=db.collection("materials").doc().id}catch(e){c._id=""}});
     var upd=[], miss=[], v2=data.v===2, byCode={}; products.forEach(function(p){byCode[prKey(p.code)]=p});
     var matKey={}; materials.forEach(function(m){matKey[prKey(m.cat)+"|"+prKey(m.name)]=m.id});
+    comps.forEach(function(c){if(c._id)matKey[prKey(c.c)+"|"+prKey(c.n)]=c._id});
     (data.prods||[]).forEach(function(p){
       if(!p||!p.code)return; var k=prKey(p.code);
       if(v2){
@@ -9629,7 +9631,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var pl=prDataPlan, st=$("prdst"); if(!pl||!db)return;
       if(!prLoaded){if(st)st.textContent="Mevcut ürünler henüz yüklenmedi, birkaç saniye sonra tekrar bas."; return}
       t.disabled=true;
-      var ops=[]; pl.comps.forEach(function(c){ops.push(["materials",{name:c.n,cat:c.c||"",unit:c.u||"adet",stock:0,p:+c.p||0,p5:+c.p5||0,sup:c.s||"",pd:c.pd||"",note:c.nt||"",ts:Date.now()}])});
+      var ops=[]; pl.comps.forEach(function(c){ops.push(["materials",{name:c.n,cat:c.c||"",unit:c.u||"adet",stock:0,p:+c.p||0,p5:+c.p5||0,sup:c.s||"",pd:c.pd||"",note:c.nt||"",ts:Date.now()}].concat(c._id?[c._id]:[]))});
       pl.prods.forEach(function(p){
         if(pl.v2){var ref=db.collection("products").doc(); ops.push(["products",prProdDoc(p),ref.id]); if(p.img&&p.img.d)ops.push(["pimg",{d:p.img.d},ref.id])}
         else ops.push(["products",{code:p.code,name:p.name||"",cust:p.cust||"",cat:p.cat||0,note:p.note||"",th:"",parts:(p.parts||[]).map(function(x){return Object.assign({m:"",th:""},x)}),ts:Date.now()}])});
