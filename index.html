@@ -2366,7 +2366,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 15.10 13:38</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 15.10 13:42</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2834,7 +2834,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function muOf(o,i){return (o.mu&&+o.mu[i])||1}
   function need(o,secId){return o.qty*muOf(o,stageIdx(secId))}
   function shownStage(o,i){return i<4||(i===4&&o.cat===0)||!!(o.st||[])[i]}
-  var ORDER_CATS=window.__DIV==="rozet"?["Çelik rozet","DKP rozet"]:["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
+  var ORDER_CATS=window.__DIV==="rozet"?["Çelik rozet","DKP rozet","Alm rozet"]:["Z-Rot","Rotil","Rot başı","Rot mili","Yağlı Burç","Z-Rot Gövde"];
   var shipAskOid=null, shipDateOid=null, orders=[], pm={}, pmTot={}, pmFull=false, ordTab="open", ordQ="", ordCatF=null, ordCustF=null, addTab="order", curOid=null, orderFormId=null, ordCat=1, sugCust=[], sugCodes=[], mCatItems=[], ordKp="", unsubOrd=null, ccOpen=null, ccDate=null;
   var ordScope="all", ordY=0, ordM=0;
   var COLS=[], catsSaved=true, promptShown=false, sec=SECTIONS[0], catRows=1, catDraft=null, catDraftT=null;
@@ -9521,7 +9521,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       if(!p||!p.code)return; var k=prKey(p.code);
       if(v2){
         var ex=byCode[k]; if(seenP[k]){skipP++; return} seenP[k]=1;
-        if(ex&&(ex.parts&&ex.parts.length)&&!prOver){skipP++; return}
+        if(ex&&(ex.parts&&ex.parts.length)&&!prOver){if(data.setcat&&(+ex.cat||0)!==(+p.cat||0))upd.push({ex:ex,p:p,catOnly:true}); else skipP++; return}
         var q=Object.assign({},p); q.parts=(p.parts||[]).map(function(x){
           var o=Object.assign({},x); var key=prKey(o.mc)+"|"+prKey(o.mn); delete o.mc; delete o.mn;
           if(x.mn){var id=matKey[key]; if(id)o.m=id; else miss.push((p.code||"")+" · "+(x.n||x.mn))}
@@ -9531,7 +9531,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       }
       if(haveP[k]||seenP[k]){skipP++; return} seenP[k]=1; prods.push(p);
     });
-    return {name:name,comps:comps,prods:prods,upd:upd,miss:miss,v2:v2,skipC:skipC,skipP:skipP};
+    return {name:name,comps:comps,prods:prods,upd:upd,miss:miss,v2:v2,skipC:skipC,skipP:skipP,setcat:!!data.setcat};
   }
   function prProdDoc(p){return {code:p.code,name:p.name||"",cust:p.cust||"",cat:p.cat||0,note:p.note||"",oem:p.oem||"",veh:p.veh||"",nw:+p.nw||0,len:+p.len||0,thr:p.thr||"",th:(p.img&&p.img.th)||"",parts:(p.parts||[]).map(function(x){return Object.assign({m:"",th:""},x)}),ts:Date.now()}}
   function prImportSheetHtml(){
@@ -9636,8 +9636,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         if(pl.v2){var ref=db.collection("products").doc(); ops.push(["products",prProdDoc(p),ref.id]); if(p.img&&p.img.d)ops.push(["pimg",{d:p.img.d},ref.id])}
         else ops.push(["products",{code:p.code,name:p.name||"",cust:p.cust||"",cat:p.cat||0,note:p.note||"",th:"",parts:(p.parts||[]).map(function(x){return Object.assign({m:"",th:""},x)}),ts:Date.now()}])});
       (pl.upd||[]).forEach(function(u){
+        if(u.catOnly){ops.push(["products",{cat:+u.p.cat||0},u.ex.id,true]); return}
         var d0=prProdDoc(u.p), ex=u.ex, up={oem:d0.oem,veh:d0.veh,nw:d0.nw,len:d0.len,thr:d0.thr,parts:d0.parts,ts:Date.now()};
-        if(!ex.name&&d0.name)up.name=d0.name; if(!ex.th&&d0.th)up.th=d0.th; if(!ex.cust&&d0.cust)up.cust=d0.cust;
+        if(pl.setcat)up.cat=d0.cat; if(!ex.name&&d0.name)up.name=d0.name; if(!ex.th&&d0.th)up.th=d0.th; if(!ex.cust&&d0.cust)up.cust=d0.cust;
         ops.push(["products",up,ex.id,true]);
         if(u.p.img&&u.p.img.d&&!ex.th)ops.push(["pimg",{d:u.p.img.d},ex.id]);
       });
