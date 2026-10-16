@@ -1133,6 +1133,21 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .lsib .nlsc.off{opacity:.45}
 .lsib .lnote{margin-top:6px;font:600 11.5px var(--font-ui);color:var(--ink2)}
 .lord{margin-top:8px}
+.cpbox{border:1.5px solid color-mix(in srgb,#2E9E6B 45%,transparent);background:color-mix(in srgb,#2E9E6B 9%,var(--surface));border-radius:16px;padding:10px 12px;margin:0 0 10px}
+.cpbox>b{display:block;font:700 13px var(--font-head);margin-bottom:6px}
+.cprw{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed color-mix(in srgb,var(--ink2) 25%,transparent)}
+.cprw:first-of-type{border-top:0}
+.cprw>div{flex:1;min-width:0}
+.cprw b{display:block;font:700 13px var(--font-ui);overflow-wrap:anywhere}
+.cprw small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2)}
+.cprw button{flex:0 0 auto;border:0;border-radius:12px;background:#2E9E6B;color:#fff;font:700 12px var(--font-ui);padding:9px 11px}
+.cprw .cpok{flex:0 0 auto;font:700 11.5px var(--font-ui);color:#2E9E6B}
+.sdsel{display:inline-flex;gap:4px;margin:6px 0 0}
+.sdsel button{border:1.5px solid color-mix(in srgb,var(--ink2) 30%,transparent);background:var(--soft);color:var(--ink);border-radius:10px;font:700 12px var(--font-ui);padding:6px 11px}
+.sdsel button[aria-pressed="true"]{background:var(--c,#3B78E0);border-color:var(--c,#3B78E0);color:#fff}
+.cpcard .cpn{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.cpcard .cpn label{display:block;font:700 11.5px var(--font-ui);color:var(--ink2)}
+.cpcard .cpn .fin{margin-top:3px;width:100%}
 .ocust{margin-top:10px}
 .ocust select{display:block;width:100%;height:46px;border:2px solid transparent;border-radius:14px;background:var(--soft);color:var(--ink);font:700 15px var(--font-ui);padding:0 12px}
 .ocust select.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 20%,var(--surface))}
@@ -2366,7 +2381,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 16.10 11:58</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 16.10 12:13</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3954,10 +3969,12 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(cardMode!=="gun"){$("lines").innerHTML=weekSummaryHtml(); return}
     var ls=lines(selected), html="", secEmps=empsInSec(sec.id), secMacs=machinesInSec(sec.id), showEM=secEmps.length||secMacs.length;
     var vm=curDayView();
+    if(IS_RZ)cpInit();
     if(ls.length&&vm==="sum"){$("lines").innerHTML=dayToggleHtml(vm)+daySummaryHtml(ls); return}
     if(ls.length)html=dayToggleHtml(vm);
+    if(IS_RZ)html+=cpSecHtml();
     if(!ls.length){
-      html='<button type="button" class="empty" id="emptyAdd">+ Bu güne ürün ekle</button>';
+      html+='<button type="button" class="empty" id="emptyAdd">+ Bu güne ürün ekle</button>';
     }else{
       // Bir satırın kategori indeksi (l.k), o an cihazda yüklü olan kategori listesinin
       // (COLS) dışında kalırsa (ör. başka bir ekrandan yazılan bir kayıt, kategori
@@ -3976,8 +3993,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
           var l=ls[i];
           var lod=l.o?orders.filter(function(x){return x.id===l.o})[0]:null;
           html+='<div class="line '+headClass+'" data-idx="'+i+'">'+
-            '<div class="ltop">'+((lod&&lod.th)?'<img class="lthumb" alt="" src="'+lod.th+'">':'')+'<span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="ltime" id="lt'+i+'">'+fmtTime(l.t)+'</span><span class="amt" id="la'+i+'"></span></div>'+
-            (l.o?'<div class="lord" id="lo'+i+'"></div>':'')+
+            '<div class="ltop">'+((lod&&lod.th)?'<img class="lthumb" alt="" src="'+lod.th+'">':'')+'<span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+(l.cj?'<span class="ot">Bileşen</span>':'')+'</span><span class="ltime" id="lt'+i+'">'+fmtTime(l.t)+'</span><span class="amt" id="la'+i+'"></span></div>'+
+            ((l.o||l.cj)?'<div class="lord" id="lo'+i+'"></div>':'')+
+            ((IS_RZ&&sec.id==="cncg"&&!l.cj)?'<div class="sdsel" role="group" aria-label="Ön veya arka işleme">'+[["","Genel"],["o","Ön işleme"],["a","Arka işleme"]].map(function(x){return '<button type="button" data-sdset="'+i+'" data-sdv="'+x[0]+'" aria-pressed="'+((l.sd||"")===x[0])+'">'+x[1]+'</button>'}).join("")+'</div>':'')+
             '<select class="lsel" data-f="u" aria-label="'+esc(l.c)+' müşteri">'+custOptions(l.u||"")+'</select>'+
             (showEM?'<div class="lem">'+
               (secEmps.length?'<select class="lsel" data-f="emp" aria-label="'+esc(l.c)+' eleman">'+empOptions(l.e||"")+'</select>':'')+
@@ -3989,7 +4007,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
             '<button type="button" data-act="inc" aria-label="Artır">+</button></div>'+
             '<span class="x">×</span>'+
             '<div class="money"><input type="number" inputmode="decimal" min="0" step="any" data-f="p" value="'+l.p+'" aria-label="'+esc(l.c)+' birim fiyat"><span>₺</span></div>'+
-            '<button type="button" class="rm" data-act="rm" aria-label="'+esc(l.c)+' satırını sil">×</button></div>'+lineOrdsHtml(l)+'</div>';
+            '<button type="button" class="rm" data-act="rm" aria-label="'+esc(l.c)+' satırını sil">×</button></div>'+(l.cj?'':lineOrdsHtml(l))+'</div>';
         });
       }
     }
@@ -4007,6 +4025,13 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var el=$("la"+i); if(el)el.textContent=money(l.q*l.p)+" ₺";
       var te=$("lt"+i); if(te)te.textContent=fmtTime(l.t);
       var lo=$("lo"+i);
+      if(lo&&l.cj){
+        var ca=l.cj.split("|"), cod=orders.filter(function(x){return x.id===ca[0]})[0], cjj=cod&&(cod.cj||[]).filter(function(z){return z.k===ca[1]})[0];
+        if(!cjj){lo.innerHTML="";return}
+        var cnd=+cjj.pq||0, cdn=doneCj(ca[0],ca[1],sec.id).q, crem=Math.max(0,cnd-cdn), cpc=cnd?Math.min(100,Math.round(cdn/cnd*100)):0;
+        lo.innerHTML='<div class="lt"><span>Üretilecek <b>'+nf.format(cnd)+'</b> · yapılan <b>'+nf.format(cdn)+'</b></span><span class="'+(crem?'':'ok')+'"><b>'+(crem?'Kalan '+nf.format(crem):'✓ Tamam')+'</b></span></div><div class="lb"><i style="width:'+cpc+'%"></i></div>';
+        return;
+      }
       if(lo){
         var od=orders.filter(function(x){return x.id===l.o})[0];
         if(!od){lo.innerHTML="";return}
@@ -4022,11 +4047,13 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   }
   function changeLine(i,f,val){
     var arr=lines(selected).slice(), l=Object.assign({},arr[i]), oldQ=l.q;
-    if(f==="q"){l.q=cleanNum(val,99999,true); l.t=Date.now()} else if(f==="u")l.u=String(val); else if(f==="emp")l.e=String(val); else if(f==="mac")l.m=String(val); else l.p=cleanNum(val,99999999,false);
+    if(f==="q"){l.q=cleanNum(val,99999,true); l.t=Date.now()} else if(f==="u")l.u=String(val); else if(f==="emp")l.e=String(val); else if(f==="mac")l.m=String(val); else if(f==="sd")l.sd=String(val); else l.p=cleanNum(val,99999999,false);
     arr[i]=l; lns[selected]=arr; touch(); refreshLineTotals();
-    if(f==="q"&&l.q!==oldQ)applyRecipeUsage(l.c,l.q-oldQ);
+    if(f==="q"&&l.q!==oldQ){applyRecipeUsage(l.c,l.q-oldQ); cpAfterLine(l,l.q-oldQ)}
   }
   $("lines").addEventListener("click",function(e){
+    var sdb=e.target.closest("[data-sdset]"); if(sdb){changeLine(+sdb.dataset.sdset,"sd",sdb.dataset.sdv); renderLines(); return}
+    var cja=e.target.closest("[data-cjadd]"); if(cja){cpAddLine(cja.dataset.cjadd); return}
     var dv=e.target.closest("[data-dv]"); if(dv){dayViewFor=selected; dayViewPref=dv.dataset.dv; renderLines(); return}
     var se=e.target.closest("[data-sedit]");
     if(se){
@@ -4047,7 +4074,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var row=b.closest(".line"), i=+row.dataset.idx, act=b.dataset.act, l=lines(selected)[i];
     if(act==="rm"){
       var arr=lines(selected).slice(); arr.splice(i,1); lns[selected]=arr; touch(); renderLines();
-      applyRecipeUsage(l.c,-l.q);
+      applyRecipeUsage(l.c,-l.q); cpAfterLine(l,-l.q);
     }else{
       changeLine(i,"q",l.q+(act==="inc"?1:-1));
       row.querySelector('input[data-f="q"]').value=lines(selected)[i].q;
@@ -4198,6 +4225,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
             }).join("")+'</div>';
         }
         html+='<div class="dst" style="--sc:#8460E6"><div class="h"><b>Not</b></div><textarea class="fin" id="odnote" rows="2" placeholder="Bu sipariş için not ekle…" style="margin-top:8px">'+esc(od.not||"")+'</textarea><button type="button" class="btn ghost sm" id="odnotesave" data-oid="'+od.id+'" style="margin-top:8px">Notu kaydet</button></div>';
+        html+=cpDetailHtml(od);
         SORD.forEach(function(i){
           var sg=STAGES[i];
           if(!(od.st||[])[i])return;
@@ -4207,6 +4235,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
           var clz=stClosed(od,i), fin=dn.q>=nd||clz;
           html+='<div class="dst'+(fin?' done':'')+'" style="--sc:'+so.h1+'"><div class="h"><b>'+sg.name+(mu>1?' <small style="font:700 12px var(--font-ui);color:var(--ink2)">×'+mu+'</small>':'')+(i===5&&od.kp?' <small style="font:700 12px var(--font-ui);color:var(--ink2)">· '+esc(od.kp)+'</small>':'')+'</b><span class="n">'+(fin?'✓ ':'')+nf.format(dn.q)+' / '+nf.format(nd)+'</span></div>'+
             '<div class="bar2"><i style="width:'+Math.min(100,pc)+'%"></i></div>'+
+            ((IS_RZ&&sg.sec==="cncg"&&dn.s&&(dn.s.o||dn.s.a))?'<div class="m">Ön işleme '+nf.format(dn.s.o||0)+' · Arka işleme '+nf.format(dn.s.a||0)+'</div>':'')+
             '<div class="m">%'+pc+(clz&&dn.q<nd?' · ✓ Tamamlandı ('+nf.format(dn.q)+' adette)':' tamamlandı')+(dn.q?' · ciro '+money(dn.r)+' ₺ · ort. '+money(dn.r/dn.q)+' ₺':'')+(!fin?' · kalan '+nf.format(nd-dn.q):'')+'</div>'+
             (!fin?('<button type="button" class="btn ghost sm" data-ccopen="stage" data-ci="'+i+'" data-oid="'+od.id+'">✓ Kalan '+nf.format(nd-dn.q)+' adedi tamamlandı say</button>'+
               (dn.q>0?'<button type="button" class="btn ghost sm" data-clstage="'+i+'" data-oid="'+od.id+'" style="margin-left:6px">✓ Bu adette tamamla ('+nf.format(dn.q)+')</button>':'')+
@@ -4469,7 +4498,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
             '<div class="frow" style="margin-top:8px"><input class="fin" id="dpn'+gi+'" autocomplete="off" placeholder="Yeni alt bölüm (ör. CNC Aşık)" style="flex:1"><button type="button" class="btn" data-dpadd="'+gi+'" style="flex:0 0 auto;padding:0 18px">Ekle</button></div></div>';
         }).join("")+
         '<div><span class="fl">Yeni bölüm grubu</span><div class="frow"><input class="fin" id="dpgn" autocomplete="off" placeholder="ör. Rotil, Rozet, Yönetim" style="flex:1"><button type="button" class="btn" id="dpgadd" style="flex:0 0 auto;padding:0 18px">Ekle</button></div></div><div class="note" id="dpmsg"></div></div>';
-    }else if(sheetMode.slice(0,2)==="tl"){html+=tlSheetHtml()}else if(sheetMode==="mesai"){html+=mesaiSheetHtml()}else if(sheetMode==="prod"){html+=prFormHtml()}else if(sheetMode==="prview"){html+=prViewHtml()}else if(sheetMode==="gram"){html+=gcHtml()}else if(sheetMode==="prek"){html+=prEkHtml()}else if(sheetMode==="prvrow"){html+=prVRowHtml()}else if(sheetMode==="prstart"){html+=prStartHtml()}else if(sheetMode==="primp"){html+=prImportSheetHtml()}else if(sheetMode==="prpick"){html+=prPickHtml()}else if(sheetMode==="comp"){html+=prCompHtml()}else if(sheetMode==="prdata"){html+=prDataHtml()}else if(sheetMode==="prdov"){html+=prDovHtml()}else if(sheetMode==="prbulk"){html+=prBulkHtml()}else if(sheetMode==="prdovfix"){html+=prFixHtml()}else if(sheetMode==="empdet"){html+=empDetSheetHtml()}else if(sheetMode==="finimp"){html+=finImpSheetHtml()}else if(sheetMode==="fempdet"){html+=finEmpSheetHtml()}else if(sheetMode==="fgdet"){html+=finGidSheetHtml()}else if(sheetMode==="macbulk"){
+    }else if(sheetMode==="cplan"){html+=cpPlanHtml()}else if(sheetMode.slice(0,2)==="tl"){html+=tlSheetHtml()}else if(sheetMode==="mesai"){html+=mesaiSheetHtml()}else if(sheetMode==="prod"){html+=prFormHtml()}else if(sheetMode==="prview"){html+=prViewHtml()}else if(sheetMode==="gram"){html+=gcHtml()}else if(sheetMode==="prek"){html+=prEkHtml()}else if(sheetMode==="prvrow"){html+=prVRowHtml()}else if(sheetMode==="prstart"){html+=prStartHtml()}else if(sheetMode==="primp"){html+=prImportSheetHtml()}else if(sheetMode==="prpick"){html+=prPickHtml()}else if(sheetMode==="comp"){html+=prCompHtml()}else if(sheetMode==="prdata"){html+=prDataHtml()}else if(sheetMode==="prdov"){html+=prDovHtml()}else if(sheetMode==="prbulk"){html+=prBulkHtml()}else if(sheetMode==="prdovfix"){html+=prFixHtml()}else if(sheetMode==="empdet"){html+=empDetSheetHtml()}else if(sheetMode==="finimp"){html+=finImpSheetHtml()}else if(sheetMode==="fempdet"){html+=finEmpSheetHtml()}else if(sheetMode==="fgdet"){html+=finGidSheetHtml()}else if(sheetMode==="macbulk"){
       html+='<div class="shead"><div><h2 id="sh-title">Toplu makine ekle</h2><small>Her satıra bir makine adı — hepsi seçtiğin bölüm(ler)e birden eklenir</small></div></div>'+
         '<div class="form">'+
         '<div><span class="fl">Bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-mcbsec="'+x.id+'" aria-pressed="'+(macBulkSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
@@ -5570,7 +5599,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     else{arr.push({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:mc||"",t:Date.now()}); logActivity(sec.name+": "+o.code+" için "+nf.format(n)+" adet üretim girildi (sipariş)","prod",{oid:o.id,code:o.code,sec:sec.id})}
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
-    applyRecipeUsage(o.code,n);
+    applyRecipeUsage(o.code,n); cpAfterLine({o:o.id},n);
   }
   // "Üretime gir": sabah hangi ürünün yapılacağını, adet YAZMADAN güne ekler (adet akşam girilir).
   function startBtnHtml(o,mid){
@@ -5721,16 +5750,17 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var m={}; function g(i){return m[i]||(m[i]={a:0,r:0})}
     Object.keys(d||{}).forEach(function(i){g(i).a+=sum(d[i])});
     Object.keys(r||{}).forEach(function(i){g(i).r+=sum(r[i])});
-    Object.keys(l||{}).forEach(function(i){(l[i]||[]).forEach(function(x){var e=g(i); e.a+=x.q; e.r+=x.q*x.p})});
+    Object.keys(l||{}).forEach(function(i){(l[i]||[]).forEach(function(x){var e=g(i); if(!x.cj)e.a+=x.q; e.r+=x.q*x.p})});
     return m;
   }
   function extractSums(lm){
     var acc={};
     Object.keys(lm||{}).forEach(function(iso){
       (lm[iso]||[]).forEach(function(l){
-        if(!l.o)return;
-        var a=acc[l.o]||(acc[l.o]={q:0,r:0,e:[]});
+        var kk=l.o||(l.cj?"cj|"+l.cj:""); if(!kk)return;
+        var a=acc[kk]||(acc[kk]={q:0,r:0,e:[]});
         a.q+=l.q; a.r+=l.q*l.p;
+        if(l.sd){a.s=a.s||{}; a.s[l.sd]=(a.s[l.sd]||0)+l.q}
         var last=a.e[a.e.length-1];
         var lm=l.m||"";
         if(last&&last.d===iso&&(last.m||"")===lm)last.q+=l.q; else a.e.push(lm?{d:iso,q:l.q,m:lm}:{d:iso,q:l.q});
@@ -5810,14 +5840,15 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   }
   function inApp(){return !$("app").hidden}
   function doneOf(oid,secId){
-    var q=0,r=0,e=[], liveKey=secId+"|"+key(), live=(inApp()&&sec.id===secId), seenLive=false;
+    var q=0,r=0,e=[],sd={}, liveKey=secId+"|"+key(), live=(inApp()&&sec.id===secId), seenLive=false;
+    function addS(x){if(x.s)Object.keys(x.s).forEach(function(k){sd[k]=(sd[k]||0)+x.s[k]})}
     Object.keys(pm).forEach(function(k){
       if(k.split("|")[0]!==secId)return;
       var src=pm[k];
       if(live&&k===liveKey){src=extractSums(lns);seenLive=true}
-      var x=src[oid]; if(x){q+=x.q;r+=x.r;e=e.concat(x.e)}
+      var x=src[oid]; if(x){q+=x.q;r+=x.r;e=e.concat(x.e);addS(x)}
     });
-    if(live&&!seenLive){var x2=extractSums(lns)[oid]; if(x2){q+=x2.q;r+=x2.r;e=e.concat(x2.e)}}
+    if(live&&!seenLive){var x2=extractSums(lns)[oid]; if(x2){q+=x2.q;r+=x2.r;e=e.concat(x2.e);addS(x2)}}
     // Aşama "adette tamamla" ile ya da (gönderilmiş/tamamlanmış siparişlerde) toptan "yapılmış"
     // olarak kapatıldıysa, kapanış adedi (cl) üretim girişi gibi sayılır; böylece toplam adetlerde
     // (ör. toplam kaplama adedi) görünür. Gerçek üretim girişi daha büyükse o geçerlidir.
@@ -5827,7 +5858,18 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         if(orders[oi].id===oid){var cq=+((orders[oi].cl||[])[si0])||0; if(cq>q)q=cq; break}
       }
     }
-    return {q:q,r:r,e:e};
+    return {q:q,r:r,e:e,s:sd};
+  }
+  // Rozet: bileşen (üst kapak, pul…) iş emrinin bir aşamada yapılan adedi (satırlarda cj = siparişId|bileşenAnahtarı)
+  function doneCj(oid,key2,secId){
+    var q=0, id="cj|"+oid+"|"+key2, liveKey=secId+"|"+key(), live=(inApp()&&sec.id===secId), seenLive=false;
+    Object.keys(pm).forEach(function(k){
+      if(k.split("|")[0]!==secId)return;
+      var src=pm[k]; if(live&&k===liveKey){src=extractSums(lns);seenLive=true}
+      var x=src[id]; if(x)q+=x.q;
+    });
+    if(live&&!seenLive){var x2=extractSums(lns)[id]; if(x2)q+=x2.q}
+    return {q:q};
   }
   // Not: daha önce burada tamamen bitmiş (dn>=nd) sipariş/aşama çiftleri toplama hiç
   // katılmıyordu — bu yüzden bir aşamayı tamamladığında o iş toplamdan silinip
@@ -11283,6 +11325,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return mCatItems.filter(function(x){return (x.code||"").toLowerCase().trim()===cd})[0];
   }
   function openOrderForm(id){
+    if(IS_RZ)cpInit();
     orderFormId=id||null;
     var o=id?orders.filter(function(x){return x.id===id})[0]:null;
     ordCat=o?o.cat:1; ordKp=o?(o.kp||""):""; oImgTh=o?(o.th||""):""; oImgFull=null; oImgDirty=false; sheetMode="oform"; $("ov").hidden=false; loadSuggest(); renderSheet();
@@ -11299,9 +11342,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if((st[5]&&!ordKp)||(!orderFormId&&!ordKp)){var kr0=$("kprow"); if(kr0){kr0.scrollIntoView({block:"center"}); kr0.style.outline="2px solid #E0506A"; setTimeout(function(){kr0.style.outline=""},1600)} return}
     if(!st.some(Boolean))st=[1,1,1,1,0,0,0];
     var old=orderFormId?orders.filter(function(x){return x.id===orderFormId})[0]:null;
+    if(IS_RZ&&!old&&st[0]&&mu[0]===1){var pr0=cpProdOf({code:code}), hasO=false, hasA=false; (pr0&&pr0.parts||[]).forEach(function(x){var fn=fold(x.n||""); if(x.k==="lab"&&/^cnc . on$/.test(fn))hasO=true; if(x.k==="lab"&&/^cnc . arka$/.test(fn))hasA=true}); if(hasO&&hasA)mu[0]=2}
     var id=orderFormId||uid();
     var obj={code:code,cat:ordCat,cust:cust,qty:qty,st:st,pr:pr,mu:mu,od:$("ood").value||"",dd:$("odd").value||"",th:oImgTh||"",up:cleanNum($("oup").value,99999999,false),not:($("onote")?$("onote").value.trim():(old&&old.not)||""),kp:ordKp,dk:st[6]?"Var":"Yok",cl:(old&&old.cl)?old.cl.slice():[0,0,0,0,0,0,0],cr:old?(old.cr||monthKeyNow()):monthKeyNow(),ts:old?(old.ts||Date.now()):Date.now()};
     if(old&&old.shipped){obj.shipped=true; if(old.shipDate)obj.shipDate=old.shipDate; if(old.shipQty>0)obj.shipQty=old.shipQty}
+    if(old&&old.cj)obj.cj=old.cj;   // Rozet bileşen planı sipariş düzenlenince kaybolmasın
     // Gönderilmiş bir siparişe sonradan kaplama / diş-delik aşaması eklenirse bu aşamalar zaten
     // yapılmış sayılır (sipariş teslim edilmiş); yoksa sipariş "tamamlanmamış"a dönüp toplamlar kayar.
     if(old&&old.shipped){
@@ -11322,6 +11367,151 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     orderFormId=id; loadProgress(true).then(function(){renderOrders()});
     renderOrders(); openOrderDetail(id);
   }
+
+  /* ---------- Rozet: bileşen planı ----------
+     Reçetedeki üretilen parçalar (üst kapak, iç kapak, alt kapak, çekirdek, pul, tas, göbek) siparişle birlikte üretime girer:
+     gereken = sipariş × reçetedeki adet, stok = cstock/{anahtar}, üretilecek = gereken − stok (elle değişir).
+     Plan siparişin cj alanına yazılır: [{k,n,q,rt:[aşama],cs:tüketildiği aşama,pq:üretilecek}].
+     Bileşen üretimi bölümde fiyatsız satır (cj) olarak girilir; rotadaki SON aşamada stoğa +, tüketim aşamasında (Pres montaj / Montaj)
+     sipariş adedi girilince stoktan − düşer. */
+  var cstock={}, unsubCs=null, cpDraft=null;
+  var CP_FLOW=["pres","cncg","cnca","disacma","kaynak","kaplama"];
+  function cpInit(){
+    if(!IS_RZ||!db)return; watchProducts(); if(unsubCs)return;
+    unsubCs=db.collection("cstock").onSnapshot(function(sn){
+      cstock={}; sn.docs.forEach(function(d){cstock[d.id]=d.data()});
+      var ae=document.activeElement; if(!$("ov").hidden&&sheetMode==="cplan"&&!(ae&&ae.tagName==="INPUT"))renderSheet();
+      else if(!$("ov").hidden&&sheetMode==="odetail")renderSheet();
+    },function(){});
+  }
+  function cpStockOf(k){return +((cstock[k]||{}).q)||0}
+  function cpKeyOf(p){var dm=String(p.nt||"").replace(",",".").match(/\d+(?:\.\d+)?\s*x\s*\d+(?:\.\d+)?/i), dd=dm?dm[0].replace(/\s/g,""):(p.nt||""); return (fold(p.n)+"-"+fold(p.kal||"")+"-"+fold(dd)).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"parca"}
+  function cpNoun(p){var n=fold(p.n); if(/gobek/.test(n))return "gobek"; if(/cekirdek/.test(n))return "cekirdek"; if(/ust kapak/.test(n))return "ust kapak"; if(/alt kapak/.test(n))return "alt kapak"; if(/ic kapak/.test(n))return "ic kapak"; if(/lama/.test(n))return "lama"; if(/^pul/.test(n))return "pul"; if(/^tas/.test(n))return "tas"; return n}
+  function cpLabSec(n){n=fold(n); if(/^testere|^polisaj|^paketleme/.test(n))return ""; if(/^cnc/.test(n))return "cncg"; if(/^transfer/.test(n))return "cnca"; if(/^pres/.test(n))return "pres"; if(/^boyama/.test(n))return "kaynak"; if(/kaplama/.test(n))return "kaplama"; return ""}
+  function cpGuess(pr,p){
+    var noun=cpNoun(p), rt={}, pm2=false;
+    (pr.parts||[]).forEach(function(x){
+      if(x.k!=="lab")return; var n=fold(x.n||""), pa=n.split(" · "), suf=pa.length>1?pa[pa.length-1]:"", head=pa[0];
+      if(/^montaj · kapaklar/.test(n)){pm2=true; return}
+      var mine=noun==="gobek"?(!suf||/^(gobek|on|arka)$/.test(suf)):(!!suf&&suf.indexOf(noun)>-1);
+      var sc=cpLabSec(head); if(mine&&sc)rt[sc]=1;
+    });
+    var route=CP_FLOW.filter(function(id){return rt[id]});
+    if(!route.length)route=[noun==="gobek"?"cncg":"pres"];
+    return {rt:route,cs:(/kapak|cekirdek/.test(noun)&&pm2)?"disacma":"montaj"};
+  }
+  function cpProdOf(o){var k=prKey(o.code); return products.filter(function(p){return prKey(p.code)===k})[0]||null}
+  function cpBuild(o){
+    var pr=cpProdOf(o); if(!pr)return null;
+    var saved={}; (o.cj||[]).forEach(function(j){saved[j.k]=j});
+    var rows=[];
+    (pr.parts||[]).forEach(function(p){
+      if(p.k!=="made")return;
+      var key=cpKeyOf(p), g=cpGuess(pr,p), sv=saved[key], q=pnum(p.q)||1, need=o.qty*q, st=cpStockOf(key);
+      rows.push({k:key,n:(p.n||"Parça")+(p.nt?" · "+p.nt:(p.kal?" · "+p.kal:"")),q:q,rt:sv?sv.rt.slice():g.rt,cs:sv?sv.cs:g.cs,pq:sv?(+sv.pq||0):Math.max(0,need-st),man:!!sv});
+    });
+    return rows;
+  }
+  function cpInc(key,name,d){
+    if(!db||!d)return; cstock[key]=Object.assign({},cstock[key],{n:name,q:cpStockOf(key)+d});
+    db.doc("cstock/"+key).set({n:name,q:firebase.firestore.FieldValue.increment(d),ts:Date.now()},{merge:true}).catch(function(){});
+  }
+  function cpAfterLine(l,delta,secId){
+    if(!IS_RZ||!db||!delta||!l)return; secId=secId||sec.id;
+    if(l.cj){
+      var a=String(l.cj).split("|"), o=orders.filter(function(x){return x.id===a[0]})[0], j=o&&(o.cj||[]).filter(function(z){return z.k===a[1]})[0];
+      if(j&&j.rt&&j.rt.length&&j.rt[j.rt.length-1]===secId)cpInc(j.k,j.n,delta);
+      return;
+    }
+    if(l.o){var o2=orders.filter(function(x){return x.id===l.o})[0]; (o2&&o2.cj||[]).forEach(function(j){if(j.cs===secId&&+j.q)cpInc(j.k,j.n,-(+j.q)*delta)})}
+  }
+  function cpAddLine(id){
+    var a=String(id).split("|"), o=orders.filter(function(x){return x.id===a[0]})[0], j=o&&(o.cj||[]).filter(function(z){return z.k===a[1]})[0]; if(!j)return;
+    var before=COLS.length, k=catIndex("Bileşen"), arr=lines(selected).slice();
+    if(arr.some(function(l){return l.cj===id&&(l.e||"")===(curEmp||"")&&(l.m||"")===(curMac||"")}))return;
+    arr.push({c:o.code+" · "+j.n,k:k,q:0,p:0,u:o.cust||"",cj:id,e:curEmp||"",m:curMac||"",t:Date.now()});
+    logActivity(sec.name+": "+o.code+" · "+j.n+" bileşen üretime girdi","prod",{oid:o.id,code:o.code,sec:sec.id});
+    lns[selected]=arr; touch(); renderLines(); if(COLS.length!==before)renderAll();
+  }
+  function cpSecHtml(){
+    if(!IS_RZ)return "";
+    var rows=[]; orders.forEach(function(o){
+      if(o.shipped||isComplete(o))return;
+      (o.cj||[]).forEach(function(j){
+        if(!(+j.pq>0)||(j.rt||[]).indexOf(sec.id)<0)return;
+        var dn=doneCj(o.id,j.k,sec.id).q; rows.push({o:o,j:j,dn:dn,rem:Math.max(0,j.pq-dn)});
+      });
+    });
+    if(!rows.length)return "";
+    rows.sort(function(a,b){return (b.rem>0)-(a.rem>0)});
+    var ls=lines(selected), h='<div class="cpbox"><b>🧩 Bileşen işleri · '+esc(sec.name)+'</b>';
+    rows.slice(0,40).forEach(function(r){
+      var id=r.o.id+"|"+r.j.k, inDay=ls.some(function(l){return l.cj===id}), idx=r.j.rt.indexOf(sec.id), last=idx===r.j.rt.length-1;
+      h+='<div class="cprw"><div><b>'+esc(r.o.code)+' · '+esc(r.j.n)+'</b><small>'+esc(r.o.cust||"—")+' · üretilecek '+nf.format(r.j.pq)+' · yapılan '+nf.format(r.dn)+(r.rem?' · kalan '+nf.format(r.rem):' · ✓')+(last?' · stoğa girer':'')+'</small></div>'+
+        (inDay?'<span class="cpok">✓ Bugün listede</span>':'<button type="button" data-cjadd="'+esc(id)+'">▶ Üretime gir</button>')+'</div>';
+    });
+    return h+'</div>';
+  }
+  function cpDetailHtml(od){
+    if(!IS_RZ)return "";
+    cpInit();
+    var js=od.cj||[], h='<div class="dst" style="--sc:#2E9E6B"><div class="h"><b>🧩 Bileşenler</b><span class="n">'+(js.length?js.length+' kalem':'plan yok')+'</span></div>';
+    js.forEach(function(r){
+      var stg=(r.rt||[]).map(function(id){var i=stageIdx(id); return (i>-1?STAGES[i].short:id)+' '+nf.format(doneCj(od.id,r.k,id).q)+'/'+nf.format(r.pq)}).join(' → ');
+      h+='<div class="ent"><span>'+esc(r.n)+' ×'+nf.format(r.q)+'</span><span>üretilecek '+nf.format(r.pq)+' · stok '+nf.format(cpStockOf(r.k))+'</span></div>'+(stg?'<div class="m">'+esc(stg)+'</div>':'');
+    });
+    return h+'<button type="button" class="btn ghost sm" id="cpopen" style="margin-top:8px">🧩 '+(js.length?'Bileşen planını düzenle':'Bileşen planı yap')+'</button></div>';
+  }
+  function cpSecName(id){var i=stageIdx(id); return i>-1?STAGES[i].name:id}
+  function cpPlanHtml(){
+    var o=orders.filter(function(x){return x.id===curOid})[0];
+    if(!o)return '<div class="empty">Sipariş bulunamadı.</div>';
+    if(!cpDraft||cpDraft.oid!==o.id||cpDraft.noprod){var rr=cpBuild(o); cpDraft={oid:o.id,rows:rr||[],noprod:!rr}; if(!rr&&!prLoaded)setTimeout(function(){if(sheetMode==="cplan"&&!$("ov").hidden)renderSheet()},900)}
+    var d=cpDraft, h='<div class="shead"><div><h2 id="sh-title">Bileşen planı</h2><small>'+esc(o.code)+' · '+nf.format(o.qty)+' adet sipariş</small></div><button type="button" class="tpill" id="cpback">Geri</button></div><div class="form">';
+    if(d.noprod)return h+'<div class="note" style="margin:0">'+(prLoaded?'Bu koda ait ürün kartı (reçete) bulunamadı. Önce Ürünlerim\'de <b>'+esc(o.code)+'</b> kodlu kartı aç.':'Reçeteler yükleniyor, birkaç saniye sonra tekrar aç.')+'</div></div>';
+    if(!d.rows.length)return h+'<div class="note" style="margin:0">Bu ürünün reçetesinde üretilen (çelik/sac) bileşen yok.</div></div>';
+    h+='<div class="note" style="margin:0;text-align:left">Gereken = sipariş × reçetedeki adet. Stoğu yaz, üretilecek miktar otomatik hesaplanır (istersen değiştir). Aşama zincirini sen belirle: bileşen sırayla bu aşamalardan geçer, <b>son aşamada stoğa girer</b>.</div>';
+    d.rows.forEach(function(r){
+      var need=o.qty*r.q, stk=cpStockOf(r.k);
+      h+='<div class="tlinst cpcard" data-cpk="'+esc(r.k)+'"><div class="tli1"><div class="tlt"><b>'+esc(r.n)+'</b><small>Gereken <b>'+nf.format(need)+'</b> ('+nf.format(o.qty)+' × '+nf.format(r.q)+')</small></div></div>'+
+        '<div class="cpn"><label>Stokta<input class="fin" type="text" inputmode="numeric" data-cpf="st" value="'+stk+'"></label><label>Üretilecek<input class="fin" type="text" inputmode="numeric" data-cpf="pq" value="'+r.pq+'"></label></div>'+
+        '<span class="fl">Üretim aşamaları (sırayla)</span><div class="chiprow" style="margin:4px 0 8px">'+CP_FLOW.map(function(id){return '<button type="button" data-cprt="'+id+'" aria-pressed="'+(r.rt.indexOf(id)>-1)+'">'+esc(cpSecName(id))+(r.rt.indexOf(id)>-1?' · '+(r.rt.indexOf(id)+1):'')+'</button>'}).join("")+'</div>'+
+        '<label class="fl" style="display:block">Hangi aşamada tüketilir (stoktan düşer)</label><select class="fin" data-cpf="cs"><option value=""'+(!r.cs?' selected':'')+'>Düşme (stoğa dokunma)</option><option value="disacma"'+(r.cs==="disacma"?' selected':'')+'>Pres montaj</option><option value="montaj"'+(r.cs==="montaj"?' selected':'')+'>Montaj</option></select></div>';
+    });
+    return h+'<div class="frow"><button type="button" class="btn" id="cpsave">Planı kaydet</button></div><div class="note" id="cpst" style="margin:0"></div></div>';
+  }
+  $("sheet").addEventListener("click",function(e){
+    var t=e.target.closest("button"); if(!t||!IS_RZ)return;
+    if(t.id==="cpopen"){cpInit(); cpDraft=null; sheetMode="cplan"; renderSheet(); $("sheet").scrollTop=0; return}
+    if(sheetMode!=="cplan")return;
+    if(t.id==="cpback"){cpDraft=null; sheetMode="odetail"; renderSheet(); return}
+    var card=t.closest("[data-cpk]");
+    if(t.dataset.cprt&&card&&cpDraft){
+      var r=cpDraft.rows.filter(function(x){return x.k===card.dataset.cpk})[0]; if(!r)return;
+      var i=r.rt.indexOf(t.dataset.cprt); if(i>-1)r.rt.splice(i,1); else r.rt.push(t.dataset.cprt);
+      r.rt.sort(function(a,b){return CP_FLOW.indexOf(a)-CP_FLOW.indexOf(b)});
+      var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc; return;
+    }
+    if(t.id==="cpsave"&&cpDraft){
+      var o=orders.filter(function(x){return x.id===cpDraft.oid})[0]; if(!o||!db)return;
+      var cj=cpDraft.rows.map(function(r){return {k:r.k,n:r.n,q:r.q,rt:r.rt.slice(),cs:r.cs||"",pq:+r.pq||0}});
+      o.cj=cj; db.doc("orders/"+o.id).set({cj:cj},{merge:true}).catch(function(){});
+      logActivity("Bileşen planı: "+o.code+" · "+cj.filter(function(x){return x.pq>0}).length+" bileşen üretilecek","info",{oid:o.id,code:o.code});
+      cpDraft=null; sheetMode="odetail"; renderSheet(); return;
+    }
+  });
+  $("sheet").addEventListener("change",function(e){
+    var el=e.target; if(!IS_RZ||sheetMode!=="cplan"||!cpDraft||!el.dataset||!el.dataset.cpf)return;
+    var card=el.closest("[data-cpk]"), r=card&&cpDraft.rows.filter(function(x){return x.k===card.dataset.cpk})[0]; if(!r)return;
+    var o=orders.filter(function(x){return x.id===cpDraft.oid})[0]; if(!o)return;
+    var f=el.dataset.cpf, v=el.value;
+    if(f==="st"){
+      var nv=Math.max(0,Math.round(+String(v).replace(",",".")||0)), old=cpStockOf(r.k); if(db&&nv!==old){cstock[r.k]=Object.assign({},cstock[r.k],{n:r.n,q:nv}); db.doc("cstock/"+r.k).set({n:r.n,q:nv,ts:Date.now()},{merge:true}).catch(function(){})}
+      r.pq=Math.max(0,o.qty*r.q-nv);
+    }else if(f==="pq")r.pq=Math.max(0,Math.round(+String(v).replace(",",".")||0));
+    else if(f==="cs")r.cs=v;
+    var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc;
+  });
   $("sheet").addEventListener("click",function(e){
     if(e.target.id!=="odimg")return;
     var d=document.createElement("div"); d.className="lbx"; d.innerHTML='<img alt="" src="'+e.target.src+'">';
@@ -11444,7 +11634,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var a=0,rv=0;
     Object.keys(d||{}).forEach(function(k){a+=sum(d[k])});
     Object.keys(r||{}).forEach(function(k){rv+=sum(r[k])});
-    Object.keys(l||{}).forEach(function(k){(l[k]||[]).forEach(function(x){a+=x.q;rv+=x.q*x.p})});
+    Object.keys(l||{}).forEach(function(k){(l[k]||[]).forEach(function(x){if(!x.cj)a+=x.q;rv+=x.q*x.p})});
     return {a:a,r:rv};
   }
   function paintHome(id,sm){
