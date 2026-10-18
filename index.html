@@ -2389,7 +2389,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 21:00</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 21:30</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8978,7 +8978,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   }
   function compRowHtml(m){
     var ch=(+m.p>0&&+m.p5>0)?Math.round((m.p/m.p5-1)*100):null;
-    return '<div class="fcard"><button type="button" class="fgo" data-prcedit="'+m.id+'"><div class="ftx"><b>'+esc(m.name||"—")+'</b><small>'+esc([m.cat||"Diğer",m.sup].filter(Boolean).join(" · "))+(+m.p5>0?' · 2025: '+pf(m.p5)+' ₺':'')+'</small></div>'+
+    return '<div class="fcard"><button type="button" class="fgo" data-prcedit="'+m.id+'"><div class="ftx"><b>'+esc(m.name||"—")+'</b><small>'+esc([m.cat||"Diğer",m.sup].filter(Boolean).join(" · "))+(+m.p5>0?' · 2025: '+pf(m.p5)+' ₺':'')+(IS_RZ?esc(cpMatTag(m)):'')+'</small></div>'+
       '<span class="stfpill'+(+m.p>0?' on':'')+'">'+(+m.p>0?pf(m.p)+' ₺':'fiyat yok')+(ch!==null&&ch!==0?'<em class="chg '+(ch>0?'up':'dn')+'">'+(ch>0?'▲':'▼')+Math.abs(ch)+'%</em>':'')+'</span><span class="fchev">›</span></button></div>';
   }
   function renderProds(){
@@ -9870,11 +9870,12 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return '<div class="shead"><div><h2 id="sh-title">'+(d.id?esc(d.name||"Bileşen"):"Yeni bileşen")+'</h2><small>'+(m0?'Stok: '+nf.format(+m0.stock||0)+' '+esc(m0.unit||"adet"):'Fiyat listesi · stok kalemi')+'</small></div><button type="button" class="tpill" id="prccancel">Kapat</button></div><div class="form">'+
       '<div><label class="fl" for="prc-name">Ad</label><input class="fin" type="text" id="prc-name" data-prcf="name" value="'+esc(d.name)+'" autocomplete="off"></div>'+
       '<div><label class="fl" for="prc-cat">Kategori</label><input class="fin" type="text" id="prc-cat" data-prcf="cat" list="prccatl" value="'+esc(d.cat)+'" autocomplete="off" placeholder="ör. Cıvata"><datalist id="prccatl">'+order.map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist></div>'+
+      (IS_RZ?cpMatSrcHtml(d):'')+
       '<div class="dgrid"><div><label class="fl" for="prc-p">Fiyat 2026 ₺</label><input class="fin" type="text" inputmode="decimal" id="prc-p" data-prcf="p" value="'+esc(d.p)+'"></div><div><label class="fl" for="prc-p5">Fiyat 2025 ₺</label><input class="fin" type="text" inputmode="decimal" id="prc-p5" data-prcf="p5" value="'+esc(d.p5)+'"></div></div>'+
       '<div class="dgrid"><div><label class="fl" for="prc-unit">Birim</label><input class="fin" type="text" id="prc-unit" data-prcf="unit" value="'+esc(d.unit)+'" autocomplete="off"></div><div><label class="fl" for="prc-pd">Fiyat tarihi</label><input class="fin" type="date" id="prc-pd" data-prcf="pd" value="'+esc(d.pd)+'"></div></div>'+
       '<div><label class="fl" for="prc-sup">Tedarikçi</label><input class="fin" type="text" id="prc-sup" data-prcf="sup" value="'+esc(d.sup)+'" autocomplete="off"></div>'+
       '<div><label class="fl" for="prc-note">Not</label><textarea class="fin" id="prc-note" data-prcf="note">'+esc(d.note)+'</textarea></div>'+
-      (d.id?prCompUsedHtml(d.id):'')+
+      (d.id?prCompUsedHtml(d.id):'')+(IS_RZ&&d.id?cpMatJobsHtml(d.id):'')+
       '<div class="frow"><button type="button" class="btn" id="prcsave">Kaydet</button></div><div class="note" id="prcnote" style="margin:0"></div></div>';
   }
   function prCompUsedHtml(mid){
@@ -10115,7 +10116,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(t.dataset.prccat!==undefined){prCompCat=t.dataset.prccat; renderProds(); return}
     if(t.id==="prcnew"||t.dataset.prcedit){
       var m=t.dataset.prcedit?matById(t.dataset.prcedit):null;
-      prCDraft=m?{id:m.id,name:m.name||"",cat:m.cat||"",p:+m.p>0?String(m.p):"",p5:+m.p5>0?String(m.p5):"",unit:m.unit||"adet",pd:m.pd||"",sup:m.sup||"",note:m.note||""}:{id:"",name:"",cat:prCompCat,p:"",p5:"",unit:"adet",pd:"",sup:"",note:""};
+      prCDraft=m?{id:m.id,name:m.name||"",cat:m.cat||"",p:+m.p>0?String(m.p):"",p5:+m.p5>0?String(m.p5):"",unit:m.unit||"adet",pd:m.pd||"",sup:m.sup||"",note:m.note||"",src:matSrc(m),rt:(m.rt||[]).slice(),cs:m.cs||""}:{id:"",name:"",cat:prCompCat,p:"",p5:"",unit:"adet",pd:"",sup:"",note:"",src:"buy",rt:[],cs:""};
       sheetMode="comp"; $("ov").hidden=false; renderSheet(); return;
     }
     if(t.id==="prccancel"){closeSheet(); prCDraft=null; return}
@@ -10124,6 +10125,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       if(!c.name){if(nt)nt.textContent="Ad gerekli."; return}
       if(!db){if(nt)nt.textContent="Bağlantı yok, kaydedilemedi."; return}
       var doc={name:c.name,cat:c.cat.trim(),unit:(c.unit||"adet").trim()||"adet",p:pnum(c.p),p5:pnum(c.p5),sup:c.sup.trim(),pd:c.pd||"",note:c.note.trim()};
+      if(IS_RZ){doc.src=c.src==="make"?"make":"buy"; doc.rt=c.src==="make"?c.rt.slice():[]; doc.cs=c.src==="make"?(c.cs||""):""}
       if(c.id)db.doc("materials/"+c.id).set(doc,{merge:true}).then(function(){closeSheet(); prCDraft=null}).catch(function(){if(nt)nt.textContent="Kaydedilemedi."});
       else{doc.stock=0; db.collection("materials").add(doc).then(function(){closeSheet(); prCDraft=null}).catch(function(){if(nt)nt.textContent="Kaydedilemedi."})}
       return;
@@ -11851,7 +11853,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var obj={code:code,cat:ordCat,cust:cust,qty:qty,st:st,pr:pr,mu:mu,od:$("ood").value||"",dd:$("odd").value||"",th:oImgTh||"",up:cleanNum($("oup").value,99999999,false),not:($("onote")?$("onote").value.trim():(old&&old.not)||""),kp:ordKp,dk:st[6]?"Var":"Yok",cl:(old&&old.cl)?old.cl.slice():[0,0,0,0,0,0,0],cr:old?(old.cr||monthKeyNow()):monthKeyNow(),ts:old?(old.ts||Date.now()):Date.now()};
     if(old&&old.shipped){obj.shipped=true; if(old.shipDate)obj.shipDate=old.shipDate; if(old.shipQty>0)obj.shipQty=old.shipQty}
     if(old&&old.cj)obj.cj=old.cj;
-    if(IS_RZ)obj.cn=st[0]?ordCn:"";   // Rozet bileşen planı sipariş düzenlenince kaybolmasın
+    if(IS_RZ)obj.cn=st[0]?ordCn:"";
+    // Rozet: yeni siparişte reçetedeki bileşenlerin stoğu kontrol edilir; üretilenlerde eksik adet için iş emri (bileşen planı) otomatik açılır
+    var cjAuto=null; if(IS_RZ&&!old&&prLoaded&&matsLoaded){var cpl=cpBuild({id:orderFormId||"",code:code,qty:qty,cj:[]}); if(cpl&&cpl.length){cjAuto=cpl; obj.cj=cpl.map(function(r){var x={k:r.k,n:r.n,q:r.q,rt:r.rt.slice(),cs:r.cs||"",pq:+r.pq||0}; if(r.b)x.b=1; return x})}}   // Rozet bileşen planı sipariş düzenlenince kaybolmasın
     // Gönderilmiş bir siparişe sonradan kaplama / diş-delik aşaması eklenirse bu aşamalar zaten
     // yapılmış sayılır (sipariş teslim edilmiş); yoksa sipariş "tamamlanmamış"a dönüp toplamlar kayar.
     if(old&&old.shipped){
@@ -11864,6 +11868,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     lsOrdersSet(); paintOrdersHome();
     if(db)db.doc("orders/"+id).set(obj).catch(function(){$("ostatus").textContent="Sipariş kaydedilemedi — bu cihazda saklandı"});
     if(!old)logActivity("Yeni sipariş: "+code+(cust?" · "+cust:"")+" · "+nf.format(qty)+" adet","order",{oid:id,code:code});
+    if(cjAuto){var nJob=cjAuto.filter(function(r){return !r.b&&r.pq>0}).length, nLack=cjAuto.filter(function(r){return r.b&&cpStockOf(r.k)<qty*r.q}).length; if(nJob||nLack)logActivity("Bileşen kontrolü: "+code+(nJob?" · "+nJob+" bileşen için iş emri açıldı":"")+(nLack?" · "+nLack+" satın alınan bileşen eksik":""),"info",{oid:id,code:code})}
     if(oImgDirty){
       if(oImgFull){imgCache[id]=oImgFull; if(db)db.doc("oimg/"+id).set({d:oImgFull}).catch(function(){})}
       else{delete imgCache[id]; if(db)db.doc("oimg/"+id).delete().catch(function(){})}
@@ -11910,14 +11915,44 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function cpBuild(o){
     var pr=cpProdOf(o); if(!pr)return null;
     var saved={}; (o.cj||[]).forEach(function(j){saved[j.k]=j});
-    var rows=[];
+    var rows=[], byK={};
     (pr.parts||[]).forEach(function(p){
-      if(p.k!=="made")return;
-      var key=(p.m&&matById(p.m))?p.m:cpKeyOf(p), g=cpGuess(pr,p), sv=saved[key], q=pnum(p.q)||1, need=o.qty*q, st=cpStockOf(key);
-      rows.push({k:key,n:(p.n||"Parça")+(p.nt?" · "+p.nt:(p.kal?" · "+p.kal:"")),q:q,rt:sv?sv.rt.slice():g.rt,cs:sv?sv.cs:g.cs,pq:sv?(+sv.pq||0):Math.max(0,need-st),man:!!sv});
+      var m=p.m?matById(p.m):null; if(!m&&p.k!=="made")return; if(p.k==="lab"||p.k==="coat")return;
+      var src=m?matSrc(m):"make", key=m?m.id:cpKeyOf(p), q=pnum(p.q)||1;
+      if(byK[key]){byK[key].q+=q; if(!byK[key].man)byK[key].pq=byK[key].b?0:Math.max(0,o.qty*byK[key].q-cpStockOf(key)); return}
+      var sv=saved[key], need=o.qty*q, st=cpStockOf(key), r;
+      if(src==="buy")r={k:key,n:m.name||p.n||"Bileşen",q:q,rt:[],cs:"",pq:0,b:1,man:!!sv};
+      else{
+        var g=cpGuess(pr,p), mrt=m&&m.rt&&m.rt.length?m.rt.slice():null, mcs=m&&m.cs?(m.cs==="-"?"":m.cs):null;
+        r={k:key,n:(m&&m.name)||((p.n||"Parça")+(p.nt?" · "+p.nt:(p.kal?" · "+p.kal:""))),q:q,rt:sv?sv.rt.slice():(mrt||g.rt),cs:sv?sv.cs:(mcs!==null?mcs:g.cs),pq:sv?(+sv.pq||0):Math.max(0,need-st),man:!!sv};
+      }
+      byK[key]=r; rows.push(r);
     });
     return rows;
   }
+  /* Bileşen türü: satın alınan / üretilen. Kayıtta yoksa reçeteden açılmış (üretilen parça) bileşenler üretilen sayılır. */
+  function matSrc(m){return m&&m.src?m.src:(m&&/^Reçeteden:/.test(m.note||"")?"make":"buy")}
+  function cpMatTag(m){if(matSrc(m)!=="make")return " · 🛒 Satın alınan"; var rt=(m.rt||[]).map(function(id){var i=stageIdx(id); return i>-1?STAGES[i].short:id}); return " · ⚙ Üretilen"+(rt.length?" ("+rt.join(" → ")+")":"")}
+  function cpMatSrcHtml(d){
+    var h='<div><span class="fl">Bileşen türü</span><div class="chiprow" style="margin-top:4px"><button type="button" data-prcsrc="buy" aria-pressed="'+(d.src!=="make")+'">🛒 Satın alınan</button><button type="button" data-prcsrc="make" aria-pressed="'+(d.src==="make")+'">⚙ Üretilen</button></div></div>';
+    if(d.src!=="make")return h+'<div class="note" style="margin:0;text-align:left">Siparişte stoğu kontrol edilir; yetmezse sipariş detayında eksik adet gösterilir.</div>';
+    return h+'<div><span class="fl">Üretim aşamaları (sırayla)</span><div class="chiprow" style="margin:4px 0 0">'+CP_FLOW.map(function(id){var i=d.rt.indexOf(id); return '<button type="button" data-prcrt="'+id+'" aria-pressed="'+(i>-1)+'">'+esc(cpSecName(id))+(i>-1?' · '+(i+1):'')+'</button>'}).join("")+'</div>'+
+      '<div class="note" style="margin:4px 0 0;text-align:left">Siparişte stok yetmezse eksik adet için bu aşamalarda iş emri açılır; son aşamada stoğa girer.'+(d.rt.length?'':' Aşama seçmezsen reçetedeki işçilik satırlarından tahmin edilir.')+'</div></div>'+
+      '<div><label class="fl">Hangi aşamada tüketilir (stoktan düşer)</label><select class="fin" data-prcf="cs"><option value=""'+(!d.cs?' selected':'')+'>Otomatik (reçeteye göre)</option><option value="disacma"'+(d.cs==="disacma"?' selected':'')+'>Pres montaj</option><option value="montaj"'+(d.cs==="montaj"?' selected':'')+'>Montaj</option><option value="-"'+(d.cs==="-"?' selected':'')+'>Düşme (stoğa dokunma)</option></select></div>';
+  }
+  function cpMatJobsHtml(mid){
+    var m=matById(mid), l=[]; orders.forEach(function(o){if(o.shipped||isComplete(o))return; (o.cj||[]).forEach(function(j){if(j.k===mid)l.push({o:o,j:j})})});
+    var h='<div><span class="fl">Stok · iş emirleri</span><div class="note" style="margin:4px 0 0;text-align:left;color:var(--ink)">Stokta <b>'+nf.format(+(m&&m.stock)||0)+'</b> '+esc((m&&m.unit)||"adet")+'</div>';
+    if(!l.length)return h+'<div class="note" style="margin:3px 0 0;text-align:left">Açık siparişlerde bu bileşen yok.</div></div>';
+    return h+l.slice(0,15).map(function(x){var need=x.o.qty*(+x.j.q||1), last=(x.j.rt||[])[(x.j.rt||[]).length-1], dn=last?doneCj(x.o.id,x.j.k,last).q:0;
+      return '<div class="note" style="margin:3px 0 0;text-align:left;color:var(--ink)"><b>'+esc(x.o.code)+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+' · gereken '+nf.format(need)+(x.j.b?'':(+x.j.pq>0?' · iş emri '+nf.format(x.j.pq)+' (yapılan '+nf.format(dn)+')':' · stoktan'))+'</div>'}).join("")+'</div>';
+  }
+  $("sheet").addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("[data-prcsrc],[data-prcrt]"); if(!t||!IS_RZ||sheetMode!=="comp"||!prCDraft)return;
+    if(t.dataset.prcsrc)prCDraft.src=t.dataset.prcsrc;
+    else{var r=prCDraft.rt, i=r.indexOf(t.dataset.prcrt); if(i>-1)r.splice(i,1); else r.push(t.dataset.prcrt); r.sort(function(a,b){return CP_FLOW.indexOf(a)-CP_FLOW.indexOf(b)})}
+    var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc;
+  });
   function cpInc(key,name,d){
     if(!db||!d)return;
     if(matById(key)){db.doc("materials/"+key).update({stock:firebase.firestore.FieldValue.increment(d)}).catch(function(){}); return}
@@ -11966,6 +12001,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var js=od.cj||[], h='<div class="dst" style="--sc:#2E9E6B"><div class="h"><b>🧩 Bileşenler</b><span class="n">'+(js.length?js.length+' kalem':'plan yok')+'</span></div>';
     js.forEach(function(r){
       var stg=(r.rt||[]).map(function(id){var i=stageIdx(id); return (i>-1?STAGES[i].short:id)+' '+nf.format(doneCj(od.id,r.k,id).q)+'/'+nf.format(r.pq)}).join(' → ');
+      if(r.b){var nd0=od.qty*(+r.q||1), sk0=cpStockOf(r.k); h+='<div class="ent"><span>🛒 '+esc(r.n)+' ×'+nf.format(r.q)+'</span><span>gereken '+nf.format(nd0)+' · stok '+nf.format(sk0)+(sk0<nd0?' · ⚠ eksik '+nf.format(nd0-sk0):' · ✓')+'</span></div>'; return}
       h+='<div class="ent"><span>'+esc(r.n)+' ×'+nf.format(r.q)+'</span><span>üretilecek '+nf.format(r.pq)+' · stok '+nf.format(cpStockOf(r.k))+'</span></div>'+(stg?'<div class="m">'+esc(stg)+'</div>':'');
     });
     return h+'<button type="button" class="btn ghost sm" id="cpopen" style="margin-top:8px">🧩 '+(js.length?'Bileşen planını düzenle':'Bileşen planı yap')+'</button></div>';
@@ -11981,6 +12017,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     h+='<div class="note" style="margin:0;text-align:left">Gereken = sipariş × reçetedeki adet. Stoğu yaz, üretilecek miktar otomatik hesaplanır (istersen değiştir). Aşama zincirini sen belirle: bileşen sırayla bu aşamalardan geçer, <b>son aşamada stoğa girer</b>.</div>';
     d.rows.forEach(function(r){
       var need=o.qty*r.q, stk=cpStockOf(r.k);
+      if(r.b){h+='<div class="tlinst cpcard" data-cpk="'+esc(r.k)+'"><div class="tli1"><div class="tlt"><b>🛒 '+esc(r.n)+'</b><small>Satın alınan · gereken <b>'+nf.format(need)+'</b> ('+nf.format(o.qty)+' × '+nf.format(r.q)+')'+(stk<need?' · ⚠ eksik <b>'+nf.format(need-stk)+'</b>':' · ✓ stok yeterli')+'</small></div></div><div class="cpn"><label>Stokta<input class="fin" type="text" inputmode="numeric" data-cpf="st" value="'+stk+'"></label></div></div>'; return}
       h+='<div class="tlinst cpcard" data-cpk="'+esc(r.k)+'"><div class="tli1"><div class="tlt"><b>'+esc(r.n)+'</b><small>Gereken <b>'+nf.format(need)+'</b> ('+nf.format(o.qty)+' × '+nf.format(r.q)+')</small></div></div>'+
         '<div class="cpn"><label>Stokta<input class="fin" type="text" inputmode="numeric" data-cpf="st" value="'+stk+'"></label><label>Üretilecek<input class="fin" type="text" inputmode="numeric" data-cpf="pq" value="'+r.pq+'"></label></div>'+
         '<span class="fl">Üretim aşamaları (sırayla)</span><div class="chiprow" style="margin:4px 0 8px">'+CP_FLOW.map(function(id){return '<button type="button" data-cprt="'+id+'" aria-pressed="'+(r.rt.indexOf(id)>-1)+'">'+esc(cpSecName(id))+(r.rt.indexOf(id)>-1?' · '+(r.rt.indexOf(id)+1):'')+'</button>'}).join("")+'</div>'+
@@ -12002,7 +12039,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     }
     if(t.id==="cpsave"&&cpDraft){
       var o=orders.filter(function(x){return x.id===cpDraft.oid})[0]; if(!o||!db)return;
-      var cj=cpDraft.rows.map(function(r){return {k:r.k,n:r.n,q:r.q,rt:r.rt.slice(),cs:r.cs||"",pq:+r.pq||0}});
+      var cj=cpDraft.rows.map(function(r){var x={k:r.k,n:r.n,q:r.q,rt:r.rt.slice(),cs:r.cs||"",pq:+r.pq||0}; if(r.b)x.b=1; return x});
       o.cj=cj; db.doc("orders/"+o.id).set({cj:cj},{merge:true}).catch(function(){});
       logActivity("Bileşen planı: "+o.code+" · "+cj.filter(function(x){return x.pq>0}).length+" bileşen üretilecek","info",{oid:o.id,code:o.code});
       cpDraft=null; sheetMode="odetail"; renderSheet(); return;
@@ -12019,7 +12056,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         if(matById(r.k))db.doc("materials/"+r.k).update({stock:nv}).catch(function(){});
         else{cstock[r.k]=Object.assign({},cstock[r.k],{n:r.n,q:nv}); db.doc("cstock/"+r.k).set({n:r.n,q:nv,ts:Date.now()},{merge:true}).catch(function(){})}
       }
-      r.pq=Math.max(0,o.qty*r.q-nv);
+      r.pq=r.b?0:Math.max(0,o.qty*r.q-nv);
     }else if(f==="pq")r.pq=Math.max(0,Math.round(+String(v).replace(",",".")||0));
     else if(f==="cs")r.cs=v;
     var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc;
