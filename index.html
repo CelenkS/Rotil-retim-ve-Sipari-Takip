@@ -2318,45 +2318,52 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .hcard.ordc.toolc .hk,.hcard.ordc.toolc .go{color:#E8793A}
 
 /* ---- Bölüm seçimi ---- */
-#divGate{position:fixed;inset:0;z-index:100000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(120% 90% at 100% 0%,#3B4E75 0%,transparent 60%),linear-gradient(160deg,#17223A,#0A101E);color:#fff;font-family:var(--font-ui)}
+#divGate{position:fixed;inset:0;z-index:100000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 20px;background:#080D18;color:#fff;font-family:var(--font-ui);isolation:isolate}
 #divGate[hidden]{display:none}
-#divGate .dvwrap{width:min(440px,100%);display:flex;flex-direction:column;gap:12px}
-#divGate .lgeyebrow{font:800 11px var(--font-ui);letter-spacing:.16em;text-transform:uppercase;color:#FFC454}
-#divGate h1{margin:0 0 6px;font:800 28px/1.15 var(--font-head);color:#fff}
-#divGate .dvlist{display:flex;flex-direction:column;gap:12px}
-.dvcard{position:relative;display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:22px;padding:16px;color:#fff;cursor:pointer;background:linear-gradient(145deg,var(--d1),var(--d2));box-shadow:0 12px 28px rgba(0,0,0,.35);overflow:hidden}
-.dvcard:active{transform:scale(.99)}
-.dvcard .dvic{flex:none;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font:800 26px var(--font-head)}
-.dvcard .dvtx{flex:1;min-width:0}
-.dvcard b{display:block;font:800 21px var(--font-head)}
-.dvcard small{display:block;font:600 12.5px var(--font-ui);opacity:.85;margin-top:2px}
-.dvcard em{position:absolute;top:9px;right:14px;font:800 10px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.22);padding:3px 8px;border-radius:99px;font-style:normal}
-.dvcard .dvgo{font:800 26px var(--font-ui);opacity:.8}
-.dvcard em+.dvgo{margin-top:12px}
-.dvout{align-self:center;margin-top:6px;border:1px solid rgba(255,255,255,.25);background:none;color:#fff;border-radius:99px;padding:9px 18px;font:700 13px var(--font-ui);cursor:pointer}
+#divGate::before,#divGate::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);opacity:.55;pointer-events:none;animation:dvfloat 18s ease-in-out infinite alternate}
+#divGate::before{width:60vmax;height:60vmax;left:-18vmax;top:-22vmax;background:radial-gradient(circle,#2A6F8F 0%,transparent 65%)}
+#divGate::after{width:55vmax;height:55vmax;right:-16vmax;bottom:-20vmax;background:radial-gradient(circle,#6B46D8 0%,transparent 65%);animation-delay:-9s}
+#divGate .dvgrid{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(70% 60% at 50% 45%,#000 30%,transparent 100%);mask-image:radial-gradient(70% 60% at 50% 45%,#000 30%,transparent 100%)}
+@keyframes dvfloat{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(6vmax,4vmax,0) scale(1.12)}}
+@keyframes dvin{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+#divGate .dvwrap{width:min(980px,100%);display:flex;flex-direction:column;align-items:center;gap:0}
+#divGate .dvlogo{width:60px;height:60px;border-radius:19px;display:grid;place-items:center;font:800 21px var(--font-head);letter-spacing:-.02em;color:#fff;background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.25);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);animation:dvin .6s both}
+#divGate .lgeyebrow{margin-top:18px;font:800 11px var(--font-ui);letter-spacing:.22em;text-transform:uppercase;color:#FFC454;animation:dvin .6s .05s both}
+#divGate h1{margin:8px 0 6px;text-align:center;font:800 clamp(28px,5vw,44px)/1.08 var(--font-head);letter-spacing:-.02em;background:linear-gradient(180deg,#fff 30%,#A9B8D6);-webkit-background-clip:text;background-clip:text;color:transparent;animation:dvin .6s .1s both}
+#divGate .dvdate{margin:0 0 30px;font:600 13.5px var(--font-ui);color:rgba(255,255,255,.55);animation:dvin .6s .15s both}
+#divGate .dvlist{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+@media (min-width:760px){#divGate .dvlist{grid-template-columns:repeat(3,1fr)}}
+.dvcard{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:0;width:100%;min-height:210px;text-align:left;border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:22px;color:#fff;cursor:pointer;font:inherit;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.025));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .35s;animation:dvin .7s cubic-bezier(.2,.8,.2,1) both}
+.dvcard:nth-child(1){animation-delay:.2s}.dvcard:nth-child(2){animation-delay:.28s}.dvcard:nth-child(3){animation-delay:.36s}
+.dvcard::before{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(90% 80% at 0% 0%,color-mix(in srgb,var(--d1) 42%,transparent),transparent 70%),radial-gradient(70% 60% at 100% 100%,color-mix(in srgb,var(--d2) 38%,transparent),transparent 70%);opacity:.75;transition:opacity .35s}
+.dvcard>*{position:relative;z-index:1}
+.dvcard:hover,.dvcard:focus-visible{transform:translateY(-6px);border-color:color-mix(in srgb,var(--d1) 70%,#fff 10%);box-shadow:0 26px 60px rgba(0,0,0,.5),0 0 0 1px color-mix(in srgb,var(--d1) 50%,transparent),0 0 60px -10px var(--d1);outline:none}
+.dvcard:hover::before{opacity:1}
+.dvcard:active{transform:translateY(-2px) scale(.99)}
+.dvcard .dvic{flex:none;width:58px;height:58px;border-radius:19px;display:grid;place-items:center;background:linear-gradient(145deg,var(--d1),var(--d2));box-shadow:0 10px 26px -6px var(--d1),inset 0 1px 0 rgba(255,255,255,.35)}
+.dvcard .dvic svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dvcard .dvtx{margin-top:auto;padding-top:28px;display:block;width:100%}
+.dvcard b{display:block;font:800 26px var(--font-head);letter-spacing:-.01em}
+.dvcard small{display:block;font:600 13px/1.35 var(--font-ui);color:rgba(255,255,255,.7);margin-top:4px}
+.dvcard em{position:absolute;top:20px;right:20px;display:inline-flex;align-items:center;gap:6px;font:800 10px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:5px 10px;border-radius:99px;font-style:normal}
+.dvcard em::before{content:"";width:6px;height:6px;border-radius:50%;background:#5BE3A0;box-shadow:0 0 0 0 rgba(91,227,160,.7);animation:dvpulse 1.8s infinite}
+@keyframes dvpulse{70%{box-shadow:0 0 0 7px rgba(91,227,160,0)}100%{box-shadow:0 0 0 0 rgba(91,227,160,0)}}
+.dvcard .dvgo{position:absolute;right:20px;bottom:22px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:700 20px/1 var(--font-ui);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);transition:transform .35s cubic-bezier(.2,.8,.2,1),background .3s}
+.dvcard:hover .dvgo{transform:translateX(4px);background:linear-gradient(145deg,var(--d1),var(--d2));border-color:transparent}
+.dvcard .dvkey{position:absolute;left:92px;top:22px;font:700 11px var(--font-ui);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:2px 6px;display:none}
+@media (hover:hover) and (min-width:760px){.dvcard .dvkey{display:block}}
+.dvout{display:inline-flex;align-items:center;gap:8px;margin-top:30px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:rgba(255,255,255,.8);border-radius:99px;padding:10px 20px;font:700 13px var(--font-ui);cursor:pointer;transition:background .25s,color .25s;animation:dvin .6s .45s both}
+.dvout:hover{background:rgba(255,255,255,.12);color:#fff}
+.dvout svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:759px){#divGate{align-items:flex-start;padding-top:44px}.dvcard{min-height:0;flex-direction:row;align-items:center;gap:16px;padding:18px;border-radius:24px}.dvcard .dvtx{margin:0;padding:0;flex:1;min-width:0}.dvcard b{font-size:22px}.dvcard .dvgo{position:static;flex:none}.dvcard em{top:10px;right:14px;padding:3px 8px}}
+@media (prefers-reduced-motion:reduce){#divGate *,#divGate::before,#divGate::after{animation:none!important}}
 .divbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:16px;background:linear-gradient(145deg,var(--divc1),var(--divc2));color:#fff}
 .divbar b{font:800 15px var(--font-head)}
 .divbar small{display:block;font:600 11.5px var(--font-ui);opacity:.85}
 .divbar button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.16);color:#fff;border-radius:99px;padding:8px 13px;font:800 12.5px var(--font-ui);cursor:pointer;white-space:nowrap}
 
-#compcard .cn-h{margin:0 0 4px;font:700 17px var(--font-head)}
-#compcard .cn-sub{margin:0 0 10px;font:600 12.5px var(--font-ui);color:var(--ink2)}
-#compcard .cn-t{margin:12px 0 6px;font:800 13px var(--font-head);color:var(--ink)}
-#compcard .cn-t small,#compcard .cn-ok summary small{font:700 11px var(--font-ui);color:var(--ink2);margin-left:4px}
-#compcard .cn-row{border:1px solid var(--line,rgba(128,128,128,.25));border-radius:12px;margin-bottom:6px;background:var(--surface)}
-#compcard .cn-row summary,#compcard .cn-ok>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;font:700 13.5px var(--font-ui)}
-#compcard .cn-row summary::-webkit-details-marker,#compcard .cn-ok>summary::-webkit-details-marker{display:none}
-#compcard .cn-n{display:flex;flex-direction:column;min-width:0}
-#compcard .cn-n small{font:600 11px var(--font-ui);color:var(--ink2);margin-top:2px}
-#compcard .cn-q{white-space:nowrap;font:800 13px var(--font-head);color:var(--ink2)}
-#compcard .cn-q.lack{color:#C0392B}
-#compcard .cn-d{padding:0 12px 10px}
-#compcard .cn-s{font:600 12.5px var(--font-ui);color:var(--ink2);margin-bottom:6px}
-#compcard .cn-s b{color:var(--ink)}
 #compcard .cn-o{display:flex;justify-content:space-between;width:100%;text-align:left;padding:7px 8px;margin-top:3px;border:0;border-radius:8px;background:rgba(128,128,128,.1);color:var(--ink);font:600 12.5px var(--font-ui);cursor:pointer}
 #compcard .cn-o span{font-weight:800}
-#compcard .cn-ok{margin-top:10px}
-#compcard .cn-ok>summary{padding:8px 4px;color:var(--ink2)}
 </style>
 </head>
 <body>
@@ -2373,11 +2380,14 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 </div>
 
 <div id="divGate" hidden>
+  <div class="dvgrid"></div>
   <div class="dvwrap">
+    <div class="dvlogo nocap">ÜD</div>
     <div class="lgeyebrow">Üretim Defteri</div>
     <h1>Hangi bölümde çalışacaksın?</h1>
+    <p class="dvdate" id="dvDate"></p>
     <div class="dvlist"></div>
-    <button type="button" class="dvout" id="dvLogout">Çıkış yap</button>
+    <button type="button" class="dvout" id="dvLogout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Çıkış yap</button>
   </div>
 </div>
 
@@ -2408,7 +2418,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 20:53</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 21:00</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -2767,11 +2777,23 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   if(lgSubmit)lgSubmit.addEventListener("click",doLogin);
   if(lgPass)lgPass.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin()});
   if(lgEmail)lgEmail.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin()});
+  var DV_ICONS={
+    rotil:'<circle cx="12" cy="7.5" r="4"/><path d="M12 11.5V20M8.5 20h7M9.5 15.5h5"/>',
+    civata:'<path d="M7 3h10l1 4H6zM9 7v14M15 7v14M9 11l6-2M9 15l6-2M9 19l6-2"/>',
+    rozet:'<circle cx="12" cy="9" r="6"/><circle cx="12" cy="9" r="2.4"/><path d="M8.6 14 7 22l5-3 5 3-1.6-8"/>'
+  };
+  document.addEventListener("keydown",function(e){
+    var g=document.getElementById("divGate"); if(!g||g.hidden||e.ctrlKey||e.metaKey||e.altKey)return;
+    var tg=e.target&&e.target.tagName; if(tg==="INPUT"||tg==="TEXTAREA")return;
+    var i=parseInt(e.key,10); if(i>=1&&i<=DIVS.length){var b=g.querySelector('[data-dv="'+DIVS[i-1].id+'"]'); if(b)b.click()}
+  });
   function divChooserShow(){
     var g=document.getElementById("divGate"); if(!g)return; var last=""; try{last=localStorage.getItem("ud_div_last")||""}catch(e){}
     g.querySelector(".dvlist").innerHTML=DIVS.map(function(d){
-      return '<button type="button" class="dvcard" data-dv="'+d.id+'" style="--d1:'+d.c1+';--d2:'+d.c2+'"><span class="dvic">'+d.name.charAt(0)+'</span><span class="dvtx"><b>'+d.name+'</b><small>'+d.sub+'</small></span>'+(last===d.id?'<em>Son girdiğin</em>':'')+'<span class="dvgo">›</span></button>';
+      var ic=DV_ICONS[d.id]||'<circle cx="12" cy="12" r="8"/>', ix=DIVS.indexOf(d)+1;
+      return '<button type="button" class="dvcard" data-dv="'+d.id+'" style="--d1:'+d.c1+';--d2:'+d.c2+'"><span class="dvic"><svg viewBox="0 0 24 24" aria-hidden="true">'+ic+'</svg></span><span class="dvkey nocap">'+ix+'</span><span class="dvtx"><b>'+d.name+'</b><small>'+d.sub+'</small></span>'+(last===d.id?'<em>Son girdiğin</em>':'')+'<span class="dvgo">›</span></button>';
     }).join("");
+    var dd=g.querySelector("#dvDate"); if(dd){try{dd.textContent=new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}catch(e){}}
     g.hidden=false;
   }
   document.addEventListener("click",function(e){
@@ -6237,45 +6259,59 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     try{paintDash()}catch(e){}
   }
 
-  /* ---------- Rozet: Siparişler sayfası · bileşen ihtiyacı ---------- */
-  var cnOpen={};
-  function compNeeds(){
-    var agg={}, ord=[];
+  /* ---------- Rozet: Siparişler sayfası · Bileşen Üretimi (bölüm bölüm gereken / yapılan) ---------- */
+  var cnSec="", cnKey="";
+  function compStageData(){
+    var secs={}, noPlan=0;
     orders.forEach(function(o){
       if(o.shipped||isComplete(o))return;
-      var rows=cpBuild(o); if(!rows)return;
-      rows.forEach(function(r){
-        var ci=r.cs&&stageIdx(r.cs)>-1?Math.max(0,o.qty-doneOf(o.id,r.cs).q):o.qty, nd=ci*(+r.q||1); if(nd<=0)return;
-        var a=agg[r.k]; if(!a){a=agg[r.k]={k:r.k,n:r.n,b:!!r.b,rt:r.rt||[],need:0,stock:cpStockOf(r.k),os:[]}; ord.push(a)}
-        a.need+=nd; a.os.push({o:o,nd:nd});
+      var js=(o.cj||[]).filter(function(j){return !j.b&&+j.pq>0});
+      if(!js.length){var rr=cpBuild(o); if(rr&&rr.some(function(r){return !r.b}))noPlan++; return}
+      js.forEach(function(j){
+        (j.rt||[]).forEach(function(sid){
+          if(stageIdx(sid)<0)return;
+          var dn=Math.min(+j.pq,doneCj(o.id,j.k,sid).q), S=secs[sid]||(secs[sid]={req:0,done:0,c:{}}), C=S.c[j.k]||(S.c[j.k]={k:j.k,n:j.n,req:0,done:0,os:[]});
+          S.req+=+j.pq; S.done+=dn; C.req+=+j.pq; C.done+=dn; C.os.push({o:o,pq:+j.pq,dn:dn});
+        });
       });
     });
-    ord.forEach(function(a){a.short=Math.max(0,a.need-a.stock)});
-    return ord;
+    return {secs:secs,noPlan:noPlan};
   }
   function renderCompNeeds(){
     var card=$("compcard"); if(!card)return;
     if(!IS_RZ){card.hidden=true; return}
     cpInit();
-    if(!prLoaded||!matsLoaded){card.hidden=!orders.length; card.innerHTML='<h2 class="cn-h">🧩 Bileşen ihtiyacı</h2><div class="note" style="margin:0;text-align:left">Yükleniyor…</div>'; return}
-    var l=compNeeds(); card.hidden=!orders.length; if(!orders.length)return;
-    var mk=l.filter(function(a){return !a.b&&a.short>0}).sort(function(a,b){return b.short-a.short}),
-        by=l.filter(function(a){return a.b&&a.short>0}).sort(function(a,b){return b.short-a.short}),
-        ok=l.filter(function(a){return a.short<=0}).sort(function(a,b){return (a.n||"").localeCompare(b.n||"","tr")});
-    var row=function(a){
-      var rt=a.b?"":(a.rt||[]).map(function(id){var i=stageIdx(id); return i>-1?STAGES[i].short:id}).join(" → ");
-      var h='<details class="cn-row"'+(cnOpen[a.k]?' open':'')+' data-cnk="'+esc(a.k)+'"><summary><span class="cn-n">'+esc(a.n)+(rt?'<small>'+esc(rt)+'</small>':'')+'</span>'+
-        '<span class="cn-q'+(a.short>0?' lack':'')+'">'+(a.short>0?(a.b?'Alınacak ':'Üretilecek ')+nf.format(a.short):'Stok yeter')+'</span></summary>'+
-        '<div class="cn-d"><div class="cn-s">Gereken <b>'+nf.format(a.need)+'</b> · Stokta <b>'+nf.format(a.stock)+'</b>'+(a.short>0?' · Eksik <b>'+nf.format(a.short)+'</b>':'')+'</div>'+
-        a.os.slice(0,30).map(function(x){return '<button type="button" class="cn-o" data-oid="'+esc(x.o.id)+'"><i style="font-style:normal"><b>'+esc(x.o.code)+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+'</i><span>'+nf.format(x.nd)+'</span></button>'}).join("")+'</div></details>';
-      return h;
-    };
-    var sec1=function(t,arr,emp){return arr.length?'<div class="cn-t">'+t+' <small>'+arr.length+'</small></div>'+arr.map(row).join(""):(emp?'<div class="cn-t">'+t+'</div><div class="note" style="margin:0 0 6px;text-align:left">'+emp+'</div>':"")};
-    card.innerHTML='<h2 class="cn-h">🧩 Bileşen ihtiyacı</h2><p class="cn-sub">Açık siparişler için hangi bileşenlerin üretime ihtiyacı var (stok düşülmüş, tüketilenler sayılmaz)</p>'+
-      (l.length?sec1('⚙ Üretime ihtiyacı olanlar',mk,'Üretilmesi gereken bileşen yok.')+sec1('🛒 Satın alınması gerekenler',by)+(ok.length?'<details class="cn-ok"><summary>✅ Stoğu yetenler <small>'+ok.length+'</small></summary>'+ok.map(row).join("")+'</details>':""):'<div class="note" style="margin:0;text-align:left">Açık siparişlerde bileşen yok (ürün reçetesinde üretilen/satın alınan parça bulunmuyor).</div>');
+    var head='<h2 style="margin:0 0 4px;font:700 17px var(--font-head)">Bileşen Üretimi</h2><p style="margin:0 0 10px;font:600 12.5px var(--font-ui);color:var(--ink2)">Bölüm bölüm, açık siparişlerdeki bileşen iş emirleri — ne kadar gerekli, ne kadarı yapıldı</p>';
+    if(!orders.length){card.hidden=true; return}
+    card.hidden=false;
+    if(!prLoaded||!matsLoaded){card.innerHTML=head+'<div class="empty">Yükleniyor…</div>'; return}
+    var d=compStageData(), h="", tot={req:0,done:0};
+    SORD.forEach(function(si){
+      var sg=STAGES[si], S=d.secs[sg.sec]; if(!S||!S.req)return;
+      var so=SECTIONS.filter(function(z){return z.id===sg.sec})[0], pc=Math.round(S.done/S.req*100), open=cnSec===sg.sec;
+      tot.req+=S.req; tot.done+=S.done;
+      h+='<button type="button" class="needrow click" data-cnsec="'+sg.sec+'" style="--c:'+so.h1+'"><span class="nn"><span class="dot" style="background:'+so.h1+'"></span>'+esc(sg.name)+'<span class="nchev">'+(open?'▾':'▸')+'</span></span><span class="nv">'+nf.format(S.done)+' / '+nf.format(S.req)+'</span><div class="nbar"><i style="width:'+Math.min(100,pc)+'%"></i></div><div class="nsub">%'+pc+' tamamlandı · kalan '+nf.format(Math.max(0,S.req-S.done))+' adet</div></button>';
+      if(open){
+        var cs=Object.keys(S.c).map(function(k){return S.c[k]}).sort(function(a,b){return (b.req-b.done)-(a.req-a.done)});
+        h+='<div class="needsplit">'+cs.map(function(c){
+          var cp=Math.round(c.done/c.req*100), co=cnKey===sg.sec+"|"+c.k;
+          var r='<button type="button" class="needcatrow click" data-cnk="'+esc(sg.sec+"|"+c.k)+'"><span class="nn2">'+esc(c.n)+'<span class="nchev">'+(co?'▾':'▸')+'</span></span><span class="nv2">'+nf.format(c.done)+' / '+nf.format(c.req)+' · %'+cp+'</span><div class="nbar sm" style="grid-column:1/3;height:5px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:'+Math.min(100,cp)+'%;background:'+so.h1+'"></i></div></button>';
+          if(co)r+=c.os.slice().sort(function(a,b){return (b.pq-b.dn)-(a.pq-a.dn)}).slice(0,40).map(function(x){return '<button type="button" class="cn-o" data-oid="'+esc(x.o.id)+'"><i style="font-style:normal"><b>'+esc(x.o.code)+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+'</i><span>'+nf.format(x.dn)+' / '+nf.format(x.pq)+'</span></button>'}).join("");
+          return r;
+        }).join("")+'</div>';
+      }
+    });
+    if(!h)h='<div class="empty">Şu an üretilecek bileşen iş emri yok.</div>';
+    else h+='<div class="needrow tot"><span class="nn">Toplam</span><span class="nv">'+nf.format(tot.done)+' / '+nf.format(tot.req)+'</span></div>';
+    if(d.noPlan)h+='<div class="note" style="margin:10px 0 0;text-align:left">'+d.noPlan+' açık siparişin bileşen planı yok — sipariş detayında "Bileşen Planı Yap"a bas.</div>';
+    card.innerHTML=head+h;
   }
-  $("compcard").addEventListener("click",function(e){var t=e.target.closest&&e.target.closest(".cn-o"); if(t&&t.dataset.oid){e.stopPropagation(); openOrderDetail(t.dataset.oid)}});
-  document.addEventListener("toggle",function(e){var d=e.target; if(d&&d.classList&&d.classList.contains("cn-row")&&d.dataset.cnk)cnOpen[d.dataset.cnk]=d.open},true);
+  $("compcard").addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("[data-cnsec],[data-cnk],.cn-o"); if(!t)return;
+    if(t.dataset.cnsec){cnSec=cnSec===t.dataset.cnsec?"":t.dataset.cnsec; cnKey=""; renderCompNeeds()}
+    else if(t.dataset.cnk){cnKey=cnKey===t.dataset.cnk?"":t.dataset.cnk; renderCompNeeds()}
+    else if(t.dataset.oid){e.stopPropagation(); openOrderDetail(t.dataset.oid)}
+  });
   function renderStageNeeds(){
     var card=$("needcard"); if(!card)return;
     card.hidden=!orders.length;
