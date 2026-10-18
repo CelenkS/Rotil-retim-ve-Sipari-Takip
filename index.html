@@ -2387,7 +2387,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 19:00</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 19:15</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9821,10 +9821,10 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         '<div class="frow"><button type="button" class="btn" id="prfixgo">'+(prFixArm?'Emin misin? '+l.length+' ürün düzelecek — onayla':'Temizle')+'</button></div>':'<div class="empty">Çift dövme satırı yok, her üründe tek dövme var.</div>')+
       '<div class="note" id="prfixst" style="margin:0"></div></div>';
   }
-  /* --- Tekrarlanan ürün kartları: aynı kod (+müşteri) ile birden fazla kart varsa birini bırak, diğerlerini sil --- */
+  /* --- Tekrarlanan ürün kartları: aynı görünen ad (rozette ad, diğerlerinde kod) + müşteri ile birden fazla kart varsa birini bırak, diğerlerini sil --- */
   var prDupArm=false;
-  function prDupKey(p){return fold(String(p.code||"").replace(/\s+/g," ").trim())+"|"+fold(String(p.cust||"").trim())}
-  function prDupScore(p){return [p.th?1:0,(p.parts||[]).length,+p.ts||0]}
+  function prDupKey(p){var t=IS_RZ?(p.name||p.code||""):(p.code||""); return fold(String(t).replace(/\s+/g," ").trim())+"|"+fold(String(p.cust||"").trim())}
+  function prDupScore(p){return [(!IS_RZ||prKey(p.code)===prKey(p.name))?1:0,p.th?1:0,(p.parts||[]).length,+p.ts||0]}
   function prDupList(){
     var G={}, o=[]; products.forEach(function(p){var k=prDupKey(p); if(k.charAt(0)==="|")return; (G[k]=G[k]||[]).push(p)});
     Object.keys(G).forEach(function(k){var g=G[k]; if(g.length<2)return;
@@ -9836,8 +9836,8 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var l=prDupList(), n=l.reduce(function(a,x){return a+x.rm.length},0);
     return '<div class="shead"><div><h2 id="sh-title">Tekrarlanan ürünleri sil</h2><small>Aynı isimli kartlardan biri kalsın</small></div><button type="button" class="tpill" id="prdupcancel">Kapat</button></div><div class="form">'+
       (l.length?'<div class="stfsum" style="margin-top:0"><div><b>'+l.length+'</b><small>Ürün</small></div><div><b>'+n+'</b><small>Silinecek kopya</small></div></div>'+
-        '<div class="note" style="margin:0;text-align:left">Aynı ürün adı/koduyla birden fazla kart olan ürünlerde görseli olan, en çok parçası olan ve en son güncellenen kart kalır; diğer kopyalar silinir. Siparişler koda bağlı olduğu için etkilenmez.<br><br>'+
-        l.map(function(x){return '• '+esc(x.keep.code||"")+' — '+(x.rm.length+1)+' kart'}).join("<br>")+'</div>'+
+        '<div class="note" style="margin:0;text-align:left">Aynı ürün adı/koduyla birden fazla kart olan ürünlerde görseli olan, en çok parçası olan ve en son güncellenen kart kalır; diğer kopyalar silinir. Silinen kopyanın koduna bağlı siparişler kalan karta aktarılır.<br><br>'+
+        l.map(function(x){return '• '+esc(pTi(x.keep))+' — '+(x.rm.length+1)+' kart'}).join("<br>")+'</div>'+
         '<div class="frow"><button type="button" class="btn" id="prdupgo">'+(prDupArm?'Emin misin? '+n+' kopya silinecek — onayla':'Kopyaları sil')+'</button></div>':'<div class="empty">Tekrarlanan ürün yok, her üründen tek kart var.</div>')+
       '<div class="note" id="prdupst" style="margin:0"></div></div>';
   }
@@ -10013,8 +10013,8 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(t.id==="prdupcancel"){closeSheet(); return}
     if(t.id==="prdupgo"){
       if(!prDupArm){prDupArm=true; renderSheet(); return}
-      var dl=[], stD=$("prdupst"); prDupList().forEach(function(x){x.rm.forEach(function(p){dl.push(p.id)})}); if(!dl.length||!db)return; t.disabled=true; var chD=[]; for(var qD=0;qD<dl.length;qD+=200)chD.push(dl.slice(qD,qD+200)); var dD=0;
-      chD.reduce(function(pr0,c){return pr0.then(function(){var b=db.batch(); c.forEach(function(id){b.delete(db.doc("products/"+id)); b.delete(db.doc("pimg/"+id))}); return b.commit().then(function(){dD+=c.length; if(stD)stD.textContent=dD+" / "+dl.length+" kopya silindi"})})},Promise.resolve())
+      var dl=[], opD=[], stD=$("prdupst"); prDupList().forEach(function(x){x.rm.forEach(function(p){dl.push(p.id); opD.push(["del",p.id]); if(prKey(p.code)&&prKey(p.code)!==prKey(x.keep.code))rnOrders(p.code).forEach(function(o){opD.push(["ord",o.id,x.keep.code])})})}); if(!dl.length||!db)return; t.disabled=true; var chD=[]; for(var qD=0;qD<opD.length;qD+=150)chD.push(opD.slice(qD,qD+150)); var dD=0;
+      chD.reduce(function(pr0,c){return pr0.then(function(){var b=db.batch(); c.forEach(function(o){if(o[0]==="ord"){b.set(db.doc("orders/"+o[1]),{code:o[2]},{merge:true}); return} b.delete(db.doc("products/"+o[1])); b.delete(db.doc("pimg/"+o[1]))}); return b.commit().then(function(){c.forEach(function(o){if(o[0]==="del")dD++}); if(stD)stD.textContent=dD+" / "+dl.length+" kopya silindi"})})},Promise.resolve())
       .then(function(){var gone={}; dl.forEach(function(id){gone[id]=1}); products=products.filter(function(x){return !gone[x.id]}); logActivity("Tekrarlanan ürün kartları silindi: "+dl.length+" kopya","info"); if(stD)stD.textContent="Tamamlandı: "+dl.length+" kopya silindi."; prDupArm=false; setTimeout(function(){closeSheet(); renderProds()},900)}).catch(function(){if(stD)stD.textContent="Hata oluştu, "+dD+" kopya silindi. Tekrar dene."; t.disabled=false; prDupArm=false});
       return;
     }
