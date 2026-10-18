@@ -2389,7 +2389,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 20:30</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 20:45</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -10230,6 +10230,9 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(t.dataset.prpm){
       var pm=matById(t.dataset.prpm), pp=prDraft.parts[prPickI];
       if(pm&&pp){pp.m=pm.id; if(!(pp.n||"").trim())pp.n=pm.name; if(pp.k==="buy"&&!pp.sup&&pm.sup)pp.sup=pm.sup}
+      // Üretilen parça başka bir bileşene bağlanınca, o bileşeni kullanan diğer ürünlerdeki parçanın hammaddesi, ölçüsü ve gramajı da alınır (adet aynı kalır)
+      if(pm&&pp&&pp.k==="made"){var srcP=null; products.forEach(function(pr){if(srcP||pr.id===prDraft.id)return; (pr.parts||[]).forEach(function(x){if(!srcP&&x&&x.k==="made"&&x.m===pm.id)srcP=x})});
+        if(srcP){["n","kal","nt","kr","ce"].forEach(function(k){if(srcP[k]!==undefined)pp[k]=srcP[k]; else delete pp[k]}); ["d","l","f","ek","wt","p"].forEach(function(k){var v=srcP[k]; pp[k]=(v!==undefined&&v!==0&&v!=="")?String(v):""}); delete pp.wa; prDraft.dirty=true}}
       sheetMode="prod"; renderSheet(); return;
     }
     if(t.id==="primgrm"){prDraft.th=""; prDraft.full=null; prDraft.dirty=true; if(prDraft.id)delete prImgFull[prDraft.id]; var sc4=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc4; return}
