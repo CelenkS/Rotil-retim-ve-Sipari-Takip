@@ -9021,13 +9021,20 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     else{dim=nt.replace(/\s*·\s*Excel'de fiyat yok/i,"").replace(/\bSAC\b/i,"").trim(); if(fold(dim)===fold(kal))dim=""; dk=fold(dim); if(!dim)dim="ölçü yok"}
     return {grade:kal,dim:dim,key:fold(kal)+"|"+dk,name:kal+" "+dim}
   }
+  /* Hammaddeler sekmesinde 1040 çubuklar "AxB" kesim ölçüsü yerine çapıyla gösterilir: 1040 10x51 → 51lik 1040 Soğuk Mil (aynı çaptakiler tek hammadde) */
+  function rawGroupInfo(x){
+    var i=rawInfo(x), m=i.dim.match(/^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)$/);
+    if(fold(i.grade)!=="1040"||!m)return i;
+    var dia=String(parseFloat(m[2])).replace(".",",");
+    return {grade:i.grade,dim:i.dim,key:fold(i.grade)+"|mil|"+parseFloat(m[2]),name:dia+"lik "+i.grade+" Soğuk Mil",cut:i.dim};
+  }
   function rawList(){
     var map={}, order=[];
     products.forEach(function(p){(p.parts||[]).forEach(function(x){
-      if(!x||x.k!=="made")return; var i=rawInfo(x), r=map[i.key];
+      if(!x||x.k!=="made")return; var i=rawGroupInfo(x), r=map[i.key];
       if(!r){r=map[i.key]={key:i.key,name:i.name,grade:i.grade,uses:[],ps:[],pids:{}}; order.push(i.key)}
       var pu=pnum(x.p); if(pu>0)r.ps.push(pu);
-      r.uses.push({p:p,part:partName(x)||"Parça",wt:pnum(x.wt)*(pnum(x.q)||1),pu:pu}); r.pids[p.id]=1;
+      r.uses.push({p:p,part:partName(x)||"Parça",cut:i.cut||"",wt:pnum(x.wt)*(pnum(x.q)||1),pu:pu}); r.pids[p.id]=1;
     })});
     return order.map(function(k){var r=map[k]; r.n=Object.keys(r.pids).length; r.pmin=r.ps.length?Math.min.apply(null,r.ps):0; r.pmax=r.ps.length?Math.max.apply(null,r.ps):0; return r}).sort(function(a,b){return a.grade.localeCompare(b.grade,"tr")||a.name.localeCompare(b.name,"tr",{numeric:true})});
   }
@@ -9049,7 +9056,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return '<div class="shead"><div><h2 id="sh-title">'+esc(r.name)+'</h2><small>Hangi ürünlerde kullanılıyor</small></div><button type="button" class="tpill" id="prrawclose">Kapat</button></div><div class="form">'+
       '<div class="stfsum" style="margin-top:0"><div><b>'+r.n+'</b><small>Ürün</small></div><div><b>'+r.uses.length+'</b><small>Parça</small></div><div><b>'+rawPrice(r).replace(" ₺/kg","")+'</b><small>₺ / kg</small></div></div>'+
       r.uses.slice().sort(function(a,b){return String(a.p.code||"").localeCompare(String(b.p.code||""),"tr")}).map(function(u){
-        return '<div class="fcard"><button type="button" class="fgo" data-prview="'+u.p.id+'"><div class="ftx"><b>'+esc(pTi(u.p))+'</b><small>'+esc(u.part)+(u.wt>0?' · '+nf.format(Math.round(u.wt*1000*10)/10)+' g':'')+''+'</small></div>'+(u.pu>0?'<span class="stfpill on">'+pf(u.pu)+' ₺/kg</span>':'')+'<span class="fchev">›</span></button></div>'}).join("")+'</div>';
+        return '<div class="fcard"><button type="button" class="fgo" data-prview="'+u.p.id+'"><div class="ftx"><b>'+esc(pTi(u.p))+'</b><small>'+esc(u.part)+(u.cut?' · '+u.cut:'')+(u.wt>0?' · '+nf.format(Math.round(u.wt*1000*10)/10)+' g':'')+''+'</small></div>'+(u.pu>0?'<span class="stfpill on">'+pf(u.pu)+' ₺/kg</span>':'')+'<span class="fchev">›</span></button></div>'}).join("")+'</div>';
   }
   if(IS_RZ){var tbh=$("prTabH"); if(tbh)tbh.hidden=false}
   document.addEventListener("click",function(e){
