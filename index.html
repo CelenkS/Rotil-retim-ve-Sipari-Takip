@@ -2389,7 +2389,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 20:45</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 21:00</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13298,6 +13298,39 @@ if("serviceWorker" in navigator){
     }).catch(function(){});
   });
 }
+</script>
+<script>
+/* Ekrandaki tüm yazılarda her kelimenin ilk harfi büyük (Türkçe: i→İ, ı→I); kelimenin geri kalanı olduğu gibi kalır.
+   Veritabanındaki kayıtlar değişmez, sadece görünüm. Birimler (g, kg, mm…), sayıyla başlayan kelimeler, e-posta/adresler,
+   yazı kutuları ve class="nocap" içindekiler atlanır. */
+(function(){
+  var UNITS={g:1,gr:1,kg:1,mg:1,mm:1,cm:1,m:1,lt:1,ml:1,sn:1,dk:1,sa:1,x:1};
+  var LOW="a-zçğıöşüâîû";
+  var RE=new RegExp("(^|[\\s(\\[{\"'“‘«·•|,;:+=–—])(["+LOW+"])(["+LOW+"A-ZÇĞİÖŞÜ0-9]*)","g");
+  function up(c){return c==="i"?"İ":c==="ı"?"I":c.toLocaleUpperCase("tr")}
+  function cap(t){
+    if(!t||!/[a-zçğıöşü]/.test(t))return t;
+    return t.replace(RE,function(all,pre,c,rest,off,str){
+      if(UNITS[(c+rest).toLocaleLowerCase("tr")]&&!/[a-zçğıöşü]/i.test(str.charAt(off+all.length)||""))return all;
+      var nx=str.slice(off+all.length,off+all.length+3); if(/^[@.\/:]\w/.test(nx)||nx.charAt(0)==="@")return all;
+      return pre+up(c)+rest;
+    });
+  }
+  var SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,SELECT:1,OPTION:1,CODE:1,PRE:1,NOSCRIPT:1};
+  function skip(el){for(;el&&el.nodeType===1;el=el.parentNode){if(SKIP[el.tagName]||el.isContentEditable||(el.classList&&el.classList.contains("nocap")))return true}return false}
+  function fixText(n){if(skip(n.parentNode))return; var v=n.nodeValue, w=cap(v); if(w!==v)n.nodeValue=w}
+  function walk(root){
+    if(!root)return; if(root.nodeType===3){fixText(root);return} if(root.nodeType!==1||skip(root))return;
+    var tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null), n; while((n=tw.nextNode()))fixText(n);
+  }
+  function start(){
+    walk(document.body);
+    new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==="characterData")fixText(m.target); else for(var i=0;i<m.addedNodes.length;i++)walk(m.addedNodes[i])})})
+      .observe(document.body,{childList:true,subtree:true,characterData:true});
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start); else start();
+  window.__capTr=cap;
+})();
 </script>
 </body>
 </html>
