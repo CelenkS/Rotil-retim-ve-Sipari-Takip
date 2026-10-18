@@ -2389,7 +2389,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 20:20</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.10 20:30</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9421,7 +9421,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var c=partCost(p), u=partUnit(p), q=pnum(p.q)||1, lm=matById(p.m), nm=(lm&&p.k==="buy"?lm.name:(p.k==="made"?partName(p):p.n))||"Parça", sub="", w="", tag="";
     if(p.k==="buy"){ if(lm&&lm.cat)tag=PR_CATLBL[lm.cat]||lm.cat; else{var sp=nm.split(" · "); if(sp.length>1){tag=sp.shift(); nm=sp.join(" · ")}} }
     if(p.k==="made"){
-      var dim=[p.kal,pnum(p.d)?"Ø"+nf.format(pnum(p.d)):"",pnum(p.l)?nf.format(pnum(p.l))+(pnum(p.ek)?" +"+nf.format(pnum(p.ek)):"")+" mm":""].filter(Boolean).join(" · ");
+      var rgi=IS_RZ?rawGroupInfo(p):null, dim=[rgi&&rgi.cut?rgi.name:p.kal,pnum(p.d)?"Ø"+nf.format(pnum(p.d)):"",pnum(p.l)?nf.format(pnum(p.l))+(pnum(p.ek)?" +"+nf.format(pnum(p.ek)):"")+" mm":""].filter(Boolean).join(" · ");
       sub=(dim?dim+" · ":"")+(pnum(p.wa)>0?"otomatik · ":"")+gFmt(pBrut(p))+(u?" × "+pf(u)+" ₺/kg":"")+(q>1?" × "+nf.format(q)+" adet":""); if(!u)w="kg fiyatı girilmemiş";
     }else if(p.k==="coat"){
       sub=nf.format(pnum(p.wt))+" kg"+(u?" × "+pf(u)+" ₺/kg":"")+(q>1?" × "+nf.format(q)+" adet":""); if(!u)w="kaplama fiyatı girilmemiş";
