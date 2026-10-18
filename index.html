@@ -1146,6 +1146,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .rtbox{border:1px solid var(--line,rgba(255,255,255,.12));border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px}.rtt{font-weight:700;display:flex;flex-direction:column;gap:2px}.rtt small{font-weight:400;opacity:.7;font-size:12px}
   .cnrow{padding:2px 0 10px 4px}
   .rtdet>summary{cursor:pointer;list-style:none}.rtdet>summary::-webkit-details-marker{display:none}.rtdet>summary::after{content:"▾";float:right;opacity:.6}.rtdet[open]>summary::after{content:"▴"}
+  .pnrow{grid-template-columns:auto 1fr}.pnrow small{display:block;font-weight:600;font-size:11.5px;opacity:.75;margin-top:1px}
   .prpnb{align-self:flex-start;border:1px solid var(--line);background:var(--soft);color:var(--ink2);border-radius:99px;padding:4px 9px;font:700 11px var(--font-ui);white-space:nowrap;margin-left:4px}
   .oplist{max-height:230px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin-top:6px;padding-right:2px}.opk{width:100%;text-align:left;margin:0;padding:8px 10px;border-radius:14px}.opk.on{border-color:var(--p0,#7c6cf0);box-shadow:0 0 0 1px var(--p0,#7c6cf0) inset}.opimg{width:38px;height:38px;border-radius:10px;object-fit:cover;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
   #oppick .search,#oppick .fin{margin-top:4px}
@@ -9580,63 +9581,98 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(!rnD||!e.target.dataset||e.target.dataset.rn===undefined)return; rnD[e.target.dataset.rn]=e.target.value; if(e.target.dataset.rn==="name")rnD.code=e.target.value; rnD.dupOk=false;
   });
 
-  /* ---------- Rozet: ürün kartında üretilen parçanın adını değiştirme (aynı ölçü farklı ürünlerde ayrı parça olsun) ---------- */
+  /* ---------- Rozet: ürün kartında üretilen parçanın adını değiştirme — aynı parçayı kullanan ürünleri seçerek toplu ---------- */
   var pnD=null;
-  function pnMatUsers(mid,skipPid,skipIdx){var n=0; products.forEach(function(p){(p.parts||[]).forEach(function(x,i){if(x&&x.m===mid&&!(p.id===skipPid&&i===skipIdx))n++})}); return n}
-  function pnPlan(){
-    var p=products.filter(function(x){return x.id===pnD.pid})[0], x=p&&(p.parts||[])[pnD.idx]; if(!x)return null;
-    var nx=Object.assign({},x,{n:pnD.name.trim(),cn:1,cn0:x.cn0||x.n}), info=cmkInfo(nx), lm=x.m?matById(x.m):null, tgt=null;
-    materials.forEach(function(m){if(prKey(m.cat)===prKey(info.cat)&&prKey(m.name)===prKey(info.name))tgt=m});
-    return {p:p,x:x,nx:nx,info:info,lm:lm,tgt:tgt};
+  function pnKeyOf(x){return rawInfo(x).key+"|"+cpNoun(x)}
+  function pnFind(pid,idx){var p=products.filter(function(y){return y.id===pid})[0], x=p&&(p.parts||[])[idx]; return x?{p:p,x:x}:null}
+  function pnUses(){
+    var cur=pnFind(pnD.pid,pnD.idx); if(!cur)return null; var k=pnKeyOf(cur.x), l=[];
+    products.forEach(function(p){(p.parts||[]).forEach(function(x,i){if(x&&x.k==="made"&&pnKeyOf(x)===k)l.push({p:p,x:x,i:i,id:p.id+":"+i,cur:p.id===pnD.pid&&i===pnD.idx})})});
+    l.sort(function(a,b){return (b.cur-a.cur)||pTi(a.p).localeCompare(pTi(b.p),"tr")});
+    return {cur:cur,list:l,key:k};
+  }
+  function pnSel(u){return u.list.filter(function(it){return it.cur||pnD.sel[it.id]})}
+  /* seçilen her parça için yeni bileşen kimliği */
+  function pnResolve(items){
+    var nn=pnD.name.trim(), out=[], seen={};
+    items.forEach(function(it){
+      var nx=Object.assign({},it.x,{n:nn,cn:1,cn0:it.x.cn0||it.x.n}), lm=it.x.m?matById(it.x.m):null, info=cmkInfo(nx), tgt=null;
+      materials.forEach(function(m){if(prKey(m.cat)===prKey(info.cat)&&prKey(m.name)===prKey(info.name))tgt=m});
+      out.push({it:it,nx:nx,lm:lm,info:info,tgt:tgt});
+    });
+    return out;
+  }
+  function pnPrevHtml(rs){
+    var linked=rs.filter(function(r){return r.lm}), unl=rs.length-linked.length, names={};
+    linked.forEach(function(r){var k=prKey(r.info.cat)+"|"+prKey(r.info.name); names[k]=names[k]||{n:r.info.name,c:0,have:!!r.tgt}; names[k].c++});
+    var h="";
+    Object.keys(names).forEach(function(k){var x=names[k]; h+='<div class="note" style="margin:3px 0 0;text-align:left">'+x.c+' parça → <b>'+esc(x.n)+'</b> bileşeni '+(x.have?'(zaten var, ona bağlanır)':'(yeni açılır, fiyatı aynı kalır)')+'</div>'});
+    if(unl)h+='<div class="note" style="margin:3px 0 0;text-align:left">'+unl+' parça henüz bileşene bağlı değil; “Bileşen yap” çalışınca yeni adıyla ayrı bileşen olur.</div>';
+    return h+(linked.length?'<div class="note" style="margin:3px 0 0;text-align:left">Eski bileşenin başka kullanımı ve stoğu kalmazsa silinir.</div>':'');
   }
   function prPnHtml(){
-    var pl=pnD&&pnPlan(), h='<div class="shead"><div><h2 id="sh-title">Parçanın adı</h2><small>Sadece bu üründeki parça değişir</small></div><button type="button" class="tpill" id="prpnback">Geri</button></div><div class="form">';
-    if(!pl)return h+'<div class="empty">Parça bulunamadı.</div></div>';
-    var nm=pnD.name.trim(), same=nm===String(pl.x.n||"").trim(), c=cmkInfo(Object.assign({},pl.x,{n:nm||pl.x.n,cn:1,cn0:pl.x.cn0||pl.x.n}));
-    h+='<div class="note" style="margin:0;text-align:left"><b>'+esc(pl.p.code||"")+'</b> · '+esc(pl.x.n||"Parça")+' · '+esc([pl.x.kal,pl.x.nt].filter(Boolean).join(" · "))+'</div>'+
-      '<label class="pcf"><span>Yeni ad (ör. DKP Kare alt kapak)</span><input class="fin" type="text" id="pn-name" data-pnf="name" value="'+esc(pnD.name)+'" autocomplete="off"></label>';
-    h+='<div id="prpnprev">'+pnPrevHtml(pl,c)+'</div>';
-    return h+'<div class="frow"><button type="button" class="btn" id="prpnsave"'+((!nm||same)?' disabled':'')+'>Kaydet</button></div><div class="note" id="prpnmsg" style="margin:0">'+esc(pnD.msg||"")+'</div></div>';
-  }
-  function pnPrevHtml(pl,c){
-    var h="";
-    if(pl.lm)h+='<div class="note" style="margin:0;text-align:left">Şu an <b>'+esc(pl.lm.name)+'</b> bileşenine bağlı. Yeni adla <b>'+esc(c.name)+'</b> bileşenine geçer'+(pl.tgt?' (zaten var, ona bağlanır)':' (yoksa yeni açılır, fiyatı aynı kalır)')+'. Eski bileşenin başka kullanımı ve stoğu yoksa silinir.</div>';
-    else h+='<div class="note" style="margin:0;text-align:left">Bileşen yapılırken bu parça <b>'+esc(c.name)+'</b> adıyla ayrı bir bileşen olur; aynı ölçüdeki diğer ürünlerin parçalarıyla karışmaz.</div>';
+    var u=pnD&&pnUses(), h='<div class="shead"><div><h2 id="sh-title">Parçanın adı</h2><small>Aynı parçayı kullanan ürünleri seç</small></div><button type="button" class="tpill" id="prpnback">Geri</button></div><div class="form">';
+    if(!u)return h+'<div class="empty">Parça bulunamadı.</div></div>';
+    var x=u.cur.x, others=u.list.filter(function(it){return !it.cur}), nm=pnD.name.trim();
+    h+='<div class="note" style="margin:0;text-align:left"><b>'+esc(x.n||"Parça")+'</b> · '+esc([x.kal,rawInfo(x).dim].filter(Boolean).join(" · "))+'<br>Bu parça '+u.list.length+' üründe kullanılıyor.</div>'+
+      '<label class="pcf"><span>Yeni ad (ör. 10luk Paslanmaz Tas)</span><input class="fin" type="text" id="pn-name" data-pnf="name" value="'+esc(pnD.name)+'" autocomplete="off"></label>'+
+      '<div class="fl" style="display:flex;align-items:center;gap:8px">Adı değişecek ürünler<span style="margin-left:auto;display:flex;gap:6px"><button type="button" class="tpill" id="pnall" style="margin:0">Hepsini seç</button><button type="button" class="tpill" id="pnnone" style="margin:0">Temizle</button></span></div>'+
+      u.list.map(function(it){return '<label class="strow pnrow"><input type="checkbox" data-pnsel="'+it.id+'"'+((it.cur||pnD.sel[it.id])?' checked':'')+(it.cur?' disabled':'')+'><span class="sn">'+esc(pTi(it.p))+'<small>'+esc((it.x.n||"Parça")+(it.cur?" · şu an açık olan":"")+(it.x.cn&&!it.cur?" · adı değişmiş":""))+'</small></span></label>'}).join("")+
+      '<div id="prpnprev">'+pnPrevHtml(pnResolve(pnSel(u)))+'</div>'+
+      '<div class="frow"><button type="button" class="btn" id="prpnsave"'+(nm&&nm!==String(x.n||"").trim()||(nm&&pnSel(u).length>1)?'':' disabled')+'>'+(pnSel(u).length)+' üründe adı değiştir</button></div><div class="note" id="prpnmsg" style="margin:0">'+esc(pnD.msg||"")+'</div></div>';
     return h;
   }
+  function pnRefresh(){
+    var u=pnUses(); if(!u)return; var items=pnSel(u), nm=pnD.name.trim(), x=u.cur.x;
+    var pv=$("prpnprev"); if(pv)pv.innerHTML=pnPrevHtml(pnResolve(items));
+    var sv=$("prpnsave"); if(sv){sv.textContent=items.length+" üründe adı değiştir"; sv.disabled=!nm||(items.length===1&&nm===String(x.n||"").trim())}
+  }
   document.addEventListener("click",function(e){
-    if(!IS_RZ)return; var t=e.target.closest&&e.target.closest("[data-prpn],#prpnback,#prpnsave"); if(!t)return;
+    if(!IS_RZ)return; var t=e.target.closest&&e.target.closest("[data-prpn],#prpnback,#prpnsave,#pnall,#pnnone"); if(!t)return;
     e.stopPropagation(); e.preventDefault();
     if(t.dataset.prpn!==undefined){
       if(prVW&&prVWid===prViewId){var bar=document.querySelector(".prvbar .t"); if(bar){bar.style.outline="2px solid #E0506A"; setTimeout(function(){bar.style.outline=""},1500)} return}
-      var p=products.filter(function(x){return x.id===prViewId})[0], x=p&&(p.parts||[])[+t.dataset.prpn]; if(!x)return;
-      pnD={pid:p.id,idx:+t.dataset.prpn,name:x.n||"",msg:""}; sheetMode="prpn"; renderSheet(); $("sheet").scrollTop=0; var inp=$("pn-name"); if(inp){inp.focus(); try{inp.setSelectionRange(inp.value.length,inp.value.length)}catch(er){}} return;
+      var f=pnFind(prViewId,+t.dataset.prpn); if(!f)return;
+      pnD={pid:f.p.id,idx:+t.dataset.prpn,name:f.x.n||"",sel:{},msg:""}; sheetMode="prpn"; renderSheet(); $("sheet").scrollTop=0; var inp=$("pn-name"); if(inp){inp.focus(); try{inp.setSelectionRange(inp.value.length,inp.value.length)}catch(er){}} return;
     }
     if(t.id==="prpnback"){pnD=null; sheetMode="prview"; renderSheet(); return}
+    if(t.id==="pnall"||t.id==="pnnone"){
+      var u0=pnUses(); if(!u0)return; pnD.sel={}; if(t.id==="pnall")u0.list.forEach(function(it){pnD.sel[it.id]=1});
+      [].forEach.call($("sheet").querySelectorAll("[data-pnsel]"),function(c){c.checked=c.disabled||!!pnD.sel[c.dataset.pnsel]}); pnRefresh(); return;
+    }
     if(t.id==="prpnsave"){
-      var pl=pnD&&pnPlan(); if(!pl||!db)return; t.disabled=true;
-      var nparts=(pl.p.parts||[]).map(function(y,i){return i===pnD.idx?Object.assign({},y,{n:pnD.name.trim(),cn:1,cn0:y.cn0||y.n}):y}), ops=[], now=Date.now(), oldId=pl.lm?pl.lm.id:"";
-      if(pl.lm){
-        var tid;
-        if(pl.tgt)tid=pl.tgt.id;
-        else{tid=db.collection("materials").doc().id; ops.push(["materials",tid,{name:pl.info.name,cat:pl.info.cat,unit:pl.lm.unit||"adet",stock:0,p:+pl.lm.p||0,p5:+pl.lm.p5||0,sup:pl.lm.sup||"",pd:pl.lm.pd||"",note:"Reçeteden: "+(pl.x.nt||""),ts:now}])}
-        nparts[pnD.idx]=Object.assign({},nparts[pnD.idx],{m:tid});
-        if(tid!==oldId&&/^Reçeteden:/.test(pl.lm.note||"")&&!(+pl.lm.stock)&&!pnMatUsers(oldId,pl.p.id,pnD.idx))ops.push(["materials",oldId,null,"del"]);
-      }
-      ops.unshift(["products",pl.p.id,{parts:nparts,ts:now}]);
-      var b=db.batch(); ops.forEach(function(o){var r=db.collection(o[0]).doc(o[1]); if(o[3]==="del")b.delete(r); else b.set(r,o[2],{merge:true})});
-      b.commit().then(function(){
-        pl.p.parts=nparts; logActivity("Parça adı değişti: "+pl.p.code+" · "+pl.x.n+" → "+pnD.name.trim(),"info");
+      var u=pnD&&pnUses(); if(!u||!db)return; t.disabled=true;
+      var rs=pnResolve(pnSel(u)), perProd={}, ops=[], now=Date.now(), newBy={}, oldIds={};
+      rs.forEach(function(r){
+        var np=Object.assign({},r.nx), pid=r.it.p.id;
+        if(r.lm){
+          var key=prKey(r.info.cat)+"|"+prKey(r.info.name), tid;
+          if(r.tgt)tid=r.tgt.id;
+          else if(newBy[key])tid=newBy[key];
+          else{tid=db.collection("materials").doc().id; newBy[key]=tid; ops.push(["materials",tid,{name:r.info.name,cat:r.info.cat,unit:r.lm.unit||"adet",stock:0,p:+r.lm.p||0,p5:+r.lm.p5||0,sup:r.lm.sup||"",pd:r.lm.pd||"",note:"Reçeteden: "+(r.it.x.nt||""),ts:now}])}
+          np.m=tid; if(tid!==r.lm.id)oldIds[r.lm.id]=r.lm;
+        }
+        perProd[pid]=perProd[pid]||(r.it.p.parts||[]).slice(); perProd[pid][r.it.i]=np;
+      });
+      Object.keys(oldIds).forEach(function(mid){
+        var m=oldIds[mid], left=0; products.forEach(function(p){(perProd[p.id]||p.parts||[]).forEach(function(x){if(x&&x.m===mid)left++})});
+        if(!left&&/^Reçeteden:/.test(m.note||"")&&!(+m.stock))ops.push(["materials",mid,null,"del"]);
+      });
+      Object.keys(perProd).forEach(function(pid){ops.unshift(["products",pid,{parts:perProd[pid],ts:now}])});
+      var chunks=[]; for(var i=0;i<ops.length;i+=400)chunks.push(ops.slice(i,i+400)); var nn=pnD.name.trim(), n0=rs.length;
+      Promise.all(chunks.map(function(ch){var b=db.batch(); ch.forEach(function(o){var r2=db.collection(o[0]).doc(o[1]); if(o[3]==="del")b.delete(r2); else b.set(r2,o[2],{merge:true})}); return b.commit()})).then(function(){
+        products.forEach(function(p){if(perProd[p.id])p.parts=perProd[p.id]});
+        logActivity("Parça adı değişti: "+nn+" ("+n0+" ürün)","info");
         pnD=null; sheetMode="prview"; renderSheet(); renderProds();
       }).catch(function(){var m=$("prpnmsg"); if(m)m.textContent="Kaydedilemedi, tekrar dene."; t.disabled=false});
     }
   },true);
   document.addEventListener("input",function(e){
-    if(!pnD||!e.target.dataset||e.target.dataset.pnf!=="name")return; pnD.name=e.target.value;
-    var sv=$("prpnsave"), pl=pnPlan(); if(!pl)return; if(sv)sv.disabled=!pnD.name.trim()||pnD.name.trim()===String(pl.x.n||"").trim();
-    var pv=$("prpnprev"); if(pv)pv.innerHTML=pnPrevHtml(pl,cmkInfo(pl.nx));
+    if(!pnD||!e.target.dataset||e.target.dataset.pnf!=="name")return; pnD.name=e.target.value; pnRefresh();
   });
-
+  document.addEventListener("change",function(e){
+    if(!pnD||!e.target.dataset||e.target.dataset.pnsel===undefined)return; if(e.target.checked)pnD.sel[e.target.dataset.pnsel]=1; else delete pnD.sel[e.target.dataset.pnsel]; pnRefresh();
+  });
   /* ---------- Rozet: (1) ürün kodunu ürün adına eşitle  (2) saten / siyah / paslanmaz boya-kaplama kuralı ---------- */
   var cdPlan=null, rlPlan=null;
   function cdBuild(){
