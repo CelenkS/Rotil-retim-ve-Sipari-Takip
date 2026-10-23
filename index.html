@@ -2435,7 +2435,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 23.10 22:40</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 23.10 22:45</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -10148,9 +10148,14 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function plCmpMats(){return materials.filter(function(m){return matSrc(m)==="make"})}
   function plParse(txt){
     var rows=[], un=[], L=plById(plSel), mats=plCmpMats(), pn=products.map(function(p){return {p:p,n:plNorm(pTi(p))}}), mn=mats.map(function(m){return {m:m,n:plNorm(m.name)}});
-    String(txt||"").split(/\r?\n/).forEach(function(ln){
-      ln=ln.trim(); if(!ln)return;
-      var m=ln.match(/^(.*?)[\t;|]+\s*([0-9][0-9.,\s]*)(?:\s*₺|\s*tl)?\s*$/i)||ln.match(/^(.*\S)\s+([0-9]+(?:[.,][0-9]+)?)\s*(?:₺|tl)?$/i); if(!m){un.push(ln); return}
+    var pend="";
+    String(txt||"").replace(/\u00a0/g," ").split(/\r?\n/).forEach(function(ln){
+      ln=ln.trim().replace(/^"+|"+$/g,"").trim(); if(!ln)return;
+      var m=ln.match(/^(.*?)(?:[\t;|]+|\s{2,})\s*(?:₺|TL|TRY)?\s*([0-9][0-9.,]*)\s*(?:₺|TL|TRY)?\s*$/i)||ln.match(/^(.*\S)\s+(?:₺|TL|TRY)?\s*([0-9]+(?:[.,][0-9]+)?)\s*(?:₺|TL|TRY)?$/i)||ln.match(/^()(?:₺|TL|TRY)\s*([0-9][0-9.,]*)\s*$/i);
+      if(!m){if(pend)un.push(pend); pend=ln; return}
+      if(pend){ /* Excel hücresinde satır sonu varsa ürün adı iki satıra bölünür: "KLASİK DKP ROZET" + "/ TASLI 30" */
+        if(/^[\/\-&(]/.test(m[1].trim())||!m[1].trim()){m[1]=pend+" "+m[1]; pend=""} else {un.push(pend); pend=""}
+      }
       var nm=m[1].trim(), num=m[2].replace(/\s/g,""); if(/,/.test(num)&&/\./.test(num))num=num.replace(/\./g,"").replace(",","."); else num=num.replace(",",".");
       var v=parseFloat(num); if(!(v>0)||!nm){un.push(ln); return}
       var en=plNorm(nm), ps=pn.filter(function(x){return plMatch(en,x.n)}).map(function(x){return x.p}), ms=mn.filter(function(x){return plMatch(en,x.n)}).map(function(x){return x.m}), loose=false;
@@ -10160,6 +10165,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       if(!ps.length&&!ms.length){ps=pn.filter(function(x){return plMatchLoose(en,x.n)}).map(function(x){return x.p}); ms=mn.filter(function(x){return plMatchLoose(en,x.n)}).map(function(x){return x.m}); loose=ps.length+ms.length>0}
       if(ps.length||ms.length)rows.push({name:nm,v:v,ps:ps,ms:ms,loose:loose,spec:en.col.length+en.sz.length}); else un.push(ln);
     });
+    if(pend)un.push(pend);
     rows.sort(function(a,b){return a.spec-b.spec}); // genel satırlar önce, renk/ölçü yazılı özel satırlar sonra (üstüne yazar)
     return {rows:rows,un:un};
   }
