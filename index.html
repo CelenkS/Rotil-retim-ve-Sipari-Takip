@@ -3145,7 +3145,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 02:30</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 02:41</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3308,6 +3308,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   </section>
   <div class="stkpage">
     <div class="stkdivs" id="stkdivs" role="group" aria-label="Bölüm"></div>
+    <div class="stkchips stkkinds" id="stkkinds" role="group" aria-label="Tür"></div>
     <div class="stkkpi" id="stkkpi"></div>
     <div class="stkbar">
       <input class="search" id="stksearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Malzeme adı, kategori veya tedarikçi ara…" aria-label="Malzeme ara">
@@ -3777,7 +3778,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   var notesAll=[], unsubNote=null, noteFilter="all", noteSearch="", noteEditId=null, noteColor="", notePin=false, noteDone=false, noteDelArm=false;
   var NOTE_COLS=["","#E69138","#D63A3A","#16855A","#2A6FB0","#8E5BD9","#C79A00"];
   var purchases=[], purBy={}, purUn={}, purMetaBy={}, purDivTab="all", purDivDraft="", unsubPur=null, purFilter="all", purSearch="", purEditId=null, purSecDraft="", purUrgDraft=false, purDelArm=false, purImgTh="", purImgFull=null, purImgDirty=false, purImgCache={}, purLocs=[], purFirms=[], purFirm="", purFirmDraft="", purFirmEdit=false, purDept="", purLoc="", purLocDraft="", purLocEdit=false, purMetaOn=false;
-  var matEditDiv="", matNewDiv="", materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
+  var matEditDiv="", matNewDiv="", stkKind="", matKindDraft="yari", matKindFor="", materials=[], unsubMat=null, matSearch="", matEditId=null, matNeed=null, matNeedBusy=false, recDraft=null;
   // Elemanlar (personel) ve makineler — bölümlerden bağımsız iki ortak Firestore koleksiyonu.
   // Bir eleman birden fazla bölümde/makinede çalışabiliyor (secs/machines birer id listesi).
   // Bu, makine yerleşim görseline dayalı planlama/performans sisteminin (henüz görsel
@@ -5325,10 +5326,12 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         '</div>';
     }else if(sheetMode==="matform"){
       var mt=allMats.filter(function(x){return x.id===matEditId&&x._div===matEditDiv})[0]||{name:"",unit:"adet",stock:0,crit:"",note:"",cat:""};
-      var mcats=[]; Object.keys(PR_CATLBL).concat(allMats.map(function(x){return x.cat})).forEach(function(c){if(c&&mcats.indexOf(c)<0)mcats.push(c)});
-      html+='<div class="shead"><div><h2 id="sh-title">'+(matEditId?"Malzemeyi düzenle":"Yeni malzeme")+'</h2><small>Hammadde veya yarı mamul — ürün reçetelerinde bu isimle seçilir</small></div></div>'+
+      var mcats=[]; ["Çelik çubuk","Tel","Levha / sac","Boya","Kimyasal","Ambalaj","Yağ / sarf"].concat(Object.keys(PR_CATLBL)).concat(allMats.map(function(x){return x.cat})).forEach(function(c){if(c&&mcats.indexOf(c)<0)mcats.push(c)});
+      if(matEditId&&matKindFor!==matEditDiv+":"+matEditId){matKindFor=matEditDiv+":"+matEditId; matKindDraft=mt.kind==="ham"?"ham":"yari"} else if(!matEditId)matKindFor="";
+      html+='<div class="shead"><div><h2 id="sh-title">'+(matEditId?"Malzemeyi düzenle":"Yeni malzeme")+'</h2><small>Hammadde veya yarı mamul / parça — ürün reçetelerinde bu isimle seçilir</small></div></div>'+
         '<div class="form">'+
         '<div><span class="fl">Bölüm</span>'+(matEditId?'<div class="note" style="margin:0;text-align:left"><b>'+esc(divInfo(matEditDiv).name)+'</b> bölümünün malzemesi</div>':'<div class="stkdivs mtdivs">'+window.__DIVS.map(function(d){return '<button type="button" data-mtdiv="'+d.id+'" aria-pressed="'+(matNewDiv===d.id)+'" style="--d1:'+d.c1+';--d2:'+d.c2+'"><i></i>'+esc(d.name)+'</button>'}).join("")+'</div>')+'</div>'+
+        '<div><span class="fl">Tür</span><div class="chiprow"><button type="button" data-mtkind="ham" aria-pressed="'+(matKindDraft==="ham")+'">🧱 Hammadde</button><button type="button" data-mtkind="yari" aria-pressed="'+(matKindDraft!=="ham")+'">⚙ Yarı mamul / parça</button></div></div>'+
         '<div><label class="fl" for="mtname">Malzeme adı</label><input class="fin" id="mtname" autocomplete="off" placeholder="ör. Dövme, Toz lastik, Somun, Aşık" value="'+esc(mt.name)+'"></div>'+
         '<div><label class="fl" for="mtcat">Kategori (ürün çeşidi)</label><input class="fin" id="mtcat" list="mtcatdl" autocomplete="off" placeholder="ör. Dövme, Somun, Kopilya" value="'+esc(mt.cat||"")+'"><datalist id="mtcatdl">'+mcats.map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist></div>'+
         '<div><label class="fl" for="mtunit">Birim</label><input class="fin" id="mtunit" autocomplete="off" placeholder="ör. adet, kg, m" value="'+esc(mt.unit||"adet")+'"></div>'+
@@ -6210,6 +6213,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       }
       noteEditId=null; noteDelArm=false; closeSheet(); return;
     }
+    if(t.dataset.mtkind){matKindDraft=t.dataset.mtkind; [].forEach.call($("sheet").querySelectorAll("[data-mtkind]"),function(b){b.setAttribute("aria-pressed",b.dataset.mtkind===matKindDraft)}); return}
     if(t.dataset.mtdiv){matNewDiv=t.dataset.mtdiv; [].forEach.call($("sheet").querySelectorAll("[data-mtdiv]"),function(b){b.setAttribute("aria-pressed",b.dataset.mtdiv===matNewDiv)}); return}
     if(t.id==="mtcancel"){sheetMode="list";matEditId=null;closeSheet();return}
     if(t.id==="mtsave"){
@@ -6218,10 +6222,10 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var mcat=($("mtcat")?$("mtcat").value.trim():""), mdb=dbDiv(matEditId?matEditDiv:matNewDiv);
       if(!mdb){$("stkstatus").textContent="Bağlantı yok, kaydedilemedi";return}
       if(matEditId){
-        var pat={name:mname,unit:munit,crit:mcrit,note:mnote}; if(mcat||$("mtcat").defaultValue)pat.cat=mcat;
+        var pat={name:mname,unit:munit,crit:mcrit,note:mnote,kind:matKindDraft==="ham"?"ham":"yari"}; if(mcat||$("mtcat").defaultValue)pat.cat=mcat;
         mdb.doc("materials/"+matEditId).set(pat,{merge:true}).catch(function(){});
       }else{
-        var mstock=cleanNum($("mtstock").value,99999999,false)||0, nd={name:mname,unit:munit,crit:mcrit,note:mnote,stock:mstock}; if(mcat)nd.cat=mcat;
+        var mstock=cleanNum($("mtstock").value,99999999,false)||0, nd={name:mname,unit:munit,crit:mcrit,note:mnote,stock:mstock,kind:matKindDraft==="ham"?"ham":"yari"}; if(mcat)nd.cat=mcat;
         mdb.collection("materials").add(nd).catch(function(){});
       }
       matEditId=null; closeSheet(); return;
@@ -7659,6 +7663,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       if(stkDiv!=="all"&&m._div!==stkDiv)return false;
       if(q&&fold([m.name,matCatLbl(m),m.sup,m.note,divInfo(m._div).name].join(" ")).indexOf(q)<0)return false;
       if(!ignoreCat&&stkCat&&matCatLbl(m)!==stkCat)return false;
+      if(stkKind&&(m.kind==="ham"?"ham":"yari")!==stkKind)return false;
       var st=matState(m);
       if(stkSt==="var"&&st==="zero")return false; if(stkSt==="low"&&st!=="low")return false; if(stkSt==="zero"&&st!=="zero")return false;
       return true;
@@ -7672,7 +7677,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function stkPill(m){var st=matState(m); return '<span class="stkpill '+st+'">'+(st==="zero"?"Stok yok":st==="low"?"Kritik":"Yeterli")+'</span>'}
   function matRowHtml(m){
     var stock=+m.stock||0, needQ=matNeedOf(m), deficit=needQ!==null?Math.max(0,needQ-stock):null, di=divInfo(m._div);
-    return '<div class="stkrow'+(matKey(m)===stkSel?' on':'')+'" data-matsel="'+matKey(m)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+(stkDiv==="all"?'<span class="stkdv" style="--d1:'+di.c1+';--d2:'+di.c2+'">'+esc(di.name)+'</span>':'')+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ!==null?' · gereken '+nf.format(needQ)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
+    return '<div class="stkrow'+(matKey(m)===stkSel?' on':'')+'" data-matsel="'+matKey(m)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+(stkDiv==="all"?'<span class="stkdv" style="--d1:'+di.c1+';--d2:'+di.c2+'">'+esc(di.name)+'</span>':'')+(m.kind==="ham"?'<span class="stkdv" style="--d1:#8A6A2A;--d2:#5A4216">Hammadde</span>':'')+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ!==null?' · gereken '+nf.format(needQ)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
       '<span class="ct">'+esc(matCatLbl(m))+'</span><span class="sk">'+stkPill(m)+'<b class="'+matState(m)+'">'+nf.format(stock)+' <i>'+esc(m.unit||"adet")+'</i></b></span><span class="cs">'+(+m.p>0?pf(m.p)+' ₺':'—')+'</span></div>';
   }
   function stkFind(key){return allMats.filter(function(x){return matKey(x)===key})[0]}
@@ -7685,6 +7690,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var sm=stkFind(stkSel);
     function k(ic,l,v,c){return '<div class="stkk"><span class="ic '+(c||'')+'">'+ic+'</span><div><small>'+l+'</small><b>'+v+'</b></div></div>'}
     $("stkkpi").innerHTML=k("📦","Malzeme çeşidi",nf.format(base.length))+k("⚠","Kritik seviyede",nf.format(low),low?"warn":"")+k("∅","Stok yok",nf.format(zero),zero?"bad":"")+k("🧮","Seçili malzeme stoğu",sm?nf.format(+sm.stock||0)+' '+esc(sm.unit||"adet"):"—");
+  }
+  function stkKinds(){
+    var base=allMats.filter(function(m){return stkDiv==="all"||m._div===stkDiv}), nh=base.filter(function(m){return m.kind==="ham"}).length;
+    var K=[["","Tüm malzemeler",base.length],["ham","🧱 Hammadde",nh],["yari","⚙ Yarı mamul / parça",base.length-nh]];
+    $("stkkinds").innerHTML=K.map(function(k){return '<button type="button" data-stkkind="'+k[0]+'" aria-pressed="'+(stkKind===k[0])+'">'+k[1]+'<i>'+k[2]+'</i></button>'}).join("");
   }
   function stkChips(){
     var cnt={}, tot=0; stkFiltered(true).forEach(function(m){var c=matCatLbl(m); cnt[c]=(cnt[c]||0)+1; tot++});
@@ -7738,7 +7748,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function renderStock(){
     $("stkcount").textContent=allMats.length;
     if(!$("stkrows"))return;
-    stkDivs(); stkKpi(); stkChips();
+    stkDivs(); stkKinds(); stkKpi(); stkChips();
     var all=stkSorted(stkFiltered(false)), pages=Math.max(1,Math.ceil(all.length/STK_PS));
     if(stkPage>=pages)stkPage=pages-1; if(stkPage<0)stkPage=0;
     if(!stkAuto&&!stkSel&&all.length&&window.innerWidth>=1100){stkSel=matKey(all[0]); stkAuto=true}
@@ -7824,7 +7834,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   $("stksearch").addEventListener("input",function(e){matSearch=e.target.value; stkPage=0; renderStock()});
   $("stkst").addEventListener("change",function(e){stkSt=e.target.value; stkPage=0; renderStock()});
   $("stksort").addEventListener("change",function(e){stkSort=e.target.value; stkPage=0; renderStock()});
-  $("stknew").addEventListener("click",function(){matEditId=null; matEditDiv=""; matNewDiv=stkDiv!=="all"?stkDiv:window.__DIV; sheetMode="matform";$("ov").hidden=false;renderSheet();});
+  $("stknew").addEventListener("click",function(){matEditId=null; matEditDiv=""; matKindDraft=stkKind==="ham"?"ham":"yari"; matNewDiv=stkDiv!=="all"?stkDiv:window.__DIV; sheetMode="matform";$("ov").hidden=false;renderSheet();});
   $("stkneedbtn").addEventListener("click",computeMaterialNeeds);
   function stkSelect(id){
     stkSel=id; stkMobOpen=true; stkMsg=""; stkMvId=""; renderStock();
@@ -7846,10 +7856,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     }).catch(function(){btn.disabled=false; stkSetMsg("Kaydedilemedi, tekrar dene.",true)});
   }
   $("stock").addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkclose],[data-matedit],#stksave"); if(!t||!$("stock").contains(t))return;
+    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkclose],[data-matedit],#stksave"); if(!t||!$("stock").contains(t))return;
     var d=t.dataset;
     if(d.matedit){var em=stkFind(d.matedit); if(!em)return; matEditId=em.id; matEditDiv=em._div; sheetMode="matform";$("ov").hidden=false;renderSheet();return}
     if(d.stkdiv){stkDiv=d.stkdiv; stkCat=""; stkPage=0; renderStock(); return}
+    if(d.stkkind!==undefined){stkKind=d.stkkind; stkCat=""; stkPage=0; renderStock(); return}
     if(d.matsel){stkSelect(d.matsel); return}
     if(d.stkcat!==undefined){stkCat=d.stkcat; stkPage=0; renderStock(); return}
     if(d.stkpg!==undefined){stkPage=+d.stkpg; renderStock(); var el=$("stkrows"); if(el&&el.scrollIntoView)el.scrollIntoView({block:"start",behavior:"smooth"}); return}
