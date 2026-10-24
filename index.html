@@ -2734,7 +2734,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .pcrec{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .pcrsum,.pcrlist{display:flex;flex-direction:column;gap:12px;min-width:0}
 .pcrsum{order:-1}
-@media (min-width:1000px){.pcrec{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}.pcrsum{order:0;position:sticky;top:64px}}
+@media (min-width:1000px){.pcone .pcrec{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}.pcone .pcrsum{order:0;position:sticky;top:64px}}
 .pcs .rv-sec,.pcs .rv-tot,.pcs .rv-end,.pcs .rv-note{margin:0}
 .pcs .rv-sec{border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .pcs .rv-note{padding:0 4px}
@@ -2792,7 +2792,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:29</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:35</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -10339,7 +10339,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       add("alt","⇄","Alternatif ürünler","R",pcAltBody(p),pcSimilar(p).length||"");
     }
     if(p.note)add("not","📝","Not","R",'<div class="pcnote" style="margin:0">'+esc(p.note)+'</div>');
-    add("rec","🧾","Reçete & maliyet","F",rec,pcSecCount(p)||"");
+    add("rec","🧾","Reçete & maliyet","L",rec,pcSecCount(p)||"");
     return S;
   }
   function pcSecCard(x,full){return '<section class="pcs'+(full?' full':'')+'" id="pcs-'+x.id+'"><div class="pcsh"><span class="pcic">'+x.ic+'</span><b>'+x.t+'</b>'+(x.cnt!==""&&x.cnt!==undefined?'<i>'+x.cnt+'</i>':'')+'</div><div class="pcsb">'+x.body+'</div></section>'}
