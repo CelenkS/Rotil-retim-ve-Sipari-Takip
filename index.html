@@ -2567,6 +2567,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .sf-det2>summary{cursor:pointer;list-style:none;font:800 14px var(--font-ui)}.sf-det2>summary::-webkit-details-marker{display:none}
 .sf-sel select,.sf-tb select{font-size:13px!important}
 @media(max-width:480px){.sf-uq{grid-template-columns:repeat(2,1fr)}}
+.sf-osmc{display:flex;flex-wrap:wrap;gap:6px}
+.sf-osmc .sf-c{cursor:default}
+.sf-osmc button.sf-pk{cursor:pointer;border:1px solid var(--line,rgba(0,0,0,.12));background:transparent;color:var(--ink2,inherit);padding:6px 10px;border-radius:999px;font:600 12.5px/1 inherit}
+.sf-osmc button.sf-pk[aria-pressed=true]{background:#C2410C;color:#fff;border-color:#C2410C}
+.sf-osmc .sf-c.bad{background:rgba(224,136,58,.18);color:#B45309}
 </style>
 </head>
 <body>
@@ -2621,7 +2626,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 24.10 12:11</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 24.10 12:22</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13694,7 +13699,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   /* ---------- Özet ---------- */
   function sfOzet(s){
     var h="", ix=sfIndex();
-    if(!s.tot)return '<div class="sf-empty"><div class="sf-ei">🧭</div><b>Saha satış takibine hoş geldin</b><small>İlk adım: servis listeni içeri al. Excel ya da CSV dosyandaki firma, ilçe, adres ve telefonlar okunur; hiçbiri “doğrulandı” sayılmaz, sen aradıkça ve ziyaret ettikçe doğrulanır.</small><button type="button" class="btn" data-sfact="imp">📥 Excel / CSV ile içe aktar</button><button type="button" class="btn ghost" data-sfact="new" style="margin-top:8px">＋ Tek tek servis ekle</button></div>'+sfGuideMini();
+    if(!s.tot)return '<div class="sf-empty"><div class="sf-ei">🧭</div><b>Saha satış takibine hoş geldin</b><small>İlk adım: servis listeni içeri al. Excel ya da CSV dosyandaki firma, ilçe, adres ve telefonlar okunur; hiçbiri “doğrulandı” sayılmaz, sen aradıkça ve ziyaret ettikçe doğrulanır.</small><button type="button" class="btn" data-sfact="osm">🗺 Haritadan bul (binlerce servis)</button><button type="button" class="btn ghost" data-sfact="imp" style="margin-top:8px">📥 Excel / CSV ile içe aktar</button><button type="button" class="btn ghost" data-sfact="new" style="margin-top:8px">＋ Tek tek servis ekle</button></div>'+sfGuideMini();
     var due=s.today+s.over;
     h+='<div class="sf-today"><div><span class="sf-tlab">Bugünün işi</span><b>'+(due?nf.format(due)+' takip':'Takip yok')+'</b><small>'+(s.over?nf.format(s.over)+' gecikmiş · ':'')+nf.format(s.today)+' bugün'+' · plan: '+((sfPlans[todayIso]&&sfPlans[todayIso].ids||[]).length)+' durak</small></div><div class="sf-today-b"><button type="button" class="btn" data-sftab="plan">Bugünün planı</button>'+(s.over?'<button type="button" class="btn ghost" data-sfgo="geciken">Gecikenler</button>':'')+'</div></div>';
     var hedef=+sfC("hedef",5000), gun=+sfC("gunluk",12);
@@ -13750,7 +13755,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     var ils={}; sfM.forEach(function(m){if(m.ilce)ils[m.ilce]=(ils[m.ilce]||0)+1});
     var ilOpts='<option value="">Tüm ilçeler</option>'+Object.keys(ils).sort(function(a,b){return a.localeCompare(b,"tr")}).map(function(k){return '<option value="'+esc(k)+'"'+(sfF.ilce===k?' selected':'')+'>'+esc(k)+' ('+ils[k]+')</option>'}).join("");
     var so=[["son","Son görüşme"],["sonraki","Sonraki ziyaret"],["ad","Ada göre"],["ilce","İlçe / bölge"],["yeni","Yeni eklenen"]].map(function(x){return '<option value="'+x[0]+'"'+(sfF.sort===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join("");
-    h+='<div class="sf-tb"><button type="button" class="btn" data-sfact="new">＋ Yeni servis</button><button type="button" class="btn ghost" data-sfact="imp">📥 İçe aktar</button><button type="button" class="tpill" data-sfact="csv">⬇ CSV</button><button type="button" class="tpill" data-sfact="dup">🧹 Mükerrer</button><button type="button" class="tpill" data-sfact="log">🕘 Günlük</button></div>'+
+    h+='<div class="sf-tb"><button type="button" class="btn" data-sfact="new">＋ Yeni servis</button><button type="button" class="btn ghost" data-sfact="imp">📥 İçe aktar</button><button type="button" class="btn ghost" data-sfact="osm">🗺 Haritadan bul</button><button type="button" class="tpill" data-sfact="csv">⬇ CSV</button><button type="button" class="tpill" data-sfact="dup">🧹 Mükerrer</button><button type="button" class="tpill" data-sfact="log">🕘 Günlük</button></div>'+
       '<input class="search" id="sfq" type="search" autocomplete="off" placeholder="Firma, ilçe, adres, marka, telefon ara…" value="'+esc(sfF.q)+'">'+
       '<div class="sf-sel"><select class="fin" data-sff="st">'+stOpts+'</select><select class="fin" data-sff="ilce">'+ilOpts+'</select><select class="fin" data-sff="dog"><option value="">Doğrulama: hepsi</option><option value="evet"'+(sfF.dog==="evet"?' selected':'')+'>Doğrulanmış</option><option value="hayir"'+(sfF.dog==="hayir"?' selected':'')+'>Doğrulanmamış</option></select><select class="fin" data-sff="uy"><option value="">Uygunluk: hepsi</option>'+SF_UY.map(function(x){return '<option value="'+x[0]+'"'+(sfF.uy===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join("")+'</select><select class="fin" data-sff="sort">'+so+'</select></div>'+sfChipSel();
     h+='<div class="sf-cnt">'+nf.format(list.length)+' kayıt'+(list.length!==sfM.length?' <small>/ '+nf.format(sfM.length)+'</small>':'')+'</div>';
@@ -13915,6 +13920,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(sheetMode==="sf_dup")return sfDupHtml();
     if(sheetMode==="sf_jr")return sfJrHtml();
     if(sheetMode==="sf_pimp")return sfPimpHtml();
+    if(sheetMode==="sf_osm")return sfOsmHtml();
     return "";
   }
   function sfOpts(list,val,blank){return (blank!==undefined?'<option value="">'+blank+'</option>':'')+list.map(function(x){var v=Array.isArray(x)?x[0]:x, l=Array.isArray(x)?x[1]:x; return '<option value="'+esc(v)+'"'+(String(val)===String(v)?' selected':'')+'>'+esc(l)+'</option>'}).join("")}
@@ -14012,6 +14018,19 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return "";
   }
   function sfIlceFix(s){var f=fold(s||""); var m=SF_ILCE.filter(function(x){return fold(x)===f})[0]; return m||sfCap(s)}
+  function sfMarkDup(recs,geo){ /* mükerrer: mevcut kayıtlar + dosyanın kendi içi */
+    var seenP={}, seenN={}, seenA={};
+    var km=function(a,b){return Math.abs(a.lat-b.lat)*111+Math.abs(a.lng-b.lng)*84};
+    var nk=function(m){var n=sfNorm(m.ad); return (n||(geo?fold(m.ad):""))?(n||fold(m.ad))+"|"+fold(m.ilce):""};
+    var addSeen=function(m,src){(m.tel||[]).forEach(function(t){seenP[t]=src}); var k=nk(m); if(k)(seenN[k]=seenN[k]||[]).push({s:src,m:m}); if(m.adres&&m.adres.length>8)seenA[fold(m.adres)+"|"+fold(m.ilce)]=src};
+    sfM.forEach(function(m){addSeen(m,"kayıtlı: "+m.ad)});
+    recs.forEach(function(r){
+      var why=""; (r.tel||[]).forEach(function(t){if(!why&&seenP[t])why="aynı telefon ("+seenP[t]+")"});
+      if(!why){var k=nk(r), l=k?seenN[k]:null, weak=!sfNorm(r.ad); if(l)for(var i=0;i<l.length&&!why;i++){var x=l[i].m, both=sfHasXY(r)&&sfHasXY(x); if(!geo||(both?km(r,x)<(weak?0.1:0.5):!weak))why="aynı ad + ilçe ("+l[i].s+")"}}
+      if(!why&&r.adres&&r.adres.length>8&&seenA[fold(r.adres)+"|"+fold(r.ilce)])why="aynı adres ("+seenA[fold(r.adres)+"|"+fold(r.ilce)]+")";
+      r.__dup=why; if(!why)addSeen(r,"dosyada: "+r.ad);
+    });
+  }
   function sfImpBuild(rows){
     if(!rows||rows.length<2)return {err:"Dosyada başlık satırı ve en az bir kayıt olmalı.",recs:[]};
     var hi=0; for(var i=0;i<Math.min(rows.length,6);i++){if(rows[i].filter(function(c){return sfHk(c)}).length>=2){hi=i; break}}
@@ -14030,15 +14049,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       if(o.lat&&o.lng){var la=parseFloat(o.lat.replace(",",".")), ln=parseFloat(o.lng.replace(",",".")); if(isFinite(la)&&isFinite(ln)&&la>34&&la<43&&ln>24&&ln<46){rec.lat=la; rec.lng=ln; rec.konum="yaklasik"}}
       recs.push(rec);
     });
-    /* mükerrer: mevcut kayıtlar + dosyanın kendi içi */
-    var seenP={}, seenN={}, seenA={}; var addSeen=function(m,src){(m.tel||[]).forEach(function(t){seenP[t]=src}); seenN[sfNorm(m.ad)+"|"+fold(m.ilce)]=src; if(m.adres&&m.adres.length>8)seenA[fold(m.adres)+"|"+fold(m.ilce)]=src};
-    sfM.forEach(function(m){addSeen(m,"kayıtlı: "+m.ad)});
-    recs.forEach(function(r){
-      var why=""; (r.tel||[]).forEach(function(t){if(!why&&seenP[t])why="aynı telefon ("+seenP[t]+")"});
-      if(!why&&seenN[sfNorm(r.ad)+"|"+fold(r.ilce)])why="aynı ad + ilçe ("+seenN[sfNorm(r.ad)+"|"+fold(r.ilce)]+")";
-      if(!why&&r.adres&&r.adres.length>8&&seenA[fold(r.adres)+"|"+fold(r.ilce)])why="aynı adres ("+seenA[fold(r.adres)+"|"+fold(r.ilce)]+")";
-      r.__dup=why; if(!why)addSeen(r,"dosyada: "+r.ad);
-    });
+    sfMarkDup(recs,false);
     return {recs:recs,nm:nm,map:map.filter(Boolean)};
   }
   function sfImpHtml(){
@@ -14058,11 +14069,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   }
   function sfImpGo(btn){
     var r=sfImp&&sfImp.res; if(!r||!db)return; var nw=r.recs.filter(function(x){return !x.__dup});
-    if(sfArm!=="imp"){sfArm="imp"; renderSheet(); setTimeout(function(){if(sfArm==="imp"){sfArm=""; if(sheetMode==="sf_imp")renderSheet()}},6000); return}
+    if(sfArm!=="imp"){sfArm="imp"; renderSheet(); setTimeout(function(){if(sfArm==="imp"){sfArm=""; if(sheetMode==="sf_imp"||sheetMode==="sf_osm")renderSheet()}},6000); return}
     sfArm=""; btn.disabled=true; var st=$("sfimpst"), done=0, now=Date.now();
     var chunks=[]; for(var i=0;i<nw.length;i+=400)chunks.push(nw.slice(i,i+400));
-    var p=Promise.resolve(); chunks.forEach(function(ch){p=p.then(function(){var b=db.batch(); ch.forEach(function(x,j){var o=Object.assign({},x); delete o.__dup; delete o.__badTel; o.ts=now+j; o.imp=todayIso; b.set(sfCol("musteri").doc(uid()),o)}); return b.commit().then(function(){done+=ch.length; if(st)st.textContent=done+" / "+nw.length+" yazıldı…"})})});
-    p.then(function(){sfLog("İçe aktarma: "+done+" kayıt eklendi, "+(r.recs.length-nw.length)+" mükerrer atlandı"); sfImp=null; sfTab="liste"; sfF.q2="temassiz"; closeSheet(); sfPaint()}).catch(function(){if(st)st.textContent="Hata oluştu; yazılan "+done+" kayıt kaldı. Tekrar önizleyip devam edebilirsin (mükerrerler atlanır)."; btn.disabled=false});
+    var p=Promise.resolve(); chunks.forEach(function(ch){p=p.then(function(){var b=db.batch(); ch.forEach(function(x,j){var o=Object.assign({},x); delete o.__dup; delete o.__badTel; delete o.__osm; o.ts=now+j; o.imp=todayIso; b.set(sfCol("musteri").doc(uid()),o)}); return b.commit().then(function(){done+=ch.length; if(st)st.textContent=done+" / "+nw.length+" yazıldı…"})})});
+    p.then(function(){sfLog((r.osm?"OpenStreetMap’ten içe aktarma: ":"İçe aktarma: ")+done+" kayıt eklendi, "+(r.recs.length-nw.length)+" mükerrer atlandı"); sfImp=null; if(r.osm){sfOsm.res=null; sfOsm.cnt={}} sfTab="liste"; sfF.q2="temassiz"; closeSheet(); sfPaint()}).catch(function(){if(st)st.textContent="Hata oluştu; yazılan "+done+" kayıt kaldı. Tekrar önizleyip devam edebilirsin (mükerrerler atlanır)."; btn.disabled=false});
   }
   /* ---------- Mükerrer tarama / birleştirme ---------- */
   function sfDupScan(){
@@ -14170,6 +14181,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       var a2=t.dataset.sfact;
       if(a2==="new"){sfFormId=null; sfFrom=""; sfDupOk=false; sfOpen("sf_form"); return}
       if(a2==="imp"){sfImp=null; sfArm=""; sfOpen("sf_imp"); return}
+      if(a2==="osm"){sfArm=""; if(!sfOsm.res)sfImp=null; sfOpen("sf_osm"); return}
       if(a2==="csv"){sfExport(); return}
       if(a2==="dup"){sfDupL=sfDupScan(); sfOpen("sf_dup"); return}
       if(a2==="log"){sfLogS=[]; sfOpen("sf_jr"); sfCol("log").orderBy("ts","desc").limit(60).get().then(function(sn){sfLogS=sn.docs.map(function(x){return x.data()}); if(sheetMode==="sf_jr")renderSheet()}).catch(function(){}); return}
@@ -14330,6 +14342,96 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       else if(/\.xls$/.test(nm)){if(msg)msg.textContent="Eski .xls biçimi okunamıyor: Excel’de Farklı kaydet → .xlsx seç."}
       else f2.text().then(function(tx){done(sfCsv(tx))});
     }
+  },true);
+  /* ---------- Haritadan servis bul (OpenStreetMap / Overpass) ---------- */
+  var sfOsm={sel:null,parts:false,run:false,stop:false,prog:"",cnt:{},res:null,err:""};
+  var SF_OSM_ALT={"Kağıthane":"Kağıthane|Kâğıthane|Kagithane","Eyüpsultan":"Eyüpsultan|Eyüp|Eyupsultan","Gaziosmanpaşa":"Gaziosmanpaşa|Gaziosmanpasa","Büyükçekmece":"Büyükçekmece|Buyukcekmece","Küçükçekmece":"Küçükçekmece|Kucukcekmece"};
+  var SF_OSM_EP=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+  var SF_OSM_BB="(40.75,27.9,41.65,29.99)";
+  function sfOsmSel(){if(!sfOsm.sel){sfOsm.sel={}; SF_ILCE.forEach(function(i){sfOsm.sel[i]=true})} return sfOsm.sel}
+  function sfOsmQuery(areaClause,parts){
+    var A="(area.a)"+SF_OSM_BB, f='nwr["shop"="car_repair"]'+A+';nwr["craft"="car_repair"]'+A+';nwr["amenity"="car_repair"]'+A+';'+(parts?'nwr["shop"="car_parts"]'+A+';':'');
+    return '[out:json][timeout:90];'+areaClause+'('+f+');out center tags;';
+  }
+  function sfOsmFetch(q,tries){
+    tries=tries||0; var ep=SF_OSM_EP[tries%SF_OSM_EP.length];
+    var ctl=typeof AbortController!=="undefined"?new AbortController():null, tm=setTimeout(function(){if(ctl)ctl.abort()},100000);
+    return fetch(ep,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(q),signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(tm); if(!r.ok)throw new Error("HTTP "+r.status); return r.json()}).then(function(j){
+      if(!j||!Array.isArray(j.elements))throw new Error("Geçersiz yanıt"); if(j.remark&&/error|timed out|out of memory/i.test(j.remark)&&!j.elements.length)throw new Error(j.remark); return j.elements;
+    }).catch(function(e){clearTimeout(tm); if(sfOsm.stop)throw e; if(tries>=3)throw e; return new Promise(function(ok){setTimeout(ok,3000+tries*3000)}).then(function(){return sfOsmFetch(q,tries+1)})});
+  }
+  function sfOsmRec(el,ilce){
+    var t=el.tags||{}, nm=sfCap(t.name||""); if(!nm)return null;
+    var la=el.lat!=null?el.lat:(el.center&&el.center.lat), ln=el.lon!=null?el.lon:(el.center&&el.center.lon);
+    var r=sfNew(); r.ad=nm; r.ilce=ilce||"";
+    if(!r.ilce){var d=fold(t["addr:district"]||""); var m=SF_ILCE.filter(function(x){return fold(x)===d})[0]; if(m)r.ilce=m}
+    var mah=sfCap(t["addr:suburb"]||t["addr:neighbourhood"]||t["addr:quarter"]||""); r.mah=mah;
+    var ad=[mah?mah+(/mah/i.test(mah)?"":" Mah."):"", sfCap(t["addr:street"]||""), t["addr:housenumber"]?"No: "+sfCap(t["addr:housenumber"]):""].filter(Boolean).join(" "); r.adres=ad;
+    r.tel=sfTels([t.phone,t["contact:phone"],t.mobile,t["contact:mobile"]].filter(Boolean).join(";")); r.__badTel=r.tel.some(function(x){return !sfTelOk(x)}); r.tel=r.tel.filter(sfTelOk);
+    var w=t.website||t["contact:website"]||""; if(w&&!/^https?:\/\//i.test(w)&&/\./.test(w))w="https://"+w; if(/^https?:\/\//i.test(w))r.web=w;
+    if(isFinite(la)&&isFinite(ln)&&la>40.7&&la<41.7&&ln>27.8&&ln<30.1){r.lat=Math.round(la*1e6)/1e6; r.lng=Math.round(ln*1e6)/1e6; r.konum="yaklasik"}
+    r.kaynak="https://www.openstreetmap.org/"+el.type+"/"+el.id;
+    if(t.brand)r.markalar=sfCap(t.brand);
+    if(t.shop==="car_parts"){r.tip="Diğer"}
+    r.notlar="OpenStreetMap kaydı — doğrulanmadı. © OpenStreetMap katkıcıları (ODbL)."+(t.shop==="car_parts"?" Yedek parça satıcısı.":"")+(t.opening_hours?" Çalışma saati (OSM): "+sfCap(t.opening_hours)+".":"")+(t.operator&&t.operator!==nm?" İşleten: "+sfCap(t.operator)+".":"");
+    r.__osm=el.type+"/"+el.id; return r;
+  }
+  function sfOsmRun(){
+    if(sfOsm.run)return; var sel=sfOsmSel(), il=SF_ILCE.filter(function(i){return sel[i]}); if(!il.length)return;
+    sfOsm.run=true; sfOsm.stop=false; sfOsm.err=""; sfOsm.res=null; sfOsm.cnt={}; sfOsm.skipped=0; var seen={}, all=[], noname=0, fail=[], total=il.length+1;
+    var upd=function(t){sfOsm.prog=t; var e=$("sfosmst"); if(e)e.textContent=t};
+    var p=Promise.resolve(); il.forEach(function(name,k){p=p.then(function(){
+      if(sfOsm.stop)return; upd("Aranıyor: "+name+" ("+(k+1)+" / "+total+")…");
+      var alt=SF_OSM_ALT[name]||name, q=sfOsmQuery('area["boundary"="administrative"]["admin_level"="6"][~"^name(:tr)?$"~"^('+alt+')$"]->.a;',sfOsm.parts);
+      return sfOsmFetch(q).then(function(els){var n=0; els.forEach(function(el){var key=el.type+"/"+el.id; if(seen[key])return; seen[key]=1; var r=sfOsmRec(el,name); if(!r){noname++; return} all.push(r); n++}); sfOsm.cnt[name]=n}).catch(function(e){fail.push(name); sfOsm.cnt[name]=-1}).then(function(){return new Promise(function(ok){setTimeout(ok,1500)})});
+    })});
+    p=p.then(function(){
+      if(sfOsm.stop)return; upd("İstanbul geneli kontrol ediliyor ("+total+" / "+total+")…");
+      var q=sfOsmQuery('area["boundary"="administrative"]["admin_level"="4"]["name"~"^(İstanbul|Istanbul)$"]->.a;',sfOsm.parts);
+      return sfOsmFetch(q).then(function(els){var n=0; els.forEach(function(el){var key=el.type+"/"+el.id; if(seen[key])return; seen[key]=1; var r=sfOsmRec(el,""); if(!r){noname++; return} all.push(r); n++}); sfOsm.cnt["(ilçesi belirsiz)"]=n}).catch(function(e){fail.push("İstanbul geneli")});
+    });
+    p.then(function(){
+      sfOsm.run=false;
+      if(sfOsm.stop){sfOsm.prog="Durduruldu."; if(!all.length){if(sheetMode==="sf_osm")renderSheet(); return}}
+      if(!all.length){sfOsm.err="Hiç kayıt gelemedi"+(fail.length?" ("+fail.length+" sorgu başarısız — internet/OpenStreetMap sunucusu yanıt vermedi). Biraz sonra tekrar dene.":"."); if(sheetMode==="sf_osm")renderSheet(); return}
+      sfMarkDup(all,true); if(!sfOsm.stop)sfOsm.prog="Tamamlandı ✓ — önizlemeyi kontrol edip eklemeyi onayla.";
+      sfOsm.res={recs:all,noname:noname,fail:fail}; sfImp={res:{recs:all,map:["OpenStreetMap"],osm:true}}; sfArm="";
+      if(sheetMode==="sf_osm")renderSheet();
+    });
+  }
+  function sfOsmHtml(){
+    var sel=sfOsmSel(), n=SF_ILCE.filter(function(i){return sel[i]}).length;
+    var h='<div class="shead"><div><h2 id="sh-title">Haritadan servis bul</h2><small>OpenStreetMap · açık harita verisi</small></div><button type="button" class="tpill" data-sfx="close">Kapat</button></div><div class="form">';
+    h+='<div class="note" style="margin:0;text-align:left">OpenStreetMap’te “oto tamir / servis” olarak işaretlenmiş <b>gerçek işletmeleri</b> ilçe ilçe getirir (ad, varsa telefon, adres ve harita konumu). <b>Google Haritalar’dan çekmez.</b> Veri gönüllüler tarafından girilir: her servisin telefonu olmayabilir, bazıları eski olabilir. Hiçbiri “doğrulandı” sayılmaz; aradıkça / gittikçe sen doğrularsın. Önizlemeyi onaylamadan hiçbir şey yazılmaz.</div>';
+    if(sfOsm.run||sfOsm.res||sfOsm.err){
+      h+='<div class="note" id="sfosmst" style="margin:0;text-align:left;font-weight:600">'+esc(sfOsm.err||sfOsm.prog||"")+'</div>';
+      if(sfOsm.run)h+='<div class="frow"><button type="button" class="btn ghost" data-sfosm="stop">Durdur</button></div>';
+    }
+    if(sfOsm.res){
+      var r=sfOsm.res, nw=r.recs.filter(function(x){return !x.__dup}), dp=r.recs.length-nw.length, tl=nw.filter(function(x){return x.tel.length}).length, ad=nw.filter(function(x){return x.adres}).length;
+      h+='<div class="stfsum" style="margin-top:0"><div><b>'+nf.format(r.recs.length)+'</b><small>Bulunan</small></div><div><b>'+nf.format(nw.length)+'</b><small>Eklenecek</small></div><div><b>'+nf.format(dp)+'</b><small>Mükerrer · atlanır</small></div></div>';
+      h+='<div class="note" style="margin:0;text-align:left">Eklenecekler içinde: <b>'+nf.format(tl)+'</b> kayıtta telefon, <b>'+nf.format(ad)+'</b> kayıtta adres var; tamamında harita konumu var.'+(r.noname?' İsimsiz '+nf.format(r.noname)+' kayıt atlandı.':'')+(r.fail.length?' <b>Cevap alınamayan:</b> '+esc(r.fail.join(", "))+' — bunları sonra tekrar çalıştır (mükerrerler atlanır).':'')+'</div>';
+      var ks=Object.keys(sfOsm.cnt).sort(function(a,b){return (sfOsm.cnt[b]||0)-(sfOsm.cnt[a]||0)});
+      h+='<div class="sf-osmc">'+ks.map(function(k){var c=sfOsm.cnt[k]; return '<span class="sf-c'+(c<0?' bad':'')+'">'+esc(k)+' · '+(c<0?'yanıt yok':nf.format(c))+'</span>'}).join("")+'</div>';
+      h+=nw.slice(0,30).map(function(x){return '<div class="ent" style="flex-direction:column;align-items:stretch"><div style="display:flex;justify-content:space-between;gap:8px"><b>'+esc(x.ad)+'</b><small>'+esc(x.ilce||"ilçe yok")+'</small></div><small style="color:var(--ink2)">'+esc(x.tel.map(sfTelFmt).join(", ")||"telefon yok")+(x.adres?" · "+esc(x.adres):"")+'</small></div>'}).join("")+(nw.length>30?'<div class="note" style="text-align:center">+ '+nf.format(nw.length-30)+' kayıt daha</div>':'');
+      h+=(nw.length?'<div class="frow"><button type="button" class="btn" data-sfx="impgo">'+(sfArm==="imp"?'Emin misin? '+nf.format(nw.length)+' kayıt yazılacak':'✓ '+nf.format(nw.length)+' servisi ekle')+'</button><button type="button" class="btn ghost" data-sfosm="reset">Baştan başla</button></div>':'<div class="empty">Eklenecek yeni kayıt yok.</div><div class="frow"><button type="button" class="btn ghost" data-sfosm="reset">Baştan başla</button></div>');
+    }
+    if(!sfOsm.run&&!sfOsm.res){
+      h+='<div class="frow" style="flex-wrap:wrap"><button type="button" class="tpill" data-sfosm="all">Hepsi</button><button type="button" class="tpill" data-sfosm="w1">Sadece 1. dalga</button><button type="button" class="tpill" data-sfosm="none">Hiçbiri</button></div>';
+      h+='<div class="sf-osmc">'+SF_ILCE.map(function(i){return '<button type="button" class="sf-c sf-pk" data-sfosm="tg:'+esc(i)+'" aria-pressed="'+!!sel[i]+'">'+esc(i)+'</button>'}).join("")+'</div>';
+      h+='<label class="sf-chk"><input type="checkbox" data-sfosm="parts"'+(sfOsm.parts?' checked':'')+'> <span>Oto yedek parçacıları da getir (farklı hedef kitle; ayrı not düşülür)</span></label>';
+      h+='<div class="frow"><button type="button" class="btn" data-sfosm="go"'+(n?'':' disabled')+'>🔎 '+n+' ilçede servisleri bul</button></div><small class="sf-sm">Her ilçe yaklaşık 2–10 sn sürer; tüm İstanbul birkaç dakika. Bu sayfayı kapatma.</small>';
+    }
+    return h+'<div class="note" id="sfimpst" style="margin:0"></div></div>';
+  }
+  document.addEventListener("click",function(e){
+    var T=e.target; if(!sfOn()||!T.closest)return; var t=T.closest("[data-sfosm]"); if(!t||sheetMode!=="sf_osm")return; e.stopPropagation();
+    var a=t.dataset.sfosm, sel=sfOsmSel();
+    if(a==="go"){sfOsmRun(); renderSheet(); return}
+    if(a==="stop"){sfOsm.stop=true; return}
+    if(a==="reset"){sfOsm={sel:sel,parts:sfOsm.parts,run:false,stop:false,prog:"",cnt:{},res:null,err:""}; sfImp=null; sfArm=""; renderSheet(); return}
+    if(a==="all"){SF_ILCE.forEach(function(i){sel[i]=true})} else if(a==="none"){SF_ILCE.forEach(function(i){sel[i]=false})} else if(a==="w1"){SF_ILCE.forEach(function(i){sel[i]=!!SF_W1[i]})} else if(a.indexOf("tg:")===0){var k=a.slice(3); sel[k]=!sel[k]} else if(a==="parts"){sfOsm.parts=!!t.checked; return}
+    var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc;
   },true);
   function renderSideNav(){
     var nv=$("sidenav"); if(!nv)return;
