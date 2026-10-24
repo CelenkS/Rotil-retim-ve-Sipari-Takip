@@ -2845,6 +2845,92 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 @media (max-width:719px){.pctop{gap:8px}.pcgs{display:none}.pcbtn span{display:none}.pcbtn{padding:0 12px}.pcdr{grid-template-columns:110px minmax(0,1fr)}.pcwarn{flex-wrap:wrap}}
 @media (max-width:719px){.pcpi{max-height:210px}.pcwarn small{display:none}.pcwarn{padding:10px 12px;gap:10px}.pcwarn .pcbtn{height:36px;padding:0 12px;font-size:12px}}
 .pcs .cvkp{display:flex;gap:6px;align-items:center;min-width:0}.pcs .cvkp .fin{min-width:0;width:100%}
+
+/* stok v2 */
+#stock .stkpage{display:flex;flex-direction:column;gap:14px;min-width:0}
+.stkkpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:900px){.stkkpi{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}}
+.stkk{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 18px rgba(10,50,60,.06)}
+.stkk .ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:19px;background:color-mix(in srgb,#B5651D 16%,var(--bg));flex:none}
+.stkk .ic.warn{background:rgba(255,170,60,.2)}.stkk .ic.bad{background:rgba(224,80,106,.16)}
+.stkk small{display:block;font:600 12px var(--font-ui);color:var(--ink2)}.stkk b{font:800 22px var(--font-num);color:var(--ink);overflow-wrap:anywhere}
+.stkbar{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+@media (min-width:760px){.stkbar{grid-template-columns:minmax(0,1fr) 190px 190px}}
+.stkbar .search,.stkbar select{margin:0;height:46px}
+.stkchips{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 6px;scrollbar-width:thin}
+.stkchips button{flex:none;height:38px;padding:0 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);color:var(--ink);font:700 13px var(--font-ui);text-transform:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.stkchips button i{font-style:normal;font-size:11px;opacity:.65}
+.stkchips button[aria-pressed=true]{background:linear-gradient(135deg,#B5651D,#6E3D10);color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(110,61,16,.28)}
+.stkgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+@media (min-width:1100px){.stkgrid{grid-template-columns:minmax(0,1fr) 400px}.stkpanel{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}}
+.stkleft{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;min-width:0}
+.stkhd,.stkrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 16px}
+.stkhd{display:none;background:var(--bg);font:800 10.5px var(--font-ui);letter-spacing:.5px;text-transform:uppercase;color:var(--ink2)}
+.stkhd .r{text-align:right}
+.stkrow{border-top:1px solid var(--line);cursor:pointer;transition:background .15s}
+.stkrow:hover{background:color-mix(in srgb,#B5651D 7%,var(--bg))}
+.stkrow.on{background:color-mix(in srgb,#B5651D 13%,var(--bg));box-shadow:inset 3px 0 0 #B5651D}
+.stkrow .nm{min-width:0}.stkrow .nm b{display:block;font:700 14.5px/1.3 var(--font-ui);overflow-wrap:anywhere}
+.stkrow .nm small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2);margin-top:2px}.stkrow .nm u{color:var(--bad);text-decoration:none;font-weight:800}
+.stkrow .ct,.stkrow .cs{display:none;font:600 13px var(--font-ui);color:var(--ink2)}
+.stkrow .sk{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.stkrow .sk b{font:800 15px var(--font-num);color:var(--ink)}.stkrow .sk b i,.stkcur b i{font:600 12px var(--font-ui);font-style:normal;color:var(--ink2)}
+.stkrow .sk b.zero,.stkcur b.zero{color:var(--bad)}.stkrow .sk b.low,.stkcur b.low{color:var(--warn)}
+.stkpill{font:800 11px var(--font-ui);padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.stkpill.ok{background:rgba(31,160,100,.13);color:#1b8a52;border-color:transparent}.stkpill.low{background:rgba(255,170,60,.2);color:#b9690a;border-color:transparent}.stkpill.zero{background:rgba(224,80,106,.13);color:var(--bad);border-color:transparent}
+@media (min-width:760px){
+  .stkhd,.stkrow{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 230px 110px}.stkhd{display:grid}
+  .stkrow .ct,.stkrow .cs{display:block}.stkrow .cs{text-align:right;color:var(--ink);font:700 13.5px var(--font-num)}
+}
+.stkpager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;border-top:1px solid var(--line)}
+.stkpager:empty{display:none}.stkcnt{font:600 12.5px var(--font-ui);color:var(--ink2)}
+.stkpg{display:flex;gap:6px;align-items:center}.stkpg em{font-style:normal;color:var(--ink2)}
+.stkpg button{min-width:38px;height:38px;border-radius:10px;background:var(--surface);border:1px solid var(--line);color:var(--ink);font:700 13px var(--font-num);cursor:pointer;text-transform:none}
+.stkpg button[aria-pressed=true]{background:linear-gradient(135deg,#B5651D,#6E3D10);color:#fff;border-color:transparent}.stkpg button:disabled{opacity:.4;cursor:default}
+.stkpanel{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 10px 28px rgba(10,50,60,.08);min-width:0}
+.stkpin{padding:18px}.stkph{padding:36px 22px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.stkph .ic{font-size:34px}.stkph b{font:800 16px var(--font-head)}.stkph small{font:600 13px/1.45 var(--font-ui);color:var(--ink2)}
+.stkx{display:none;background:transparent;border:0;color:var(--ink2);font:700 13px var(--font-ui);padding:0 0 10px;cursor:pointer;text-transform:none}
+.stkpt{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.stkpt h3{margin:0;font:800 20px/1.2 var(--font-head);overflow-wrap:anywhere}.stkpt small{font:600 13px var(--font-ui);color:var(--ink2)}
+.stkcur{margin-top:14px;padding:14px 16px;border-radius:16px;background:var(--bg);border:1px solid var(--line)}
+.stkcur>small{font:700 11px var(--font-ui);letter-spacing:.4px;text-transform:uppercase;color:var(--ink2)}
+.stkcur b{display:block;font:800 32px var(--font-num);color:var(--ink);letter-spacing:-.5px}
+.stkmeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.stkmeta span:not(.stkpill){font:600 12px var(--font-ui);color:var(--ink2);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.stkneed{margin-top:10px;font:600 12.5px var(--font-ui);color:var(--ink2)}.stkneed u{color:var(--bad);text-decoration:none;font-weight:800}
+.stkpin h4{margin:18px 0 10px;font:800 14px var(--font-head)}
+.stkseg{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.stkseg button{height:46px;border:0;background:transparent;color:var(--ink2);font:800 14px var(--font-ui);text-transform:none;cursor:pointer}
+.stkseg button[aria-pressed=true][data-stkmode=in]{background:linear-gradient(135deg,#1fa064,#157a4a);color:#fff}
+.stkseg button[aria-pressed=true][data-stkmode=out]{background:linear-gradient(135deg,#e0506a,#b32d46);color:#fff}
+.stkf{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;align-items:center;margin-top:10px}
+.stkf>label{font:700 13px var(--font-ui);color:var(--ink2)}.stkf .fin{margin:0;min-width:0}
+.stkqw{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}
+.stkqw .fin{border:0;border-radius:0;background:transparent;flex:1;font:800 17px var(--font-num)}.stkqw span{display:grid;place-items:center;padding:0 14px;font:700 13px var(--font-ui);color:var(--ink2);border-left:1px solid var(--line);background:var(--surface)}
+.stkquick{display:flex;gap:6px;margin:8px 0 0 128px;flex-wrap:wrap}
+.stkquick button{height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 12px var(--font-num);cursor:pointer;text-transform:none}
+.btn.stksave{width:100%;height:52px;margin-top:16px;font-size:15px;background:linear-gradient(135deg,#1fa064,#157a4a);box-shadow:0 10px 22px rgba(21,122,74,.28)}.btn.stksave.out{background:linear-gradient(135deg,#e0506a,#b32d46);box-shadow:0 10px 22px rgba(179,45,70,.28)}
+.stkmsg{min-height:18px;margin-top:8px;font:700 13px var(--font-ui);color:var(--good)}.stkmsg.bad{color:var(--bad)}
+.stkinfo{font:600 12px var(--font-ui);color:var(--ink2)}
+.stkmv{display:flex;gap:10px;padding:10px 12px;border-radius:14px;background:var(--bg);border:1px solid var(--line);margin-bottom:6px}
+.stkmv .a{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:11px;flex:none}
+.stkmv.in .a{background:rgba(31,160,100,.15);color:#1b8a52}.stkmv.out .a{background:rgba(224,80,106,.15);color:var(--bad)}
+.stkmv b{font:800 14px var(--font-num)}.stkmv.in b{color:#1b8a52}.stkmv.out b{color:var(--bad)}.stkmv small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2)}
+.stkempty{padding:14px;border-radius:14px;background:var(--bg);text-align:center;font:600 13px var(--font-ui);color:var(--ink2)}
+.stkmore{width:100%;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 12.5px var(--font-ui);cursor:pointer;text-transform:none}
+@media (max-width:1099px){
+  .stkpanel{display:none}
+  .stkpanel.open{display:block;position:fixed;inset:0;z-index:60;border-radius:0;overflow:auto;border:0;padding-bottom:env(safe-area-inset-bottom,0)}
+  .stkpanel.open .stkx{display:block}
+  .stkf{grid-template-columns:96px minmax(0,1fr)}.stkquick{margin-left:106px}
+}
+@media (min-width:1000px){
+  #stock.wrap:not(#home){grid-template-columns:minmax(0,1fr)}
+  #stock.wrap:not(#home)>*{grid-column:1}
+  #stock.wrap:not(#home)>.hero{grid-row:auto;position:static;max-height:none}
+}
+@media (max-width:759px){.stkbar{grid-template-columns:1fr 1fr}.stkbar .search{grid-column:1/-1}.stkbar select{font-size:14px}}
+@media (min-width:1000px){#stock>.hero{padding-block:18px}#stock>.hero .obig{gap:2px}#stock>.hero .obig b{font-size:34px}}
 </style>
 </head>
 <body>
@@ -2899,7 +2985,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:50</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:58</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3060,14 +3146,22 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     <div class="hirow"><div class="oeyebrow">Stok · Reçete</div><button class="tbtn" id="stkback">‹ Bölümler</button></div>
     <div class="obig"><span class="obl">Malzeme sayısı</span><b id="stkcount">0</b><span class="obs" id="stkobs">hammadde ve yarı mamul stoklarını burada takip et</span></div>
   </section>
-  <input class="search" id="stksearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Malzeme ara…" aria-label="Malzeme ara">
-  <div class="osearch" style="margin-top:8px">
-    <button class="btn ghost" id="stknew" style="flex:1">+ Yeni malzeme</button>
-    <button class="btn ghost" id="stkneedbtn" style="flex:1">📋 Alım ihtiyacı hesapla</button>
+  <div class="stkpage">
+    <div class="stkkpi" id="stkkpi"></div>
+    <div class="stkbar">
+      <input class="search" id="stksearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Malzeme adı, kategori veya tedarikçi ara…" aria-label="Malzeme ara">
+      <select class="fin" id="stkst" aria-label="Stok durumu"><option value="">Tüm stoklar</option><option value="var">Stokta var</option><option value="low">Kritik seviyede</option><option value="zero">Stok yok</option></select>
+      <select class="fin" id="stksort" aria-label="Sırala"><option value="name">Ada göre</option><option value="cat">Kategoriye göre</option><option value="stock">Stok (az → çok)</option><option value="stockd">Stok (çok → az)</option><option value="cost">Birim maliyet</option></select>
+    </div>
+    <div class="stkchips" id="stkchips" role="group" aria-label="Kategori"></div>
+    <div class="osearch"><button class="btn" id="stknew" style="flex:1">+ Yeni malzeme</button><button class="btn ghost" id="stkneedbtn" style="flex:1">📋 Alım ihtiyacı hesapla</button></div>
+    <div class="impnote" id="stkneednote" hidden></div>
+    <div class="stkgrid">
+      <div class="stkleft"><div class="stkhd"><span>Malzeme</span><span>Kategori</span><span class="r">Mevcut stok</span><span class="r">Birim maliyet</span></div><div id="stkrows"></div><div class="stkpager" id="stkpager"></div></div>
+      <aside class="stkpanel" id="stkpanel" aria-label="Stok hareketi"></aside>
+    </div>
+    <div class="status" id="stkstatus"></div>
   </div>
-  <div class="impnote" id="stkneednote" hidden></div>
-  <div id="stklist"></div>
-  <div class="status" id="stkstatus"></div>
 </div>
 <div class="wrap" id="tools" hidden style="--hero1:#C2561B;--hero2:#6B2A0C">
   <section class="hero ohero">
@@ -5047,7 +5141,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
         (matEditId?'':'<div><label class="fl" for="mtstock">Başlangıç stoğu</label><input class="fin" id="mtstock" type="number" inputmode="decimal" min="0" step="any" placeholder="0" value="'+(mt.stock||"")+'"></div>')+
         '<div><label class="fl" for="mtcrit">Kritik seviye (isteğe bağlı)</label><input class="fin" id="mtcrit" type="number" inputmode="decimal" min="0" step="any" placeholder="Bu seviyenin altına inince uyarı gösterilir" value="'+(mt.crit||"")+'"></div>'+
         '<div><label class="fl" for="mtnote">Not</label><textarea class="fin" id="mtnote" rows="2" placeholder="ör. tedarikçi, ölçü…">'+esc(mt.note||"")+'</textarea></div>'+
-        (matEditId?'<div class="note">Stok miktarını değiştirmek için listedeki “+ Giriş / − Çıkış” butonlarını kullan — buradan sadece ad/birim/kritik seviye/not düzenlenir.</div>':'')+
+        (matEditId?'<div class="note">Stok miktarını değiştirmek için Stok ekranındaki “Stok hareketi” (Giriş / Çıkış) panelini kullan — buradan sadece ad/birim/kritik seviye/not düzenlenir.</div>':'')+
         '<div class="frow"><button class="btn" id="mtsave">Kaydet</button><button class="btn ghost" id="mtcancel">Vazgeç</button>'+(matEditId?'<button class="btn danger" id="mtdel">Malzemeyi sil</button>':"")+'</div></div>';
     }else if(sheetMode==="purchform"){
       var pu=purchases.filter(function(x){return x.id===purEditId})[0]||{name:"",qty:"",unit:"adet",note:"",req:isoToday(),due:""};
@@ -7331,18 +7425,106 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function stockHome(){
     $("stock").hidden=true; $("purch").hidden=true; $("notes").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
-  function matRowHtml(m){
-    var stock=+m.stock||0, low=m.crit&&stock<=+m.crit, needQ=matNeed?(matNeed[m.id]||0):null, deficit=needQ!==null?Math.max(0,needQ-stock):null;
-    return '<div class="matrow" data-mid="'+m.id+'"><div class="mtop"><div><div class="mn">'+esc(m.name)+'</div><div class="mu">'+(m.cat?esc(m.cat)+' · ':'')+esc(m.unit||"adet")+(m.crit?' · kritik seviye '+nf.format(+m.crit):'')+(+m.p>0?' · '+pf(m.p)+' ₺':'')+'</div></div>'+
-      '<div style="text-align:right"><div class="mstock'+(low?' low':'')+'">'+nf.format(stock)+'</div><button type="button" class="medit" data-matedit="'+m.id+'">düzenle</button></div></div>'+
-      (needQ!==null?('<div class="mu" style="margin-top:6px">Açık siparişler için gereken: <b>'+nf.format(needQ)+'</b>'+(deficit>0?' · <span style="color:var(--bad);font-weight:800">'+nf.format(deficit)+' eksik, almalısın</span>':' · yeterli')+'</div>'):'')+
-      '<div class="madj"><input type="number" inputmode="decimal" step="any" placeholder="Miktar" data-matqty="'+m.id+'" aria-label="'+esc(m.name)+' miktar"><button type="button" class="madd" data-matadd="'+m.id+'">+ Giriş</button><button type="button" class="msub" data-matsub="'+m.id+'">− Çıkış</button></div></div>';
+  /* ---- Stok ekranı v2: kategori çipleri + arama + sayfalı tablo + yan panelde giriş/çıkış + son hareketler ---- */
+  var stkSel="", stkCat="", stkSt="", stkSort="name", stkPage=0, stkMode="in", stkMoves=[], stkUnMv=null, stkMvId="", stkMobOpen=false, stkMsg="", stkAll=false, stkAuto=false;
+  var STK_PS=25;
+  function matCatLbl(m){return m.cat?(PR_CATLBL[m.cat]||m.cat):"Kategorisiz"}
+  function matState(m){var s=+m.stock||0; return s<=0?"zero":((+m.crit>0&&s<=+m.crit)?"low":"ok")}
+  function matDate(iso){var p=String(iso||"").split("-"); return p.length===3?p[2]+"."+p[1]+"."+p[0]:""}
+  function stkFiltered(ignoreCat){
+    var q=fold(matSearch.trim());
+    return materials.filter(function(m){
+      if(q&&fold([m.name,matCatLbl(m),m.sup,m.note].join(" ")).indexOf(q)<0)return false;
+      if(!ignoreCat&&stkCat&&matCatLbl(m)!==stkCat)return false;
+      var st=matState(m);
+      if(stkSt==="var"&&st==="zero")return false; if(stkSt==="low"&&st!=="low")return false; if(stkSt==="zero"&&st!=="zero")return false;
+      return true;
+    });
   }
+  function stkSorted(l){
+    var f={name:function(a,b){return String(a.name||"").localeCompare(String(b.name||""),"tr",{numeric:true})},cat:function(a,b){return matCatLbl(a).localeCompare(matCatLbl(b),"tr")||String(a.name||"").localeCompare(String(b.name||""),"tr",{numeric:true})},
+      stock:function(a,b){return (+a.stock||0)-(+b.stock||0)},stockd:function(a,b){return (+b.stock||0)-(+a.stock||0)},cost:function(a,b){return (+b.p||0)-(+a.p||0)}}[stkSort]||null;
+    return f?l.slice().sort(f):l;
+  }
+  function stkPill(m){var st=matState(m); return '<span class="stkpill '+st+'">'+(st==="zero"?"Stok yok":st==="low"?"Kritik":"Yeterli")+'</span>'}
+  function matRowHtml(m){
+    var stock=+m.stock||0, needQ=matNeed?(matNeed[m.id]||0):null, deficit=needQ!==null?Math.max(0,needQ-stock):null;
+    return '<div class="stkrow'+(m.id===stkSel?' on':'')+'" data-matsel="'+m.id+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ!==null?' · gereken '+nf.format(needQ)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
+      '<span class="ct">'+esc(matCatLbl(m))+'</span><span class="sk">'+stkPill(m)+'<b class="'+matState(m)+'">'+nf.format(stock)+' <i>'+esc(m.unit||"adet")+'</i></b></span><span class="cs">'+(+m.p>0?pf(m.p)+' ₺':'—')+'</span></div>';
+  }
+  function stkKpi(){
+    var low=0, zero=0; materials.forEach(function(m){var st=matState(m); if(st==="zero")zero++; else if(st==="low")low++});
+    var sm=materials.filter(function(x){return x.id===stkSel})[0];
+    function k(ic,l,v,c){return '<div class="stkk"><span class="ic '+(c||'')+'">'+ic+'</span><div><small>'+l+'</small><b>'+v+'</b></div></div>'}
+    $("stkkpi").innerHTML=k("📦","Malzeme çeşidi",nf.format(materials.length))+k("⚠","Kritik seviyede",nf.format(low),low?"warn":"")+k("∅","Stok yok",nf.format(zero),zero?"bad":"")+k("🧮","Seçili malzeme stoğu",sm?nf.format(+sm.stock||0)+' '+esc(sm.unit||"adet"):"—");
+  }
+  function stkChips(){
+    var cnt={}, tot=0; stkFiltered(true).forEach(function(m){var c=matCatLbl(m); cnt[c]=(cnt[c]||0)+1; tot++});
+    var cats=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]||a.localeCompare(b,"tr")});
+    if(stkCat&&!cnt[stkCat]){cats.unshift(stkCat); cnt[stkCat]=0}
+    $("stkchips").innerHTML='<button type="button" data-stkcat="" aria-pressed="'+(!stkCat)+'">Tümü<i>'+tot+'</i></button>'+cats.map(function(c){return '<button type="button" data-stkcat="'+esc(c)+'" aria-pressed="'+(stkCat===c)+'">'+esc(c)+'<i>'+cnt[c]+'</i></button>'}).join("");
+  }
+  function stkPager(n,pages){
+    var el=$("stkpager"); if(!el)return;
+    if(!n){el.innerHTML=""; return}
+    var a=stkPage*STK_PS+1, b=Math.min(n,(stkPage+1)*STK_PS), pg=[];
+    for(var i=0;i<pages;i++){if(i===0||i===pages-1||Math.abs(i-stkPage)<=1)pg.push(i); else if(pg[pg.length-1]!=="…")pg.push("…")}
+    el.innerHTML='<span class="stkcnt">'+a+'–'+b+' / '+nf.format(n)+' malzeme</span>'+(pages>1?'<div class="stkpg"><button type="button" data-stkpg="'+(stkPage-1)+'"'+(stkPage?'':' disabled')+' aria-label="Önceki">‹</button>'+pg.map(function(i){return i==="…"?'<em>…</em>':'<button type="button" data-stkpg="'+i+'" aria-pressed="'+(i===stkPage)+'">'+(i+1)+'</button>'}).join("")+'<button type="button" data-stkpg="'+(stkPage+1)+'"'+(stkPage<pages-1?'':' disabled')+' aria-label="Sonraki">›</button></div>':'');
+  }
+  function stkWatchMoves(id){
+    if(stkMvId===id)return;
+    if(stkUnMv){try{stkUnMv()}catch(e){} stkUnMv=null}
+    stkMvId=id; stkMoves=[]; stkAll=false;
+    if(!db||!id)return;
+    stkUnMv=db.collection("matmoves").where("mid","==",id).onSnapshot(function(sn){
+      if(stkMvId!==id)return;
+      stkMoves=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+      stkMovesPaint();
+    },function(){});
+  }
+  function stkMovesPaint(){
+    var el=$("stkmoves"); if(!el)return;
+    var l=stkAll?stkMoves:stkMoves.slice(0,8);
+    el.innerHTML=l.length?l.map(function(x){var inn=x.t==="in"; return '<div class="stkmv '+(inn?'in':'out')+'"><span class="a">'+(inn?'▲':'▼')+'</span><div><b>'+(inn?'+':'−')+nf.format(+x.q||0)+' '+esc(x.u||"")+'</b><small>'+esc(matDate(x.d)||"")+(x.ref?' · '+esc(x.ref):'')+(x.by?' · '+esc(x.by):'')+'</small>'+(x.note?'<small>'+esc(x.note)+'</small>':'')+'</div></div>'}).join("")+(stkMoves.length>8&&!stkAll?'<button type="button" class="stkmore" data-stkall="1">Tümünü göster ('+stkMoves.length+')</button>':''):'<div class="stkempty">Bu malzemede henüz hareket yok.</div>';
+  }
+  function stkPanel(){
+    var el=$("stkpanel"); if(!el)return;
+    var m=materials.filter(function(x){return x.id===stkSel})[0];
+    if(!m){el.className="stkpanel"; el.innerHTML='<div class="stkph"><div class="ic">📦</div><b>Malzeme seç</b><small>Soldaki listeden bir malzemeye dokun; buradan stok girişi/çıkışı yapıp son hareketleri görürsün.</small></div>'; return}
+    el.className="stkpanel"+(stkMobOpen?" open":"");
+    var st=matState(m), u=esc(m.unit||"adet");
+    el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button>'+
+      '<div class="stkpt"><div><h3>'+esc(m.name)+'</h3><small>'+esc(matCatLbl(m))+' · '+u+'</small></div><button type="button" class="pcbtn" data-matedit="'+m.id+'">✏️ Düzenle</button></div>'+
+      '<div class="stkcur"><small>Mevcut stok</small><b class="'+st+'" id="stkcur">'+nf.format(+m.stock||0)+' <i>'+u+'</i></b><div class="stkmeta"><span id="stkcpill">'+stkPill(m)+'</span>'+(+m.crit>0?'<span>kritik '+nf.format(+m.crit)+'</span>':'')+(+m.p>0?'<span>'+pf(m.p)+' ₺ / '+u+'</span>':'')+(m.sup?'<span>'+esc(m.sup)+'</span>':'')+'</div>'+(matNeed&&matNeed[m.id]?'<div class="stkneed">Açık siparişler için gereken: <b>'+nf.format(matNeed[m.id])+'</b>'+(matNeed[m.id]>(+m.stock||0)?' · <u>'+nf.format(matNeed[m.id]-(+m.stock||0))+' eksik</u>':' · yeterli')+'</div>':'')+'</div>'+
+      '<h4>Stok hareketi</h4><div class="stkseg" role="group"><button type="button" data-stkmode="in" aria-pressed="'+(stkMode==="in")+'">Giriş</button><button type="button" data-stkmode="out" aria-pressed="'+(stkMode==="out")+'">Çıkış</button></div>'+
+      '<div class="stkf"><label for="stkq">Miktar</label><div class="stkqw"><input class="fin" id="stkq" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span>'+u+'</span></div></div>'+
+      '<div class="stkquick">'+[1,10,50,100,500].map(function(n){return '<button type="button" data-stkq="'+n+'">+'+n+'</button>'}).join("")+'</div>'+
+      '<div class="stkf"><label for="stkd">İşlem tarihi</label><input class="fin" id="stkd" type="date" value="'+isoToday()+'"></div>'+
+      '<div class="stkf"><label for="stkr">Belge / referans</label><input class="fin" id="stkr" autocomplete="off" placeholder="İrsaliye veya iş emri no"></div>'+
+      '<div class="stkf"><label for="stkn">Açıklama</label><textarea class="fin" id="stkn" rows="2" placeholder="İşlem açıklaması"></textarea></div>'+
+      '<button type="button" class="btn stksave '+stkMode+'" id="stksave">'+(stkMode==="in"?"Stok girişini kaydet":"Stok çıkışını kaydet")+'</button><div class="stkmsg" id="stkmsg">'+esc(stkMsg)+'</div><div class="stkinfo">ⓘ Çıkışta mevcut stok kontrol edilir.</div>'+
+      '<h4>Son hareketler</h4><div id="stkmoves"></div></div>';
+    stkWatchMoves(m.id); stkMovesPaint();
+  }
+  function stkSetMsg(t,bad){stkMsg=t; var e=$("stkmsg"); if(e){e.textContent=t; e.className="stkmsg"+(bad?" bad":"")}}
   function renderStock(){
     $("stkcount").textContent=materials.length;
-    var q=fold(matSearch.trim());
-    var list=materials.filter(function(m){return !q||fold((m.name||"")+" "+(m.cat||"")).indexOf(q)>-1});
-    $("stklist").innerHTML=list.length?list.map(matRowHtml).join(""):'<div class="empty">'+(materials.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle.")+'</div>';
+    if(!$("stkrows"))return;
+    stkKpi(); stkChips();
+    var all=stkSorted(stkFiltered(false)), pages=Math.max(1,Math.ceil(all.length/STK_PS));
+    if(stkPage>=pages)stkPage=pages-1; if(stkPage<0)stkPage=0;
+    if(!stkAuto&&!stkSel&&all.length&&window.innerWidth>=1100){stkSel=all[0].id; stkAuto=true}
+    var l=all.slice(stkPage*STK_PS,(stkPage+1)*STK_PS);
+    $("stkrows").innerHTML=l.length?l.map(matRowHtml).join(""):'<div class="empty">'+(materials.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle.")+'</div>';
+    stkPager(all.length,pages);
+    var hadPanel=$("stkq"), keep=hadPanel?{q:$("stkq").value,d:$("stkd").value,r:$("stkr").value,n:$("stkn").value}:null;
+    var m=materials.filter(function(x){return x.id===stkSel})[0];
+    if(hadPanel&&m&&$("stkpanel").dataset.mid===m.id){
+      var c=$("stkcur"); if(c){c.className=matState(m); c.innerHTML=nf.format(+m.stock||0)+' <i>'+esc(m.unit||"adet")+'</i>'}
+      var cp=$("stkcpill"); if(cp)cp.innerHTML=stkPill(m);
+    }else{
+      stkPanel(); if(m)$("stkpanel").dataset.mid=m.id; else delete $("stkpanel").dataset.mid;
+    }
   }
   function adjustMaterialStock(id,delta){
     if(!db||!delta)return;
@@ -7411,17 +7593,46 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     });
   }
   $("stkback").addEventListener("click",stockHome);
-  $("stksearch").addEventListener("input",function(e){matSearch=e.target.value;renderStock()});
+  $("stksearch").addEventListener("input",function(e){matSearch=e.target.value; stkPage=0; renderStock()});
+  $("stkst").addEventListener("change",function(e){stkSt=e.target.value; stkPage=0; renderStock()});
+  $("stksort").addEventListener("change",function(e){stkSort=e.target.value; stkPage=0; renderStock()});
   $("stknew").addEventListener("click",function(){matEditId=null;sheetMode="matform";$("ov").hidden=false;renderSheet();});
   $("stkneedbtn").addEventListener("click",computeMaterialNeeds);
-  $("stklist").addEventListener("click",function(e){
-    var eb=e.target.closest("[data-matedit]");
-    if(eb){matEditId=eb.dataset.matedit;sheetMode="matform";$("ov").hidden=false;renderSheet();return}
-    var ab=e.target.closest("[data-matadd],[data-matsub]"); if(!ab)return;
-    var id=ab.dataset.matadd||ab.dataset.matsub, sign=ab.dataset.matadd?1:-1;
-    var row=ab.closest(".matrow"), inp=row.querySelector("[data-matqty]"), v=cleanNum(inp.value,9999999,false);
-    if(!v)return;
-    adjustMaterialStock(id,sign*v); inp.value="";
+  function stkSelect(id){
+    stkSel=id; stkMobOpen=true; stkMsg=""; stkMvId=""; renderStock();
+    var rows=$("stkrows"); if(rows)[].forEach.call(rows.querySelectorAll(".stkrow"),function(r){r.classList.toggle("on",r.dataset.matsel===id)});
+  }
+  function stkSave(){
+    var m=materials.filter(function(x){return x.id===stkSel})[0]; if(!m||!db)return;
+    var v=cleanNum($("stkq").value,9999999,false);
+    if(!v){stkSetMsg("Miktar gir.",true); $("stkq").focus(); return}
+    var stock=+m.stock||0;
+    if(stkMode==="out"&&v>stock+1e-9){stkSetMsg("Stokta yalnızca "+nf.format(stock)+" "+(m.unit||"adet")+" var — çıkış yapılamadı.",true); return}
+    var d=$("stkd").value||isoToday(), delta=(stkMode==="in"?1:-1)*v, btn=$("stksave"); btn.disabled=true;
+    var bt=db.batch();
+    bt.update(db.doc("materials/"+m.id),{stock:firebase.firestore.FieldValue.increment(delta)});
+    bt.set(db.collection("matmoves").doc(),{mid:m.id,t:stkMode,q:v,u:m.unit||"adet",d:d,ref:($("stkr").value||"").trim(),note:($("stkn").value||"").trim(),by:whoAmI(),ts:Date.now()});
+    bt.commit().then(function(){
+      logActivity((delta>0?"Stok girişi: +":"Stok çıkışı: ")+nf.format(v)+" "+m.name,"info");
+      btn.disabled=false; $("stkq").value=""; $("stkr").value=""; $("stkn").value=""; stkSetMsg((stkMode==="in"?"Giriş":"Çıkış")+" kaydedildi ✓");
+    }).catch(function(){btn.disabled=false; stkSetMsg("Kaydedilemedi, tekrar dene.",true)});
+  }
+  $("stock").addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkclose],[data-matedit],#stksave"); if(!t||!$("stock").contains(t))return;
+    var d=t.dataset;
+    if(d.matedit){matEditId=d.matedit;sheetMode="matform";$("ov").hidden=false;renderSheet();return}
+    if(d.matsel){stkSelect(d.matsel); return}
+    if(d.stkcat!==undefined){stkCat=d.stkcat; stkPage=0; renderStock(); return}
+    if(d.stkpg!==undefined){stkPage=+d.stkpg; renderStock(); var el=$("stkrows"); if(el&&el.scrollIntoView)el.scrollIntoView({block:"start",behavior:"smooth"}); return}
+    if(d.stkmode){stkMode=d.stkmode; stkMsg=""; var keep={q:$("stkq").value,d:$("stkd").value,r:$("stkr").value,n:$("stkn").value}; stkPanel(); $("stkq").value=keep.q; $("stkd").value=keep.d; $("stkr").value=keep.r; $("stkn").value=keep.n; return}
+    if(d.stkq){var q=$("stkq"); q.value=String((+String(q.value).replace(",",".")||0)+(+d.stkq)); return}
+    if(d.stkall){stkAll=true; stkMovesPaint(); return}
+    if(d.stkclose){stkMobOpen=false; var pn=$("stkpanel"); if(pn)pn.classList.remove("open"); return}
+    if(t.id==="stksave"){stkSave(); return}
+  });
+  $("stock").addEventListener("keydown",function(e){
+    if(e.key==="Enter"&&e.target&&e.target.dataset&&e.target.dataset.matsel!==undefined){stkSelect(e.target.dataset.matsel); return}
+    if(e.key==="Enter"&&e.target&&e.target.id==="stkq"){e.preventDefault(); stkSave()}
   });
   /* ---------- satın alma ---------- */
   // "purchases" koleksiyonu: üretimin girdiği ihtiyaçlar. Alanların hepsi düz (iç içe map yok),
