@@ -2631,6 +2631,101 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .wkmeas .ltm{margin-top:4px}
 .wkmeas input[type=number]{width:84px;height:38px;border-radius:10px;border:1px solid var(--line,rgba(0,0,0,.12));background:var(--bg,#fff);color:var(--ink);font:700 14px var(--font-num);padding:0 8px}
 .wkcap{margin-top:10px;font:600 12px var(--font-ui);color:var(--ink2)}
+
+/* ürün kartı v2 */
+.pch{display:flex;gap:14px;align-items:center;padding:16px;border-radius:24px;color:#fff;background:radial-gradient(120% 140% at 100% 0%,rgba(255,255,255,.22),transparent 55%),linear-gradient(135deg,var(--divc1,#0f8b8d),var(--divc2,#1b5f7a));position:relative;overflow:hidden}
+.pch::after{content:"";position:absolute;right:-40px;bottom:-60px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.pchi{flex:none;width:104px;height:104px;border-radius:20px;background:#fff;display:grid;place-items:center;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.18);color:#35505c;font:800 22px var(--font-head)}
+.pchi img{width:100%;height:100%;object-fit:contain}
+.pchm{min-width:0;flex:1;position:relative;z-index:1}
+.pchm h3{margin:6px 0 2px;font:800 21px/1.15 var(--font-head);overflow-wrap:anywhere}
+.pchs{font:600 13px var(--font-ui);opacity:.92}.pchs b{font-family:var(--font-num);letter-spacing:.2px}.pchs i{font-style:normal;opacity:.75}
+.pcchips{display:flex;flex-wrap:wrap;gap:5px}
+.pcc{font:800 10.5px var(--font-ui);letter-spacing:.5px;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.28)}
+.pcc.ok{background:rgba(120,235,170,.28)}.pcc.warn{background:rgba(255,200,120,.3)}
+.pcacts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pcacts button{height:32px;padding:0 11px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;font:700 12px var(--font-ui);cursor:pointer;text-transform:none}
+.pcacts button.on{background:#fff;color:var(--divc2,#1b5f7a)}
+.pctiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px}
+.pctile{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.pctile .pcti{font-size:15px;opacity:.85}
+.pctile small{font:700 10.5px var(--font-ui);letter-spacing:.4px;text-transform:uppercase;color:var(--ink2)}
+.pctile b{font:800 16px var(--font-num);color:var(--ink);overflow-wrap:anywhere}
+.pctile em{font:600 11px var(--font-ui);color:var(--ink2);font-style:normal}
+.pctabs{display:flex;gap:6px;overflow-x:auto;padding:4px;border-radius:999px;background:var(--bg);scrollbar-width:none}
+.pctabs::-webkit-scrollbar{display:none}
+.pctabs button{flex:1 0 auto;height:36px;padding:0 14px;border-radius:999px;background:transparent;color:var(--ink2);font:800 12.5px var(--font-ui);white-space:nowrap;text-transform:none;border:0;cursor:pointer}
+.pctabs button[aria-selected=true]{background:linear-gradient(135deg,var(--divc1,#0f8b8d),var(--divc2,#1b5f7a));color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.pctabs i{font-style:normal;margin-left:5px;background:rgba(255,255,255,.3);border-radius:999px;padding:1px 6px;font-size:11px}
+.pcbody{display:flex;flex-direction:column;gap:12px}
+.pcsec{border:1px solid var(--line,rgba(0,0,0,.09));border-radius:20px;padding:14px;background:var(--surface)}
+.pcsh{display:flex;align-items:center;gap:8px;font:800 13px var(--font-head);letter-spacing:.2px;margin-bottom:8px}
+.pcsh span{font:800 11px var(--font-ui);background:var(--bg);color:var(--ink2);border-radius:999px;padding:2px 8px}
+.pcmini{margin-left:auto;height:28px;padding:0 10px;border-radius:999px;background:var(--bg);color:var(--ink);font:700 11.5px var(--font-ui);text-transform:none;border:0;cursor:pointer}
+.pcnote{font:600 11.5px/1.45 var(--font-ui);color:var(--ink2);margin-top:8px}
+.pcfill{border-radius:20px;padding:14px;background:var(--bg)}
+.pcfh{display:flex;justify-content:space-between;font:800 13px var(--font-head)}
+.pcfh span{font-family:var(--font-num);color:var(--divc2,#1b5f7a)}
+.pcbar{height:8px;border-radius:99px;background:rgba(0,0,0,.08);margin:8px 0 10px;overflow:hidden}
+.pcbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--divc1,#0f8b8d),var(--divc2,#1b5f7a))}
+.pcfc{display:flex;flex-wrap:wrap;gap:6px}
+.pcfc span{font:700 11.5px var(--font-ui);padding:3px 9px;border-radius:999px;background:rgba(0,0,0,.05);color:var(--ink2)}
+.pcfc span.ok{background:rgba(31,160,100,.14);color:#1b8a52}
+.pcchipsrow{display:flex;flex-wrap:wrap;gap:6px}
+.pcchipsrow span,.pcchipsrow button{font:700 12px var(--font-ui);padding:6px 11px;border-radius:999px;background:var(--bg);color:var(--ink);border:0;text-transform:none}
+.pcchipsrow.big button{cursor:pointer;font-size:12.5px}
+.pcchipsrow u{text-decoration:none;opacity:.55;margin-left:3px}
+.pcoems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.pcoem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:14px;background:var(--bg)}
+.pcoem b{font:800 14px var(--font-num);letter-spacing:.3px;overflow-wrap:anywhere}.pcoem small{display:block;font:600 11px var(--font-ui);color:var(--ink2)}
+.pccp{flex:none;width:34px;height:34px;border-radius:10px;background:var(--surface);color:var(--ink2);border:1px solid var(--line,rgba(0,0,0,.1));cursor:pointer;font-size:15px}
+.pccp.on{background:var(--divc2,#1b5f7a);color:#fff}
+.pcbr{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.pcbr button{flex:none;height:32px;padding:0 12px;border-radius:999px;background:var(--bg);color:var(--ink);font:700 12px var(--font-ui);text-transform:none;border:0;cursor:pointer}
+.pcbr button[aria-pressed=true]{background:var(--divc2,#1b5f7a);color:#fff}
+.pcbr i{font-style:normal;opacity:.65;margin-left:5px}
+.pcvl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:6px}
+.pcvg{border-radius:16px;background:var(--bg);padding:10px 12px}
+.pcvgh{display:flex;justify-content:space-between;align-items:center;font:800 13px var(--font-head);margin-bottom:4px}
+.pcvgh span{font:800 11px var(--font-ui);color:var(--ink2)}
+.pcvr{font:600 13px var(--font-ui);padding:6px 0;border-top:1px dashed rgba(0,0,0,.1);overflow-wrap:anywhere}
+.pcdraw{border-radius:16px;background:var(--bg);padding:10px;overflow:hidden}
+.pcbolt{width:100%;height:auto;max-height:230px;display:block}
+.pchead{fill:#d9e0e5;stroke:#6c7d88;stroke-width:1.5}.pcshank{fill:#c8d1d8;stroke:#6c7d88;stroke-width:1.5}.pcedge{stroke:#6c7d88;stroke-width:1}
+.pcthl{stroke:#4d5d68;stroke-width:1.4}
+.pcdim line{stroke:var(--ink2);stroke-width:1}.pcdim text,.pcdt{fill:var(--ink);font:700 11px var(--font-ui)}.pcdm{fill:#233;font-size:12px}
+.pctech{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));column-gap:22px}
+.pcsim{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px dashed rgba(0,0,0,.1)}
+.pcsim:first-of-type{border-top:0}
+.pcsimo{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;background:transparent;border:0;padding:0;cursor:pointer;color:var(--ink);text-transform:none}
+.pcsimo img,.pcsimo .pcmono{flex:none;width:46px;height:46px;border-radius:12px;object-fit:contain;background:#fff;border:1px solid rgba(0,0,0,.08);display:grid;place-items:center;font:800 12px var(--font-head);color:var(--ink2)}
+.pcsimo b{display:block;font:800 14px var(--font-head);overflow-wrap:anywhere}.pcsimo small{font:600 11.5px var(--font-ui);color:var(--ink2)}
+.pccmp{border-radius:16px;overflow:hidden;border:1px solid rgba(0,0,0,.08)}
+.pccr{display:grid;grid-template-columns:90px repeat(var(--n),1fr);gap:6px;padding:8px 10px;font:600 12.5px var(--font-ui);border-top:1px solid rgba(0,0,0,.06)}
+.pccr:first-child{border-top:0}.pccr span{color:var(--ink2)}.pccr b{font-weight:700;overflow-wrap:anywhere}
+.pccr.hd{background:var(--bg)}.pccr.hd b{font:800 12.5px var(--font-head)}.pccr.hd button{margin-left:4px;border:0;background:transparent;color:var(--ink2);cursor:pointer}
+.pccr.df b{background:rgba(255,190,70,.18);border-radius:6px;padding:0 4px}
+.pcchain{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pcchain i{font-style:normal;color:var(--ink2)}
+.pcstg{font:800 12px var(--font-ui);padding:6px 12px;border-radius:999px;background:linear-gradient(135deg,var(--divc1,#0f8b8d),var(--divc2,#1b5f7a));color:#fff}
+.pctoast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#17252b;color:#fff;font:700 13px var(--font-ui);padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s;z-index:99999;max-width:88vw;text-align:center}
+.pctoast.on{opacity:1;transform:translate(-50%,0)}
+#pcprint{display:none}
+@media (max-width:520px){.pctiles{grid-template-columns:repeat(2,1fr)}.pchi{width:84px;height:84px}.pchm h3{font-size:18px}.pch{padding:14px;gap:12px}}
+@media print{
+  body>*:not(#pcprint){display:none!important}
+  #pcprint{display:block!important;color:#111;font:14px/1.5 Arial,sans-serif;padding:0}
+  #pcprint .pcprh{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0f6d70;padding-bottom:10px;margin-bottom:14px}
+  #pcprint small{color:#555;text-transform:uppercase;letter-spacing:1px;font-size:11px}
+  #pcprint h1{font-size:26px;margin:4px 0 0}#pcprint h2{font-size:15px;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}
+  #pcprint img{max-width:140px;max-height:140px;object-fit:contain}
+  #pcprint table{width:100%;border-collapse:collapse}#pcprint th{width:38%;text-align:left;background:#f1f4f6;font-weight:600}
+  #pcprint th,#pcprint td{border:1px solid #d5dbe0;padding:6px 9px}
+  #pcprint .pcprd svg{width:100%;height:auto;max-height:230px;margin-top:12px}
+  #pcprint .pchead{fill:#d9e0e5;stroke:#667}#pcprint .pcshank{fill:#c8d1d8;stroke:#667}
+  #pcprint ul{columns:2;margin:0;padding-left:18px}
+  #pcprint .pcprf{margin-top:20px;color:#777;font-size:11px;border-top:1px solid #ddd;padding-top:6px}
+}
 </style>
 </head>
 <body>
@@ -2685,7 +2780,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:00</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9445,7 +9540,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return '<div class="fcard"><button type="button" class="fgo" data-prview="'+p.id+'">'+
       (p.th?'<img class="prth" alt="" src="'+p.th+'">':'<div class="prth ph">'+esc(pTi(p).slice(0,3))+'</div>')+
       '<div class="ftx"><b>'+esc(pTi(p))+'</b><small>'+esc([pSubFirst(p),p.cust,prCatName(p.cat)].filter(function(x,i,ar){return x&&ar.indexOf(x)===i}).join(" · ")||"Bilgi girilmedi")+'</small>'+
-      '<div class="stfchips">'+(parts.length?'<span>'+parts.length+' parça</span>':'<span class="no">Reçete yok</span>')+(st>0?'<span>'+gFmt(st)+' çelik</span>':'')+(cs>0?'<span class="cs">≈ '+pf(cs)+' ₺</span>':'')+'</div></div><span class="fchev">›</span></button></div>';
+      '<div class="stfchips">'+(pcIsFav(p.id)?'<span>★</span>':'')+(parts.length?'<span>'+parts.length+' parça</span>':'<span class="no">Reçete yok</span>')+(st>0?'<span>'+gFmt(st)+' çelik</span>':'')+(cs>0?'<span class="cs">≈ '+pf(cs)+' ₺</span>':'')+'</div></div><span class="fchev">›</span></button></div>';
   }
   function compRowHtml(m){
     var ch=(+m.p>0&&+m.p5>0)?Math.round((m.p/m.p5-1)*100):null;
@@ -9476,11 +9571,13 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     $("prcount").textContent=products.length;
     if(IS_CV){cvRenderCat(q); return}
     var nr=products.filter(function(p){return !(p.parts&&p.parts.length)}).length;
-    var fl=[{k:-1,l:"Hepsi",n:products.length},{k:-2,l:"Reçetesi yok",n:nr}].concat(ORDER_CATS.map(function(c,i){return {k:i,l:c,n:products.filter(function(p){return (p.cat||0)===i}).length}}).filter(function(x){return x.n}));
+    var nfav=products.filter(function(p){return pcIsFav(p.id)}).length;
+    var fl=[{k:-1,l:"Hepsi",n:products.length},{k:-2,l:"Reçetesi yok",n:nr}].concat(nfav?[{k:-3,l:"★ Favoriler",n:nfav}]:[]).concat(ORDER_CATS.map(function(c,i){return {k:i,l:c,n:products.filter(function(p){return (p.cat||0)===i}).length}}).filter(function(x){return x.n}));
     if(fl.every(function(x){return x.k!==prCatF}))prCatF=-1;
     $("prfilt").innerHTML=fl.map(function(x){return '<button type="button" data-prcat="'+x.k+'" aria-pressed="'+(prCatF===x.k)+'">'+esc(x.l)+'<i>'+x.n+'</i></button>'}).join("");
     var list=products.filter(function(p){
       if(prCatF===-2&&(p.parts&&p.parts.length))return false;
+      if(prCatF===-3&&!pcIsFav(p.id))return false;
       if(prCatF>=0&&(p.cat||0)!==prCatF)return false;
       return !q||prTok([p.code,p.name,p.cust,p.oem,p.veh].join(" "),q);
     });
@@ -9913,7 +10010,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   var CV_PITCH={16:2,18:2.5,20:2.5,22:2.5,24:3,27:3,30:3.5,33:3.5,36:4,39:4,42:4.5,45:4.5,48:5}; // ISO 261 kaba adım (mm)
   var CV_STD={"DIN 931":"DIN 931 (Altıkenar başlı cıvata, kısmi dişli)","DIN 933":"DIN 933 (Altıkenar başlı cıvata, tam dişli)","DIN 6914":"DIN 6914 (Yapı cıvatası, yüksek mukavemet)"};
   var CV_KAL={"8.8":{rm:"800 (d≤16) · 830 (d>16)",rp:"640 (d≤16) · 660 (d>16)",mat:"Orta karbonlu çelik (örn. C45), su verme + meneviş"},"10.9":{rm:"1040",rp:"940",mat:"Alaşımlı çelik (örn. 5140 / 41Cr4), su verme + meneviş"}}; // ISO 898-1 minimum değerleri
-  var cvF={std:"",kal:"",renk:"",m:""};
+  var cvF={std:"",kal:"",renk:"",m:"",fav:""};
   function cvKg(p){return +(p.nw||0)}
   function cvUnit(p){var c=p.cv||{}; return (+c.kp>0&&cvKg(p)>0)?c.kp*cvKg(p):0}
   function cvPitchTxt(c){var v=CV_PITCH[c.d]; return v?String(v).replace(".",",")+" mm":"—"}
@@ -9921,16 +10018,17 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function cvCardHtml(p){
     var c=p.cv, u=cvUnit(p);
     return '<div class="fcard"><button type="button" class="fgo" data-prview="'+p.id+'"><div class="cvth '+(c&&c.renk==="BEYAZ"?"b":"s")+'"><b>'+esc(c?c.m:"")+'</b><small>'+(c?c.l:"")+'</small></div>'+
-      '<div class="ftx"><b>'+esc(p.name||p.code)+'</b><small>'+esc(p.code||"")+'</small><div class="stfchips">'+(c?'<span>'+esc(c.std)+'</span><span>'+esc(c.kal)+'</span>':'')+(cvKg(p)>0?'<span>'+nf.format(cvKg(p))+' kg</span>':'<span class="no">gramaj yok</span>')+(u>0?'<span class="cs">≈ '+pf(u)+' ₺/adet</span>':'')+'</div></div><span class="fchev">›</span></button></div>';
+      '<div class="ftx"><b>'+esc(p.name||p.code)+'</b><small>'+esc(p.code||"")+'</small><div class="stfchips">'+(pcIsFav(p.id)?'<span>★</span>':'')+(c?'<span>'+esc(c.std)+'</span><span>'+esc(c.kal)+'</span>':'')+(cvKg(p)>0?'<span>'+nf.format(cvKg(p))+' kg</span>':'<span class="no">gramaj yok</span>')+(u>0?'<span class="cs">≈ '+pf(u)+' ₺/adet</span>':'')+'</div></div><span class="fchev">›</span></button></div>';
   }
   function cvRenderCat(q){
     var all=products.filter(function(p){return p.cv}), other=products.filter(function(p){return !p.cv});
     var cnt=function(f,v){return all.filter(function(p){return p.cv[f]===v}).length};
     var chips=function(f,list,lbl){return '<div class="cvrow"><span>'+lbl+'</span><div>'+['<button type="button" data-cvf="'+f+':" aria-pressed="'+(cvF[f]==="")+'">Hepsi</button>'].concat(list.map(function(v){return '<button type="button" data-cvf="'+f+':'+esc(v)+'" aria-pressed="'+(cvF[f]===v)+'">'+esc(v)+'<i>'+cnt(f,v)+'</i></button>'})).join("")+'</div></div>'};
     var ms=Object.keys(CV_PITCH).map(function(d){return "M"+d}).filter(function(m){return cnt("m",m)});
-    $("prfilt").innerHTML='<div class="cvfilt">'+chips("std",["DIN 931","DIN 933","DIN 6914"],"Standart")+chips("kal",["8.8","10.9"],"Kalite")+chips("renk",["SİYAH","BEYAZ"],"Renk")+chips("m",ms,"Metrik")+'</div>';
+    $("prfilt").innerHTML='<div class="cvfilt">'+chips("std",["DIN 931","DIN 933","DIN 6914"],"Standart")+chips("kal",["8.8","10.9"],"Kalite")+chips("renk",["SİYAH","BEYAZ"],"Renk")+chips("m",ms,"Metrik")+(all.some(function(p){return pcIsFav(p.id)})?'<div class="cvrow"><span>Liste</span><div><button type="button" data-cvf="fav:" aria-pressed="'+(cvF.fav==="")+'">Hepsi</button><button type="button" data-cvf="fav:1" aria-pressed="'+(cvF.fav==="1")+'">★ Favoriler<i>'+all.filter(function(p){return pcIsFav(p.id)}).length+'</i></button></div></div>':'')+'</div>';
     var list=all.filter(function(p){var c=p.cv; return (!cvF.std||c.std===cvF.std)&&(!cvF.kal||c.kal===cvF.kal)&&(!cvF.renk||c.renk===cvF.renk)&&(!cvF.m||c.m===cvF.m)&&(!q||prTok([p.code,p.name].join(" "),q))});
-    var filtered=!!(cvF.std||cvF.kal||cvF.renk||cvF.m);
+    if(cvF.fav)list=list.filter(function(p){return pcIsFav(p.id)});
+    var filtered=!!(cvF.std||cvF.kal||cvF.renk||cvF.m||cvF.fav);
     if(!filtered)list=list.concat(other.filter(function(p){return !q||prTok([p.code,p.name,p.cust].join(" "),q)}));
     list.sort(cvSort);
     $("prlist").innerHTML=(all.length?'<div class="note" style="margin:0 0 8px;text-align:left"><b>'+nf.format(list.length)+'</b> cıvata'+(list.length!==products.length?' · toplam '+nf.format(products.length):'')+'</div>':'')+
@@ -10048,20 +10146,268 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
       }).catch(function(){opMsg="Kaydedilemedi, tekrar dene"; var m=$("opmsg"); if(m)m.textContent=opMsg});
     }
   },true);
+
+  /* ---------- Ürün kartı v2: sekmeli, bölüme özel (Rotil / Cıvata / Rozet) ---------- */
+  var pcTab="ozet", pcFor="", pcQ="", pcBr="", pcCmp=[];
+  var PC_TABS={ozet:"Özet",uyum:"Araç & OEM",tek:"Teknik & ölçü",rota:"Rota",rec:"Reçete & süre",ben:"Benzer"};
+  function pcFavs(){try{var a=JSON.parse(localStorage.getItem("ud_pfav")||"[]"); return Array.isArray(a)?a:[]}catch(e){return []}}
+  function pcIsFav(id){return pcFavs().indexOf(id)>-1}
+  function pcToggleFav(id){var a=pcFavs(), i=a.indexOf(id); if(i>-1)a.splice(i,1); else a.push(id); try{localStorage.setItem("ud_pfav",JSON.stringify(a))}catch(e){} return i<0}
+  function pcToast(m){
+    var t=document.getElementById("pctoast"); if(!t){t=document.createElement("div"); t.id="pctoast"; t.className="pctoast"; document.body.appendChild(t)}
+    t.textContent=m; t.classList.add("on"); clearTimeout(pcToast.h); pcToast.h=setTimeout(function(){t.classList.remove("on")},1700);
+  }
+  function pcCopy(text,msg){
+    function fb(){var ta=document.createElement("textarea"); ta.value=text; ta.style.cssText="position:fixed;opacity:0;top:0;left:0"; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy")}catch(e){} ta.remove(); pcToast(msg||"Kopyalandı")}
+    try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){pcToast(msg||"Kopyalandı")},fb)}else fb()}catch(e){fb()}
+  }
+  function pcTabsOf(p){
+    var t=["ozet"]; if(IS_RZ)t.push("rota"); else if(!IS_CV)t.push("uyum"); if(!IS_RZ)t.push("tek"); t.push("rec","ben"); return t;
+  }
+  function pcOems(p){return rxList(p.oem,false).map(function(o){var m=o.match(/^([^:]{2,24}):\s*(.+)$/); return {no:(m?m[2]:o).trim(),br:m?m[1].trim():""}})}
+  function pcVehs(p){return rxList(p.veh,true).map(function(v){var b=rxBrand(v); return {brand:b[0]||"",model:b[1]||v,raw:v}})}
+  function pcTechRows(p){
+    var t=p.tech||{}, rows=[];
+    RX_TECH.forEach(function(x){if(x[0]==="len"||x[0]==="kg")return; var v=t[x[0]]!==undefined?String(t[x[0]]):""; v=v.trim(); if(!v||/^yok$/i.test(v))return; rows.push([x[1],v])});
+    if(p.thr&&!t.gm&&!t.am)rows.push(["Diş ölçüleri",String(p.thr)]);
+    return rows;
+  }
+  var DIVN=(window.__DIVO&&window.__DIVO.name)||"";
+  function pcTitle(p){return pTi(p)}
+  function pcSecCount(p){return (p.parts||[]).length}
+  function pcCost(p){try{return prBreak(p.parts||[]).tot||0}catch(e){return 0}}
+  function pcFill(p){
+    var items=[["Görsel",!!p.th],["Reçete",pcSecCount(p)>0]];
+    var any=opSecsOf(p).some(function(x){return opOf(p.code,x.id)>0}); items.push(["Süre",any]);
+    if(IS_CV){items.push(["Gramaj",cvKg(p)>0],["Kilo fiyatı",!!(p.cv&&+p.cv.kp>0)])}
+    else if(IS_RZ){items.push(["Rota",!!(p.rt&&p.rt.st)],["Müşteri",!!p.cust])}
+    else items.push(["OEM",pcOems(p).length>0],["Araç",pcVehs(p).length>0],["Teknik",pcTechRows(p).length>0||+p.len>0],["Ağırlık",+p.nw>0]);
+    var n=items.filter(function(x){return x[1]}).length;
+    return {items:items,pct:Math.round(n/items.length*100)};
+  }
+  /* --- Cıvata: gerçek standart tablolarından ölçü şeması (nominal ölçüler) --- */
+  var CV_HEAD={ // d: [s (anahtar ağzı), k (baş yüksekliği)]
+    "931":{16:[24,10],18:[27,12],20:[30,12.5],22:[32,14],24:[36,15],27:[41,17],30:[46,18.7],33:[50,21],36:[55,22.5],39:[60,25],42:[65,26],45:[70,28],48:[75,30]},
+    "6914":{16:[27,10],20:[32,13],22:[36,14],24:[41,15],27:[46,17],30:[50,19],36:[60,23]}};
+  function cvDims(c){
+    var key=c.std==="DIN 6914"?"6914":"931", h=(CV_HEAD[key]||{})[c.d], r={d:c.d,L:c.l,s:h?h[0]:0,k:h?h[1]:0,b:0,full:c.std==="DIN 933"};
+    if(c.std==="DIN 931"){r.b=c.l<=125?2*c.d+6:(c.l<=200?2*c.d+12:2*c.d+25); if(r.b>c.l)r.b=c.l}
+    return r;
+  }
+  function pcBoltSvg(c){
+    var D=cvDims(c), k=D.k||D.d*0.65, s=D.s||D.d*1.5, sc=Math.min(300/(k+D.L),170/s), W=420, ox=64, oy=34, hh=s*sc, kw=k*sc, Lw=D.L*sc, dd=D.d*sc, H=hh+oy+58, cy=oy+hh/2;
+    var thr=D.full?Lw:(D.b?D.b*sc:Lw*0.6), tx=ox+kw+Lw-thr, id="pcth"+(c.d||0);
+    function dim(x1,y1,x2,y2,t,vert){var m=(x1+x2)/2, n=(y1+y2)/2; return '<g class="pcdim"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/>'+
+      (vert?'<line x1="'+(x1-4)+'" y1="'+y1+'" x2="'+(x1+4)+'" y2="'+y1+'"/><line x1="'+(x1-4)+'" y1="'+y2+'" x2="'+(x1+4)+'" y2="'+y2+'"/><text x="'+(x1-8)+'" y="'+(n+4)+'" text-anchor="end">'+t+'</text>':
+        '<line x1="'+x1+'" y1="'+(y1-4)+'" x2="'+x1+'" y2="'+(y1+4)+'"/><line x1="'+x2+'" y1="'+(y1-4)+'" x2="'+x2+'" y2="'+(y1+4)+'"/><text x="'+m+'" y="'+(y1+16)+'" text-anchor="middle">'+t+'</text>')+'</g>'}
+    var svg='<svg class="pcbolt" viewBox="0 0 '+W+' '+H.toFixed(0)+'" role="img" aria-label="Cıvata ölçü şeması"><defs><pattern id="'+id+'" width="6" height="'+Math.max(6,dd)+'" patternUnits="userSpaceOnUse" patternTransform="skewX(-20)"><line x1="0" y1="0" x2="0" y2="'+Math.max(6,dd)+'" class="pcthl"/></pattern></defs>'+
+      '<rect x="'+ox+'" y="'+oy+'" width="'+kw+'" height="'+hh+'" rx="3" class="pchead"/>'+
+      '<line x1="'+(ox+kw*0.22)+'" y1="'+oy+'" x2="'+(ox+kw*0.22)+'" y2="'+(oy+hh)+'" class="pcedge"/>'+
+      '<rect x="'+(ox+kw)+'" y="'+(cy-dd/2)+'" width="'+Lw+'" height="'+dd+'" class="pcshank"/>'+
+      '<rect x="'+tx.toFixed(1)+'" y="'+(cy-dd/2)+'" width="'+thr.toFixed(1)+'" height="'+dd+'" fill="url(#'+id+')"/>'+
+      '<line x1="'+(ox+kw+Lw)+'" y1="'+(cy-dd/2)+'" x2="'+(ox+kw+Lw)+'" y2="'+(cy+dd/2)+'" class="pcedge"/>'+
+      dim(ox+kw,oy+hh+22,ox+kw+Lw,oy+hh+22,"Boy "+nf.format(D.L)+" mm")+
+      (D.s?dim(ox-12,oy,ox-12,oy+hh,"Anahtar "+D.s+" mm",true):"")+
+      (D.k?dim(ox,oy-12,ox+kw,oy-12,"Baş "+D.k+" mm").replace('y="'+(oy-12+16)+'"','y="'+(oy-18)+'"'):"")+
+      (D.b&&!D.full?dim(tx,oy+hh+42,ox+kw+Lw,oy+hh+42,"Diş boyu "+D.b+" mm"):D.full?'<text x="'+(ox+kw+Lw/2)+'" y="'+(oy+hh+46)+'" text-anchor="middle" class="pcdt">tam dişli</text>':'')+
+      '<text x="'+(ox+kw+Lw/2)+'" y="'+(cy+4)+'" text-anchor="middle" class="pcdt pcdm">Ø'+D.d+'</text></svg>';
+    return {svg:svg,D:D};
+  }
+  function pcStageChain(p){
+    var r=rtEff(p); if(!r||!r.st)return "";
+    var ch=SORD.filter(function(i){return r.st[i]}).map(function(i){var mu=r.mu&&+r.mu[i]>1?' ×'+r.mu[i]:''; return '<span class="pcstg">'+esc(STAGES[i].short)+mu+'</span>'});
+    return ch.length?'<div class="pcchain">'+ch.join('<i>›</i>')+'</div>':'';
+  }
+  function pcTiles(p,b){
+    var T=[]; function t(ic,l,v,sub){if(v!==""&&v!==null&&v!==undefined)T.push('<div class="pctile"><span class="pcti">'+ic+'</span><small>'+l+'</small><b>'+v+'</b>'+(sub?'<em>'+sub+'</em>':'')+'</div>')}
+    if(IS_CV&&p.cv){var c=p.cv, u=cvUnit(p); t("⌀","Ölçü",esc(c.m)+'×'+nf.format(c.l)); t("📐","Standart",esc(c.std)); t("🔩","Kalite",esc(c.kal)); t("⚖","Gramaj",cvKg(p)>0?nf.format(cvKg(p))+' kg':''); t("₺","Adet fiyatı",u>0?pf(u)+' ₺':'',"kilo × gramaj"); t("〰","Diş adımı",cvPitchTxt(c))}
+    else if(IS_RZ){t("🏷","Kategori",esc(prCatName(p.cat))); t("👤","Müşteri",esc(p.cust||"")); t("🧩","Parça",pcSecCount(p)?pcSecCount(p)+' kalem':''); var r=rtEff(p); t("🛤","Rota",r&&r.st?r.st.filter(Boolean).length+' aşama':''); t("₺","Maliyet",pcCost(p)>0?'≈ '+pmon(pcCost(p))+' ₺':'')}
+    else{var thr=(p.tech&&p.tech.gm)||p.thr; t("⚖","Net ağırlık",+p.nw>0?nf.format(+p.nw)+' kg':''); t("↔","Tam boy",+p.len>0?nf.format(+p.len)+' mm':''); t("🔧","Diş",thr?esc(String(thr).slice(0,22)):''); var no=pcOems(p).length, vn=pcVehs(p).length; t("#","OEM",no?no+' numara':''); t("🚗","Araç",vn?vn+' model':''); t("₺","Maliyet",pcCost(p)>0?'≈ '+pmon(pcCost(p))+' ₺':'')}
+    return T.length?'<div class="pctiles">'+T.join("")+'</div>':"";
+  }
+  function pcHero(p){
+    var oems=pcOems(p), fav=pcIsFav(p.id), inCmp=pcCmp.indexOf(p.id)>-1;
+    var chips='<span class="pcc">'+esc(DIVN)+'</span>'+(IS_CV&&p.cv?'<span class="pcc">'+esc(p.cv.std)+'</span>':'<span class="pcc">'+esc(prCatName(p.cat))+'</span>')+(IS_CV?'':(pcSecCount(p)?'<span class="pcc ok">✓ Reçeteli</span>':'<span class="pcc warn">Reçete yok</span>'));
+    var sub=IS_CV?esc(p.code||""):(oems.length&&!IS_RZ?'OEM No: <b>'+esc(oems[0].no)+'</b>'+(oems.length>1?' <i>+'+(oems.length-1)+'</i>':''):esc([pSubFirst(p),p.cust].filter(Boolean).join(" · ")));
+    return '<div class="pch"><div class="pchi">'+(p.th?'<img alt="" src="'+p.th+'">':'<span>'+esc(IS_CV&&p.cv?p.cv.m:pTi(p).slice(0,3))+'</span>')+'</div>'+
+      '<div class="pchm"><div class="pcchips">'+chips+'</div><h3>'+esc(pcTitle(p))+'</h3><div class="pchs">'+sub+'</div>'+
+      '<div class="pcacts"><button type="button" data-pcact="fav" class="'+(fav?'on':'')+'" aria-pressed="'+fav+'">'+(fav?'★ Favori':'☆ Favori')+'</button>'+
+      (oems.length?'<button type="button" data-pcact="copy">⧉ OEM kopyala</button>':'<button type="button" data-pcact="copy">⧉ Kodu kopyala</button>')+
+      '<button type="button" data-pcact="share">⤴ Paylaş</button><button type="button" data-pcact="pdf">🖨 Teknik föy (PDF)</button>'+
+      '<button type="button" data-pcact="cmp" class="'+(inCmp?'on':'')+'">⚖ '+(inCmp?'Karşılaştırmada':'Karşılaştır')+'</button></div></div></div>';
+  }
+  function pcFillHtml(p){
+    var f=pcFill(p);
+    return '<div class="pcfill"><div class="pcfh"><b>Kart doluluğu</b><span>%'+f.pct+'</span></div><div class="pcbar"><i style="width:'+f.pct+'%"></i></div><div class="pcfc">'+f.items.map(function(x){return '<span class="'+(x[1]?'ok':'')+'">'+(x[1]?'✓':'○')+' '+x[0]+'</span>'}).join("")+'</div></div>';
+  }
+  function pcOemRows(p){
+    var o=pcOems(p); if(!o.length)return '<div class="rxe">OEM numarası girilmemiş.<small>✏️ Düzenle › Diğer bilgiler’den ekleyebilirsin.</small></div>';
+    return '<div class="pcoems">'+o.map(function(x,i){return '<div class="pcoem"><div><b>'+esc(x.no)+'</b>'+(x.br?'<small>'+esc(x.br)+'</small>':'')+'</div><button type="button" class="pccp" data-pcoem="'+i+'" aria-label="'+esc(x.no)+' kopyala">⧉</button></div>'}).join("")+'</div>';
+  }
+  function pcVehGroups(p){
+    var v=pcVehs(p), g={}, order=[]; v.forEach(function(x){var b=x.brand||"Diğer"; if(!g[b]){g[b]=[];order.push(b)} g[b].push(x)});
+    return {list:v,groups:g,order:order.sort(function(a,b){return g[b].length-g[a].length||a.localeCompare(b,"tr")})};
+  }
+  function pcVehList(p){
+    var G=pcVehGroups(p), q=fold(pcQ.trim()), out="", n=0;
+    G.order.forEach(function(b){
+      if(pcBr&&pcBr!==b)return;
+      var l=G.groups[b].filter(function(x){return !q||fold(x.raw).indexOf(q)>-1}); if(!l.length)return; n+=l.length;
+      out+='<div class="pcvg"><div class="pcvgh"><b>'+esc(b)+'</b><span>'+l.length+'</span></div>'+l.map(function(x){return '<div class="pcvr">'+esc(x.model)+'</div>'}).join("")+'</div>';
+    });
+    return out||'<div class="rxe">Eşleşen araç yok.</div>';
+  }
+  function pcUyumHtml(p){
+    var G=pcVehGroups(p);
+    var h='<div class="pcsec"><div class="pcsh">OEM referansları<span>'+pcOems(p).length+'</span>'+(pcOems(p).length>1?'<button type="button" class="pcmini" data-pcact="copy">Hepsini kopyala</button>':'')+'</div>'+pcOemRows(p)+'</div>';
+    h+='<div class="pcsec"><div class="pcsh">Uyumlu araçlar<span>'+G.list.length+'</span></div>';
+    if(!G.list.length)return h+'<div class="rxe">Kullanıldığı araçlar girilmemiş.<small>✏️ Düzenle › Diğer bilgiler’den ekleyebilirsin.</small></div></div>';
+    h+='<input class="search" id="pcq" type="search" autocomplete="off" placeholder="Marka / model ara…" value="'+esc(pcQ)+'" style="margin:6px 0 8px">';
+    h+='<div class="pcbr"><button type="button" data-pcbr="" aria-pressed="'+(pcBr==="")+'">Hepsi<i>'+G.list.length+'</i></button>'+G.order.map(function(b){return '<button type="button" data-pcbr="'+esc(b)+'" aria-pressed="'+(pcBr===b)+'">'+esc(b)+'<i>'+G.groups[b].length+'</i></button>'}).join("")+'</div>';
+    return h+'<div id="pcvl" class="pcvl">'+pcVehList(p)+'</div></div>';
+  }
+  function pcTechHtml(p){
+    var h="", rows=pcTechRows(p);
+    if(IS_CV&&p.cv){var B=pcBoltSvg(p.cv); h+='<div class="pcsec"><div class="pcsh">Ürün ölçüleri<span>nominal</span></div><div class="pcdraw">'+B.svg+'</div><div class="pcnote">'+(B.D.s?'Baş ölçüleri ('+esc(p.cv.std)+') standart tablosundan, nominal değerlerdir. ':'')+'Boy ve çap cıvata listenden gelir.'+(B.D.b?' Diş boyu: DIN 931 kuralı (2d+6 / 2d+12 / 2d+25).':'')+'</div></div>'; return h+cvSpecHtml(p)}
+    var len=+p.len>0?+p.len:0, nw=+p.nw>0?+p.nw:0;
+    h+='<div class="pcsec"><div class="pcsh">Ürün ölçüleri</div>';
+    if(len||nw||p.thr||p.tech){
+      h+='<div class="pcdraw"><svg class="pcbolt" viewBox="0 0 420 96" role="img" aria-label="Boy şeması"><rect x="40" y="24" width="340" height="26" rx="13" class="pcshank"/><circle cx="53" cy="37" r="13" class="pchead"/><g class="pcdim"><line x1="40" y1="68" x2="380" y2="68"/><line x1="40" y1="62" x2="40" y2="74"/><line x1="380" y1="62" x2="380" y2="74"/><text x="210" y="88" text-anchor="middle">'+(len?'Tam boy = '+nf.format(len)+' mm':'Tam boy girilmemiş')+'</text></g></svg></div>';
+      h+='<div class="pcchipsrow">'+(nw?'<span>⚖ '+nf.format(nw)+' kg</span>':'')+(p.tech&&p.tech.gm?'<span>Gövde '+esc(p.tech.gm)+'</span>':'')+(p.tech&&p.tech.am?'<span>Aşık '+esc(p.tech.am)+'</span>':'')+(!p.tech&&p.thr?'<span>'+esc(p.thr)+'</span>':'')+'</div>';
+      h+='<div class="pcnote">Şema boy oranını göstermez; ölçüler ürün kartındaki girilen değerlerdir.</div>';
+    }else h+='<div class="rxe">Ölçü girilmemiş.<small>✏️ Düzenle’den boy ve ağırlık ekleyebilirsin.</small></div>';
+    h+='</div><div class="pcsec"><div class="pcsh">Teknik özellikler<span>'+rows.length+'</span></div>'+(rows.length?'<div class="pctech">'+rows.map(function(r){return '<div class="cvr"><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b></div>'}).join("")+'</div>':'<div class="rxe">Teknik özellik girilmemiş.</div>')+'</div>';
+    return h;
+  }
+  function pcRotaHtml(p){
+    var h='<div class="pcsec"><div class="pcsh">Geçerli rota</div>'+(pcStageChain(p)||'<div class="rxe">Rota şablonu yok.<small>Aşağıdan şablonu kaydet; sipariş girerken otomatik gelir.</small></div>')+'</div>';
+    return h+rtBoxHtml(p)+rnHtml(p);
+  }
+  function pcSimScore(a,b){
+    if(a.id===b.id)return 0; var s=0;
+    if(IS_CV){var x=a.cv, y=b.cv; if(!x||!y)return 0; if(x.m===y.m)s+=3; else return 0; if(x.l===y.l)s+=3; if(x.std===y.std)s+=2; if(x.kal===y.kal)s+=1; if(x.renk===y.renk)s+=1; return s}
+    if(IS_RZ){if((a.cat||0)===(b.cat||0))s+=2; var ta=fold(a.name||a.code).split(/\s+/), tb=fold(b.name||b.code).split(/\s+/); ta.forEach(function(w){if(w.length>2&&tb.indexOf(w)>-1)s+=1}); if(a.cust&&a.cust===b.cust)s+=1; return s}
+    var oa=pcOems(a).map(function(o){return fold(o.no)}), ob=pcOems(b).map(function(o){return fold(o.no)});
+    oa.forEach(function(o){if(ob.indexOf(o)>-1)s+=6});
+    var va=pcVehs(a), vb=pcVehs(b).map(function(v){return fold(v.raw)}); va.forEach(function(v){if(vb.indexOf(fold(v.raw))>-1)s+=3});
+    if((a.cat||0)===(b.cat||0))s+=1; if(a.thr&&a.thr===b.thr)s+=1; if(+a.len>0&&+a.len===+b.len)s+=1; return s;
+  }
+  function pcSimilar(p){
+    var l=products.map(function(x){return {p:x,s:pcSimScore(p,x)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s||String(a.p.code).localeCompare(String(b.p.code),"tr",{numeric:true})});
+    return l.slice(0,8);
+  }
+  function pcSimRow(x){
+    var q=x.p, sub=IS_CV&&q.cv?[q.cv.std,q.cv.kal,q.cv.renk].join(" · "):(IS_RZ?[q.cust,prCatName(q.cat)].filter(Boolean).join(" · "):(pcOems(q)[0]?"OEM: "+pcOems(q)[0].no:prCatName(q.cat)));
+    var inC=pcCmp.indexOf(q.id)>-1;
+    return '<div class="pcsim"><button type="button" class="pcsimo" data-pcopen="'+q.id+'">'+(q.th?'<img alt="" src="'+q.th+'">':'<span class="pcmono">'+esc((IS_CV&&q.cv?q.cv.m:pTi(q).slice(0,2)))+'</span>')+'<div><b>'+esc(pTi(q))+'</b><small>'+esc(sub)+'</small></div></button><button type="button" class="pccp'+(inC?' on':'')+'" data-pccmp="'+q.id+'" aria-label="Karşılaştırmaya ekle">⚖</button></div>';
+  }
+  function pcCmpRows(q){
+    var r=[];
+    if(IS_CV&&q.cv){r=[["Ölçü",q.cv.m+"×"+q.cv.l],["Standart",q.cv.std],["Kalite",q.cv.kal],["Renk",q.cv.renk],["Gramaj",cvKg(q)>0?nf.format(cvKg(q))+" kg":"—"],["Adet fiyatı",cvUnit(q)>0?pf(cvUnit(q))+" ₺":"—"]]}
+    else if(IS_RZ){r=[["Kategori",prCatName(q.cat)],["Müşteri",q.cust||"—"],["Parça",pcSecCount(q)?pcSecCount(q)+" kalem":"—"],["Maliyet",pcCost(q)>0?"≈ "+pmon(pcCost(q))+" ₺":"—"]]}
+    else{var o=pcOems(q); r=[["Kategori",prCatName(q.cat)],["OEM",o.length?o.slice(0,2).map(function(x){return x.no}).join(", ")+(o.length>2?" +"+(o.length-2):""):"—"],["Araç",pcVehs(q).length?pcVehs(q).length+" model":"—"],["Ağırlık",+q.nw>0?nf.format(+q.nw)+" kg":"—"],["Tam boy",+q.len>0?nf.format(+q.len)+" mm":"—"],["Diş",(q.tech&&q.tech.gm)||q.thr||"—"],["Maliyet",pcCost(q)>0?"≈ "+pmon(pcCost(q))+" ₺":"—"]]}
+    return r;
+  }
+  function pcCmpHtml(){
+    var l=pcCmp.map(function(id){return products.filter(function(x){return x.id===id})[0]}).filter(Boolean);
+    if(!l.length)return "";
+    var h='<div class="pcsec"><div class="pcsh">Karşılaştırma<span>'+l.length+'/3</span><button type="button" class="pcmini" data-pccmpclr="1">Temizle</button></div>';
+    if(l.length<2)return h+'<div class="pcnote">Bir ürün daha seç (⚖).</div></div>';
+    var rows=l.map(pcCmpRows), names=l.map(function(q){return pTi(q)});
+    h+='<div class="pccmp" style="--n:'+l.length+'"><div class="pccr hd"><span></span>'+names.map(function(n,i){return '<b>'+esc(n)+'<button type="button" data-pccmp="'+l[i].id+'" aria-label="Çıkar">×</button></b>'}).join("")+'</div>';
+    rows[0].forEach(function(r0,ri){
+      var vals=rows.map(function(rr){return rr[ri][1]}), diff=vals.some(function(v){return v!==vals[0]});
+      h+='<div class="pccr'+(diff?' df':'')+'"><span>'+esc(r0[0])+'</span>'+vals.map(function(v){return '<b>'+esc(v)+'</b>'}).join("")+'</div>';
+    });
+    return h+'</div></div>';
+  }
+  function pcBenHtml(p){
+    var sim=pcSimilar(p), h=pcCmpHtml();
+    h+='<div class="pcsec"><div class="pcsh">'+(IS_CV?"Benzer cıvatalar":IS_RZ?"Benzer ürünler":"Alternatif ürünler")+'<span>'+sim.length+'</span></div>'+(sim.length?sim.map(pcSimRow).join(""):'<div class="rxe">Benzer ürün bulunamadı.<small>'+(IS_RZ||IS_CV?'':'OEM numarası ya da araç bilgisi girilince aynı OEM / araca uyan ürünler burada çıkar.')+'</small></div>')+'</div>';
+    return h;
+  }
+  function pcOzetHtml(p){
+    var h=pcFillHtml(p);
+    if(IS_RZ){
+      h+='<div class="pcsec"><div class="pcsh">Üretim rotası</div>'+(pcStageChain(p)||'<div class="rxe">Rota şablonu yok.<small>“Rota” sekmesinden ekleyebilirsin.</small></div>')+'</div>';
+      var parts=p.parts||[]; if(parts.length)h+='<div class="pcsec"><div class="pcsh">Reçete özeti<span>'+parts.length+' kalem</span></div><div class="pcchipsrow">'+parts.slice(0,12).map(function(x){return '<span>'+esc(partName(x)||"—")+'</span>'}).join("")+(parts.length>12?'<span>+'+(parts.length-12)+'</span>':'')+'</div></div>';
+    }else if(IS_CV&&p.cv){
+      var B=pcBoltSvg(p.cv); h+='<div class="pcsec"><div class="pcsh">Ürün şeması</div><div class="pcdraw">'+B.svg+'</div></div>';
+    }else{
+      var oems=pcOems(p), G=pcVehGroups(p);
+      h+='<div class="pcsec"><div class="pcsh">OEM numaraları<span>'+oems.length+'</span></div>'+(oems.length?'<div class="pcchipsrow big">'+oems.slice(0,8).map(function(o,i){return '<button type="button" data-pcoem="'+i+'" title="Kopyala">'+esc(o.no)+' <u>⧉</u></button>'}).join("")+(oems.length>8?'<button type="button" data-pctab="uyum">+'+(oems.length-8)+'</button>':'')+'</div>':'<div class="rxe">OEM numarası girilmemiş.<small>OEM numaralarını bana at, kartlara işleyeyim ya da ✏️ Düzenle’den gir.</small></div>')+'</div>';
+      h+='<div class="pcsec"><div class="pcsh">Kullanıldığı araçlar<span>'+G.list.length+'</span><button type="button" class="pcmini" data-pctab="uyum">Tümü ›</button></div>'+(G.list.length?'<div class="pcchipsrow big">'+G.order.slice(0,10).map(function(b){return '<button type="button" data-pcbrgo="'+esc(b)+'">'+esc(b)+' <u>'+G.groups[b].length+'</u></button>'}).join("")+'</div>':'<div class="rxe">Araç bilgisi girilmemiş.</div>')+'</div>';
+    }
+    if(p.note)h+='<div class="pcsec"><div class="pcsh">Not</div><div class="pcnote" style="margin:0">'+esc(p.note)+'</div></div>';
+    return h;
+  }
+  function pcShareText(p){
+    var L=[DIVN+" · "+pcTitle(p)]; if(p.code&&pcTitle(p)!==p.code)L.push("Kod: "+p.code);
+    var o=pcOems(p); if(o.length)L.push("OEM: "+o.map(function(x){return x.no}).join(", "));
+    if(IS_CV&&p.cv){L.push(p.cv.m+"×"+p.cv.l+" · "+p.cv.std+" · "+p.cv.kal+" · "+p.cv.renk); if(cvKg(p)>0)L.push("Gramaj: "+nf.format(cvKg(p))+" kg")}
+    else{ if(+p.nw>0)L.push("Net ağırlık: "+nf.format(+p.nw)+" kg"); if(+p.len>0)L.push("Tam boy: "+nf.format(+p.len)+" mm"); if(p.thr)L.push("Diş: "+p.thr)}
+    var v=pcVehs(p); if(v.length)L.push("Araçlar: "+v.map(function(x){return x.raw}).join("; "));
+    return L.join("\n");
+  }
+  function pcPrintHtml(p){
+    function row(a,b){return b===""||b===undefined||b===null?"":'<tr><th>'+esc(a)+'</th><td>'+esc(b)+'</td></tr>'}
+    var rows="", t=pcTechRows(p), o=pcOems(p), v=pcVehs(p);
+    rows+=row("Ürün",pcTitle(p))+row("Kod",p.code)+row("Kategori",IS_CV&&p.cv?p.cv.std:prCatName(p.cat))+row("Müşteri",p.cust);
+    if(IS_CV&&p.cv){rows+=row("Ölçü",p.cv.m+" × "+p.cv.l+" mm")+row("Standart",CV_STD[p.cv.std]||p.cv.std)+row("Kalite sınıfı",p.cv.kal)+row("Renk",p.cv.renk)+row("Gramaj",cvKg(p)>0?nf.format(cvKg(p))+" kg":"")+row("Diş adımı",cvPitchTxt(p.cv))}
+    else{rows+=row("Net ağırlık",+p.nw>0?nf.format(+p.nw)+" kg":"")+row("Tam boy",+p.len>0?nf.format(+p.len)+" mm":"")+row("Diş ölçüleri",p.thr)}
+    t.forEach(function(r){rows+=row(r[0],r[1])});
+    var h='<div class="pcpr"><div class="pcprh"><div><small>'+esc(DIVN)+' · Teknik föy</small><h1>'+esc(pcTitle(p))+'</h1></div>'+(p.th?'<img src="'+p.th+'" alt="">':'')+'</div><table>'+rows+'</table>';
+    if(IS_CV&&p.cv)h+='<div class="pcprd">'+pcBoltSvg(p.cv).svg+'</div>';
+    if(o.length)h+='<h2>OEM referansları</h2><p>'+o.map(function(x){return esc(x.no)+(x.br?' ('+esc(x.br)+')':'')}).join(" · ")+'</p>';
+    if(v.length)h+='<h2>Uyumlu araçlar</h2><ul>'+v.map(function(x){return '<li>'+esc(x.raw)+'</li>'}).join("")+'</ul>';
+    if(IS_RZ&&(p.parts||[]).length)h+='<h2>Bileşenler</h2><p>'+p.parts.map(function(x){return esc(partName(x)||"—")}).join(" · ")+'</p>';
+    return h+'<div class="pcprf">'+esc(new Date().toLocaleDateString("tr-TR"))+' · Üretim Defteri</div></div>';
+  }
+  function pcPrint(p){
+    var old=document.getElementById("pcprint"); if(old)old.remove();
+    var d=document.createElement("div"); d.id="pcprint"; d.innerHTML=pcPrintHtml(p); document.body.appendChild(d);
+    var done=function(){var e=document.getElementById("pcprint"); if(e)e.remove(); window.removeEventListener("afterprint",done)};
+    window.addEventListener("afterprint",done); setTimeout(function(){try{window.print()}catch(e){done()}},60);
+  }
+  document.addEventListener("click",function(e){
+    if(sheetMode!=="prview")return;
+    var t=e.target.closest&&e.target.closest("[data-pct],[data-pcact],[data-pcoem],[data-pcbr],[data-pcbrgo],[data-pctab],[data-pcopen],[data-pccmp],[data-pccmpclr]"); if(!t)return;
+    e.stopPropagation(); e.preventDefault();
+    var p=products.filter(function(x){return x.id===prViewId})[0]; if(!p)return;
+    var sc=function(){var s=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=s};
+    var d=t.dataset;
+    if(d.pct!==undefined){pcTab=d.pct; renderSheet(); var tb=$("sheet").querySelector(".pctabs"); if(tb&&tb.scrollIntoView)tb.scrollIntoView({block:"start"}); return}
+    if(d.pctab!==undefined){pcTab=d.pctab; renderSheet(); return}
+    if(d.pcbrgo!==undefined){pcTab="uyum"; pcBr=d.pcbrgo; pcQ=""; renderSheet(); return}
+    if(d.pcbr!==undefined){pcBr=d.pcbr; sc(); return}
+    if(d.pcoem!==undefined){var o=pcOems(p)[+d.pcoem]; if(o)pcCopy(o.no,"OEM kopyalandı: "+o.no); return}
+    if(d.pcopen!==undefined){prViewId=d.pcopen; prVW=null; pcTab=pcTab==="ben"?"ben":pcTab; renderSheet(); $("sheet").scrollTop=0; return}
+    if(d.pccmp!==undefined){var i=pcCmp.indexOf(d.pccmp); if(i>-1)pcCmp.splice(i,1); else{if(pcCmp.length>=3)pcCmp.shift(); pcCmp.push(d.pccmp)} sc(); return}
+    if(d.pccmpclr!==undefined){pcCmp=[]; sc(); return}
+    if(d.pcact==="fav"){var on=pcToggleFav(p.id); pcToast(on?"Favorilere eklendi":"Favorilerden çıkarıldı"); sc(); try{renderProds()}catch(x){} return}
+    if(d.pcact==="copy"){var o2=pcOems(p); pcCopy(o2.length?o2.map(function(x){return x.no}).join(", "):(p.code||""),o2.length?"OEM numaraları kopyalandı":"Kod kopyalandı"); return}
+    if(d.pcact==="share"){var tx=pcShareText(p); if(navigator.share){navigator.share({title:pcTitle(p),text:tx}).catch(function(){})}else pcCopy(tx,"Özet kopyalandı — istediğin yere yapıştır"); return}
+    if(d.pcact==="pdf"){pcPrint(p); return}
+    if(d.pcact==="cmp"){var j=pcCmp.indexOf(p.id); if(j>-1)pcCmp.splice(j,1); else{if(pcCmp.length>=3)pcCmp.shift(); pcCmp.push(p.id)} pcToast(j>-1?"Karşılaştırmadan çıkarıldı":"Karşılaştırmaya eklendi — Benzer sekmesinde gör"); sc(); return}
+  },true);
+  document.addEventListener("input",function(e){
+    if(sheetMode!=="prview"||!e.target||e.target.id!=="pcq")return; pcQ=e.target.value;
+    var p=products.filter(function(x){return x.id===prViewId})[0], l=$("pcvl"); if(p&&l)l.innerHTML=pcVehList(p);
+  },true);
+  function pcAssemble(p,head,rec){
+    var tabs=pcTabsOf(p), body;
+    if(tabs.indexOf(pcTab)<0)pcTab="ozet";
+    if(pcTab==="ozet")body=pcOzetHtml(p); else if(pcTab==="uyum")body=pcUyumHtml(p); else if(pcTab==="tek")body=pcTechHtml(p); else if(pcTab==="rota")body=pcRotaHtml(p); else if(pcTab==="ben")body=pcBenHtml(p); else body=rec;
+    return head+'<div class="form" style="gap:12px">'+pcHero(p)+pcTiles(p)+'<div class="pctabs" role="tablist">'+tabs.map(function(k){return '<button type="button" role="tab" data-pct="'+k+'" aria-selected="'+(pcTab===k)+'">'+PC_TABS[k]+(k==="ben"&&pcCmp.length?'<i>'+pcCmp.length+'</i>':'')+'</button>'}).join("")+'</div><div class="pcbody">'+body+'</div></div>';
+  }
   function prViewHtml(){
     var p=products.filter(function(x){return x.id===prViewId})[0];
     if(!p)return '<div class="shead"><div><h2 id="sh-title">Ürün</h2></div><button type="button" class="tpill" id="prvclose">Kapat</button></div><div class="empty">Ürün bulunamadı.</div>';
     var parts=prVParts(p), orig=p.parts||[], dirty=!!(prVW&&prVWid===p.id), b=prBreak(parts), bo=prBreak(orig), T=b.tot||1, pc=function(v){return Math.round(v/T*100)};
-    var h='<div class="shead"><div><h2 id="sh-title">'+(p.cv?"Cıvata kartı":"Reçete kartı")+'</h2><small>'+(p.cv?"Özellikler":"Maliyet dökümü")+'</small></div><div style="display:flex;gap:6px"><button type="button" class="tpill" id="prvedit">✏️ Düzenle</button><button type="button" class="tpill" id="prvclose">Kapat</button></div></div><div class="form" style="gap:12px">';
-    h+='<div class="rv-hero">'+(p.th?'<img class="rv-img" alt="" src="'+p.th+'">':'<div class="rv-img">'+esc(pTi(p).slice(0,3))+'</div>')+'<div class="rv-ttl"><b>'+esc(pTi(p))+'</b><small>'+esc([pSubFirst(p),p.cust,p.cv?p.code:prCatName(p.cat)].filter(function(x,i,ar){return x&&ar.indexOf(x)===i}).join(" · "))+'</small></div></div>';
-    if(IS_RZ)h+=rnHtml(p);
-    var meta=[]; if(+p.nw>0)meta.push(["Net ağırlık",nf.format(+p.nw)+" kg"]); if(+p.len>0)meta.push(["Tam boy",nf.format(+p.len)+" mm"]); if(p.thr)meta.push(["Diş ölçüleri",p.thr]);
-    if(meta.length&&!p.cv)h+='<div class="rv-meta"'+(meta.length<3?' style="grid-template-columns:repeat('+meta.length+',1fr)"':'')+'>'+meta.map(function(m){return '<div><small>'+m[0]+'</small><b>'+esc(m[1])+'</b></div>'}).join("")+'</div>';
-    if(!IS_RZ&&!IS_CV)h+=rxSpecHtml(p); else if(p.oem||p.veh)h+='<div class="rv-info">'+(p.oem?'<div><b>OEM:</b> '+esc(p.oem)+'</div>':'')+(p.veh?'<div><b>Araçlar:</b> '+esc(p.veh)+'</div>':'')+'</div>';
-    if(IS_RZ)h+=rtBoxHtml(p);
-    if(p.cv)h+=cvSpecHtml(p);
-    h+=opBoxHtml(p);
-    if(!parts.length)return h+(p.cv?'':'<div class="empty">Henüz reçete yok.<br>Düzenle’ye basıp parça ekleyebilirsin.</div>')+'</div>';
+    if(pcFor!==p.id){pcFor=p.id; pcTab="ozet"; pcQ=""; pcBr=""}
+    var head='<div class="shead"><div><h2 id="sh-title">Ürün kartı</h2><small>'+esc(DIVN)+'</small></div><div style="display:flex;gap:6px"><button type="button" class="tpill" id="prvedit">✏️ Düzenle</button><button type="button" class="tpill" id="prvclose">Kapat</button></div></div>';
+    var h=opBoxHtml(p);
+    if(!parts.length)return pcAssemble(p,head,h+(p.cv?'':'<div class="rxe">Henüz reçete yok.<small>Düzenle’ye basıp parça ekleyebilirsin.</small></div>'));
     h+='<div class="rv-tot"><small class="l">Toplam maliyet</small><div class="big">'+pmon(b.tot)+'<em>₺</em></div>'+
       '<div class="rv-bar"><i style="width:'+(b.mat/T*100)+'%;background:var(--p1)"></i><i style="width:'+(b.isc/T*100)+'%;background:var(--p0)"></i><i style="width:'+(b.mas/T*100)+'%;background:var(--p3)"></i></div>'+
       '<div class="rv-leg"><div><small><i class="rv-d" style="--c:var(--p1)"></i>Bileşen</small><b>'+pmon(b.mat)+' ₺</b><u>%'+pc(b.mat)+'</u></div><div><small><i class="rv-d" style="--c:var(--p0)"></i>İşçilik</small><b>'+pmon(b.isc)+' ₺</b><u>%'+pc(b.isc)+'</u></div><div><small><i class="rv-d" style="--c:var(--p3)"></i>Masraf</small><b>'+pmon(b.mas)+' ₺</b><u>%'+pc(b.mas)+'</u></div></div></div>';
@@ -10074,7 +10420,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     n.unshift("Ambalaj, işçilik gibi satırlara dokunup seçenek değiştirebilirsin (✎)");
     h+='<div class="rv-note">'+esc(n.join(" · "))+'</div>';
     if(dirty)h+='<div class="prvbar"><div class="t">Kaydedilmemiş değişiklik<small>Toplam '+pmon(b.tot)+' ₺ (kayıtlı: '+pmon(bo.tot)+' ₺)</small></div><button type="button" class="btn ghost" data-prvdiscard="1">Vazgeç</button><button type="button" class="btn" data-prvsave="1">Kaydet</button></div>';
-    return h+'</div>';
+    return pcAssemble(p,head,h);
   }
 
   /* ---------- Rozet: ürün bazlı üretim rotası şablonu (sipariş formu bunu otomatik doldurur) ---------- */
@@ -11179,7 +11525,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(t.id==="prTabP"){prTab="prod"; renderProds(); return}
     if(t.id==="prTabC"){prTab="comp"; renderProds(); return}
     if(t.id==="prnew"){prCopyQ=""; sheetMode="prstart"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0; return}
-    if(t.dataset.prview){var pv0=products.filter(function(x){return x.id===t.dataset.prview})[0]; if(pv0&&((pv0.parts&&pv0.parts.length)||pv0.cv||pv0.tech)){prViewId=pv0.id; prVW=null; sheetMode="prview"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0} else openProdForm(t.dataset.prview); return}
+    if(t.dataset.prview){var pv0=products.filter(function(x){return x.id===t.dataset.prview})[0]; if(pv0){prViewId=pv0.id; prVW=null; sheetMode="prview"; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0} else openProdForm(t.dataset.prview); return}
     if(t.id==="prvclose"){prVW=null; closeSheet(); return}
     if(t.id==="prvedit"){prVW=null; openProdForm(prViewId); return}
     if(t.id==="prTabR"){prTab="rec"; renderProds(); return}
