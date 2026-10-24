@@ -2792,7 +2792,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:27</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 01:29</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -10240,7 +10240,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     return '<div class="pcsim"><button type="button" class="pcsimo" data-pcopen="'+q.id+'">'+(q.th?'<img alt="" src="'+q.th+'">':'<span class="pcmono">'+esc((IS_CV&&q.cv?q.cv.m:pTi(q).slice(0,2)))+'</span>')+'<div><b>'+esc(pTi(q))+'</b><small>'+esc(sub)+'</small></div></button></div>';
   }
   function pcShareText(p){
-    var L=[DIVN+" · "+pcTitle(p)]; if(p.code&&pcTitle(p)!==p.code)L.push("Kod: "+p.code);
+    var L=[pcTitle(p)]; if(p.code&&pcTitle(p)!==p.code)L.push("Kod: "+p.code);
     var o=pcOems(p); if(o.length)L.push("OEM: "+o.map(function(x){return x.no}).join(", "));
     if(IS_CV&&p.cv){L.push(p.cv.m+"×"+p.cv.l+" · "+p.cv.std+" · "+p.cv.kal+" · "+p.cv.renk); if(cvKg(p)>0)L.push("Gramaj: "+nf.format(cvKg(p))+" kg")}
     else{ if(+p.nw>0)L.push("Net ağırlık: "+nf.format(+p.nw)+" kg"); if(+p.len>0)L.push("Tam boy: "+nf.format(+p.len)+" mm"); if(p.thr)L.push("Diş: "+p.thr)}
@@ -10345,7 +10345,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
   function pcSecCard(x,full){return '<section class="pcs'+(full?' full':'')+'" id="pcs-'+x.id+'"><div class="pcsh"><span class="pcic">'+x.ic+'</span><b>'+x.t+'</b>'+(x.cnt!==""&&x.cnt!==undefined?'<i>'+x.cnt+'</i>':'')+'</div><div class="pcsb">'+x.body+'</div></section>'}
   function pcHero(p){
     var oems=pcOems(p), fav=pcIsFav(p.id), oi=pcOrdInfo(p), cost=pcCost(p), tot=pcOpTotal(p), G=pcVehGroups(p);
-    var chips='<span class="pcc d">'+esc(DIVN)+'</span><span class="pcc">'+esc(IS_CV&&p.cv?p.cv.std:prCatName(p.cat))+'</span>'+(IS_CV?'':(pcSecCount(p)?'<span class="pcc ok">✓ Reçeteli</span>':'<span class="pcc warn">Reçete yok</span>'));
+    var chips='<span class="pcc d">'+esc(IS_CV&&p.cv?p.cv.std:prCatName(p.cat))+'</span>'+(IS_CV?'':(pcSecCount(p)?'<span class="pcc ok">✓ Reçeteli</span>':'<span class="pcc warn">Reçete yok</span>'));
     var img=p.th?'<img alt="" src="'+p.th+'">':(IS_CV&&p.cv?pcBoltSvg(p.cv).svg.replace(/<g class="pcdim">.*?<\/g>/g,''):'<span class="pcmono">'+esc(pTi(p).slice(0,3))+'</span>');
     var sub="";
     if(IS_CV)sub='<div class="pcsub">Ürün no: <b>'+esc(p.code||"")+'</b></div>';
@@ -10405,7 +10405,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
     if(!p)return '<div class="shead"><div><h2 id="sh-title">Ürün</h2></div><button type="button" class="tpill" id="prvclose">Kapat</button></div><div class="empty">Ürün bulunamadı.</div>';
     var parts=prVParts(p), orig=p.parts||[], dirty=!!(prVW&&prVWid===p.id), b=prBreak(parts), bo=prBreak(orig), T=b.tot||1, pc=function(v){return Math.round(v/T*100)};
     if(pcFor!==p.id){pcFor=p.id; pcQ=""; pcBr=""; pcVAll=false}
-    var head='<div class="shead"><div><h2 id="sh-title">Ürün kartı</h2><small>'+esc(DIVN)+'</small></div><div style="display:flex;gap:6px"><button type="button" class="tpill" id="prvedit">✏️ Düzenle</button><button type="button" class="tpill" id="prvclose">Kapat</button></div></div>';
+    var head='<div class="shead"><div><h2 id="sh-title">Ürün kartı</h2><small>'+esc(IS_CV&&p.cv?p.cv.std:prCatName(p.cat))+'</small></div><div style="display:flex;gap:6px"><button type="button" class="tpill" id="prvedit">✏️ Düzenle</button><button type="button" class="tpill" id="prvclose">Kapat</button></div></div>';
     var h="";
     if(!parts.length)return pcAssemble(p,head,h+(p.cv?'':'<div class="rxe">Henüz reçete yok.<small>Düzenle’ye basıp parça ekleyebilirsin.</small></div>'));
     h+='<div class="rv-tot"><small class="l">Toplam maliyet</small><div class="big">'+pmon(b.tot)+'<em>₺</em></div>'+
