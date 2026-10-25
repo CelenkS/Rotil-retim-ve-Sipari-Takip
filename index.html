@@ -3293,7 +3293,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 03:00</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 03:03</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -7800,7 +7800,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
     closeSheet(); $("home").hidden=true; $("prods").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
-    stkMobOpen=false; watchMaterials(); if(IS_RZ)try{watchProducts()}catch(e){} renderStock();
+    stkMobOpen=false; watchMaterials(); if(IS_RZ)try{watchProducts()}catch(e){} stkWatchRz(); renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function stockHome(){
@@ -7815,12 +7815,17 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function matState(m){var s=+m.stock||0; return s<=0?"zero":((+m.crit>0&&s<=+m.crit)?"low":"ok")}
   function matDate(iso){var p=String(iso||"").split("-"); return p.length===3?p[2]+"."+p[1]+"."+p[0]:""}
   // Rozet: ürün reçetelerindeki hammaddeler (Ürünlerim > Hammaddeler), stokta kaydı yoksa "stokta kayıtlı değil" satırı olarak görünür
+  var stkRzP=[], stkRzUn=null;
+  function stkWatchRz(){
+    if(IS_RZ||stkRzUn)return; var d=dbDiv("rozet"); if(!d)return;
+    stkRzUn=d.collection("products").onSnapshot(function(sn){stkRzP=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())}); if(!$("stock").hidden)renderStock()},function(){});
+  }
   function stkMats(){
-    if(!IS_RZ||!products.length)return allMats;
-    var have={}; allMats.forEach(function(m){if(m._div===window.__DIV)have[fold(m.name)]=1});
-    var v=[]; try{rawList().forEach(function(r){
+    var src=IS_RZ?products:stkRzP; if(!src.length)return allMats;
+    var have={}; allMats.forEach(function(m){if(m._div==="rozet")have[fold(m.name)]=1});
+    var v=[]; try{rawList(src).forEach(function(r){
       if(have[fold(r.name)])return;
-      v.push({id:"raw_"+r.key.replace(/[^a-z0-9]+/gi,"_"),_div:window.__DIV,virt:true,raw:r,name:r.name,unit:"kg",kind:"ham",stock:0,cat:"Hammadde",p:r.pmax>0?r.pmax:0});
+      v.push({id:"raw_"+r.key.replace(/[^a-z0-9]+/gi,"_"),_div:"rozet",virt:true,raw:r,name:r.name,unit:"kg",kind:"ham",stock:0,cat:"Hammadde",p:r.pmax>0?r.pmax:0});
     })}catch(e){}
     return allMats.concat(v);
   }
@@ -8056,12 +8061,12 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   var stkVArm=false; function stkVArmKeep(){return false}
   // Rozet reçete hammaddelerini stoğa kaydet (stok 0; var olan hiçbir kaydın üzerine yazmaz)
   function stkVAdd(list,one){
-    list=(list||[]).filter(function(m){return m&&m.virt}); if(!list.length||!db)return;
+    list=(list||[]).filter(function(m){return m&&m.virt}); var rdb=dbDiv("rozet"); if(!list.length||!rdb)return;
     var msg=function(t){var e=$("stkvmsg"); if(e)e.textContent=t; $("stkstatus").textContent=t};
     var chunks=[]; for(var i=0;i<list.length;i+=400)chunks.push(list.slice(i,i+400)); var ids={};
-    Promise.all(chunks.map(function(ch){var b=db.batch(); ch.forEach(function(m){var r=db.collection("materials").doc(); ids[m.id]=r.id; b.set(r,{name:m.name,unit:"kg",kind:"ham",cat:"Hammadde",stock:0,crit:null,p:m.p>0?m.p:0,note:"Ürün reçetelerinden eklendi",ts:Date.now()})}); return b.commit()})).then(function(){
+    Promise.all(chunks.map(function(ch){var b=rdb.batch(); ch.forEach(function(m){var r=rdb.collection("materials").doc(); ids[m.id]=r.id; b.set(r,{name:m.name,unit:"kg",kind:"ham",cat:"Hammadde",stock:0,crit:null,p:m.p>0?m.p:0,note:"Ürün reçetelerinden eklendi",ts:Date.now()})}); return b.commit()})).then(function(){
       logActivity("Stok: "+list.length+" hammadde reçetelerden stoğa eklendi","info");
-      if(one){stkSel=window.__DIV+":"+ids[list[0].id]; stkMobOpen=true}
+      if(one){stkSel="rozet:"+ids[list[0].id]; stkMobOpen=true}
       renderStock(); msg(list.length+" hammadde stoğa eklendi ✓");
     }).catch(function(){msg("Eklenemedi, tekrar dene")});
   }
@@ -11231,9 +11236,9 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     var dia=String(parseFloat(m[2])).replace(".",",");
     return {grade:i.grade,dim:i.dim,key:fold(i.grade)+"|mil|"+parseFloat(m[2]),name:dia+"lik "+i.grade+" Soğuk Mil",cut:i.dim};
   }
-  function rawList(){
+  function rawList(src){
     var map={}, order=[];
-    products.forEach(function(p){(p.parts||[]).forEach(function(x){
+    (src||products).forEach(function(p){(p.parts||[]).forEach(function(x){
       if(!x||x.k!=="made")return; var i=rawGroupInfo(x), r=map[i.key];
       if(!r){r=map[i.key]={key:i.key,name:i.name,grade:i.grade,uses:[],ps:[],pids:{}}; order.push(i.key)}
       var pu=pnum(x.p); if(pu>0)r.ps.push(pu);
