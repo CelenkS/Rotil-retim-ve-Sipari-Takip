@@ -3494,7 +3494,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:26</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:31</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8013,17 +8013,17 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
         amBy[dv.id]=snap.docs.map(function(x){return Object.assign({id:x.id,_div:dv.id},x.data())});
         allMats=[].concat.apply([],window.__DIVS.map(function(z){return amBy[z.id]||[]}));
         allMats.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr",{numeric:true})});
-        hamxImport(dv.id); hamKatSync(dv.id);
+        if(!(snap.metadata&&snap.metadata.fromCache))hamxImport(dv.id); hamKatSync(dv.id);
         paintStockHome();
         if(!$("stock").hidden)renderStock();
       },function(){});
     });
   }
-  /* ---- Hammadde aktarımı: Excel listesi (49 kalem) ROTİL'e, cıvata bar çapları (M ölçüsü = çap) CIVATA'ya; adlandırma Rozet'teki gibi ("51lik 1040 Soğuk Mil").
-         Her bölümde BİR KEZ (ayarlar/hamExcel4): daha önce eklenenleri yeniden adlandırır, Cıvata'dan Excel kalemlerini kaldırır. ---- */
-  var HAMX=[["Sıcak Çelik Bar 32X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 16,6X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 14,4X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 14X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 40X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 28X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 34X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 17X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 44X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 46X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 38X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 58X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 43X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 37X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 41X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 52X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 54X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 62X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 49X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 53X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 56X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 47X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 57X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 32X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 16,6X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 14,4X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 14X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 40X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 28X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 34X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 17X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 44X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 46X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 38X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 58X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 43X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 37X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 41X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 52X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 54X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 62X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 49X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 53X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 56X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 47X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 57X5140 (10.9 sınıfı)",47],["ST37 SOĞUK ÇEKİM Y31 LİK S235JRC MALZEME",41.5],["ST37 SOĞUK ÇEKİM Y9 LUK S235JRC MALZEME",40],["18X1040 SOĞUK ÇEKİM",47]];
-  var HAMX_S1="HAS CELIK SANAYI VE TICARET ANONIM SIRKETI", HAMX_S2="AKÇELİK DEMİR ÇELİK", hamxRun={};
-  var HAMX_SP={"ST37 SOĞUK ÇEKİM Y31 LİK S235JRC MALZEME":"Y31lik ST37 Soğuk Mil","ST37 SOĞUK ÇEKİM Y9 LUK S235JRC MALZEME":"Y9luk ST37 Soğuk Mil","18X1040 SOĞUK ÇEKİM":"18lik 1040 Soğuk Mil"};
+  /* ---- Hammadde listesi (MİL HAM MADDE STOK Excel'i): "olması gereken açıklama" adları, fiyat ve stok (kg) AYNEN.
+         Bölümler: Cıvata = M ölçüsüne eşit çaplı sıcak çelik barlar (M16…M48), geri kalan her şey Rotil. Her bölümde BİR KEZ (ayarlar/hamExcel7);
+         daha önce otomatik eklenen (hx_…) kalemler silinip baştan yazılır. ---- */
+  var HAMX=[["Sıcak Çelik Bar 50X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 16X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 16X5140 (10.9 sınıfı)",52,500],["Sıcak Çelik Bar 18X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 18X5140 (10.9 sınıfı)",52,2000],["Sıcak Çelik Bar 20X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 20X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 22X1040 (8.8 sınıfı)",42,1000],["Sıcak Çelik Bar 22X5140 (10.9 sınıfı)",52,2500],["Sıcak Çelik Bar 24X1040 (8.8 sınıfı)",42,2500],["Sıcak Çelik Bar 24X5140 (10.9 sınıfı)",52,3000],["Sıcak Çelik Bar 27X1040 (8.8 sınıfı)",42,6000],["Sıcak Çelik Bar 27X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 30X1040 (8.8 sınıfı)",42,10000],["Sıcak Çelik Bar 30X5140 (10.9 sınıfı)",52,4000],["Sıcak Çelik Bar 33X1040 (8.8 sınıfı)",42,1000],["Sıcak Çelik Bar 33X5140 (10.9 sınıfı)",52,1000],["Sıcak Çelik Bar 36X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 36X5140 (10.9 sınıfı)",52,22000],["Sıcak Çelik Bar 39X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 39X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 42X1040 (8.8 sınıfı)",42,12000],["Sıcak Çelik Bar 42X5140 (10.9 sınıfı)",52,500],["Sıcak Çelik Bar 45X1040 (8.8 sınıfı)",42,2000],["Sıcak Çelik Bar 45X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 48X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 48X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 14,4X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 14,4X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 14X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 14X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 16,6X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 16,6X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 17X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 17X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 28X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 28X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 32X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 32X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 34X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 34X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 37X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 37X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 38X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 38X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 40X1040 (8.8 sınıfı)",42,4000],["Sıcak Çelik Bar 40X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 41X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 41X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 43X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 43X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 44X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 44X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 46X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 46X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 47X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 47X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 49X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 49X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 52X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 52X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 53X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 53X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 54X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 54X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 56X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 56X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 57X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 57X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 58X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 58X5140 (10.9 sınıfı)",52,0],["Sıcak Çelik Bar 62X1040 (8.8 sınıfı)",42,0],["Sıcak Çelik Bar 62X5140 (10.9 sınıfı)",52,0],["Soğuk Çelik Bar 20X1040 (8.8 sınıfı)",45,4000],["Soğuk Çelik Bar 20XST37",43,1000],["Soğuk Çelik Bar 14,40X1040 (8.8 sınıfı)",45,500],["Soğuk Çelik Bar 16X1040 (8.8 sınıfı)",45,500],["Soğuk Çelik Bar 18X1040 (8.8 sınıfı)",45,3000],["Sıcak Çelik Bar 35X5140 (10.9 sınıfı)",52,6000],["Soğuk Çelik Bar 9XST37",40,20000],["Soğuk Çelik Bar 31XST37",41.5,2000]];
+  var HAMX_CVM={16:1,18:1,20:1,22:1,24:1,27:1,30:1,33:1,36:1,39:1,42:1,45:1,48:1}, hamxRun={};
   /* Hammadde kategorileri: Çelik Mil · DKP Sac · Galvaniz Sac · Paslanmaz Sac (ad / kalite metninden) */
   var HAM_CATS=["Çelik Mil","DKP Sac","Galvaniz Sac","Paslanmaz Sac"];
   function hamKat(name,grade){
@@ -8051,41 +8051,19 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     }).catch(function(){hamkRun[div]=0});
   }
   function hamxSlug(s){return String(s).toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"")}
-  /* Adlar Excel'deki gibi AYNEN kalır (hamxPrev = önceki sürümde verilen Rozet tarzı ad; bulunursa Excel adına geri döner) */
-  function hamxPrev(old){
-    if(HAMX_SP[old])return HAMX_SP[old];
-    var m=old.match(/^Sıcak Çelik Bar ([\d,]+)X(\d+) /); return m?m[1]+"lik "+m[2]+" Sıcak Mil":old;
-  }
+  function hamxIsCv(n){var m=String(n).match(/^Sıcak Çelik Bar (\d+)X(1040|5140) /); return !!(m&&HAMX_CVM[+m[1]])}
   function hamxImport(div){
     if(hamxRun[div]||div==="rozet")return; var d=dbDiv(div); if(!d)return; hamxRun[div]=1;
-    var mk=d.doc("ayarlar/hamExcel6"), mk1=d.doc("ayarlar/hamExcel1");
-    Promise.all([mk.get(),mk1.get()]).then(function(r){
-      if(r[0].exists)return; var had1=r[1].exists;
-      var list=amBy[div]||[], byId={}, byName={}; list.forEach(function(m){byId[m.id]=m; byName[fold(m.name||"")]=m});
-      var b=d.batch(), now=Date.now(), who="", n=0; try{who=whoAmI()}catch(e){}
-      var col=d.collection("materials");
-      function put(id,name,price,sup,note,oldName){
-        var cur=byId[id];
-        if(cur){ if(cur.name===oldName&&oldName!==name){b.update(col.doc(id),{name:name,cat:"Çelik Mil",note:note}); n++} return; }
-        if(byName[fold(name)])return;
-        b.set(col.doc(id),{name:name,unit:"kg",kind:"ham",cat:"Çelik Mil",stock:0,crit:null,p:price,p5:0,sup:sup,pd:"",note:note,ts:now}); n++;
-      }
-      if(div==="rotil"){
-        HAMX.forEach(function(x){
-          var id="hx_"+hamxSlug(x[0]); if(!had1&&!byId[id]||byId[id])put(id,x[0],x[1],HAMX_S1,"Alternatif tedarikçi: "+HAMX_S2,hamxPrev(x[0]));
-        });
-        var sd=dbDiv("rotil");
-        return sd.collection("suppliers").get().then(function(s){
-          var names=s.docs.map(function(x){return fold((x.data()||{}).name)});
-          [[HAMX_S1,"sup_has","has celik"],[HAMX_S2,"sup_akcelik","akcelik"]].forEach(function(z){
-            if(names.some(function(t){return t.indexOf(z[2])>-1}))return;
-            b.set(sd.collection("suppliers").doc(z[1]),{name:z[0],contact:"",phone:"",email:"",addr:"",taxNo:"",cur:"TRY",term:null,note:"Excel'den eklendi",ts:now,by:who});
-          });
-          b.set(mk,{ts:now,n:n,by:who}); return b.commit();
-        });
-      }
-      /* Cıvata: otomatik eklenmiş bütün hammadde kalemleri (hx_…) kalkar — stoğu girilmiş olanlara dokunulmaz. Liste dışı hiçbir kalem tutulmaz. */
-      list.forEach(function(m){if(String(m.id).indexOf("hx_")===0&&!(+m.stock)){b.delete(col.doc(m.id)); n++}});
+    var mk=d.doc("ayarlar/hamExcel7");
+    mk.get().then(function(sn){
+      if(sn.exists)return;
+      var list=amBy[div]||[], byName={}; list.forEach(function(m){if(String(m.id).indexOf("hx_")!==0&&String(m.id).indexOf("hm_")!==0)byName[fold(m.name||"")]=1});
+      var b=d.batch(), n=0, now=Date.now(), who="", col=d.collection("materials"); try{who=whoAmI()}catch(e){}
+      list.forEach(function(m){if(String(m.id).indexOf("hx_")===0||String(m.id).indexOf("hm_")===0)b.delete(col.doc(m.id))});
+      HAMX.forEach(function(x){
+        if((div==="civata")!==hamxIsCv(x[0]))return; if(byName[fold(x[0])])return;
+        b.set(col.doc("hm_"+hamxSlug(x[0])),{name:x[0],unit:"kg",kind:"ham",cat:"Çelik Mil",stock:+x[2]||0,crit:null,p:+x[1]||0,p5:0,sup:"",pd:"",note:"",ts:now}); n++;
+      });
       b.set(mk,{ts:now,n:n,by:who}); return b.commit();
     }).catch(function(){hamxRun[div]=0});
   }
@@ -12130,7 +12108,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   /* Cıvata hammaddesi: bar çapı = metrik ölçü; 10.9 → 5140, 8.8 → 1040 */
   function cvBarName(p){
     var c=p&&p.cv; if(!c||!(+c.d>0))return ""; var k=String(c.kal), st=k==="10.9"?"5140":(k==="8.8"?"1040":""); if(!st)return "";
-    return String(c.d)+"lik "+st+" Sıcak Mil";
+    return "Sıcak Çelik Bar "+String(c.d)+"X"+st+" ("+k+" sınıfı)";
   }
   function cvBarMat(p){
     var n=cvBarName(p); if(!n)return null; var f=fold(n), l=(amBy&&amBy.civata)||[];
