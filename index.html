@@ -3357,6 +3357,21 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .edpd .pur{cursor:default}
 .edpd .puedit{display:none}
 @media (max-width:420px){.edpu .pukpi{grid-template-columns:repeat(3,1fr)}}
+
+/* ---------- telefon çentik / durum çubuğu (iPhone): tam ekran sayfalar ve yapışkan çubuklar durum çubuğunun altında kalmasın ---------- */
+:root{--sat:env(safe-area-inset-top,0px)}
+.pctop{height:calc(var(--pctop) + var(--sat));padding-top:var(--sat)}
+.pcpage{scroll-padding-top:calc(var(--pctop) + var(--sat))}
+.sheet:has(.floorwrap){padding-top:calc(16px + var(--sat))}
+.sheet:has(.floorwrap) .shead{top:calc(var(--sat) - 16px)}
+.sheet:has(.mppickfull){max-height:calc(100% - var(--sat) - 6px);height:calc(100% - var(--sat) - 6px)}
+.csum{top:calc(6px + var(--sat))}
+.cmovh{padding-top:calc(10px + var(--sat))}
+.lbx{padding-top:calc(12px + var(--sat))}
+#divGate{padding-top:calc(28px + var(--sat))}
+#loginGate{padding-top:var(--sat)}
+.sheet{max-height:min(88%,calc(100% - var(--sat) - 8px))}
+.sheet:has(.pcpage),.sheet:has(.floorwrap){max-height:100%}
 </style>
 </head>
 <body>
@@ -3413,7 +3428,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 11:55</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 12:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
