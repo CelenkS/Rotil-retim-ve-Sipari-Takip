@@ -3372,6 +3372,21 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 #loginGate{padding-top:var(--sat)}
 .sheet{max-height:min(88%,calc(100% - var(--sat) - 8px))}
 .sheet:has(.pcpage),.sheet:has(.floorwrap){max-height:100%}
+
+.edms .pukpi{margin:2px 0 6px}
+@media (max-width:480px){.edms .pukpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.edml{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.edmr{display:flex;align-items:center;gap:12px;padding:8px 12px;border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;background:var(--bg)}
+.edmd{flex:none;width:34px;text-align:center}
+.edmd b{display:block;font:800 17px var(--font-num);color:var(--ink);line-height:1.1}
+.edmd small{display:block;font:700 10.5px var(--font-ui);color:var(--ink2)}
+.edmx{min-width:0;display:flex;flex-direction:column;gap:2px}
+.edmx em{font:800 13.5px var(--font-ui);font-style:normal;color:var(--ink)}
+.edmx>span{font:600 12.5px var(--font-ui);color:var(--ink2)}
+.edmx>span b{color:var(--ink);font-family:var(--font-num)}
+.edmx small{font:600 11px var(--font-ui);color:var(--ink2)}
+.edmw{color:var(--bad);font-weight:700}
+.edmn{font-style:italic}
 </style>
 </head>
 <body>
@@ -3428,7 +3443,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 12:09</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 12:12</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -10363,7 +10378,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     empPerf={};
     watchEmployees(); watchMachinesList();
     try{watchOpT(); watchProducts&&watchProducts()}catch(e){}
-    puWatch(); puLoadProd(stpuMk); renderStaff();
+    msYm=stpuMk; watchMesai(); puWatch(); puLoadProd(stpuMk); renderStaff();
     $("stfstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function staffHome(){
@@ -10396,6 +10411,27 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       empPuBox(S,stpuMk)+
       '<span class="fchev">›</span></button><button type="button" class="fedit" data-empedit="'+e.id+'" aria-label="Düzenle">✎</button></div>';
   }
+  function empMsHtml(e){
+    var ym=msYm, a=ym.split("-"), d=msDocs[e.id]||{}, T=msTotals(e.id), ks=Object.keys(d).filter(function(k){return d[k]&&d[k].s}).sort();
+    var h='<div class="edsec">Mesai · '+AY[+a[1]-1]+' '+a[0]+'</div><div class="edms">';
+    if(!ks.length){
+      h+='<div class="note" style="margin:0;text-align:left">'+(db?'Bu ay için çalışma / mesai kaydı yok.':'Bağlantı yok — mesai okunamadı.')+'</div>';
+    }else{
+      h+='<div class="pukpi"><div style="--pc:#2FA66E"><i></i><b>'+T.days+'</b><small>Çalışılan gün</small></div>'+
+        '<div style="--pc:#2A6FB0"><i></i><b>'+fmtHM(T.n)+'</b><small>Normal saat</small></div>'+
+        '<div style="--pc:#B07CE8"><i></i><b>'+fmtHM(T.m)+'</b><small>Mesai saati</small></div>'+
+        '<div style="--pc:'+((T.sh||T.ad)?'#E35050':'#8C97AD')+'"><i></i><b>'+(T.ad?T.ad+' gün':fmtHM(T.sh))+'</b><small>'+(T.ad?'Gelmedi':'Eksik saat')+'</small></div></div>'+
+        '<div class="edpt">Toplam çalışma <b>'+fmtHM(T.n+T.m)+' sa</b>'+(T.sh&&T.ad?' · eksik '+fmtHM(T.sh)+' sa':'')+'</div>'+
+        '<div class="edml">'+ks.map(function(k){
+          var r=d[k], st=MS_BY[r.s]||{n:r.s,c:"#8C97AD"}, c=msCalc(r), dw=GUNK[msDow(ym,k)], parts=[];
+          if(c.n>0)parts.push('normal <b>'+fmtHM(c.n)+'</b>'+(r.a&&r.b?' <small>'+esc(r.a)+'–'+esc(r.b)+'</small>':''));
+          if(c.m>0)parts.push('mesai <b>'+fmtHM(c.m)+'</b>'+(r.ma&&r.mb?' <small>'+esc(r.ma)+'–'+esc(r.mb)+'</small>':''));
+          if(c.sh>0&&!c.ad)parts.push('<span class="edmw">eksik '+fmtHM(c.sh)+'</span>');
+          return '<div class="edmr" style="--c:'+st.c+'"><span class="edmd"><b>'+(+k)+'</b><small>'+dw+'</small></span><span class="edmx"><em>'+esc(st.n)+'</em>'+(parts.length?'<span>'+parts.join(' · ')+'</span>':'')+(r.n?'<small class="edmn">'+esc(r.n)+'</small>':'')+'</span></div>';
+        }).join("")+'</div>';
+    }
+    return h+'<button type="button" class="btn ghost" data-edms="1" style="width:100%;margin-top:8px">Mesai sayfasında aç ›</button></div>';
+  }
   function stpuBarHtml(){
     var a=stpuMk.split("-"), tot={g:0,y:0,o:0,r:0}, ready=!!(puProd[stpuMk]&&puDocsMk===stpuMk);
     employees.forEach(function(e){var S=stpuStats[e.id]; if(S)["g","y","o","r"].forEach(function(k){tot[k]+=S[k]})});
@@ -10404,7 +10440,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       '<div class="pukpi">'+['g','y','o','r'].map(function(k){return '<div style="--pc:'+PU_COL[k]+'"><i></i><b>'+tot[k]+'</b><small>'+PU_LBL[k]+' gün</small></div>'}).join("")+'</div>';
   }
   function stpuSet(mk){
-    stpuMk=mk; stDay=""; puWatch(); puLoadProd(mk); renderStaff();
+    stpuMk=mk; stDay=""; msYm=mk; watchMesai(); puWatch(); puLoadProd(mk); renderStaff();
     if(!$("ov").hidden&&sheetMode==="empdet"){var sh=$("sheet"), st=sh.scrollTop; renderSheet(); sh.scrollTop=st}
   }
   function stpuShift(n){
@@ -10668,7 +10704,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     var macs=(e.machines||[]).map(machineNameOf).filter(Boolean), secs=(e.secs||[]).map(secNameOf);
     return '<div class="shead"><div class="edhead"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div><div><h2 id="sh-title">'+esc(e.name)+'</h2><small>'+esc([e.role,sb?subLabel(sb):e.dept].filter(Boolean).join(" · ")||"Bölüm atanmadı")+'</small></div></div></div>'+
       '<div class="form">'+
-      empPuHtml(e)+
+      empPuHtml(e)+empMsHtml(e)+
       '<div class="edsec">Bilgiler</div>'+
       row("Bölüm grubu",(sb?sb.g:e.dept)||"")+row("Alt bölüm",sb?sb.n:"")+row("Görev",e.role||"")+row("Uyruk",e.nat||"")+
       '<div class="edsec">Çalıştığı bölümler</div>'+(secs.length?'<div class="stfchips" style="margin-top:2px">'+secs.map(function(c){return '<span>'+esc(c)+'</span>'}).join("")+'</div>':'<div class="note">Atanmamış</div>')+
@@ -11009,6 +11045,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       var m={}; snap.docs.forEach(function(d){var x=d.data(); if(!x||x.ym!==ym)return; m[x.emp]=x.days||{}});
       msDocs=m;
       if(!$("staff").hidden&&stfTab==="mesai")renderStaff();
+      if(!$("ov").hidden&&sheetMode==="empdet"){var shx=$("sheet"), stx=shx.scrollTop; renderSheet(); shx.scrollTop=stx}
       if(!$("ov").hidden&&sheetMode==="mesai"&&(msSub==="month"||msSub==="dept"||msSub==="cal"))renderSheet();
     },function(){});
   }
@@ -13980,6 +14017,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     var t=e.target.closest("button"); if(!t)return;
     if(t.dataset.stpum!==undefined){stpuSet(stpuShift(+t.dataset.stpum)); return}
     if(t.dataset.stpud){stDay=t.dataset.stpud; var sh=$("sheet"), st=sh.scrollTop; renderSheet(); sh.scrollTop=st; return}
+    if(t.dataset.edms){openMesaiEmp(empDetId); return}
     if(t.dataset.stpugo){
       var ge=employees.filter(function(x){return x.id===empDetId})[0], S0=ge?puEmpMonth(ge.id,stpuMk):{days:{}};
       puDate=stDayPick(S0,stpuMk)||(isoToday().slice(0,7)===stpuMk?isoToday():stpuMk+"-01"); puTab="day"; puQ=""; puGrp=""; puOnly=false; puOpen[empDetId]=true;
