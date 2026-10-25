@@ -3387,6 +3387,44 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .edmx small{font:600 11px var(--font-ui);color:var(--ink2)}
 .edmw{color:var(--bad);font-weight:700}
 .edmn{font-style:italic}
+
+.emhero{position:relative;overflow:hidden;border-radius:20px;padding:16px 16px 14px;color:#fff;background:linear-gradient(135deg,#2A6FB0,#6A4FC4);box-shadow:0 8px 20px rgba(60,50,160,.25)}
+.emhero::after{content:"";position:absolute;right:-30px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.12)}
+.emh1 small{display:block;font:800 11px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.emh1 b{display:block;font:800 34px/1.1 var(--font-num);margin:2px 0}
+.emh1 em{font:600 12.5px var(--font-ui);font-style:normal;opacity:.9}
+.emh2{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;position:relative;z-index:1}
+.emh2 span{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--font-ui)}
+.emh2 span i{width:10px;height:10px;border-radius:3px;border:1.5px solid #fff}
+.emh2 span b{font-family:var(--font-num)}
+.emh2 span small{opacity:.8;font-size:11px}
+.emsplit{display:flex;height:7px;border-radius:99px;overflow:hidden;margin-top:10px;background:rgba(255,255,255,.25);position:relative;z-index:1}
+.emsplit b{display:block;height:100%;border-right:2px solid rgba(255,255,255,.7)}
+.emsplit b:last-child{border:0}
+.emwarn{margin-top:10px;display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 12px;font:800 12px var(--font-ui);position:relative;z-index:1}
+.emcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:12px 0 8px}
+.emcal .edw{font:800 10.5px var(--font-ui);color:var(--ink2);text-align:center;font-style:normal;padding:2px 0}
+.emd{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:50px;padding:5px 2px;border-radius:12px;border:1px solid color-mix(in srgb,var(--c,#888) 45%,transparent);background:color-mix(in srgb,var(--c,#888) 20%,var(--surface));color:var(--ink);cursor:pointer;text-transform:none;font-family:var(--font-ui)}
+.emd.no{background:var(--bg);border-color:var(--line);border-style:dashed;opacity:.7}
+.emd.hol{background:color-mix(in srgb,var(--c) 10%,var(--surface));opacity:.8}
+.emd b{font:800 14px var(--font-num);line-height:1.1}
+.emd small{font:700 10px var(--font-num);color:var(--ink2);min-height:12px;white-space:nowrap}
+.emd u{position:absolute;top:-6px;right:-3px;text-decoration:none;font:800 9px var(--font-num);padding:1px 5px;border-radius:99px;background:#B07CE8;color:#fff;box-shadow:0 2px 5px rgba(80,40,160,.3)}
+.emd.sel{box-shadow:0 0 0 2px var(--ink)}
+.emleg{display:flex;flex-wrap:wrap;gap:6px 14px;font:600 12px var(--font-ui);color:var(--ink2);margin:2px 2px 10px}
+.emleg span{display:inline-flex;align-items:center;gap:6px}
+.emleg i{width:11px;height:11px;border-radius:4px;display:inline-block}
+.emleg b{color:var(--ink);font-family:var(--font-num)}
+.emdet{border:1px solid var(--line);border-left:6px solid var(--c);border-radius:16px;padding:12px 14px;background:var(--bg)}
+.emdh small{display:block;font:700 12px var(--font-ui);color:var(--ink2)}
+.emdh b{display:block;font:800 17px var(--font-head);color:var(--ink);margin-top:1px}
+.emdg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:10px}
+.emdg>div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 11px}
+.emdg>div small{display:block;font:800 10px var(--font-ui);letter-spacing:.5px;text-transform:uppercase;color:var(--ink2)}
+.emdg>div b{display:block;font:800 20px var(--font-num);color:var(--ink)}
+.emdg>div em{display:block;font:600 11.5px var(--font-ui);font-style:normal;color:var(--ink2)}
+.emdg>div.mes b{color:#8A5BD0}.emdg>div.bad b{color:var(--bad)}
+.emdn{margin-top:8px;font:600 12.5px var(--font-ui);color:var(--ink2);font-style:italic}
 </style>
 </head>
 <body>
@@ -3443,7 +3481,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 12:12</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:40</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9074,7 +9112,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   var PU_NAMES={rotil:{cncg:"CNC Transfer Gövde",pres:"Preshane Aşık",cnca:"CNC Aşık",disacma:"Diş ve delik açma",kaynak:"Z-Rot Kaynak",kaplama:"Kaplama",montaj:"Montaj"},
     rozet:{testere:"Testere",cncg:"CNC işleme",cnca:"Transfer işleme",disacma:"Pres montaj",pres:"Pres baskı",polisaj:"Polisaj",kaynak:"Boya",kaplama:"Kaplama",montaj:"Montaj"}};
   PU_NAMES.civata={pres:"Pres baskı",cncg:"CNC işleme",cnca:"Ovalama",disacma:"Isıl işlem",kaplama:"Kaplama"};
-  var puTab="day", puDate=isoToday(), puMonth=isoToday().slice(0,7), puDocs={}, puDocsMk="", puUn=null, puUnMk="", puProd={}, puProdAt={}, puOpTBy={}, puLoading=false, puQ="", puGrp="", puOnly=false, puOpen={}, puD=null, puSort="name", puSumOpen="", puArm=false, puLoadMk={}, puAIdx={}, stpuMk=isoToday().slice(0,7), stpuSort="name", stDay="", stpuStats={};
+  var puTab="day", puDate=isoToday(), puMonth=isoToday().slice(0,7), puDocs={}, puDocsMk="", puUn=null, puUnMk="", puProd={}, puProdAt={}, puOpTBy={}, puLoading=false, puQ="", puGrp="", puOnly=false, puOpen={}, puD=null, puSort="name", puSumOpen="", puArm=false, puLoadMk={}, puAIdx={}, stpuMk=isoToday().slice(0,7), stpuSort="name", stDay="", edMsDay="", stpuStats={};
   function puDb(){return dbDiv("rotil")}
   function puSecs(div){
     if(div===window.__DIV)return SECTIONS.map(function(x){return {id:x.id,name:x.name}});
@@ -10411,26 +10449,46 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       empPuBox(S,stpuMk)+
       '<span class="fchev">›</span></button><button type="button" class="fedit" data-empedit="'+e.id+'" aria-label="Düzenle">✎</button></div>';
   }
+  function msHrs(m){m=Math.round(m||0); var h=Math.floor(m/60), r=m%60; return (h||!r?h+" sa":"")+(r?(h?" ":"")+r+" dk":"")}
+  var MS_SHORT={izin:"İzin",rapor:"Rapor",gelmedi:"Yok",hst:"Tatil",resmi:"Tatil"};
   function empMsHtml(e){
     var ym=msYm, a=ym.split("-"), d=msDocs[e.id]||{}, T=msTotals(e.id), ks=Object.keys(d).filter(function(k){return d[k]&&d[k].s}).sort();
     var h='<div class="edsec">Mesai · '+AY[+a[1]-1]+' '+a[0]+'</div><div class="edms">';
     if(!ks.length){
-      h+='<div class="note" style="margin:0;text-align:left">'+(db?'Bu ay için çalışma / mesai kaydı yok.':'Bağlantı yok — mesai okunamadı.')+'</div>';
-    }else{
-      h+='<div class="pukpi"><div style="--pc:#2FA66E"><i></i><b>'+T.days+'</b><small>Çalışılan gün</small></div>'+
-        '<div style="--pc:#2A6FB0"><i></i><b>'+fmtHM(T.n)+'</b><small>Normal saat</small></div>'+
-        '<div style="--pc:#B07CE8"><i></i><b>'+fmtHM(T.m)+'</b><small>Mesai saati</small></div>'+
-        '<div style="--pc:'+((T.sh||T.ad)?'#E35050':'#8C97AD')+'"><i></i><b>'+(T.ad?T.ad+' gün':fmtHM(T.sh))+'</b><small>'+(T.ad?'Gelmedi':'Eksik saat')+'</small></div></div>'+
-        '<div class="edpt">Toplam çalışma <b>'+fmtHM(T.n+T.m)+' sa</b>'+(T.sh&&T.ad?' · eksik '+fmtHM(T.sh)+' sa':'')+'</div>'+
-        '<div class="edml">'+ks.map(function(k){
-          var r=d[k], st=MS_BY[r.s]||{n:r.s,c:"#8C97AD"}, c=msCalc(r), dw=GUNK[msDow(ym,k)], parts=[];
-          if(c.n>0)parts.push('normal <b>'+fmtHM(c.n)+'</b>'+(r.a&&r.b?' <small>'+esc(r.a)+'–'+esc(r.b)+'</small>':''));
-          if(c.m>0)parts.push('mesai <b>'+fmtHM(c.m)+'</b>'+(r.ma&&r.mb?' <small>'+esc(r.ma)+'–'+esc(r.mb)+'</small>':''));
-          if(c.sh>0&&!c.ad)parts.push('<span class="edmw">eksik '+fmtHM(c.sh)+'</span>');
-          return '<div class="edmr" style="--c:'+st.c+'"><span class="edmd"><b>'+(+k)+'</b><small>'+dw+'</small></span><span class="edmx"><em>'+esc(st.n)+'</em>'+(parts.length?'<span>'+parts.join(' · ')+'</span>':'')+(r.n?'<small class="edmn">'+esc(r.n)+'</small>':'')+'</span></div>';
-        }).join("")+'</div>';
+      return h+'<div class="note" style="margin:0;text-align:left">'+(db?'Bu ay için çalışma / mesai kaydı yok.':'Bağlantı yok — mesai okunamadı.')+'</div><button type="button" class="btn ghost" data-edms="1" style="width:100%;margin-top:8px">Mesai sayfasında aç ›</button></div>';
     }
-    return h+'<button type="button" class="btn ghost" data-edms="1" style="width:100%;margin-top:8px">Mesai sayfasında aç ›</button></div>';
+    var tot=T.n+T.m, avg=T.days?Math.round(tot/T.days):0, cnt={}, nm=0;
+    ks.forEach(function(k){var r=d[k]; cnt[r.s]=(cnt[r.s]||0)+1; if(msCalc(r).m>0)nm++});
+    if(!edMsDay||ks.indexOf(edMsDay)<0){var t0=isoToday(), pick=ks.filter(function(k){return ym+"-"+k<=t0}); edMsDay=pick.length?pick[pick.length-1]:ks[ks.length-1]}
+    var pn=tot?Math.round(T.n/tot*100):0;
+    h+='<div class="emhero"><div class="emh1"><small>Toplam çalışma</small><b>'+msHrs(tot)+'</b><em>'+T.days+' gün'+(avg?' · günde ort. '+msHrs(avg):'')+'</em></div>'+
+      '<div class="emh2"><span><i style="background:#2A6FB0"></i>Normal <b>'+msHrs(T.n)+'</b></span><span><i style="background:#B07CE8"></i>Mesai <b>'+msHrs(T.m)+'</b>'+(nm?' <small>'+nm+' gün</small>':'')+'</span></div>'+
+      '<div class="emsplit"><b style="width:'+pn+'%;background:#2A6FB0"></b><b style="width:'+(100-pn)+'%;background:#B07CE8"></b></div>'+
+      ((T.ad||T.sh)?'<div class="emwarn">'+(T.ad?'⚠ '+T.ad+' gün gelmedi':'')+(T.ad&&T.sh?' · ':'')+(T.sh?'eksik '+msHrs(T.sh):'')+'</div>':'')+'</div>';
+    var off=msDow(ym,"01"), nd=msMonDays(ym);
+    h+='<div class="emcal">'+["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(function(w){return '<i class="edw">'+w+'</i>'}).join("");
+    for(var z=0;z<off;z++)h+='<i></i>';
+    for(var dn=1;dn<=nd;dn++){
+      var k=pad(dn), r=d[k], st=r&&MS_BY[r.s], c=r?msCalc(r):null, sm="", bd="";
+      if(st){
+        if(MS_SHORT[r.s])sm=MS_SHORT[r.s];
+        else if(r.s==="hsm")sm=msHrs(c.m).replace(" sa","s").replace(" dk","dk");
+        else sm=msHrs(c.n).replace(" sa","s").replace(" dk","dk");
+        if(c.m>0&&r.s!=="hsm")bd='<u>+'+msHrs(c.m).replace(" sa","s").replace(" dk","dk")+'</u>';
+      }
+      h+='<button type="button" class="emd'+(st?'':' no')+(k===edMsDay?' sel':'')+((st&&(r.s==="hst"||r.s==="resmi"))?' hol':'')+'"'+(st?' style="--c:'+st.c+'"':'')+' data-edmsd="'+k+'"><b>'+dn+'</b><small>'+esc(sm)+'</small>'+bd+'</button>';
+    }
+    h+='</div><div class="emleg">'+MS_ST.filter(function(x){return cnt[x.id]}).map(function(x){return '<span><i style="background:'+x.c+'"></i>'+esc(x.n)+' <b>'+cnt[x.id]+'</b></span>'}).join("")+'</div>';
+    var r0=d[edMsDay];
+    if(r0&&MS_BY[r0.s]){
+      var st0=MS_BY[r0.s], c0=msCalc(r0), gd=GUN[msDow(ym,edMsDay)];
+      h+='<div class="emdet" style="--c:'+st0.c+'"><div class="emdh"><div><small>'+(+edMsDay)+' '+AY[+a[1]-1]+' · '+gd+'</small><b>'+esc(st0.n)+'</b></div></div><div class="emdg">'+
+        (c0.n>0?'<div><small>Normal</small><b>'+fmtHM(c0.n)+'</b><em>'+(r0.a&&r0.b?esc(r0.a)+'–'+esc(r0.b):'')+'</em></div>':'')+
+        (c0.m>0?'<div class="mes"><small>Mesai</small><b>'+fmtHM(c0.m)+'</b><em>'+(r0.ma&&r0.mb?esc(r0.ma)+'–'+esc(r0.mb):'')+'</em></div>':'')+
+        ((c0.sh>0&&!c0.ad)?'<div class="bad"><small>Eksik</small><b>'+fmtHM(c0.sh)+'</b></div>':'')+
+        '</div>'+(r0.n?'<div class="emdn">'+esc(r0.n)+'</div>':'')+'</div>';
+    }
+    return h+'<button type="button" class="btn ghost" data-edms="1" style="width:100%;margin-top:10px">Mesai sayfasında aç ›</button></div>';
   }
   function stpuBarHtml(){
     var a=stpuMk.split("-"), tot={g:0,y:0,o:0,r:0}, ready=!!(puProd[stpuMk]&&puDocsMk===stpuMk);
@@ -10440,7 +10498,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       '<div class="pukpi">'+['g','y','o','r'].map(function(k){return '<div style="--pc:'+PU_COL[k]+'"><i></i><b>'+tot[k]+'</b><small>'+PU_LBL[k]+' gün</small></div>'}).join("")+'</div>';
   }
   function stpuSet(mk){
-    stpuMk=mk; stDay=""; msYm=mk; watchMesai(); puWatch(); puLoadProd(mk); renderStaff();
+    stpuMk=mk; stDay=""; edMsDay=""; msYm=mk; watchMesai(); puWatch(); puLoadProd(mk); renderStaff();
     if(!$("ov").hidden&&sheetMode==="empdet"){var sh=$("sheet"), st=sh.scrollTop; renderSheet(); sh.scrollTop=st}
   }
   function stpuShift(n){
@@ -14018,6 +14076,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(t.dataset.stpum!==undefined){stpuSet(stpuShift(+t.dataset.stpum)); return}
     if(t.dataset.stpud){stDay=t.dataset.stpud; var sh=$("sheet"), st=sh.scrollTop; renderSheet(); sh.scrollTop=st; return}
     if(t.dataset.edms){openMesaiEmp(empDetId); return}
+    if(t.dataset.edmsd){edMsDay=t.dataset.edmsd; var shm=$("sheet"), stm=shm.scrollTop; renderSheet(); shm.scrollTop=stm; return}
     if(t.dataset.stpugo){
       var ge=employees.filter(function(x){return x.id===empDetId})[0], S0=ge?puEmpMonth(ge.id,stpuMk):{days:{}};
       puDate=stDayPick(S0,stpuMk)||(isoToday().slice(0,7)===stpuMk?isoToday():stpuMk+"-01"); puTab="day"; puQ=""; puGrp=""; puOnly=false; puOpen[empDetId]=true;
