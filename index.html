@@ -3494,7 +3494,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:23</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:26</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8051,13 +8051,14 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     }).catch(function(){hamkRun[div]=0});
   }
   function hamxSlug(s){return String(s).toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"")}
-  function hamxNew(old){
+  /* Adlar Excel'deki gibi AYNEN kalır (hamxPrev = önceki sürümde verilen Rozet tarzı ad; bulunursa Excel adına geri döner) */
+  function hamxPrev(old){
     if(HAMX_SP[old])return HAMX_SP[old];
     var m=old.match(/^Sıcak Çelik Bar ([\d,]+)X(\d+) /); return m?m[1]+"lik "+m[2]+" Sıcak Mil":old;
   }
   function hamxImport(div){
     if(hamxRun[div]||div==="rozet")return; var d=dbDiv(div); if(!d)return; hamxRun[div]=1;
-    var mk=d.doc("ayarlar/hamExcel5"), mk1=d.doc("ayarlar/hamExcel1");
+    var mk=d.doc("ayarlar/hamExcel6"), mk1=d.doc("ayarlar/hamExcel1");
     Promise.all([mk.get(),mk1.get()]).then(function(r){
       if(r[0].exists)return; var had1=r[1].exists;
       var list=amBy[div]||[], byId={}, byName={}; list.forEach(function(m){byId[m.id]=m; byName[fold(m.name||"")]=m});
@@ -8071,7 +8072,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       }
       if(div==="rotil"){
         HAMX.forEach(function(x){
-          var id="hx_"+hamxSlug(x[0]), nn=hamxNew(x[0]); if(!had1&&!byId[id]||byId[id])put(id,nn,x[1],HAMX_S1,"Alternatif tedarikçi: "+HAMX_S2+(HAMX_SP[x[0]]?" · "+x[0]:""),x[0]);
+          var id="hx_"+hamxSlug(x[0]); if(!had1&&!byId[id]||byId[id])put(id,x[0],x[1],HAMX_S1,"Alternatif tedarikçi: "+HAMX_S2,hamxPrev(x[0]));
         });
         var sd=dbDiv("rotil");
         return sd.collection("suppliers").get().then(function(s){
