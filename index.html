@@ -3235,6 +3235,8 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   .pumh .fav+.ftx+.pucn{margin-left:56px}
   .pumh .pucn{min-width:44px}
 }
+.stkvb{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;background:color-mix(in srgb,#B5651D 10%,var(--bg));border-bottom:1px solid var(--line);font:600 13px var(--font-ui);color:var(--ink)}
+.stkvb .pcbtn{height:38px;white-space:normal;text-align:center}
 </style>
 </head>
 <body>
@@ -3291,7 +3293,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 02:54</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 03:00</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -7798,7 +7800,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
     closeSheet(); $("home").hidden=true; $("prods").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
-    stkMobOpen=false; watchMaterials(); renderStock();
+    stkMobOpen=false; watchMaterials(); if(IS_RZ)try{watchProducts()}catch(e){} renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function stockHome(){
@@ -7812,9 +7814,19 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function matCatLbl(m){return m.cat?(PR_CATLBL[m.cat]||m.cat):"Kategorisiz"}
   function matState(m){var s=+m.stock||0; return s<=0?"zero":((+m.crit>0&&s<=+m.crit)?"low":"ok")}
   function matDate(iso){var p=String(iso||"").split("-"); return p.length===3?p[2]+"."+p[1]+"."+p[0]:""}
+  // Rozet: ürün reçetelerindeki hammaddeler (Ürünlerim > Hammaddeler), stokta kaydı yoksa "stokta kayıtlı değil" satırı olarak görünür
+  function stkMats(){
+    if(!IS_RZ||!products.length)return allMats;
+    var have={}; allMats.forEach(function(m){if(m._div===window.__DIV)have[fold(m.name)]=1});
+    var v=[]; try{rawList().forEach(function(r){
+      if(have[fold(r.name)])return;
+      v.push({id:"raw_"+r.key.replace(/[^a-z0-9]+/gi,"_"),_div:window.__DIV,virt:true,raw:r,name:r.name,unit:"kg",kind:"ham",stock:0,cat:"Hammadde",p:r.pmax>0?r.pmax:0});
+    })}catch(e){}
+    return allMats.concat(v);
+  }
   function stkFiltered(ignoreCat){
     var q=fold(matSearch.trim());
-    return allMats.filter(function(m){
+    return stkMats().filter(function(m){
       if(stkDiv!=="all"&&m._div!==stkDiv)return false;
       if(q&&fold([m.name,matCatLbl(m),m.sup,m.note,divInfo(m._div).name].join(" ")).indexOf(q)<0)return false;
       if(!ignoreCat&&stkCat&&matCatLbl(m)!==stkCat)return false;
@@ -7832,22 +7844,22 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function stkPill(m){var st=matState(m); return '<span class="stkpill '+st+'">'+(st==="zero"?"Stok yok":st==="low"?"Kritik":"Yeterli")+'</span>'}
   function matRowHtml(m){
     var stock=+m.stock||0, needQ=matNeedOf(m), deficit=needQ!==null?Math.max(0,needQ-stock):null, di=divInfo(m._div);
-    return '<div class="stkrow'+(matKey(m)===stkSel?' on':'')+'" data-matsel="'+matKey(m)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+(stkDiv==="all"?'<span class="stkdv" style="--d1:'+di.c1+';--d2:'+di.c2+'">'+esc(di.name)+'</span>':'')+(m.kind==="ham"?'<span class="stkdv" style="--d1:#8A6A2A;--d2:#5A4216">Hammadde</span>':'')+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ!==null?' · gereken '+nf.format(needQ)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
+    return '<div class="stkrow'+(matKey(m)===stkSel?' on':'')+'" data-matsel="'+matKey(m)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+(stkDiv==="all"?'<span class="stkdv" style="--d1:'+di.c1+';--d2:'+di.c2+'">'+esc(di.name)+'</span>':'')+(m.kind==="ham"?'<span class="stkdv" style="--d1:#8A6A2A;--d2:#5A4216">Hammadde</span>':'')+(m.virt?'<span class="stkdv" style="--d1:#8C97AD;--d2:#5E6880">Stokta kayıtlı değil</span>':'')+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ!==null?' · gereken '+nf.format(needQ)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
       '<span class="ct">'+esc(matCatLbl(m))+'</span><span class="sk">'+stkPill(m)+'<b class="'+matState(m)+'">'+nf.format(stock)+' <i>'+esc(m.unit||"adet")+'</i></b></span><span class="cs">'+(+m.p>0?pf(m.p)+' ₺':'—')+'</span></div>';
   }
-  function stkFind(key){return allMats.filter(function(x){return matKey(x)===key})[0]}
+  function stkFind(key){return stkMats().filter(function(x){return matKey(x)===key})[0]}
   function stkDivs(){
-    var cnt={all:allMats.length}; window.__DIVS.forEach(function(d){cnt[d.id]=allMats.filter(function(m){return m._div===d.id}).length});
+    var SM=stkMats(), cnt={all:SM.length}; window.__DIVS.forEach(function(d){cnt[d.id]=SM.filter(function(m){return m._div===d.id}).length});
     $("stkdivs").innerHTML=[{id:"all",name:"Hepsi",c1:"#B5651D",c2:"#6E3D10"}].concat(window.__DIVS).map(function(d){return '<button type="button" data-stkdiv="'+d.id+'" aria-pressed="'+(stkDiv===d.id)+'" style="--d1:'+d.c1+';--d2:'+d.c2+'"><i></i>'+esc(d.name)+'<em>'+cnt[d.id]+'</em></button>'}).join("");
   }
   function stkKpi(){
-    var low=0, zero=0, base=allMats.filter(function(m){return stkDiv==="all"||m._div===stkDiv}); base.forEach(function(m){var st=matState(m); if(st==="zero")zero++; else if(st==="low")low++});
+    var low=0, zero=0, base=stkMats().filter(function(m){return stkDiv==="all"||m._div===stkDiv}); base.forEach(function(m){var st=matState(m); if(st==="zero")zero++; else if(st==="low")low++});
     var sm=stkFind(stkSel);
     function k(ic,l,v,c){return '<div class="stkk"><span class="ic '+(c||'')+'">'+ic+'</span><div><small>'+l+'</small><b>'+v+'</b></div></div>'}
     $("stkkpi").innerHTML=k("📦","Malzeme çeşidi",nf.format(base.length))+k("⚠","Kritik seviyede",nf.format(low),low?"warn":"")+k("∅","Stok yok",nf.format(zero),zero?"bad":"")+k("🧮","Seçili malzeme stoğu",sm?nf.format(+sm.stock||0)+' '+esc(sm.unit||"adet"):"—");
   }
   function stkKinds(){
-    var base=allMats.filter(function(m){return stkDiv==="all"||m._div===stkDiv}), nh=base.filter(function(m){return m.kind==="ham"}).length;
+    var base=stkMats().filter(function(m){return stkDiv==="all"||m._div===stkDiv}), nh=base.filter(function(m){return m.kind==="ham"}).length;
     var K=[["","Tüm malzemeler",base.length],["ham","🧱 Hammadde",nh],["yari","⚙ Yarı mamul / parça",base.length-nh]];
     $("stkkinds").innerHTML=K.map(function(k){return '<button type="button" data-stkkind="'+k[0]+'" aria-pressed="'+(stkKind===k[0])+'">'+k[1]+'<i>'+k[2]+'</i></button>'}).join("");
   }
@@ -7886,6 +7898,13 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(!m){el.className="stkpanel"; el.innerHTML='<div class="stkph"><div class="ic">📦</div><b>Malzeme seç</b><small>Soldaki listeden bir malzemeye dokun; buradan stok girişi/çıkışı yapıp son hareketleri görürsün.</small></div>'; return}
     el.className="stkpanel"+(stkMobOpen?" open":"");
     var st=matState(m), u=esc(m.unit||"adet");
+    if(m.virt){
+      el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button><div class="stkpt"><div><h3>'+esc(m.name)+'</h3><small>'+esc(divInfo(m._div).name)+' · Hammadde · kg</small></div></div>'+
+        '<div class="stkcur"><small>Stok durumu</small><b class="zero">Stokta kayıtlı değil</b><div class="stkmeta"><span>'+m.raw.n+' üründe kullanılıyor</span>'+(m.p>0?'<span>'+pf(m.p)+' ₺ / kg</span>':'')+'</div></div>'+
+        '<div class="note" style="margin:12px 0;text-align:left">Bu hammadde ürün reçetelerinden geliyor. Stoğa eklersen buradan giriş / çıkış yapıp miktarını takip edebilirsin.</div>'+
+        '<button type="button" class="btn" id="stkvadd" style="width:100%">Stoğa ekle (0 kg ile)</button><div class="stkmsg" id="stkvmsg"></div></div>';
+      return;
+    }
     el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button>'+
       '<div class="stkpt"><div><h3>'+esc(m.name)+'</h3><small>'+esc(divInfo(m._div).name)+' · '+esc(matCatLbl(m))+' · '+u+'</small></div><button type="button" class="pcbtn" data-matedit="'+matKey(m)+'">✏️ Düzenle</button></div>'+
       '<div class="stkcur"><small>Mevcut stok</small><b class="'+st+'" id="stkcur">'+nf.format(+m.stock||0)+' <i>'+u+'</i></b><div class="stkmeta"><span id="stkcpill">'+stkPill(m)+'</span>'+(+m.crit>0?'<span>kritik '+nf.format(+m.crit)+'</span>':'')+(+m.p>0?'<span>'+pf(m.p)+' ₺ / '+u+'</span>':'')+(m.sup?'<span>'+esc(m.sup)+'</span>':'')+'</div>'+(matNeedOf(m)?'<div class="stkneed">Açık siparişler için gereken: <b>'+nf.format(matNeedOf(m))+'</b>'+(matNeedOf(m)>(+m.stock||0)?' · <u>'+nf.format(matNeedOf(m)-(+m.stock||0))+' eksik</u>':' · yeterli')+'</div>':'')+'</div>'+
@@ -7901,7 +7920,8 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   }
   function stkSetMsg(t,bad){stkMsg=t; var e=$("stkmsg"); if(e){e.textContent=t; e.className="stkmsg"+(bad?" bad":"")}}
   function renderStock(){
-    $("stkcount").textContent=allMats.length;
+    stkVArm=false;
+    $("stkcount").textContent=stkMats().length;
     if(!$("stkrows"))return;
     stkDivs(); stkKinds(); stkKpi(); stkChips();
     var all=stkSorted(stkFiltered(false)), pages=Math.max(1,Math.ceil(all.length/STK_PS));
@@ -7910,6 +7930,8 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     var l=all.slice(stkPage*STK_PS,(stkPage+1)*STK_PS);
     $("stkrows").innerHTML=l.length?l.map(matRowHtml).join(""):'<div class="empty">'+(allMats.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle.")+'</div>';
     stkPager(all.length,pages);
+    var nv=stkMats().filter(function(x){return x.virt&&(stkDiv==="all"||x._div===stkDiv)}).length;
+    if(stkKind==="ham"&&nv&&!stkVArmKeep())$("stkrows").insertAdjacentHTML("afterbegin",'<div class="stkvb"><span>Reçetelerden gelen <b>'+nv+'</b> hammadde stokta kayıtlı değil.</span><button type="button" class="pcbtn" id="stkvbulk">Hepsini stoğa ekle</button></div>');
     var hadPanel=$("stkq"), keep=hadPanel?{q:$("stkq").value,d:$("stkd").value,r:$("stkr").value,n:$("stkn").value}:null;
     var m=stkFind(stkSel);
     if(hadPanel&&m&&$("stkpanel").dataset.mid===matKey(m)){
@@ -8011,7 +8033,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     }).catch(function(){btn.disabled=false; stkSetMsg("Kaydedilemedi, tekrar dene.",true)});
   }
   $("stock").addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkclose],[data-matedit],#stksave"); if(!t||!$("stock").contains(t))return;
+    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkclose],[data-matedit],#stksave,#stkvadd,#stkvbulk"); if(!t||!$("stock").contains(t))return;
     var d=t.dataset;
     if(d.matedit){var em=stkFind(d.matedit); if(!em)return; matEditId=em.id; matEditDiv=em._div; sheetMode="matform";$("ov").hidden=false;renderSheet();return}
     if(d.stkdiv){stkDiv=d.stkdiv; stkCat=""; stkPage=0; renderStock(); return}
@@ -8024,7 +8046,25 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(d.stkall){stkAll=true; stkMovesPaint(); return}
     if(d.stkclose){stkMobOpen=false; var pn=$("stkpanel"); if(pn)pn.classList.remove("open"); return}
     if(t.id==="stksave"){stkSave(); return}
+    if(t.id==="stkvadd"){stkVAdd([stkFind(stkSel)],true); return}
+    if(t.id==="stkvbulk"){
+      var vl=stkMats().filter(function(x){return x.virt});
+      if(!stkVArm){stkVArm=true; t.textContent=vl.length+" hammadde stoğa eklenecek (hepsi 0 kg). Onaylamak için tekrar dokun"; return}
+      stkVArm=false; stkVAdd(vl,false); return;
+    }
   });
+  var stkVArm=false; function stkVArmKeep(){return false}
+  // Rozet reçete hammaddelerini stoğa kaydet (stok 0; var olan hiçbir kaydın üzerine yazmaz)
+  function stkVAdd(list,one){
+    list=(list||[]).filter(function(m){return m&&m.virt}); if(!list.length||!db)return;
+    var msg=function(t){var e=$("stkvmsg"); if(e)e.textContent=t; $("stkstatus").textContent=t};
+    var chunks=[]; for(var i=0;i<list.length;i+=400)chunks.push(list.slice(i,i+400)); var ids={};
+    Promise.all(chunks.map(function(ch){var b=db.batch(); ch.forEach(function(m){var r=db.collection("materials").doc(); ids[m.id]=r.id; b.set(r,{name:m.name,unit:"kg",kind:"ham",cat:"Hammadde",stock:0,crit:null,p:m.p>0?m.p:0,note:"Ürün reçetelerinden eklendi",ts:Date.now()})}); return b.commit()})).then(function(){
+      logActivity("Stok: "+list.length+" hammadde reçetelerden stoğa eklendi","info");
+      if(one){stkSel=window.__DIV+":"+ids[list[0].id]; stkMobOpen=true}
+      renderStock(); msg(list.length+" hammadde stoğa eklendi ✓");
+    }).catch(function(){msg("Eklenemedi, tekrar dene")});
+  }
   $("stock").addEventListener("keydown",function(e){
     if(e.key==="Enter"&&e.target&&e.target.dataset&&e.target.dataset.matsel!==undefined){stkSelect(e.target.dataset.matsel); return}
     if(e.key==="Enter"&&e.target&&e.target.id==="stkq"){e.preventDefault(); stkSave()}
@@ -11109,6 +11149,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       products=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
       products.sort(function(a,b){return String(a.code||"").localeCompare(String(b.code||""),"tr",{numeric:true})});
       prLoaded=true;
+      if(!$("stock").hidden&&IS_RZ)renderStock();
       if(!$("prods").hidden)renderProds();
       if(IS_RZ&&!$("ords").hidden)renderCompNeeds();
     },function(){$("prstatus").textContent="Okunamadı"});
