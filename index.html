@@ -3494,7 +3494,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:12</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:23</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -7992,7 +7992,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     unsubMat=db.collection("materials").onSnapshot(function(snap){
       materials=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
       materials.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
-      matsLoaded=true;
+      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){}
       if(IS_RZ&&!$("ords").hidden)renderCompNeeds();
     },function(){});
     watchAllMats();
@@ -8024,7 +8024,6 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   var HAMX=[["Sıcak Çelik Bar 32X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 16,6X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 14,4X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 14X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 40X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 28X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 34X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 17X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 44X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 46X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 38X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 58X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 43X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 37X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 41X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 52X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 54X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 62X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 49X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 53X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 56X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 47X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 57X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 32X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 16,6X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 14,4X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 14X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 40X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 28X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 34X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 17X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 44X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 46X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 38X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 58X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 43X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 37X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 41X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 52X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 54X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 62X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 49X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 53X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 56X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 47X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 57X5140 (10.9 sınıfı)",47],["ST37 SOĞUK ÇEKİM Y31 LİK S235JRC MALZEME",41.5],["ST37 SOĞUK ÇEKİM Y9 LUK S235JRC MALZEME",40],["18X1040 SOĞUK ÇEKİM",47]];
   var HAMX_S1="HAS CELIK SANAYI VE TICARET ANONIM SIRKETI", HAMX_S2="AKÇELİK DEMİR ÇELİK", hamxRun={};
   var HAMX_SP={"ST37 SOĞUK ÇEKİM Y31 LİK S235JRC MALZEME":"Y31lik ST37 Soğuk Mil","ST37 SOĞUK ÇEKİM Y9 LUK S235JRC MALZEME":"Y9luk ST37 Soğuk Mil","18X1040 SOĞUK ÇEKİM":"18lik 1040 Soğuk Mil"};
-  var HAMX_CVM=[16,18,20,22,24,27,30,33,36,39,42,45,48];
   /* Hammadde kategorileri: Çelik Mil · DKP Sac · Galvaniz Sac · Paslanmaz Sac (ad / kalite metninden) */
   var HAM_CATS=["Çelik Mil","DKP Sac","Galvaniz Sac","Paslanmaz Sac"];
   function hamKat(name,grade){
@@ -8056,10 +8055,9 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(HAMX_SP[old])return HAMX_SP[old];
     var m=old.match(/^Sıcak Çelik Bar ([\d,]+)X(\d+) /); return m?m[1]+"lik "+m[2]+" Sıcak Mil":old;
   }
-  function hamxCvOld(dia,gr){return "Sıcak Çelik Bar "+dia+"X"+(gr==="1040"?"1040 (8.8":"5140 (10.9")+" sınıfı)"}
   function hamxImport(div){
     if(hamxRun[div]||div==="rozet")return; var d=dbDiv(div); if(!d)return; hamxRun[div]=1;
-    var mk=d.doc("ayarlar/hamExcel4"), mk1=d.doc("ayarlar/hamExcel1");
+    var mk=d.doc("ayarlar/hamExcel5"), mk1=d.doc("ayarlar/hamExcel1");
     Promise.all([mk.get(),mk1.get()]).then(function(r){
       if(r[0].exists)return; var had1=r[1].exists;
       var list=amBy[div]||[], byId={}, byName={}; list.forEach(function(m){byId[m.id]=m; byName[fold(m.name||"")]=m});
@@ -8085,12 +8083,8 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
           b.set(mk,{ts:now,n:n,by:who}); return b.commit();
         });
       }
-      /* Cıvata: Excel'den gelmiş kalemler kalkar (stoksuz ve adı değişmemişse), M ölçüsüne göre barlar kalır / eklenir */
-      HAMX.forEach(function(x){var id="hx_"+hamxSlug(x[0]), cur=byId[id]; if(cur&&cur.name===x[0]&&!(+cur.stock)){b.delete(col.doc(id)); n++}});
-      HAMX_CVM.forEach(function(dia){[["1040","8.8",43],["5140","10.9",47]].forEach(function(q){
-        var old=hamxCvOld(dia,q[0]), nn=dia+"lik "+q[0]+" Sıcak Mil";
-        put("hx_"+hamxSlug(old),nn,q[2],HAMX_S1,q[1]+" sınıfı · cıvata metrik ölçüsüne göre (M"+dia+") · alternatif tedarikçi: "+HAMX_S2,old);
-      })});
+      /* Cıvata: otomatik eklenmiş bütün hammadde kalemleri (hx_…) kalkar — stoğu girilmiş olanlara dokunulmaz. Liste dışı hiçbir kalem tutulmaz. */
+      list.forEach(function(m){if(String(m.id).indexOf("hx_")===0&&!(+m.stock)){b.delete(col.doc(m.id)); n++}});
       b.set(mk,{ts:now,n:n,by:who}); return b.commit();
     }).catch(function(){hamxRun[div]=0});
   }
@@ -11634,7 +11628,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     unsubProd=db.collection("products").onSnapshot(function(snap){
       products=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
       products.sort(function(a,b){return String(a.code||"").localeCompare(String(b.code||""),"tr",{numeric:true})});
-      prLoaded=true;
+      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){}
       if(!$("ov").hidden&&sheetMode==="oform"){try{opRender();ofInfo()}catch(e){}}
       if(!$("stock").hidden&&IS_RZ)renderStock();
       if(!$("prods").hidden)renderProds();
@@ -13595,6 +13589,32 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   }
 
 
+  /* Dövme kaybolmasın: Excel/reçete içe aktarımı parts'ı baştan yazar → bağlı Dövme satırı korunur ya da Bileşenler › Dövme'den otomatik eklenir */
+  function dovMatOf(code){var k=prKey(code); if(!k)return null; var m=null; materials.forEach(function(x){if(x.cat==="Dövme"&&prKey(x.name)===k)m=x}); return m}
+  function dovKeep(oldParts,newParts,code){
+    var np=newParts||[]; if(IS_RZ||IS_CV||np.some(isDov))return np;
+    var d=(oldParts||[]).filter(isDov)[0];
+    if(!d){var m=dovMatOf(code); d=m?dovPartFor({s:m.sup||""},m.id):null}
+    return d?[d].concat(np.filter(function(x){return !dovLike(x)})):np;
+  }
+  /* Bir kerelik onarım (ayarlar/dovFix1): bağlı dövmesi olmayan her ürüne, kodu aynı olan Dövme bileşenini bağlar */
+  var dovFixRun=false, prSrv=false, matSrv=false;
+  function dovRepair(){
+    if(dovFixRun||IS_RZ||IS_CV||window.__DIV!=="rotil"||!db||!prLoaded||!prSrv||!matsLoaded||!matSrv)return; dovFixRun=true;
+    var mk=db.doc("ayarlar/dovFix1");
+    mk.get().then(function(sn){
+      if(sn.exists)return;
+      var ops=[]; products.forEach(function(p){
+        var parts=p.parts||[]; if(parts.some(isDov))return;
+        var np=dovKeep(parts,parts,p.code); if(np===parts||np.length===parts.length&&!np.some(function(x,i){return x!==parts[i]}))return;
+        ops.push([p.id,np]);
+      });
+      var chunks=[]; for(var i=0;i<ops.length;i+=400)chunks.push(ops.slice(i,i+400)); if(!chunks.length)chunks.push([]);
+      return chunks.reduce(function(pr,ch){return pr.then(function(){var b=db.batch(); ch.forEach(function(o){b.set(db.collection("products").doc(o[0]),{parts:o[1]},{merge:true})}); return b.commit()})},Promise.resolve()).then(function(){
+        logActivity("Dövme bağlantıları onarıldı: "+ops.length+" ürün","info"); return mk.set({ts:Date.now(),n:ops.length});
+      });
+    }).catch(function(){dovFixRun=false});
+  }
   var prFixArm=false;
   function prFixList(){var o=[]; products.forEach(function(pr){var c=dovClean(pr.parts||[]); if(c)o.push({pr:pr,parts:c,rm:(pr.parts||[]).length-c.length})}); return o}
   function prFixHtml(){
@@ -13839,12 +13859,12 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       t.disabled=true;
       var ops=[]; pl.comps.forEach(function(c){ops.push(["materials",{name:c.n,cat:c.c||"",unit:c.u||"adet",stock:0,p:+c.p||0,p5:+c.p5||0,sup:c.s||"",pd:c.pd||"",note:c.nt||"",ts:Date.now()}].concat(c._id?[c._id]:[]))});
       pl.prods.forEach(function(p){
-        if(pl.v2){var ref=db.collection("products").doc(); ops.push(["products",prProdDoc(p),ref.id]); if(p.img&&p.img.d)ops.push(["pimg",{d:p.img.d},ref.id])}
+        if(pl.v2){var ref=db.collection("products").doc(), dn0=prProdDoc(p); dn0.parts=dovKeep([],dn0.parts,dn0.code); ops.push(["products",dn0,ref.id]); if(p.img&&p.img.d)ops.push(["pimg",{d:p.img.d},ref.id])}
         else ops.push(["products",{code:p.code,name:p.name||"",cust:p.cust||"",cat:p.cat||0,note:p.note||"",th:"",parts:(p.parts||[]).map(function(x){return Object.assign({m:"",th:""},x)}),ts:Date.now()}])});
       (pl.upd||[]).forEach(function(u){
         if(u.catOnly){ops.push(["products",{cat:+u.p.cat||0},u.ex.id,true]); return}
         if(u.tech){var tt={tech:u.p.tech||{},ts:Date.now()}, e0=u.ex; if(!(+e0.len)&&+u.p.len)tt.len=+u.p.len; if(!(+e0.nw)&&+u.p.nw)tt.nw=+u.p.nw; if(!e0.thr&&u.p.thr)tt.thr=u.p.thr; if(!e0.th&&u.p.img&&u.p.img.th)tt.th=u.p.img.th; ops.push(["products",tt,e0.id,true]); return}
-        var d0=prProdDoc(u.p), ex=u.ex, up={oem:d0.oem,veh:d0.veh,nw:d0.nw,len:d0.len,thr:d0.thr,parts:d0.parts,ts:Date.now()}; if(d0.cv)up.cv=d0.cv; if(d0.tech)up.tech=d0.tech;
+        var d0=prProdDoc(u.p), ex=u.ex; d0.parts=dovKeep(ex.parts,d0.parts,d0.code); var up={oem:d0.oem,veh:d0.veh,nw:d0.nw,len:d0.len,thr:d0.thr,parts:d0.parts,ts:Date.now()}; if(d0.cv)up.cv=d0.cv; if(d0.tech)up.tech=d0.tech;
         if(pl.setcat)up.cat=d0.cat; if(!ex.name&&d0.name)up.name=d0.name; if(!ex.th&&d0.th)up.th=d0.th; if(!ex.cust&&d0.cust)up.cust=d0.cust;
         ops.push(["products",up,ex.id,true]);
         if(u.p.img&&u.p.img.d&&!ex.th)ops.push(["pimg",{d:u.p.img.d},ex.id]);
