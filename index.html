@@ -3481,7 +3481,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:46</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:51</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8000,7 +8000,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
         amBy[dv.id]=snap.docs.map(function(x){return Object.assign({id:x.id,_div:dv.id},x.data())});
         allMats=[].concat.apply([],window.__DIVS.map(function(z){return amBy[z.id]||[]}));
         allMats.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr",{numeric:true})});
-        if(dv.id!=="rozet")hamxImport(dv.id);
+        if(dv.id!=="rozet")hamxImport(dv.id); if(dv.id==="civata")hamx2Import();
         paintStockHome();
         if(!$("stock").hidden)renderStock();
       },function(){});
@@ -8034,6 +8034,24 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
         return b.commit();
       });
     }).catch(function(){hamxRun[div]=0});
+  }
+  /* Cıvata: metrik ölçüye göre bar çapları (M18…M48) — Excel'de olmayanlar, aynı fiyatla, bir kez eklenir */
+  var hamx2Run=false;
+  function hamx2Import(){
+    if(hamx2Run)return; var d=dbDiv("civata"); if(!d)return; hamx2Run=true;
+    var mk=d.doc("ayarlar/hamExcel2");
+    mk.get().then(function(sn){
+      if(sn.exists)return;
+      var have={}; (amBy.civata||[]).forEach(function(m){have[fold(m.name||"")]=1});
+      var b=d.batch(), n=0, now=Date.now(), who=""; try{who=whoAmI()}catch(e){}
+      [18,20,22,24,27,30,33,36,39,42,45,48].forEach(function(dia){
+        [["1040","8.8",43],["5140","10.9",47]].forEach(function(q){
+          var nm="Sıcak Çelik Bar "+dia+"X"+q[0]+" ("+q[1]+" sınıfı)"; if(have[fold(nm)])return;
+          b.set(d.collection("materials").doc("hx_"+hamxSlug(nm)),{name:nm,unit:"kg",kind:"ham",cat:"Çelik bar",stock:0,crit:null,p:q[2],p5:0,sup:HAMX_S1,pd:"",note:"Alternatif tedarikçi: "+HAMX_S2+" · cıvata metrik ölçüsüne göre eklendi",ts:now}); n++;
+        });
+      });
+      b.set(mk,{ts:now,n:n,by:who}); return b.commit();
+    }).catch(function(){hamx2Run=false});
   }
   function paintStockHome(){
     var el=$("hs-stock"); if(!el)return;
@@ -8204,6 +8222,11 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   // eklenen kalan adetler başka bölümlere de yazabildiği için oraya dahil değildir.
   function applyRecipeUsage(code,deltaQty){
     if(!db||!deltaQty||!code)return;
+    if(IS_CV){ // Cıvata: hammadde (çelik bar) Pres baskıda, ürün gramajı kadar düşer
+      if(sec&&sec.id==="pres"){var cp=products.filter(function(x){return (x.code||"").toLowerCase()===String(code).toLowerCase()})[0], bm=cp&&cvBarMat(cp), kg=cp?cvKg(cp):0;
+        if(bm&&kg>0)db.doc("materials/"+bm.id).update({stock:firebase.firestore.FieldValue.increment(-kg*deltaQty)}).catch(function(){})}
+      return;
+    }
     var it=catalog.filter(function(x){return (x.code||"").toLowerCase()===code.toLowerCase()})[0];
     if(!it||!it.rec||!it.rec.length)return;
     it.rec.forEach(function(r){
@@ -8242,6 +8265,12 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
           if(!(o.st||[])[i])return;
           var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, rem=stClosed(o,i)?0:Math.max(0,nd-dn);
           if(!rem)return;
+          if(IS_CV){
+            if(sg.sec!=="pres")return;
+            var cp=products.filter(function(x){return (x.code||"").toLowerCase()===(o.code||"").toLowerCase()})[0], bm=cp&&cvBarMat(cp), kg=cp?cvKg(cp):0;
+            if(bm&&kg>0)need[bm.id]=(need[bm.id]||0)+kg*rem;
+            return;
+          }
           var it=catByS[sg.sec]&&catByS[sg.sec][(o.code||"").toLowerCase()];
           if(!it||!it.rec||!it.rec.length)return;
           it.rec.forEach(function(r){if(r.m&&r.q)need[r.m]=(need[r.m]||0)+r.q*rem});
@@ -12028,6 +12057,21 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   var CV_KAL={"8.8":{rm:"800 (d≤16) · 830 (d>16)",rp:"640 (d≤16) · 660 (d>16)",mat:"Orta karbonlu çelik (örn. C45), su verme + meneviş"},"10.9":{rm:"1040",rp:"940",mat:"Alaşımlı çelik (örn. 5140 / 41Cr4), su verme + meneviş"}}; // ISO 898-1 minimum değerleri
   var cvF={std:"",kal:"",renk:"",m:"",fav:""};
   function cvKg(p){return +(p.nw||0)}
+  /* Cıvata hammaddesi: bar çapı = metrik ölçü (M16 hariç: Ø16,6); 10.9 → 5140, 8.8 → 1040 */
+  function cvBarName(p){
+    var c=p&&p.cv; if(!c||!(+c.d>0))return ""; var k=String(c.kal), st=k==="10.9"?"5140":(k==="8.8"?"1040":""); if(!st)return "";
+    return "Sıcak Çelik Bar "+(+c.d===16?"16,6":String(c.d))+"X"+st+" ("+k+" sınıfı)";
+  }
+  function cvBarMat(p){
+    var n=cvBarName(p); if(!n)return null; var f=fold(n), l=(amBy&&amBy.civata)||[];
+    return l.filter(function(m){return fold(m.name||"")===f})[0]||null;
+  }
+  function cvBarTxt(p){
+    var n=cvBarName(p); if(!n)return "—"; var m=cvBarMat(p), kg=cvKg(p), t=esc(n);
+    if(kg>0)t+='<em>'+nf.format(kg)+' kg / adet'+(m&&+m.p>0&&kg>0?' · ≈ '+pf(kg*m.p)+' ₺':'')+(m?' · stok '+nf.format(+m.stock||0)+' kg':' · stokta kayıtlı değil')+'</em>';
+    else t+='<em>gramaj girilmemiş</em>';
+    return t;
+  }
   function cvUnit(p){var c=p.cv||{}; return (+c.kp>0&&cvKg(p)>0)?c.kp*cvKg(p):0}
   function cvPitchTxt(c){var v=CV_PITCH[c.d]; return v?String(v).replace(".",",")+" mm":"—"}
   function cvSort(a,b){var x=a.cv, y=b.cv; if(!x||!y)return x?1:y?-1:String(a.code).localeCompare(String(b.code)); return x.d-y.d||x.l-y.l||x.std.localeCompare(y.std)||parseFloat(x.kal)-parseFloat(y.kal)||x.renk.localeCompare(y.renk,"tr")}
@@ -12037,6 +12081,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       '<div class="ftx"><b>'+esc(p.name||p.code)+'</b><small>'+esc(p.code||"")+'</small><div class="stfchips">'+(pcIsFav(p.id)?'<span>★</span>':'')+(c?'<span>'+esc(c.std)+'</span><span>'+esc(c.kal)+'</span>':'')+(cvKg(p)>0?'<span>'+nf.format(cvKg(p))+' kg</span>':'<span class="no">gramaj yok</span>')+(u>0?'<span class="cs">≈ '+pf(u)+' ₺/adet</span>':'')+'</div></div><span class="fchev">›</span></button></div>';
   }
   function cvRenderCat(q){
+    try{watchMaterials()}catch(e){}
     var all=products.filter(function(p){return p.cv}), other=products.filter(function(p){return !p.cv});
     var cnt=function(f,v){return all.filter(function(p){return p.cv[f]===v}).length};
     var chips=function(f,list,lbl){return '<div class="cvrow"><span>'+lbl+'</span><div>'+['<button type="button" data-cvf="'+f+':" aria-pressed="'+(cvF[f]==="")+'">Hepsi</button>'].concat(list.map(function(v){return '<button type="button" data-cvf="'+f+':'+esc(v)+'" aria-pressed="'+(cvF[f]===v)+'">'+esc(v)+'<i>'+cnt(f,v)+'</i></button>'})).join("")+'</div></div>'};
@@ -12064,7 +12109,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
         r("Adet fiyatı",u>0?pf(u)+' ₺<em>kilo fiyatı × gramaj</em>':'—<em>gramaj girilmemiş</em>')+
         r("Üretim şablonu","Cıvata üretim — "+(sw?"BEYAZ (çinko kaplamalı)":"SİYAH (kaplamasız)"))+'</div></div>'+
       '<div class="cvh">Mühendislik / izlenebilirlik</div><div class="cvg">'+
-        '<div>'+r("Malzeme (tipik)",esc(K.mat||"—"),"teyit gerek")+r("Kalite sınıfı",esc(c.kal)+'<em>'+(c.kal==="8.8"?'800 N/mm² · akma oranı 0,8':'1000 N/mm² · akma oranı 0,9')+'</em>')+'</div>'+
+        '<div>'+r("Malzeme (tipik)",esc(K.mat||"—"),"teyit gerek")+r("Hammadde (çelik bar)",cvBarTxt(p))+r("Kalite sınıfı",esc(c.kal)+'<em>'+(c.kal==="8.8"?'800 N/mm² · akma oranı 0,8':'1000 N/mm² · akma oranı 0,9')+'</em>')+'</div>'+
         '<div>'+r("Çekme dayanımı (min.)",rm+" MPa","ISO 898-1")+r("Akma / 0,2 sınırı (min.)",rp+" MPa","ISO 898-1")+'</div></div>'+
       '<div class="cvh">Cıvata özellikleri</div><div class="cvg">'+
         '<div>'+r("Metrik (çap)",esc(c.m))+r("Boy (mm)",nf.format(c.l))+r("Standart",esc(CV_STD[c.std]||c.std))+r("Kalite sınıfı",esc(c.kal))+r("Gramaj",cvKg(p)>0?nf.format(cvKg(p))+" kg":'girilmemiş')+'</div>'+
@@ -12257,7 +12302,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     var r=[], o=pcOems(p);
     if(IS_CV&&p.cv){
       var c=p.cv, K=CV_KAL[c.kal]||{}, big=c.d>16, rm=c.kal==="8.8"?(big?"830":"800"):K.rm, rp=c.kal==="8.8"?(big?"660":"640"):K.rp;
-      r=[["Metrik (çap)",c.m],["Boy",nf.format(c.l)+" mm"],["Standart",CV_STD[c.std]||c.std],["Kalite sınıfı",c.kal],["Renk / kaplama",c.renk==="BEYAZ"?"Beyaz · çinko kaplamalı":"Siyah · kaplamasız"],["Gramaj",cvKg(p)>0?nf.format(cvKg(p))+" kg":"—"],["Diş adımı",cvPitchTxt(c)+" (ISO 261)"],["Çekme dayanımı (min.)",rm+" MPa (ISO 898-1)"],["Akma sınırı (min.)",rp+" MPa (ISO 898-1)"],["Malzeme (tipik)",(K.mat||"—")+" — teyit gerek"],["Ürün no",p.code||""]];
+      r=[["Metrik (çap)",c.m],["Boy",nf.format(c.l)+" mm"],["Standart",CV_STD[c.std]||c.std],["Kalite sınıfı",c.kal],["Renk / kaplama",c.renk==="BEYAZ"?"Beyaz · çinko kaplamalı":"Siyah · kaplamasız"],["Gramaj",cvKg(p)>0?nf.format(cvKg(p))+" kg":"—"],["Hammadde",cvBarName(p)||"—"],["Diş adımı",cvPitchTxt(c)+" (ISO 261)"],["Çekme dayanımı (min.)",rm+" MPa (ISO 898-1)"],["Akma sınırı (min.)",rp+" MPa (ISO 898-1)"],["Malzeme (tipik)",(K.mat||"—")+" — teyit gerek"],["Ürün no",p.code||""]];
     }else if(IS_RZ){
       var rt=rtEff(p); r=[["Ürün adı",p.name||p.code||""],["Kategori",prCatName(p.cat)],["Müşteri",p.cust||"—"],["Parça sayısı",pcSecCount(p)?pcSecCount(p)+" kalem":"—"],["Rota",rt&&rt.st?rt.st.filter(Boolean).length+" aşama":"Şablon yok"]];
     }else{
@@ -12345,7 +12390,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     var R=[];
     function kv(l,v,mut){R.push('<div class="pcdr"><span>'+l+'</span><b'+(mut?' class="mut"':'')+'>'+v+'</b></div>')}
     function dash(l,v){if(v!==""&&v!==null&&v!==undefined)kv(l,v); else kv(l,"—",true)}
-    if(IS_CV&&p.cv){var c=p.cv; kv("Standart",esc(c.std)); kv("Ölçü",esc(c.m)+' × '+nf.format(c.l)+' mm'); kv("Kalite",esc(c.kal)); kv("Kaplama",c.renk==="BEYAZ"?"Beyaz (çinko)":"Siyah (kaplamasız)"); dash("Gramaj",cvKg(p)>0?nf.format(cvKg(p))+' kg':""); kv("Diş adımı",esc(cvPitchTxt(c)))}
+    if(IS_CV&&p.cv){var c=p.cv; kv("Standart",esc(c.std)); kv("Ölçü",esc(c.m)+' × '+nf.format(c.l)+' mm'); kv("Kalite",esc(c.kal)); kv("Kaplama",c.renk==="BEYAZ"?"Beyaz (çinko)":"Siyah (kaplamasız)"); dash("Gramaj",cvKg(p)>0?nf.format(cvKg(p))+' kg':""); kv("Hammadde",esc((cvBarName(p)||"").replace("Sıcak Çelik Bar ","Bar Ø").replace(" sınıfı)",")"))); kv("Diş adımı",esc(cvPitchTxt(c)))}
     else if(IS_RZ){kv("Ürün grubu",esc(cat)); if(p.cust)kv("Müşteri",esc(p.cust)); kv("Parça sayısı",pcSecCount(p)?pcSecCount(p)+' kalem':'—',!pcSecCount(p)); var rt=rtEff(p); kv("Üretim rotası",rt&&rt.st?rt.st.filter(Boolean).length+' aşama':'—',!(rt&&rt.st))}
     else{
       var thr=(p.tech&&p.tech.gm)||p.thr;
@@ -17607,7 +17652,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     refreshHome();
   }
   function refreshHome(){
-    dbP.then(function(){homeLoad(); dashMesaiWatch()});
+    dbP.then(function(){homeLoad(); dashMesaiWatch(); try{watchMaterials(); if(IS_CV)watchProducts()}catch(e){}});
     SECTIONS.forEach(function(x){
       var o=null; try{o=JSON.parse(localStorage.getItem(secPrefix(x.id)+monthKeyNow())||"null")}catch(e){}
       paintHome(x.id,(o&&o.v>=2)?summarize(o.d,o.l,o.r):null);
