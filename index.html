@@ -3481,7 +3481,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:51</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:54</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8035,16 +8035,16 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       });
     }).catch(function(){hamxRun[div]=0});
   }
-  /* Cıvata: metrik ölçüye göre bar çapları (M18…M48) — Excel'de olmayanlar, aynı fiyatla, bir kez eklenir */
+  /* Cıvata: metrik ölçüye göre bar çapları (M16…M48) — Excel'de olmayanlar, aynı fiyatla, bir kez eklenir */
   var hamx2Run=false;
   function hamx2Import(){
     if(hamx2Run)return; var d=dbDiv("civata"); if(!d)return; hamx2Run=true;
-    var mk=d.doc("ayarlar/hamExcel2");
+    var mk=d.doc("ayarlar/hamExcel3");
     mk.get().then(function(sn){
       if(sn.exists)return;
       var have={}; (amBy.civata||[]).forEach(function(m){have[fold(m.name||"")]=1});
       var b=d.batch(), n=0, now=Date.now(), who=""; try{who=whoAmI()}catch(e){}
-      [18,20,22,24,27,30,33,36,39,42,45,48].forEach(function(dia){
+      [16,18,20,22,24,27,30,33,36,39,42,45,48].forEach(function(dia){
         [["1040","8.8",43],["5140","10.9",47]].forEach(function(q){
           var nm="Sıcak Çelik Bar "+dia+"X"+q[0]+" ("+q[1]+" sınıfı)"; if(have[fold(nm)])return;
           b.set(d.collection("materials").doc("hx_"+hamxSlug(nm)),{name:nm,unit:"kg",kind:"ham",cat:"Çelik bar",stock:0,crit:null,p:q[2],p5:0,sup:HAMX_S1,pd:"",note:"Alternatif tedarikçi: "+HAMX_S2+" · cıvata metrik ölçüsüne göre eklendi",ts:now}); n++;
@@ -12057,10 +12057,10 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   var CV_KAL={"8.8":{rm:"800 (d≤16) · 830 (d>16)",rp:"640 (d≤16) · 660 (d>16)",mat:"Orta karbonlu çelik (örn. C45), su verme + meneviş"},"10.9":{rm:"1040",rp:"940",mat:"Alaşımlı çelik (örn. 5140 / 41Cr4), su verme + meneviş"}}; // ISO 898-1 minimum değerleri
   var cvF={std:"",kal:"",renk:"",m:"",fav:""};
   function cvKg(p){return +(p.nw||0)}
-  /* Cıvata hammaddesi: bar çapı = metrik ölçü (M16 hariç: Ø16,6); 10.9 → 5140, 8.8 → 1040 */
+  /* Cıvata hammaddesi: bar çapı = metrik ölçü; 10.9 → 5140, 8.8 → 1040 */
   function cvBarName(p){
     var c=p&&p.cv; if(!c||!(+c.d>0))return ""; var k=String(c.kal), st=k==="10.9"?"5140":(k==="8.8"?"1040":""); if(!st)return "";
-    return "Sıcak Çelik Bar "+(+c.d===16?"16,6":String(c.d))+"X"+st+" ("+k+" sınıfı)";
+    return "Sıcak Çelik Bar "+String(c.d)+"X"+st+" ("+k+" sınıfı)";
   }
   function cvBarMat(p){
     var n=cvBarName(p); if(!n)return null; var f=fold(n), l=(amBy&&amBy.civata)||[];
