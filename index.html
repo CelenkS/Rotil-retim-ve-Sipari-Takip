@@ -3425,6 +3425,19 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .emdg>div em{display:block;font:600 11.5px var(--font-ui);font-style:normal;color:var(--ink2)}
 .emdg>div.mes b{color:#8A5BD0}.emdg>div.bad b{color:var(--bad)}
 .emdn{margin-top:8px;font:600 12.5px var(--font-ui);color:var(--ink2);font-style:italic}
+.stkuse{margin-top:16px}.stkuh{display:flex;align-items:center;gap:8px;margin:0 0 10px}.stkuh h4{margin:0!important}
+.stkun{font:800 11px var(--font-ui);padding:2px 9px;border-radius:99px;background:color-mix(in srgb,var(--divc1,#7a5af8) 14%,transparent);color:var(--divc1,#7a5af8)}
+.stkul{display:flex;flex-direction:column;gap:8px}
+.stkur{display:flex;gap:11px;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+.stkuth{width:42px;height:42px;border-radius:11px;flex:none;object-fit:cover;background:#fff;border:1px solid var(--line)}
+.stkuth.ph{display:flex;align-items:center;justify-content:center;font:800 12px var(--font-head);color:var(--divc1,#7a5af8);background:color-mix(in srgb,var(--divc1,#7a5af8) 10%,#fff);border-color:transparent}
+.stkut{min-width:0;flex:1}.stkut>b{display:block;font:800 13.5px/1.25 var(--font-head);color:var(--ink);overflow-wrap:anywhere}
+.stkut>small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2);margin-top:1px}
+.stkuc{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.stkuc span{font:700 10.5px var(--font-ui);padding:2px 8px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.stkuc span.w{background:color-mix(in srgb,var(--divc1,#7a5af8) 12%,#fff);border-color:transparent;color:var(--divc1,#7a5af8)}
+.stkue{padding:14px;border:1px dashed var(--line);border-radius:14px;font:600 12.5px/1.45 var(--font-ui);color:var(--ink2);text-align:center}
+.stkumore{margin-top:8px;width:100%;padding:10px;border-radius:12px;border:1px solid var(--line);background:#fff;font:700 12.5px var(--font-ui);color:var(--ink);cursor:pointer}
 </style>
 </head>
 <body>
@@ -3481,7 +3494,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:06</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:12</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8089,7 +8102,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
     closeSheet(); $("home").hidden=true; $("prods").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
-    stkMobOpen=false; watchMaterials(); if(IS_RZ)try{watchProducts()}catch(e){} stkWatchRz(); renderStock();
+    stkMobOpen=false; watchMaterials(); try{watchProducts()}catch(e){} stkWatchRz(); stkWatchOth(); renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function stockHome(){
@@ -8108,6 +8121,38 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function stkWatchRz(){
     if(IS_RZ||stkRzUn)return; var d=dbDiv("rozet"); if(!d)return;
     stkRzUn=d.collection("products").onSnapshot(function(sn){stkRzP=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())}); if(!$("stock").hidden)renderStock()},function(){});
+  }
+  /* Hammadde nerede kullanılıyor: ürün reçetelerinden (ad eşleşmesi + doğrudan bağlantı + cıvata bar kuralı) */
+  var stkPB={}, stkPUn={}, stkUAll=false, stkUFor="";
+  function stkWatchOth(){
+    window.__DIVS.forEach(function(dv){
+      if(dv.id===window.__DIV||dv.id==="rozet"||stkPUn[dv.id])return; var d=dbDiv(dv.id); if(!d)return;
+      stkPUn[dv.id]=d.collection("products").onSnapshot(function(sn){stkPB[dv.id]=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())}); if(!$("stock").hidden)stkUsePaint()},function(){stkPB[dv.id]=[]});
+    });
+  }
+  function stkProdsOf(div){return div===window.__DIV?products:(div==="rozet"?stkRzP:stkPB[div])}
+  function stkUsage(m){
+    var ps=stkProdsOf(m._div); if(!ps)return null;
+    var by={}, order=[], f=fold(m.name||"");
+    function add(p,part,wt,cut){var e=by[p.id]; if(!e){e=by[p.id]={p:p,parts:[],wt:0,cut:""}; order.push(p.id)} if(part&&e.parts.indexOf(part)<0)e.parts.push(part); e.wt+=wt||0; if(cut&&!e.cut)e.cut=cut}
+    try{rawList(ps).forEach(function(r){if(fold(r.name)!==f)return; r.uses.forEach(function(u){add(u.p,u.part,u.wt,u.cut)})})}catch(e){}
+    if(m._div==="civata")ps.forEach(function(p){if(p.cv&&fold(cvBarName(p))===f)add(p,"Cıvata gövdesi",cvKg(p)*1000,"")});
+    if(!m.virt)ps.forEach(function(p){if(by[p.id])return; (p.parts||[]).forEach(function(x){if(x&&x.m===m.id)add(p,x.n||"Parça",pnum(x.wt)*(pnum(x.q)||1),"")})});
+    return order.map(function(k){return by[k]}).sort(function(a,b){return String(pTi(a.p)).localeCompare(String(pTi(b.p)),"tr",{numeric:true})});
+  }
+  function stkUseRow(e){
+    var p=e.p, t=pTi(p), sub=[p.code&&p.code!==t?p.code:"",p.cust||""].filter(Boolean).join(" · ");
+    return '<div class="stkur">'+(p.th?'<img class="stkuth" alt="" src="'+p.th+'">':'<div class="stkuth ph">'+esc(String(t).replace(/[^A-Za-z0-9ÇĞİÖŞÜçğıöşü]/g,"").slice(0,3))+'</div>')+
+      '<div class="stkut"><b>'+esc(t)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'<div class="stkuc">'+e.parts.slice(0,3).map(function(x){return '<span>'+esc(x)+'</span>'}).join("")+(e.cut?'<span>kesim '+esc(e.cut)+'</span>':'')+(e.wt>0?'<span class="w">'+gFmt(e.wt)+' / adet</span>':'')+'</div></div></div>';
+  }
+  function stkUsePaint(){
+    var el=$("stkuse"); if(!el)return; var m=stkFind(stkSel); if(!m){el.innerHTML=""; return}
+    if(stkUFor!==stkSel){stkUFor=stkSel; stkUAll=false}
+    var l=stkUsage(m), h='<div class="stkuh"><h4>Kullanıldığı ürünler</h4>'+(l?'<span class="stkun">'+l.length+'</span>':'')+'</div>';
+    if(!l)h+='<div class="stkue">Ürünler yükleniyor…</div>';
+    else if(!l.length)h+='<div class="stkue">Bu hammadde henüz hiçbir ürün reçetesinde geçmiyor.</div>';
+    else{var cap=stkUAll?l.length:8; h+='<div class="stkul">'+l.slice(0,cap).map(stkUseRow).join("")+'</div>'+(l.length>cap?'<button type="button" class="stkumore" data-stkuall="1">Hepsini göster · '+(l.length-cap)+' ürün daha</button>':'')}
+    el.innerHTML=h;
   }
   function stkMats(){
     var src=IS_RZ?products:stkRzP; if(!src.length)return allMats;
@@ -8196,12 +8241,13 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button><div class="stkpt"><div><h3>'+esc(m.name)+'</h3><small>'+esc(divInfo(m._div).name)+' · Hammadde · kg</small></div></div>'+
         '<div class="stkcur"><small>Stok durumu</small><b class="zero">Stokta kayıtlı değil</b><div class="stkmeta"><span>'+m.raw.n+' üründe kullanılıyor</span>'+(m.p>0?'<span>'+pf(m.p)+' ₺ / kg</span>':'')+'</div></div>'+
         '<div class="note" style="margin:12px 0;text-align:left">Bu hammadde ürün reçetelerinden geliyor. Stoğa eklersen buradan giriş / çıkış yapıp miktarını takip edebilirsin.</div>'+
-        '<button type="button" class="btn" id="stkvadd" style="width:100%">Stoğa ekle (0 kg ile)</button><div class="stkmsg" id="stkvmsg"></div></div>';
-      return;
+        '<div id="stkuse" class="stkuse"></div><button type="button" class="btn" id="stkvadd" style="width:100%">Stoğa ekle (0 kg ile)</button><div class="stkmsg" id="stkvmsg"></div></div>';
+      stkUsePaint(); return;
     }
     el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button>'+
       '<div class="stkpt"><div><h3>'+esc(m.name)+'</h3><small>'+esc(divInfo(m._div).name)+' · '+esc(matCatLbl(m))+' · '+u+'</small></div><button type="button" class="pcbtn" data-matedit="'+matKey(m)+'">✏️ Düzenle</button></div>'+
       '<div class="stkcur"><small>Mevcut stok</small><b class="'+st+'" id="stkcur">'+nf.format(+m.stock||0)+' <i>'+u+'</i></b><div class="stkmeta"><span id="stkcpill">'+stkPill(m)+'</span>'+(+m.crit>0?'<span>kritik '+nf.format(+m.crit)+'</span>':'')+(+m.p>0?'<span>'+pf(m.p)+' ₺ / '+u+'</span>':'')+(m.sup?'<span>'+esc(m.sup)+'</span>':'')+'</div>'+(matNeedOf(m)?'<div class="stkneed">Açık siparişler için gereken: <b>'+nf.format(matNeedOf(m))+'</b>'+(matNeedOf(m)>(+m.stock||0)?' · <u>'+nf.format(matNeedOf(m)-(+m.stock||0))+' eksik</u>':' · yeterli')+'</div>':'')+'</div>'+
+      '<div id="stkuse" class="stkuse"></div>'+
       '<h4>Stok hareketi</h4><div class="stkseg" role="group"><button type="button" data-stkmode="in" aria-pressed="'+(stkMode==="in")+'">Giriş</button><button type="button" data-stkmode="out" aria-pressed="'+(stkMode==="out")+'">Çıkış</button></div>'+
       '<div class="stkf"><label for="stkq">Miktar</label><div class="stkqw"><input class="fin" id="stkq" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span>'+u+'</span></div></div>'+
       '<div class="stkquick">'+[1,10,50,100,500].map(function(n){return '<button type="button" data-stkq="'+n+'">+'+n+'</button>'}).join("")+'</div>'+
@@ -8210,7 +8256,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       '<div class="stkf"><label for="stkn">Açıklama</label><textarea class="fin" id="stkn" rows="2" placeholder="İşlem açıklaması"></textarea></div>'+
       '<button type="button" class="btn stksave '+stkMode+'" id="stksave">'+(stkMode==="in"?"Stok girişini kaydet":"Stok çıkışını kaydet")+'</button><div class="stkmsg" id="stkmsg">'+esc(stkMsg)+'</div><div class="stkinfo">ⓘ Çıkışta mevcut stok kontrol edilir.</div>'+
       '<h4>Son hareketler</h4><div id="stkmoves"></div></div>';
-    stkWatchMoves(matKey(m)); stkMovesPaint();
+    stkWatchMoves(matKey(m)); stkMovesPaint(); stkUsePaint();
   }
   function stkSetMsg(t,bad){stkMsg=t; var e=$("stkmsg"); if(e){e.textContent=t; e.className="stkmsg"+(bad?" bad":"")}}
   function renderStock(){
@@ -8338,7 +8384,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     }).catch(function(){btn.disabled=false; stkSetMsg("Kaydedilemedi, tekrar dene.",true)});
   }
   $("stock").addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkclose],[data-matedit],#stksave,#stkvadd,#stkvbulk"); if(!t||!$("stock").contains(t))return;
+    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkuall],[data-stkclose],[data-matedit],#stksave,#stkvadd,#stkvbulk"); if(!t||!$("stock").contains(t))return;
     var d=t.dataset;
     if(d.matedit){var em=stkFind(d.matedit); if(!em)return; matEditId=em.id; matEditDiv=em._div; sheetMode="matform";$("ov").hidden=false;renderSheet();return}
     if(d.stkdiv){stkDiv=d.stkdiv; stkCat=""; stkPage=0; renderStock(); return}
@@ -8349,6 +8395,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(d.stkmode){stkMode=d.stkmode; stkMsg=""; var keep={q:$("stkq").value,d:$("stkd").value,r:$("stkr").value,n:$("stkn").value}; stkPanel(); $("stkq").value=keep.q; $("stkd").value=keep.d; $("stkr").value=keep.r; $("stkn").value=keep.n; return}
     if(d.stkq){var q=$("stkq"); q.value=String((+String(q.value).replace(",",".")||0)+(+d.stkq)); return}
     if(d.stkall){stkAll=true; stkMovesPaint(); return}
+    if(d.stkuall){stkUAll=true; stkUsePaint(); return}
     if(d.stkclose){stkMobOpen=false; var pn=$("stkpanel"); if(pn)pn.classList.remove("open"); return}
     if(t.id==="stksave"){stkSave(); return}
     if(t.id==="stkvadd"){stkVAdd([stkFind(stkSel)],true); return}
