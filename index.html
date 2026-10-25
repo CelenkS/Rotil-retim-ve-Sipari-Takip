@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Üretim Defteri</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@500;600;700&display=swap">
-<script>try{var _l=localStorage.getItem("ud_look");if(_l==="glass"||_l==="glasslight"){document.documentElement.setAttribute("data-theme","glass");if(_l==="glasslight")document.documentElement.setAttribute("data-gmode","light")}}catch(e){}</script>
+<script>try{var _l=localStorage.getItem("ud_look");if(_l==="glass"||_l==="glasslight"||_l==="glassfrost"){document.documentElement.setAttribute("data-theme","glass");if(_l!=="glass")document.documentElement.setAttribute("data-gmode","light");if(_l==="glassfrost")document.documentElement.setAttribute("data-gstyle","frost")}}catch(e){}</script>
 <style>
 :root{
   --bg:#F3F7F5; --bg2:#DDEFEA; --surface:#FFFFFF; --ink:#16303A; --ink2:#5E7680; --line:#E1EAE8;
@@ -3538,6 +3538,50 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .stkasg>b{display:block;font:800 14px var(--font-head);color:var(--ink)}.stkasg>small{display:block;margin:3px 0 10px;font:600 12px/1.4 var(--font-ui);color:var(--ink2)}
 .stkasgb{display:flex;gap:8px;flex-wrap:wrap}.stkasgb button{flex:1;min-width:90px;height:40px;border:0;border-radius:12px;background:var(--d1,#888);color:#fff;font:800 13px var(--font-ui);cursor:pointer;text-transform:none}
 #pu.wrap:not(#home){align-items:stretch}#pubody{width:100%;min-width:0;display:flex;flex-direction:column;gap:14px}
+
+/* ---- Buzlu cam görünüm (özel): data-theme="glass" + data-gmode="light" + data-gstyle="frost" ---- */
+:root[data-theme="glass"][data-gstyle="frost"]{color-scheme:light;
+  --bg:#E9E4DA; --bg2:#D5E3DE; --surface:rgba(255,255,255,.48); --ink:#12262B; --ink2:#566B70; --line:rgba(255,255,255,.6);
+  --accent:#0F8B8D; --accent-ink:#fff; --soft:rgba(255,255,255,.45); --weekend:rgba(255,255,255,.2); --today:rgba(255,190,90,.40); --sel:rgba(255,255,255,.6); --week:rgba(255,255,255,.28);
+  --money:#B4580F; --shadow:0 12px 36px rgba(24,70,74,.16); --good:#0E8F62; --bad:#D5382F; --warn:#B7791F;
+  --fgl:rgba(255,255,255,.52); --fgb:rgba(255,255,255,.72); --fdk:linear-gradient(135deg,#0E2A30,#0F6F72);
+}
+:root[data-theme="glass"][data-gstyle="frost"] body{background:#E6E2D8}
+:root[data-theme="glass"][data-gstyle="frost"] body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(160deg,#F6EBDD 0%,#DCE9E3 48%,#C9DDE0 100%)}
+:root[data-theme="glass"][data-gstyle="frost"] body::after{content:"";position:fixed;inset:-12%;z-index:-1;pointer-events:none;will-change:transform;background:
+ radial-gradient(34vmax 34vmax at 12% 18%,rgba(255,170,92,.72),transparent 68%),
+ radial-gradient(38vmax 38vmax at 86% 14%,rgba(60,190,182,.62),transparent 68%),
+ radial-gradient(36vmax 36vmax at 78% 88%,rgba(150,132,255,.50),transparent 68%),
+ radial-gradient(32vmax 32vmax at 8% 86%,rgba(255,126,112,.50),transparent 68%);animation:frostdrift 42s ease-in-out infinite alternate}
+@keyframes frostdrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(2.5%,-2%,0) scale(1.06)}100%{transform:translate3d(-2.5%,2.5%,0) scale(1.02)}}
+@media (prefers-reduced-motion:reduce){:root[data-theme="glass"][data-gstyle="frost"] body::after{animation:none}}
+:root[data-theme="glass"][data-gstyle="frost"] :is(.card,.fcard,.ocard,.oc2,.rv-sec,.rv-meta>div,.rv-info,.pc,.prmore,.stfsum>div,.fstats div,.ctile,.ctpl,.nt,.purc,.pickcard,.mssum,.msday,.frk,.emprow,.matrow,.dcard,.nli,.ccbox,.tablewrap,.gcrows,.fcompbox,.fbox,.ostatcard,.needcard,.osumcard,#dash .dbox,.dt,.stkrow,.pvcard,.pvk,.pvtools,.pvmw,.hcard,.hcards .hcard.ordc){background:linear-gradient(155deg,rgba(255,255,255,.66),rgba(255,255,255,.34));-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6);border:1px solid var(--fgb);border-radius:24px;box-shadow:0 10px 32px rgba(24,70,74,.14),inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.25)}
+:root[data-theme="glass"][data-gstyle="frost"] .pc.open{border-color:#0F8B8D;box-shadow:0 0 0 3px rgba(15,139,141,.16),0 10px 32px rgba(24,70,74,.14)}
+:root[data-theme="glass"][data-gstyle="frost"] .hero,:root[data-theme="glass"][data-gstyle="frost"] .rv-hero{background:radial-gradient(60% 120% at 100% 0%,rgba(255,176,96,.38),transparent 62%),linear-gradient(135deg,rgba(10,38,44,.9),rgba(14,96,100,.84))!important;-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.3);box-shadow:0 14px 34px rgba(10,50,56,.32),inset 0 1.5px 0 rgba(255,255,255,.28)}
+:root[data-theme="glass"][data-gstyle="frost"] .hero::before,:root[data-theme="glass"][data-gstyle="frost"] .hero::after{background:rgba(255,200,140,.10)}
+:root[data-theme="glass"][data-gstyle="frost"] .hcards .hcard.ordc{background:radial-gradient(130% 150% at 100% 0%,color-mix(in srgb,var(--ac) 30%,transparent) 0%,transparent 62%),linear-gradient(155deg,rgba(255,255,255,.66),rgba(255,255,255,.34))}
+:root[data-theme="glass"][data-gstyle="frost"] .btn:not(.ghost){background:var(--fdk);color:#fff;border-radius:99px;box-shadow:0 10px 22px rgba(14,70,74,.34),inset 0 1px 0 rgba(255,255,255,.25)}
+:root[data-theme="glass"][data-gstyle="frost"] .btn.ghost,:root[data-theme="glass"][data-gstyle="frost"] .tpill{background:var(--fgl);border:1px solid var(--fgb);color:var(--ink);border-radius:99px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+:root[data-theme="glass"][data-gstyle="frost"] .stffilt button,:root[data-theme="glass"][data-gstyle="frost"] .gcshapes button,:root[data-theme="glass"][data-gstyle="frost"] .gcmat button,:root[data-theme="glass"][data-gstyle="frost"] .prlgrp button{background:var(--fgl);border-color:var(--fgb);color:var(--ink)}
+:root[data-theme="glass"][data-gstyle="frost"] .stffilt button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .dvtog button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] #app .dvtog button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .pbar button[aria-pressed="true"]{background:var(--fdk);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(14,70,74,.34)}
+:root[data-theme="glass"][data-gstyle="frost"] .dvtog,:root[data-theme="glass"][data-gstyle="frost"] .pbar,:root[data-theme="glass"][data-gstyle="frost"] .otabs,:root[data-theme="glass"][data-gstyle="frost"] .ddnav{background:rgba(255,255,255,.4);border:1px solid var(--fgb);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+:root[data-theme="glass"][data-gstyle="frost"] .fin,:root[data-theme="glass"][data-gstyle="frost"] .search,:root[data-theme="glass"][data-gstyle="frost"] select,:root[data-theme="glass"][data-gstyle="frost"] textarea{background:rgba(255,255,255,.6);color:var(--ink);border-color:var(--fgb);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+:root[data-theme="glass"][data-gstyle="frost"] .search{background-color:rgba(255,255,255,.66)!important;border-color:rgba(255,255,255,.9)!important}
+:root[data-theme="glass"][data-gstyle="frost"] .fin:focus,:root[data-theme="glass"][data-gstyle="frost"] .search:focus,:root[data-theme="glass"][data-gstyle="frost"] .prf .fin:focus{background:rgba(255,255,255,.9);border-color:#0F8B8D}
+:root[data-theme="glass"][data-gstyle="frost"] .sheet,:root[data-theme="glass"][data-gstyle="frost"] .nfpop,:root[data-theme="glass"][data-gstyle="frost"] #loginGate .lgcard,:root[data-theme="glass"][data-gstyle="frost"] .prsbar,:root[data-theme="glass"][data-gstyle="frost"] .prvbar{background:rgba(250,252,250,.78);-webkit-backdrop-filter:blur(36px) saturate(1.6);backdrop-filter:blur(36px) saturate(1.6);border:1px solid rgba(255,255,255,.85)}
+:root[data-theme="glass"][data-gstyle="frost"] #sidenav{background:linear-gradient(170deg,rgba(255,255,255,.58),rgba(255,255,255,.28))!important;-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--fgb)!important;box-shadow:0 14px 40px rgba(24,70,74,.16),inset 0 1.5px 0 rgba(255,255,255,.9)!important;border-radius:30px!important}
+:root[data-theme="glass"][data-gstyle="frost"] .snlogo{background:var(--fdk);box-shadow:0 8px 18px rgba(14,70,74,.38)}
+:root[data-theme="glass"][data-gstyle="frost"] .snitem:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+:root[data-theme="glass"][data-gstyle="frost"] .snitem[aria-current="page"]{background:var(--fdk);color:#fff;box-shadow:0 8px 18px rgba(14,70,74,.34)}
+:root[data-theme="glass"][data-gstyle="frost"] .eyebrow,:root[data-theme="glass"][data-gstyle="frost"] .lgeyebrow{color:#0B7274}
+:root[data-theme="glass"][data-gstyle="frost"] .shbadge,:root[data-theme="glass"][data-gstyle="frost"] .rv-tag{background:rgba(15,139,141,.16);color:#0B6D6F}
+:root[data-theme="glass"][data-gstyle="frost"] .dmore,:root[data-theme="glass"][data-gstyle="frost"] .dpc{color:#0B6D6F}
+:root[data-theme="glass"][data-gstyle="frost"] .dt.hi,:root[data-theme="glass"][data-gstyle="frost"] .rv-total,:root[data-theme="glass"][data-gstyle="frost"] .rv-grand{background:var(--fdk);color:#fff}
+:root[data-theme="glass"][data-gstyle="frost"] .stkrow{background:var(--fgl)}
+:root[data-theme="glass"][data-gstyle="frost"] .dvbar,:root[data-theme="glass"][data-gstyle="frost"] .dvtog{border-radius:22px}
+:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad),:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem),:root[data-theme="glass"][data-gstyle="frost"] .otabs button[aria-pressed="true"]{background:var(--fdk)!important;color:#fff!important;box-shadow:0 8px 18px rgba(14,70,74,.32)!important}
+:root[data-theme="glass"][data-gstyle="frost"] .hero{background:radial-gradient(60% 120% at 100% 0%,rgba(255,176,96,.38),transparent 62%),linear-gradient(135deg,rgba(10,38,44,.9),rgba(14,96,100,.84))!important}
+:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="false"]:not(.snitem):not(.btn){color:var(--ink)}
 </style>
 </head>
 <body>
@@ -3594,7 +3638,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 14:40</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 18:43</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9925,21 +9969,24 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     });
   });
   $("nmedset").addEventListener("click",function(){nameEditing=true; paintMyName(); window.scrollTo(0,0); var i=$("hwinp"); if(i)i.focus()});
-  // Görünüm: "std" (klasik) → "glass" (cam koyu) → "glasslight" (cam aydınlık) → klasik …
-  function lookNow(){var r=document.documentElement; return r.getAttribute("data-theme")==="glass"?(r.getAttribute("data-gmode")==="light"?"glasslight":"glass"):"std"}
+  // Görünüm: "std" (klasik) → "glass" (cam koyu) → "glasslight" (cam aydınlık) → "glassfrost" (buzlu cam) → klasik …
+  var LOOKS=["std","glass","glasslight","glassfrost"], LOOKN={std:"Klasik",glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam"};
+  function lookNow(){var r=document.documentElement; if(r.getAttribute("data-theme")!=="glass")return "std"; if(r.getAttribute("data-gmode")!=="light")return "glass"; return r.getAttribute("data-gstyle")==="frost"?"glassfrost":"glasslight"}
   function lookSet(m){
     var r=document.documentElement;
+    r.removeAttribute("data-gstyle");
     if(m==="std"){r.removeAttribute("data-theme"); r.removeAttribute("data-gmode")}
-    else{r.setAttribute("data-theme","glass"); if(m==="glasslight")r.setAttribute("data-gmode","light"); else r.removeAttribute("data-gmode")}
+    else{r.setAttribute("data-theme","glass"); if(m==="glass")r.removeAttribute("data-gmode"); else r.setAttribute("data-gmode","light"); if(m==="glassfrost")r.setAttribute("data-gstyle","frost")}
     try{localStorage.setItem("ud_look",m)}catch(e){}
     var b=$("lookbtn"); if(b)b.textContent=lookLabel();
     try{renderSideNav()}catch(e){}
   }
-  function lookLabel(){var m=lookNow(); return m==="std"?"🎨 Görünüm: Klasik · Cam (koyu)’ya geç":(m==="glass"?"🎨 Görünüm: Cam koyu · Cam aydınlık’a geç":"🎨 Görünüm: Cam aydınlık · Klasik’e geç")}
+  function lookNext(){var m=lookNow(); return LOOKS[(LOOKS.indexOf(m)+1)%LOOKS.length]}
+  function lookLabel(){return "🎨 Görünüm: "+LOOKN[lookNow()]+" · "+LOOKN[lookNext()]+"’e geç"}
   (function(){
     var b=$("lookbtn"); if(!b)return;
     b.textContent=lookLabel();
-    b.addEventListener("click",function(){var m=lookNow(); lookSet(m==="std"?"glass":(m==="glass"?"glasslight":"std"))});
+    b.addEventListener("click",function(){lookSet(lookNext())});
   })();
   $("homesetbtn").addEventListener("click",function(){
     var o=$("homeset"), open=o.hidden; o.hidden=!open;
@@ -13730,18 +13777,24 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 
 
   /* Dövme kaybolmasın: Excel/reçete içe aktarımı parts'ı baştan yazar → bağlı Dövme satırı korunur ya da Bileşenler › Dövme'den otomatik eklenir */
-  function dovMatOf(code){var k=prKey(code); if(!k)return null; var m=null; materials.forEach(function(x){if(x.cat==="Dövme"&&prKey(x.name)===k)m=x}); return m}
+  function dovKeys(code){
+    var k=prKey(code), o=[]; if(!k)return o; o.push(k);
+    var b=String(code||"").replace(/\s+[Şşs]EM\s+LAST[Iİiı]K\s*$/i,"").trim(); if(prKey(b)&&o.indexOf(prKey(b))<0)o.push(prKey(b));
+    var f=String(code||"").trim().split(/\s+/)[0]; if(/^\d+[a-z]?$/i.test(f)&&o.indexOf(prKey(f))<0)o.push(prKey(f));
+    return o;
+  }
+  function dovMatOf(code){var ks=dovKeys(code); if(!ks.length)return null; var by={}; materials.forEach(function(x){if(x.cat==="Dövme")by[prKey(x.name)]=x}); for(var i=0;i<ks.length;i++)if(by[ks[i]])return by[ks[i]]; return null}
   function dovKeep(oldParts,newParts,code){
     var np=newParts||[]; if(IS_RZ||IS_CV||np.some(isDov))return np;
     var d=(oldParts||[]).filter(isDov)[0];
     if(!d){var m=dovMatOf(code); d=m?dovPartFor({s:m.sup||""},m.id):null}
     return d?[d].concat(np.filter(function(x){return !dovLike(x)})):np;
   }
-  /* Bir kerelik onarım (ayarlar/dovFix1): bağlı dövmesi olmayan her ürüne, kodu aynı olan Dövme bileşenini bağlar */
+  /* Bir kerelik onarım (ayarlar/dovFix2; kodu "10943 ŞEM LASTİK" gibi olan ürünler de 10943 dövmesine bağlanır): bağlı dövmesi olmayan her ürüne, kodu aynı olan Dövme bileşenini bağlar */
   var dovFixRun=false, prSrv=false, matSrv=false;
   function dovRepair(){
     if(dovFixRun||IS_RZ||IS_CV||window.__DIV!=="rotil"||!db||!prLoaded||!prSrv||!matsLoaded||!matSrv)return; dovFixRun=true;
-    var mk=db.doc("ayarlar/dovFix1");
+    var mk=db.doc("ayarlar/dovFix2");
     mk.get().then(function(sn){
       if(sn.exists)return;
       var ops=[]; products.forEach(function(p){
@@ -17510,7 +17563,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       '<div class="sngrp">'+esc(window.__DIVO.name)+' bölümü</div>'+it("orders","orders","Siparişler")+it("prods","prods","Ürünlerim")+it("plans","plans","Planlar")+SECTIONS.map(function(x){return it("sec:"+x.id,x.id,x.name)}).join("")+
       '<div class="sngrp">Tüm bölümler (ortak)</div>'+it("stock","stock","Stok")+it("purch","purch","İhtiyaçlar")+it("po","po","Satın Alma")+it("pu","pu","Puantaj")+it("tools","tools","Takımlar ve elmaslar")+it("staff","staff","Eleman, makine ve mesai")+it("notes","notes","Notlarım")+(finOwner()?it("cams","cam","Kameralar"):"")+
       '<div class="sngrp">Sana özel</div>'+(finOwner()?(sfOn()?it("saha","saha","Saha satış"):"")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
-      '<div class="snsp"></div><button type="button" class="snitem" data-nav="div"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>Bölüm değiştir</span></button><button type="button" class="snitem" data-nav="look"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>'+(lookNow()==="glasslight"?"Karanlık görünüme geç":"Aydınlık görünüme geç")+'</span></button>';
+      '<div class="snsp"></div><button type="button" class="snitem" data-nav="div"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>Bölüm değiştir</span></button><button type="button" class="snitem" data-nav="look"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Görünüm: '+({glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam"}[lookNow()]||"")+' ›</span></button>';
     nv.innerHTML=h; paintSideActive();
   }
   function paintSideActive(){
@@ -17521,7 +17574,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   }
   function navGo(k){
     if(k==="div"){window.divSwitch(); return}
-    if(k==="look"){lookSet(lookNow()==="glasslight"?"glass":"glasslight"); return}
+    if(k==="look"){var _m=lookNext(); lookSet(_m==="std"?"glass":_m); return}
     closeSheet();
     if(!$("app").hidden)goHome();
     if(!$("calc").hidden&&calcCur){try{calcSaveNow(); calcCur=null}catch(e){}}
