@@ -3481,7 +3481,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:40</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.10 13:46</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8000,10 +8000,40 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
         amBy[dv.id]=snap.docs.map(function(x){return Object.assign({id:x.id,_div:dv.id},x.data())});
         allMats=[].concat.apply([],window.__DIVS.map(function(z){return amBy[z.id]||[]}));
         allMats.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr",{numeric:true})});
+        if(dv.id!=="rozet")hamxImport(dv.id);
         paintStockHome();
         if(!$("stock").hidden)renderStock();
       },function(){});
     });
+  }
+  /* ---- Excel'den hammadde aktarımı (Excel hammadde listesi): her bölümde BİR KEZ, işaret belgesi ayarlar/hamExcel1 ---- */
+  var HAMX=[["Sıcak Çelik Bar 32X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 16,6X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 14,4X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 14X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 40X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 28X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 34X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 17X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 44X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 46X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 38X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 58X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 43X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 37X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 41X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 52X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 54X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 62X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 49X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 53X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 56X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 47X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 57X1040 (8.8 sınıfı)",43],["Sıcak Çelik Bar 32X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 16,6X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 14,4X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 14X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 40X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 28X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 34X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 17X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 44X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 46X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 38X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 58X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 43X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 37X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 41X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 52X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 54X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 62X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 49X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 53X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 56X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 47X5140 (10.9 sınıfı)",47],["Sıcak Çelik Bar 57X5140 (10.9 sınıfı)",47],["ST37 SOĞUK ÇEKİM Y31 LİK S235JRC MALZEME",41.5],["ST37 SOĞUK ÇEKİM Y9 LUK S235JRC MALZEME",40],["18X1040 SOĞUK ÇEKİM",47]];
+  var HAMX_S1="HAS CELIK SANAYI VE TICARET ANONIM SIRKETI", HAMX_S2="AKÇELİK DEMİR ÇELİK", hamxRun={};
+  function hamxSlug(s){return String(s).toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"")}
+  function hamxImport(div){
+    if(hamxRun[div])return; var d=dbDiv(div); if(!d)return; hamxRun[div]=1;
+    var mk=d.doc("ayarlar/hamExcel1"), sd=dbDiv("rotil");
+    mk.get().then(function(sn){
+      if(sn.exists)return;
+      return (div==="rotil"&&sd?sd.collection("suppliers").get().then(function(s){return s.docs.map(function(x){return fold((x.data()||{}).name)})}):Promise.resolve(null)).then(function(supNames){
+        var have={}; (amBy[div]||[]).forEach(function(m){have[fold(m.name||"")]=1});
+        var b=d.batch(), n=0, now=Date.now(), who=""; try{who=whoAmI()}catch(e){}
+        HAMX.forEach(function(x){
+          if(have[fold(x[0])])return;
+          var cold=!/^Sıcak/.test(x[0]);
+          b.set(d.collection("materials").doc("hx_"+hamxSlug(x[0])),{name:x[0],unit:"kg",kind:"ham",cat:cold?"Soğuk çekim":"Çelik bar",stock:0,crit:null,p:x[1],p5:0,sup:HAMX_S1,pd:"",note:"Alternatif tedarikçi: "+HAMX_S2,ts:now});
+          n++;
+        });
+        if(supNames){
+          [[HAMX_S1,"sup_has","has celik"],[HAMX_S2,"sup_akcelik","akcelik"]].forEach(function(s){
+            if(supNames.some(function(t){return t.indexOf(s[2])>-1}))return;
+            b.set(sd.collection("suppliers").doc(s[1]),{name:s[0],contact:"",phone:"",email:"",addr:"",taxNo:"",cur:"TRY",term:null,note:"Excel'den eklendi",ts:now,by:who});
+          });
+        }
+        b.set(mk,{ts:now,n:n,by:who});
+        return b.commit();
+      });
+    }).catch(function(){hamxRun[div]=0});
   }
   function paintStockHome(){
     var el=$("hs-stock"); if(!el)return;
