@@ -3712,7 +3712,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.10 16:23</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.10 10:57</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -11540,7 +11540,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     $("msnav").innerHTML='<div class="msmon"><button type="button" class="tpill" data-msmon="-1" aria-label="Önceki ay">‹</button><b>'+AY[+p[1]-1]+' '+p[0]+'</b><button type="button" class="tpill" data-msmon="1" aria-label="Sonraki ay">›</button></div><button type="button" class="btn" data-msbulk="1">👥 Toplu mesai gir</button><div class="otabs msview"><button type="button" data-msview="list" aria-pressed="'+(msView!=="cal")+'">Liste</button><button type="button" data-msview="cal" aria-pressed="'+(msView==="cal")+'">📅 Takvim</button></div>';
     var q=fold(stfQ.trim()), rows=employees.map(function(e){return {e:e,t:msTotals(e.id)}});
     var totM=0,who=0,absD=0,totG=0,totD=0; rows.forEach(function(r){totM+=r.t.m; totG+=r.t.g; totD+=r.t.dd; if(r.t.m>0)who++; absD+=r.t.ad});
-    $("stfsum").innerHTML='<div data-msdept="all" role="button" tabindex="0"><b>'+fmtHM(totM)+'</b><small>Toplam mesai ›</small></div><div data-msdept="who" role="button" tabindex="0"><b>'+who+'</b><small>Mesai yapan ›</small></div><div data-msdept="abs" role="button" tabindex="0"><b style="color:'+(absD?'#E35050':'inherit')+'">'+absD+'</b><small>Gelmedi (gün) ›</small></div>';
+    $("stfsum").innerHTML='<div data-msdept="all" role="button" tabindex="0"><b>'+fmtHM(totM)+'</b><small>Toplam mesai ›</small></div><div data-msdept="who" role="button" tabindex="0"><b>'+who+'</b><small>Mesai yapan ›</small></div><div data-msdept="abs" role="button" tabindex="0"><b style="color:'+(absD?'#E35050':'inherit')+'">'+absD+'</b><small>Gelmedi (gün)'+(totD?' · −'+fmtHM(totD):'')+' ›</small></div>';
     var dedBar=totD?'<div class="msded" style="margin:0 0 10px"><div class="msdh">🔻 Yabancı uyruklu · gelmeyen günler düşüldü</div><div class="msdg"><div><small>Normalde yapılan</small><b>'+fmtHM(totG)+'</b></div><div class="neg"><small>Düşülen</small><b>−'+fmtHM(totD)+'</b></div><div class="net"><small>Net toplam</small><b>'+fmtHM(totM)+'</b></div></div></div>':'';
     if(msView==="cal"){$("stffilt").innerHTML=""; $("stfsearch").hidden=true; $("stflist").innerHTML=employees.length?msCalHtml():'<div class="empty">Önce Elemanlar sekmesinden eleman ekle.</div>'; return}
     var none=employees.filter(function(e){return !stfGrpName(e)}).length;
@@ -11710,10 +11710,10 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(key==="__who")emps=emps.filter(function(r){return r.t.m>0});
     if(key==="__abs")emps=emps.filter(function(r){return r.t.ad>0});
     emps.sort(function(a,b){return (key==="__abs"?b.t.ad-a.t.ad:b.t.m-a.t.m)||String(a.e.name).localeCompare(String(b.e.name),"tr")});
-    var tot=emps.reduce(function(a,r){return a+r.t.m},0), who=emps.filter(function(r){return r.t.m>0}).length, absTot=emps.reduce(function(a,r){return a+r.t.ad},0);
+    var tot=emps.reduce(function(a,r){return a+r.t.m},0), who=emps.filter(function(r){return r.t.m>0}).length, absTot=emps.reduce(function(a,r){return a+r.t.ad},0), dedTot=emps.reduce(function(a,r){return a+r.t.dd},0);
     var h='<div class="shead"><div><h2 id="sh-title">'+esc(ttl)+'</h2><small>'+(key==="__abs"?"Kim hangi gün gelmedi":"Kim ne zaman, ne için mesai yaptı")+'</small></div><button type="button" class="tpill" id="msclose">Kapat</button></div><div class="form">'+
       '<div class="msmon"><button type="button" class="tpill" data-msmon="-1">‹</button><b>'+AY[+p[1]-1]+' '+p[0]+'</b><button type="button" class="tpill" data-msmon="1">›</button></div>'+
-      '<div class="stfsum" style="margin-top:0">'+(key==="__abs"?'<div><b style="color:#E35050">'+absTot+'</b><small>Gelmedi (gün)</small></div><div><b>'+emps.length+'</b><small>Kişi</small></div>':'<div><b>'+fmtHM(tot)+'</b><small>Toplam mesai</small></div><div><b>'+who+'/'+emps.length+'</b><small>Mesai yapan</small></div>')+'</div>'+(emps.length?'':'<div class="empty">Bu ay kayıt yok.</div>');
+      '<div class="stfsum" style="margin-top:0">'+(key==="__abs"?'<div><b style="color:#E35050">'+absTot+'</b><small>Gelmedi (gün)</small></div><div><b>'+emps.length+'</b><small>Kişi</small></div><div><b style="color:#D5382F">−'+fmtHM(dedTot)+'</b><small>Düşülen saat</small></div>':'<div><b>'+fmtHM(tot)+'</b><small>Toplam mesai</small></div><div><b>'+who+'/'+emps.length+'</b><small>Mesai yapan</small></div>')+'</div>'+(emps.length?'':'<div class="empty">Bu ay kayıt yok.</div>');
     emps.forEach(function(r){
       var e=r.e, recs=msDocs[e.id]||{}, rows="";
       for(var d=1;d<=nd;d++){
@@ -11721,7 +11721,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
         var c=msCalc(x,r.t.fe); if(key==="__abs"){if(!c.ad)continue}else if(!(c.m>0||x.s==="hsm"||(x.j&&x.j.length)||x.n||c.ad))continue;
         rows+='<div class="msdl"><b>'+d+' '+GUNK[msDow(msYm,dd)]+'</b><div>'+msStChip(x)+(c.m?'<span class="mst mm">Mesai '+((x.ma&&x.mb)?esc(x.ma)+'–'+esc(x.mb)+' · ':'')+fmtHM(c.m)+'</span>':'')+(c.dd?'<span class="mst msdd">−'+fmtHM(c.dd)+' mesaiden düşüldü</span>':'')+(x.s==="hsm"&&c.n?'<span class="mst">'+esc(x.a)+'–'+esc(x.b)+' · '+fmtHM(c.n)+'</span>':'')+msJobsHtml(x.j,false)+(x.n?'<div class="msnote">'+esc(x.n)+'</div>':'')+'</div></div>';
       }
-      h+='<div class="msdp"><button type="button" class="msdph" data-msemp="'+e.id+'" data-msfd="1"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div><div class="ftx"><b>'+esc(e.name)+'</b><small>'+esc(msDeptKey(e))+(r.t.ad?' · '+r.t.ad+' gün gelmedi':'')+(r.t.dd?' · −'+fmtHM(r.t.dd)+' düşüldü':'')+'</small></div><span class="stfpill'+(key==="__abs"?'':(r.t.m>0?' on':''))+'">'+(key==="__abs"?r.t.ad+' gün':(r.t.m>0?fmtHM(r.t.m):'—'))+'</span><span class="fchev">›</span></button>'+(rows||'<div class="note" style="margin:6px 4px 2px">Bu ay mesai kaydı yok.</div>')+'</div>';
+      h+='<div class="msdp"><button type="button" class="msdph" data-msemp="'+e.id+'" data-msfd="1"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div><div class="ftx"><b>'+esc(e.name)+'</b><small>'+esc(msDeptKey(e))+(r.t.ad?' · '+r.t.ad+' gün gelmedi':'')+(r.t.dd?' · −'+fmtHM(r.t.dd)+' düşüldü (normal '+fmtHM(r.t.g)+' → net '+fmtHM(r.t.m)+')':(key==="__abs"&&r.t.ad?(' · '+(e.nat&&e.nat!=="Türk"?esc(e.nat):'Türk')+': düşüm yok'):''))+'</small></div><span class="stfpill'+(key==="__abs"?'':(r.t.m>0?' on':''))+'">'+(key==="__abs"?r.t.ad+' gün'+(r.t.dd?' · −'+fmtHM(r.t.dd):''):(r.t.m>0?fmtHM(r.t.m):'—'))+'</span><span class="fchev">›</span></button>'+(rows||'<div class="note" style="margin:6px 4px 2px">Bu ay mesai kaydı yok.</div>')+'</div>';
     });
     return h+'</div>';
   }
