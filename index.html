@@ -3721,7 +3721,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.10 11:03</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 01.11 17:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -11485,19 +11485,20 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     if(st.w){o.n=durMin(r.a,r.b); if(st.std&&o.n>0&&o.n<MS_STD)o.sh=MS_STD-o.n}
     o.m=(tmin(r.ma)!==null&&tmin(r.mb)!==null)?durMin(r.ma,r.mb):(+r.mh||0);
     if(r.s==="hsm"&&!o.m&&tmin(r.a)!==null&&tmin(r.b)!==null)o.m=durMin(r.a,r.b); // eski kayıt uyumu
-    if(r.s==="gelmedi"){o.ad=1; o.sh=MS_STD; if(fe)o.dd=MS_STD}
+    if(r.s==="gelmedi"){o.ad=1; o.sh=MS_STD}
+    if(fe)o.dd=o.sh;   // yabancı: gelmediği gün (10 sa) + eksik çalıştığı süre (küsurat) mesaiden düşülür
     return o;
   }
   function msTotals(eid){
-    var d=msDocs[eid]||{}, t={n:0,m:0,sh:0,ad:0,days:0,g:0,dd:0,dn:0,fe:false};
+    var d=msDocs[eid]||{}, t={n:0,m:0,sh:0,ad:0,days:0,g:0,dd:0,dn:0,dp:0,fe:false};
     var em=employees.filter(function(x){return x.id===eid})[0], fe=msForeign(em); t.fe=fe;
-    Object.keys(d).forEach(function(k){var r=d[k]; if(!r||!r.s)return; var c=msCalc(r,fe); t.n+=c.n; t.g+=c.m; t.sh+=c.sh; t.ad+=c.ad; if(c.dd){t.dd+=c.dd; t.dn++} if(c.n>0)t.days++});
+    Object.keys(d).forEach(function(k){var r=d[k]; if(!r||!r.s)return; var c=msCalc(r,fe); t.n+=c.n; t.g+=c.m; t.sh+=c.sh; t.ad+=c.ad; if(c.dd){t.dd+=c.dd; if(c.ad)t.dn++; else t.dp+=c.dd} if(c.n>0)t.days++});
     t.m=Math.max(0,t.g-t.dd);   // net mesai: normalde yapılan − düşülen (eksiye inmez)
     return t;
   }
   function msDedNote(t){   // "normalde X · düşülen Y · net Z" kutusu
     if(!t||!t.dd)return "";
-    return '<div class="msded"><div class="msdh">🔻 Yabancı uyruklu · gelmediği günler mesaisinden düşüldü</div><div class="msdg"><div><small>Normalde yaptığı</small><b>'+fmtHM(t.g)+'</b></div><div class="neg"><small>Düşülen · '+t.dn+' gün × '+fmtHM(MS_STD)+'</small><b>−'+fmtHM(t.dd)+'</b></div><div class="net"><small>Net mesai</small><b>'+fmtHM(t.m)+'</b></div></div>'+(t.dd>t.g?'<div class="msdn">Mesaisi düşülen süreyi karşılamadığı için net 0:00\'da kaldı (eksiye inmez).</div>':'')+'</div>';
+    return '<div class="msded"><div class="msdh">🔻 Yabancı uyruklu · gelmediği günler mesaisinden düşüldü</div><div class="msdg"><div><small>Normalde yaptığı</small><b>'+fmtHM(t.g)+'</b></div><div class="neg"><small>Düşülen · '+t.dn+' gün gelmedi'+(t.dp?' + '+fmtHM(t.dp)+' eksik':'')+'</small><b>−'+fmtHM(t.dd)+'</b></div><div class="net"><small>Net mesai</small><b>'+fmtHM(t.m)+'</b></div></div>'+(t.dd>t.g?'<div class="msdn">Mesaisi düşülen süreyi karşılamadığı için net 0:00\'da kaldı (eksiye inmez).</div>':'')+'</div>';
   }
   function msDeptKey(e){var sb=subOf(e.sub); return sb?subLabel(sb):(e.dept||"Bölümü yok")}
   function watchMesai(){
@@ -11624,12 +11625,15 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     h+='<div class="frow"><button type="button" class="btn" id="msdsave"'+(st?'':' disabled')+'>Kaydet</button>'+(msDocs[msEmp]&&msDocs[msEmp][nd]&&msDocs[msEmp][nd].s?'<button type="button" class="btn ghost" id="msdclear">Günü temizle</button>':'')+'</div></div>';
     return h;
   }
-  function msEditorDed(e,dr){
-    if(!e||!msForeign(e)||dr.s!=="gelmedi")return "";
-    var t=msTotals(e.id), old=(msDocs[e.id]||{})[msDay], was=old&&old.s==="gelmedi", oc=old&&old.s?msCalc(old,true):{m:0,dd:0};
-    var g=t.g-oc.m+msCalc(dr,true).m, dn=t.dn-(was?1:0)+1, dd=dn*MS_STD, net=Math.max(0,g-dd);
-    return '<div class="msded"><div class="msdh">🔻 '+esc(e.nat)+' uyruklu · bu gün gelmedi → mesaisinden '+fmtHM(MS_STD)+' düşülür</div><div class="msdg"><div><small>Normalde yaptığı</small><b>'+fmtHM(g)+'</b></div><div class="neg"><small>Düşülecek · '+dn+' gün</small><b>−'+fmtHM(dd)+'</b></div><div class="net"><small>Net mesai</small><b>'+fmtHM(net)+'</b></div></div>'+(dd>g?'<div class="msdn">Mesaisi düşülen süreyi karşılamıyor, net 0:00 olur (eksiye inmez).</div>':'')+'</div>';
+  function msEditorDedIn(e,dr){
+    if(!e||!msForeign(e)||!dr||!dr.s)return "";
+    var c=msCalc(dr,true); if(!(c.dd>0))return "";
+    var t=msTotals(e.id), old=(msDocs[e.id]||{})[msDay], oc=old&&old.s?msCalc(old,true):{m:0,dd:0,ad:0};
+    var g=t.g-oc.m+c.m, dd=t.dd-oc.dd+c.dd, net=Math.max(0,g-dd);
+    var why=dr.s==="gelmedi"?'bu gün gelmedi → mesaisinden '+fmtHM(c.dd)+' düşülür':'bu gün '+fmtHM(c.dd)+' eksik çalıştı → mesaisinden düşülür';
+    return '<div class="msded"><div class="msdh">🔻 '+esc(e.nat)+' uyruklu · '+why+'</div><div class="msdg"><div><small>Normalde yaptığı</small><b>'+fmtHM(g)+'</b></div><div class="neg"><small>Düşülecek (ay toplamı)</small><b>−'+fmtHM(dd)+'</b></div><div class="net"><small>Net mesai</small><b>'+fmtHM(net)+'</b></div></div>'+(dd>g?'<div class="msdn">Mesaisi düşülen süreyi karşılamıyor, net 0:00 olur (eksiye inmez).</div>':'')+'</div>';
   }
+  function msEditorDed(e,dr){return '<div id="msded-box">'+msEditorDedIn(e,dr)+'</div>'}
   function msJobEditHtml(jobs,pfx){
     return '<div><span class="fl">Yapılacak iş / ürün</span>'+msJobsHtml(jobs,true)+
       '<div class="frow" style="margin-top:6px"><button type="button" class="tpill" id="'+pfx+'-pick">📦 Siparişten seç</button></div>'+
@@ -11729,7 +11733,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       var e=r.e, recs=msDocs[e.id]||{}, rows="";
       for(var d=1;d<=nd;d++){
         var dd=pad(d), x=recs[dd]; if(!x||!x.s)continue;
-        var c=msCalc(x,r.t.fe); if(isAbs){if(!c.ad)continue}else if(!(c.m>0||x.s==="hsm"||(x.j&&x.j.length)||x.n||c.ad))continue;
+        var c=msCalc(x,r.t.fe); if(key==="__ded"){if(!(c.dd>0))continue}else if(isAbs){if(!c.ad)continue}else if(!(c.m>0||x.s==="hsm"||(x.j&&x.j.length)||x.n||c.ad))continue;
         rows+='<div class="msdl"><b>'+d+' '+GUNK[msDow(msYm,dd)]+'</b><div>'+msStChip(x)+(c.m?'<span class="mst mm">Mesai '+((x.ma&&x.mb)?esc(x.ma)+'–'+esc(x.mb)+' · ':'')+fmtHM(c.m)+'</span>':'')+(c.dd?'<span class="mst msdd">−'+fmtHM(c.dd)+' mesaiden düşüldü</span>':'')+(x.s==="hsm"&&c.n?'<span class="mst">'+esc(x.a)+'–'+esc(x.b)+' · '+fmtHM(c.n)+'</span>':'')+msJobsHtml(x.j,false)+(x.n?'<div class="msnote">'+esc(x.n)+'</div>':'')+'</div></div>';
       }
       h+='<div class="msdp"><button type="button" class="msdph" data-msemp="'+e.id+'" data-msfd="1"><div class="fav" style="--c:'+stfColor(e)+'">'+esc(stfInit(e.name))+'</div><div class="ftx"><b>'+esc(e.name)+'</b><small>'+esc(msDeptKey(e))+(r.t.ad?' · '+r.t.ad+' gün gelmedi':'')+(r.t.dd?' · −'+fmtHM(r.t.dd)+' düşüldü (normal '+fmtHM(r.t.g)+' → net '+fmtHM(r.t.m)+')':(isAbs&&r.t.ad?(' · '+(e.nat&&e.nat!=="Türk"?esc(e.nat):'Türk')+': düşüm yok'):''))+'</small></div><span class="stfpill'+(isAbs?'':(r.t.m>0?' on':''))+'">'+(isAbs?r.t.ad+' gün'+(r.t.dd?' · −'+fmtHM(r.t.dd):''):(r.t.m>0?fmtHM(r.t.m):'—'))+'</span><span class="fchev">›</span></button>'+(rows||'<div class="note" style="margin:6px 4px 2px">Bu ay mesai kaydı yok.</div>')+'</div>';
@@ -11861,6 +11865,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       var a=$("msd-n"), m=$("msd-m");
       if(a)a.textContent="Süre: "+fmtHM(durMin(msDraft.a,msDraft.b));
       if(m)m.textContent="Mesai süresi: "+fmtHM(msMesaiMin(msDraft));
+      var dbx=$("msded-box"); if(dbx)dbx.innerHTML=msEditorDedIn(employees.filter(function(x){return x.id===msEmp})[0],msDraft);
       return;
     }
     if(el.dataset.msbf&&msBulk){msBulk[el.dataset.msbf]=el.value; var bm=$("msb-m"); if(bm)bm.textContent="Mesai süresi: "+fmtHM(msMesaiMin(msBulk)); return}
