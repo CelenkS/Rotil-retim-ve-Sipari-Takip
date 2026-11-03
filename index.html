@@ -3676,7 +3676,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .pctdt img{width:100%;height:100%;object-fit:contain;background:#fff;display:block}
 .pctdt b{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.62);color:#fff;border-radius:99px;font:700 11px var(--font-ui);padding:2px 8px}
 .pctdc{display:flex;flex-wrap:wrap;gap:8px}
-.pcraf{display:inline-block;padding:2px 12px;border-radius:99px;background:#0F8B8D;color:#fff;font:800 14px var(--font-num);letter-spacing:.5px}
+.pcdr .pcraf,.pcraf{display:inline-block;padding:2px 12px;border-radius:99px;background:#0F8B8D;color:#fff !important;font:800 14px var(--font-num);letter-spacing:.5px}
 .wkrow.s2{flex-wrap:wrap}
 .wkrow.s2 em{flex-basis:100%;text-align:right;order:5;margin-top:-2px}
 .wkrow.fas input{opacity:.45}
@@ -3684,6 +3684,13 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .wkfas{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;padding:7px 12px;border-radius:11px;border:1px dashed var(--line);background:transparent;color:var(--ink2);font:700 12.5px var(--font-ui);cursor:pointer;text-align:left}
 .wkfas small{font:600 10.5px var(--font-ui);opacity:.75}
 .wkfas.on{border-style:solid;border-color:#E0881A;background:color-mix(in srgb,var(--surface) 88%,#E0881A 12%);color:#A55F08}
+.pcx{cursor:pointer}
+.pcxall{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;max-height:260px;overflow:auto}
+.pcoemx{font:700 12.5px var(--font-num);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 9px}
+.pcxall.veh{flex-direction:column;flex-wrap:nowrap;gap:8px}
+.pcvg{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.pcvg b{flex-basis:100%;font:800 12px var(--font-ui);color:var(--accent,#0F8B8D);letter-spacing:.3px}
+.pcvg span{font:600 12px var(--font-ui);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px}
 </style>
 </head>
 <body>
@@ -3741,7 +3748,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 03.11 13:46</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 03.11 13:53</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12757,7 +12764,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   },true);
 
   /* ---------- Ürün kartı v2: sekmeli, bölüme özel (Rotil / Cıvata / Rozet) ---------- */
-  var pcSel=[], pcFor="", pcQ="", pcBr="", pcVAll=false;
+  var pcSel=[], pcFor="", pcQ="", pcBr="", pcVAll=false, pcHX={id:"",oem:false,veh:false};
     function pcFavs(){try{var a=JSON.parse(localStorage.getItem("ud_pfav")||"[]"); return Array.isArray(a)?a:[]}catch(e){return []}}
   function pcIsFav(id){return pcFavs().indexOf(id)>-1}
   function pcToggleFav(id){var a=pcFavs(), i=a.indexOf(id); if(i>-1)a.splice(i,1); else a.push(id); try{localStorage.setItem("ud_pfav",JSON.stringify(a))}catch(e){} return i<0}
@@ -12944,8 +12951,9 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     else{
       var thr=(p.tech&&p.tech.gm)||p.thr;
       kv("Ürün grubu",esc(cat)); if(p.cust)kv("Müşteri",esc(p.cust)); dash("Net ağırlık",+p.nw>0?nf.format(+p.nw)+' kg':""); if(+p.len>0)kv("Tam boy",nf.format(+p.len)+' mm'); dash("Gövde dişi",thr?esc(String(thr).slice(0,40)):"");
-      kv("OEM referansı",oems.length?esc(oems[0].no)+(oems.length>1?' <i class="pcmore1">+'+(oems.length-1)+'</i>':'')+' <button type="button" class="pccp mini" data-pcact="copy" aria-label="OEM kopyala">⧉</button>':'—',!oems.length);
-      if(G.list.length)kv("Uyumlu araç",esc(G.order.slice(0,3).join(", "))+(G.order.length>3?' +'+(G.order.length-3):'')+' <i class="pcmore1">'+G.list.length+' araç</i>');
+      if(pcHX.id!==p.id)pcHX={id:p.id,oem:false,veh:false};
+      kv("OEM referansı",oems.length?(pcHX.oem?'<span class="pcxall">'+oems.map(function(o){return '<span class="pcoemx">'+esc(o.no)+'</span>'}).join("")+'</span>':esc(oems[0].no))+(oems.length>1?' <button type="button" class="pcmore1 pcx" data-pcx="oem" aria-expanded="'+pcHX.oem+'">'+(pcHX.oem?'daralt ▴':'+'+(oems.length-1)+' · hepsini gör')+'</button>':'')+' <button type="button" class="pccp mini" data-pcact="copy" aria-label="OEM kopyala">⧉</button>':'—',!oems.length);
+      if(G.list.length)kv("Uyumlu araç",(pcHX.veh?'<span class="pcxall veh">'+G.order.map(function(b){return '<span class="pcvg"><b>'+esc(b)+'</b>'+G.groups[b].map(function(v){return '<span>'+esc(v.model||v.raw)+'</span>'}).join("")+'</span>'}).join("")+'</span>':esc(G.order.slice(0,3).join(", "))+(G.order.length>3?' +'+(G.order.length-3):''))+' <button type="button" class="pcmore1 pcx" data-pcx="veh" aria-expanded="'+pcHX.veh+'">'+(pcHX.veh?'daralt ▴':G.list.length+' araç · hepsini gör')+'</button>');
     }
     if(p.raf||(!IS_CV&&!IS_RZ))dash("Raf no",p.raf?'<span class="pcraf">'+esc(p.raf)+'</span>':"");
     var panel='';
@@ -12984,12 +12992,13 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   }
   document.addEventListener("click",function(e){
     if(sheetMode!=="prview")return;
-    var t=e.target.closest&&e.target.closest("[data-pcnav],[data-pcact],[data-pcoem],[data-pcbr],[data-pcvall],[data-pcopen]"); if(!t)return;
+    var t=e.target.closest&&e.target.closest("[data-pcnav],[data-pcact],[data-pcoem],[data-pcbr],[data-pcvall],[data-pcopen],[data-pcx]"); if(!t)return;
     e.stopPropagation(); e.preventDefault();
     var p=products.filter(function(x){return x.id===prViewId})[0]; if(!p)return;
     var sc=function(){var s=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=s};
     var d=t.dataset;
     if(d.pcnav!==undefined){var id=d.pcnav; pcSel=id===""?[]:[id]; var sh=$("sheet"), s0=sh.scrollTop; renderSheet(); sh.scrollTop=s0; var hp=sh.querySelector(".pcp"), tp=sh.querySelector(".pctop"); if(hp&&tp){var tgt=hp.getBoundingClientRect().bottom-sh.getBoundingClientRect().top+sh.scrollTop-tp.offsetHeight; if(sh.scrollTop>tgt||d.pcnav==="sure")sh.scrollTop=Math.max(0,tgt)} return}
+    if(d.pcx!==undefined){if(pcHX.id!==p.id)pcHX={id:p.id,oem:false,veh:false}; pcHX[d.pcx]=!pcHX[d.pcx]; sc(); return}
     if(d.pcbr!==undefined){pcBr=d.pcbr; sc(); return}
     if(d.pcvall!==undefined){pcVAll=true; sc(); return}
     if(d.pcoem!==undefined){var o=pcOems(p)[+d.pcoem]; if(o)pcCopy(o.no,"OEM kopyalandı: "+o.no); return}
