@@ -3741,7 +3741,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 03.11 11:11</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 03.11 13:46</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8243,7 +8243,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     unsubMat=db.collection("materials").onSnapshot(function(snap){
       materials=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(m){return m.free!==true});
       materials.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
-      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{zsEnsure()}catch(e){}
+      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{zsEnsure()}catch(e){}
       if(IS_RZ&&!$("ords").hidden)renderCompNeeds();
     },function(){});
     watchAllMats();
@@ -12091,7 +12091,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
     unsubProd=db.collection("products").onSnapshot(function(snap){
       products=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
       products.sort(function(a,b){return String(a.code||"").localeCompare(String(b.code||""),"tr",{numeric:true})});
-      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){}
+      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){}
       if(!$("ov").hidden&&sheetMode==="oform"){try{opRender();ofInfo()}catch(e){}}
       if(!$("stock").hidden&&IS_RZ)renderStock();
       if(!$("prods").hidden)renderProds();
@@ -14102,6 +14102,25 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
       });
     }).catch(function(){dovFixRun=false});
   }
+  /* Rotil kataloğundan (katalog_oem.json) OEM ve uyumlu araç bilgisi: ürün koduna göre, yalnızca BOŞ alanlara yazar (elle girilene dokunmaz); tek seferlik, işaret: ayarlar/katOem1 */
+  var katRun=false;
+  function katNorm(c){return String(c||"").replace(/\s+/g," ").trim().toUpperCase()}
+  function katFill(force){
+    if(katRun||IS_RZ||IS_CV||window.__DIV!=="rotil"||!db)return; katRun=true;
+    var mk=db.doc("ayarlar/katOem1");
+    mk.get().then(function(sn){
+      if(sn.exists&&!force)return;
+      return fetch("katalog_oem.json?v=1",{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error("kat"); return r.json()}).then(function(K){return db.collection("products").get().then(function(ps){return [K,ps.docs.map(function(d){return Object.assign({id:d.id},d.data())})]})}).then(function(kp){
+        var K=kp[0], list=kp[1], ops=[], nO=0, nV=0;
+        list.forEach(function(p){var e=K[katNorm(p.code)]; if(!e)return; var u={}; if(e[0]&&!String(p.oem||"").trim()){u.oem=e[0]; nO++} if(e[1]&&!String(p.veh||"").trim()){u.veh=e[1]; nV++} if(u.oem||u.veh)ops.push([p.id,u])});
+        var chunks=[]; for(var i=0;i<ops.length;i+=400)chunks.push(ops.slice(i,i+400)); if(!chunks.length)chunks.push([]);
+        return chunks.reduce(function(pr,ch){return pr.then(function(){var b=db.batch(); ch.forEach(function(o){b.set(db.collection("products").doc(o[0]),o[1],{merge:true})}); return b.commit()})},Promise.resolve()).then(function(){
+          logActivity("Katalogdan OEM ve araç bilgisi işlendi: "+ops.length+" ürün (OEM "+nO+", araç "+nV+")","info"); return mk.set({ts:Date.now(),n:ops.length,oem:nO,veh:nV});
+        });
+      });
+    }).catch(function(){katRun=false});
+  }
+  window.__katFill=function(){katRun=false; return katFill(true)};
   var prFixArm=false;
   function prFixList(){var o=[]; products.forEach(function(pr){var c=dovClean(pr.parts||[]); if(c)o.push({pr:pr,parts:c,rm:(pr.parts||[]).length-c.length})}); return o}
   function prFixHtml(){
