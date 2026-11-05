@@ -3760,7 +3760,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:49</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:53</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -16341,9 +16341,10 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   // Bileşen satırı "Bileşen" kategorisine değil, ait olduğu ÜRÜNÜN kategorisine yazılır (hangi üründen ne kadar yapıldığı görünsün)
   function cpCatIdx(o){
     try{
-      var f=plNorm(o.code).fam, best=-1;
+      var f=plNorm(o.code).fam, best=-1; // aynı aileden (Klasik / Menekşe ayrı) kategori varsa o
       if(f)COLS.forEach(function(c,i){if(best<0&&!/^bile[sş]en/i.test(c||"")&&plNorm(c).fam===f)best=i});
       if(best>-1)return best;
+      if(f&&COLS.length<8){var lb=String(plNorm(o.code).label||"").trim(); if(lb)return catIndex(lb)} // ürünün ailesi için kategori yoksa (örn. Menekşe) ürün adından açılır
       if(o.cat!==3){var i2=findCatIdx(COLS,ORDER_CATS[o.cat]||ORDER_CATS[0]); if(i2>-1)return i2}
     }catch(e){}
     return catIndex("Bileşen");
