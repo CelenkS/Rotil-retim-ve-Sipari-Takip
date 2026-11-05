@@ -3760,7 +3760,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:24</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:49</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -16338,9 +16338,19 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     }
     if(l.o){var o2=orders.filter(function(x){return x.id===l.o})[0]; (o2&&o2.cj||[]).forEach(function(j){if(j.cs===secId&&+j.q)cpInc(j.k,j.n,-(+j.q)*delta)})}
   }
+  // Bileşen satırı "Bileşen" kategorisine değil, ait olduğu ÜRÜNÜN kategorisine yazılır (hangi üründen ne kadar yapıldığı görünsün)
+  function cpCatIdx(o){
+    try{
+      var f=plNorm(o.code).fam, best=-1;
+      if(f)COLS.forEach(function(c,i){if(best<0&&!/^bile[sş]en/i.test(c||"")&&plNorm(c).fam===f)best=i});
+      if(best>-1)return best;
+      if(o.cat!==3){var i2=findCatIdx(COLS,ORDER_CATS[o.cat]||ORDER_CATS[0]); if(i2>-1)return i2}
+    }catch(e){}
+    return catIndex("Bileşen");
+  }
   function cpAddLine(id){
     var a=String(id).split("|"), o=orders.filter(function(x){return x.id===a[0]})[0], j=o&&(o.cj||[]).filter(function(z){return z.k===a[1]})[0]; if(!j)return;
-    var before=COLS.length, k=catIndex("Bileşen"), arr=lines(selected).slice();
+    var before=COLS.length, k=cpCatIdx(o), arr=lines(selected).slice();
     if(arr.some(function(l){return l.cj===id&&(l.e||"")===(curEmp||"")&&(l.m||"")===(curMac||"")}))return;
     arr.push({c:o.code+" · "+j.n,k:k,q:0,p:0,u:o.cust||"",cj:id,e:curEmp||"",m:curMac||"",t:Date.now()});
     logActivity(sec.name+": "+o.code+" · "+j.n+" bileşen üretime girdi","prod",{oid:o.id,code:o.code,sec:sec.id});
