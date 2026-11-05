@@ -3697,6 +3697,12 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
 :root[data-theme="glass"][data-gmode="light"] select option,:root[data-theme="glass"][data-gmode="light"] select optgroup{background-color:#fff;color:#1d1b3a}
 :root[data-theme="dark"] select option:checked,:root[data-theme="glass"] select option:checked{background-color:#5B4FE0;color:#fff}
 :root[data-theme="glass"][data-gmode="light"] select option:checked{background-color:#E6E3FF;color:#1d1b3a}
+.nobl{margin-top:12px}.nobl h4{margin:0 0 6px;font:800 12px var(--font-ui);letter-spacing:.4px;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:8px}
+.nob{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;margin-top:6px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.nob>div{min-width:0}.nob b{display:block;font:700 13.5px/1.3 var(--font-ui);overflow-wrap:anywhere}.nob small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2);margin-top:2px}
+.nob>span{font:800 14px var(--font-num);white-space:nowrap}.nob>span i{font-style:normal;font-size:11px;opacity:.7}
+.stkrow .cs b{font:800 13px var(--font-num);color:var(--ink)}
+.stkcur .stkneed b{display:inline;font:800 13px var(--font-ui);color:var(--ink)}.stkcur .stkneed u{font-weight:800}
 </style>
 </head>
 <body>
@@ -3754,7 +3760,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:14</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:24</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -3925,7 +3931,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
       <select class="fin" id="stksort" aria-label="Sırala"><option value="name">Ada göre</option><option value="cat">Kategoriye göre</option><option value="stock">Stok (az → çok)</option><option value="stockd">Stok (çok → az)</option><option value="cost">Birim maliyet</option></select>
     </div>
     <div class="stkchips" id="stkchips" role="group" aria-label="Kategori"></div>
-    <div class="osearch"><button class="btn" id="stknew" style="flex:1">+ Yeni malzeme</button><button class="btn ghost" id="stkneedbtn" style="flex:1">📋 Alım ihtiyacı hesapla</button></div>
+    <div class="osearch"><button class="btn" id="stknew" style="flex:1">+ Yeni malzeme</button><button class="btn ghost" id="stkneedbtn" style="flex:1" aria-pressed="false">📋 İhtiyaç malzemeler</button></div>
     <div class="impnote" id="stkneednote" hidden></div>
     <div class="stkgrid">
       <div class="stkleft"><div class="stkhd"><span>Malzeme</span><span>Kategori</span><span class="r">Mevcut stok</span><span class="r">Birim maliyet</span></div><div id="stkrows"></div><div class="stkpager" id="stkpager"></div></div>
@@ -8258,7 +8264,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     unsubMat=db.collection("materials").onSnapshot(function(snap){
       materials=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(m){return m.free!==true});
       materials.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
-      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{zsEnsure()}catch(e){}
+      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{zsEnsure()}catch(e){} try{if(!$("stock").hidden)needAuto()}catch(e){}
       if(IS_RZ&&!$("ords").hidden)renderCompNeeds();
     },function(){});
     watchAllMats();
@@ -8354,7 +8360,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   function matNameOf(id){var m=materials.filter(function(x){return x.id===id})[0]; return m?m.name:""}
   function openStock(){
     closeSheet(); $("home").hidden=true; $("prods").hidden=true; $("ords").hidden=true; $("app").hidden=true; $("plans").hidden=true; $("notifs").hidden=true; $("staff").hidden=true; $("fin").hidden=true; $("calc").hidden=true; $("stock").hidden=false; window.scrollTo(0,0);
-    stkMobOpen=false; watchMaterials(); try{watchProducts()}catch(e){} stkWatchRz(); stkWatchOth(); renderStock();
+    stkMobOpen=false; watchMaterials(); try{watchProducts()}catch(e){} stkWatchRz(); stkWatchOth(); try{needAuto()}catch(e){} renderStock();
     $("stkstatus").textContent=db?"Güncel":"Bağlantı yok — bu cihazda saklanan görülüyor";
   }
   function stockHome(){
@@ -8387,9 +8393,9 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     var ps=stkProdsOf(m._div); if(!ps)return null;
     var by={}, order=[], f=fold(m.name||"");
     function add(p,part,wt,cut){var e=by[p.id]; if(!e){e=by[p.id]={p:p,parts:[],wt:0,cut:""}; order.push(p.id)} if(part&&e.parts.indexOf(part)<0)e.parts.push(part); e.wt+=wt||0; if(cut&&!e.cut)e.cut=cut}
-    try{rawList(ps).forEach(function(r){if(fold(r.name)!==f)return; r.uses.forEach(function(u){add(u.p,u.part,u.wt,u.cut)})})}catch(e){}
+    try{rawList(ps).forEach(function(r){if(fold(r.name)!==f)return; r.uses.forEach(function(u){add(u.p,u.part,u.wt*1000,u.cut)})})}catch(e){}
     if(m._div==="civata")ps.forEach(function(p){if(p.cv&&fold(cvBarName(p))===f)add(p,"Cıvata gövdesi",cvKg(p)*1000,"")});
-    if(!m.virt)ps.forEach(function(p){if(by[p.id])return; (p.parts||[]).forEach(function(x){if(x&&x.m===m.id)add(p,x.n||"Parça",pnum(x.wt)*(pnum(x.q)||1),"")})});
+    if(!m.virt)ps.forEach(function(p){if(by[p.id])return; (p.parts||[]).forEach(function(x){if(x&&x.m===m.id)add(p,x.n||"Parça",pnum(x.wt)*(pnum(x.q)||1)*1000,"")})});
     return order.map(function(k){return by[k]}).sort(function(a,b){return String(pTi(a.p)).localeCompare(String(pTi(b.p)),"tr",{numeric:true})});
   }
   function stkUseRow(e){
@@ -8435,7 +8441,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   function stkPill(m){var st=matState(m); return '<span class="stkpill '+st+'">'+(st==="zero"?"Stok yok":st==="low"?"Kritik":"Yeterli")+'</span>'}
   function matRowHtml(m){
     var stock=+m.stock||0, needQ=matNeedOf(m), deficit=needQ!==null?Math.max(0,needQ-stock):null, di=divInfo(m._div);
-    return '<div class="stkrow'+(matKey(m)===stkSel?' on':'')+'" data-matsel="'+matKey(m)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+(stkDiv==="all"?'<span class="stkdv" style="--d1:'+di.c1+';--d2:'+di.c2+'">'+esc(di.name)+'</span>':'')+(m.kind==="ham"?'<span class="stkdv" style="--d1:#8A6A2A;--d2:#5A4216">Hammadde</span>':'')+(m.virt?'<span class="stkdv" style="--d1:#8C97AD;--d2:#5E6880">Stokta kayıtlı değil</span>':'')+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ!==null?' · gereken '+nf.format(needQ)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
+    return '<div class="stkrow'+(matKey(m)===stkSel?' on':'')+'" data-matsel="'+matKey(m)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(m.name)+(stkDiv==="all"?'<span class="stkdv" style="--d1:'+di.c1+';--d2:'+di.c2+'">'+esc(di.name)+'</span>':'')+(m.kind==="ham"?'<span class="stkdv" style="--d1:#8A6A2A;--d2:#5A4216">Hammadde</span>':'')+(m.virt?'<span class="stkdv" style="--d1:#8C97AD;--d2:#5E6880">Stokta kayıtlı değil</span>':'')+'</b><small>'+esc(m.unit||"adet")+(m.crit?' · kritik '+nf.format(+m.crit):'')+(needQ>0?' · gereken '+nf.format(Math.round(needQ*100)/100)+(deficit>0?' <u>'+nf.format(deficit)+' eksik</u>':' · yeterli'):'')+'</small></div>'+
       '<span class="ct">'+esc(matCatLbl(m))+'</span><span class="sk">'+stkPill(m)+'<b class="'+matState(m)+'">'+nf.format(stock)+' <i>'+esc(m.unit||"adet")+'</i></b></span><span class="cs">'+(+m.p>0?pf(m.p)+' ₺':'—')+'</span></div>';
   }
   function stkFind(key){return stkMats().filter(function(x){return matKey(x)===key})[0]}
@@ -8445,17 +8451,20 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     $("stkdivs").innerHTML=[{id:"all",name:"Hepsi",c1:"#B5651D",c2:"#6E3D10"}].concat(window.__DIVS).concat(cnt.bosta?[BOSTA]:[]).map(function(d){return '<button type="button" data-stkdiv="'+d.id+'" aria-pressed="'+(stkDiv===d.id)+'" style="--d1:'+d.c1+';--d2:'+d.c2+'"><i></i>'+esc(d.name)+'<em>'+cnt[d.id]+'</em></button>'}).join("");
   }
   function stkKpi(){
+    if(stkView==="need"){needKpi(); return}
     var low=0, zero=0, base=stkMats().filter(function(m){return stkDiv==="all"||m._div===stkDiv}); base.forEach(function(m){var st=matState(m); if(st==="zero")zero++; else if(st==="low")low++});
     var sm=stkFind(stkSel);
     function k(ic,l,v,c){return '<div class="stkk"><span class="ic '+(c||'')+'">'+ic+'</span><div><small>'+l+'</small><b>'+v+'</b></div></div>'}
     $("stkkpi").innerHTML=k("📦","Malzeme çeşidi",nf.format(base.length))+k("⚠","Kritik seviyede",nf.format(low),low?"warn":"")+k("∅","Stok yok",nf.format(zero),zero?"bad":"")+k("🧮","Seçili malzeme stoğu",sm?nf.format(+sm.stock||0)+' '+esc(sm.unit||"adet"):"—");
   }
   function stkKinds(){
-    var base=stkMats().filter(function(m){return stkDiv==="all"||m._div===stkDiv}), nh=base.filter(function(m){return m.kind==="ham"}).length;
+    var base=stkView==="need"?(needDivOk()?needRowsAll():[]):stkMats().filter(function(m){return stkDiv==="all"||m._div===stkDiv}), nh=base.filter(function(m){return m.kind==="ham"}).length;
     var K=[["","Tüm malzemeler",base.length],["ham","🧱 Hammadde",nh],["yari","⚙ Yarı mamul / parça",base.length-nh]];
     $("stkkinds").innerHTML=K.map(function(k){return '<button type="button" data-stkkind="'+k[0]+'" aria-pressed="'+(stkKind===k[0])+'">'+k[1]+'<i>'+k[2]+'</i></button>'}).join("");
   }
   function stkChips(){
+    if(stkView==="need"){needChips(); return}
+    var nt0=$("stkneednote"); if(nt0)nt0.hidden=true;
     var cnt={}, tot=0; stkFiltered(true).forEach(function(m){var c=matCatLbl(m); cnt[c]=(cnt[c]||0)+1; tot++});
     var cats=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]||a.localeCompare(b,"tr")});
     if(stkCat&&!cnt[stkCat]){cats.unshift(stkCat); cnt[stkCat]=0}
@@ -8486,6 +8495,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   }
   function stkPanel(){
     var el=$("stkpanel"); if(!el)return;
+    if(/^nv:/.test(stkSel||"")){needPanelV(stkSel); return}
     var m=stkFind(stkSel);
     if(!m){el.className="stkpanel"; el.innerHTML='<div class="stkph"><div class="ic">📦</div><b>Malzeme seç</b><small>Soldaki listeden bir malzemeye dokun; buradan stok girişi/çıkışı yapıp son hareketleri görürsün.</small></div>'; return}
     el.className="stkpanel"+(stkMobOpen?" open":"");
@@ -8499,7 +8509,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     }
     el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button>'+
       '<div class="stkpt"><div><h3>'+esc(m.name)+'</h3><small>'+esc(divInfo(m._div).name)+' · '+esc(matCatLbl(m))+' · '+u+'</small></div><button type="button" class="pcbtn" data-matedit="'+matKey(m)+'">✏️ Düzenle</button></div>'+
-      '<div class="stkcur"><small>Mevcut stok</small><b class="'+st+'" id="stkcur">'+nf.format(+m.stock||0)+' <i>'+u+'</i></b><div class="stkmeta"><span id="stkcpill">'+stkPill(m)+'</span>'+(+m.crit>0?'<span>kritik '+nf.format(+m.crit)+'</span>':'')+(+m.p>0?'<span>'+pf(m.p)+' ₺ / '+u+'</span>':'')+(m.sup?'<span>'+esc(m.sup)+'</span>':'')+'</div>'+(matNeedOf(m)?'<div class="stkneed">Açık siparişler için gereken: <b>'+nf.format(matNeedOf(m))+'</b>'+(matNeedOf(m)>(+m.stock||0)?' · <u>'+nf.format(matNeedOf(m)-(+m.stock||0))+' eksik</u>':' · yeterli')+'</div>':'')+'</div>'+
+      '<div class="stkcur"><small>Mevcut stok</small><b class="'+st+'" id="stkcur">'+nf.format(+m.stock||0)+' <i>'+u+'</i></b><div class="stkmeta"><span id="stkcpill">'+stkPill(m)+'</span>'+(+m.crit>0?'<span>kritik '+nf.format(+m.crit)+'</span>':'')+(+m.p>0?'<span>'+pf(m.p)+' ₺ / '+u+'</span>':'')+(m.sup?'<span>'+esc(m.sup)+'</span>':'')+'</div>'+(matNeedOf(m)?'<div class="stkneed">Açık siparişler için gereken: <b>'+nf.format(Math.round(matNeedOf(m)*100)/100)+'</b> '+u+(matNeedOf(m)>(+m.stock||0)?' · <u>'+nf.format(Math.round((matNeedOf(m)-(+m.stock||0))*100)/100)+' eksik</u>':' · yeterli')+'</div>':'')+'</div>'+(matNeedOf(m)&&needBy&&needBy.by[m.id]?needOrdHtml(needBy.by[m.id],m.unit):'')+
       (m._div==="bosta"?'<div class="stkasg"><b>Bölüm ata</b><small>Bu malzeme şimdilik hiçbir bölümde değil. Seçtiğin bölüme taşınır (stok ve fiyat aynen gelir).</small><div class="stkasgb">'+window.__DIVS.map(function(d){return '<button type="button" data-stkasg="'+d.id+'" style="--d1:'+d.c1+'">'+esc(d.name)+'</button>'}).join("")+'</div><div class="stkmsg" id="stkasgmsg"></div></div>':'')+
       '<div id="stkuse" class="stkuse"></div>'+
       '<h4>Stok hareketi</h4><div class="stkseg" role="group"><button type="button" data-stkmode="in" aria-pressed="'+(stkMode==="in")+'">Giriş</button><button type="button" data-stkmode="out" aria-pressed="'+(stkMode==="out")+'">Çıkış</button></div>'+
@@ -8517,15 +8527,17 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     stkVArm=false;
     $("stkcount").textContent=stkMats().length;
     if(!$("stkrows"))return;
-    stkDivs(); stkKinds(); stkKpi(); stkChips();
-    var all=stkSorted(stkFiltered(false)), pages=Math.max(1,Math.ceil(all.length/STK_PS));
+    var ndv=stkView==="need"; stkDivs(); stkKinds(); stkKpi(); stkChips();
+    var nb=$("stkneedbtn"); if(nb){nb.setAttribute("aria-pressed",ndv?"true":"false"); nb.textContent=ndv?"‹ Stok listesine dön":"📋 İhtiyaç malzemeler"}
+    var hd=document.querySelector(".stkhd"); if(hd)hd.innerHTML=ndv?'<span>Kalem</span><span>Stok</span><span class="r">Durum</span><span class="r">Gereken</span>':'<span>Malzeme</span><span>Kategori</span><span class="r">Mevcut stok</span><span class="r">Birim maliyet</span>';
+    var all=ndv?needRowsList():stkSorted(stkFiltered(false)), pages=Math.max(1,Math.ceil(all.length/STK_PS));
     if(stkPage>=pages)stkPage=pages-1; if(stkPage<0)stkPage=0;
     if(!stkAuto&&!stkSel&&all.length&&window.innerWidth>=1100){stkSel=matKey(all[0]); stkAuto=true}
     var l=all.slice(stkPage*STK_PS,(stkPage+1)*STK_PS);
-    $("stkrows").innerHTML=l.length?l.map(matRowHtml).join(""):'<div class="empty">'+(allMats.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle.")+'</div>';
+    $("stkrows").innerHTML=l.length?l.map(ndv?needRowHtml:matRowHtml).join(""):'<div class="empty">'+(ndv?(!needBy||needBusyN?"Hesaplanıyor…":(!needDivOk()?"Bu bölümün siparişleri yüklü değil.":(needBy.nOrd?"Bu filtrede kalem yok.":"Açık siparişte bekleyen adet yok — ihtiyaç çıkmadı.<br>(Ürünlerin reçetesi tanımlıysa, kalan adetlere göre burada listelenir.)"))):(allMats.length?"Aramayla eşleşen malzeme yok.":"Henüz malzeme tanımlı değil.<br>“+ Yeni malzeme” ile ilkini ekle."))+'</div>';
     stkPager(all.length,pages);
     var nv=stkMats().filter(function(x){return x.virt&&(stkDiv==="all"||x._div===stkDiv)}).length;
-    if(stkKind==="ham"&&nv&&!stkVArmKeep())$("stkrows").insertAdjacentHTML("afterbegin",'<div class="stkvb"><span>Reçetelerden gelen <b>'+nv+'</b> hammadde stokta kayıtlı değil.</span><button type="button" class="pcbtn" id="stkvbulk">Hepsini stoğa ekle</button></div>');
+    if(!ndv&&stkKind==="ham"&&nv&&!stkVArmKeep())$("stkrows").insertAdjacentHTML("afterbegin",'<div class="stkvb"><span>Reçetelerden gelen <b>'+nv+'</b> hammadde stokta kayıtlı değil.</span><button type="button" class="pcbtn" id="stkvbulk">Hepsini stoğa ekle</button></div>');
     var hadPanel=$("stkq"), keep=hadPanel?{q:$("stkq").value,d:$("stkd").value,r:$("stkr").value,n:$("stkn").value}:null;
     var m=stkFind(stkSel);
     if(hadPanel&&m&&$("stkpanel").dataset.mid===matKey(m)){
@@ -8716,56 +8728,177 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     });
     return out;
   }
-  function computeMaterialNeeds(){
-    if(matNeedBusy)return;
-    var nt=$("stkneednote");
-    if(!orders.length){
-      if(nt){nt.hidden=false; nt.className="impnote"; nt.textContent="Önce ana ekrandan “Siparişler”i bir kez aç (sipariş verisi yüklensin), sonra buraya dönüp tekrar dene."}
-      return;
+  /* ---------- İhtiyaç malzemeler: açık siparişlerin kalan adetlerinden bileşen / hammadde ihtiyacı ---------- */
+  var needBy=null, needAt=0, needBusyN=false, stkView="", needF="", needAllOrd={};
+  function needRemU(o){ // bitmemiş ürün adedi (en geride kalan aşamaya göre)
+    var best=0;
+    STAGES.forEach(function(sg,i){
+      if(!(o.st||[])[i]||stClosed(o,i))return;
+      var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, rem=Math.max(0,nd-dn);
+      best=Math.max(best,rem/muOf(o,i));
+    });
+    return Math.ceil(best-1e-9);
+  }
+  function needCalc(catByS){
+    var by={}, nOrd=0, noRec={}, byName={};
+    materials.forEach(function(m){var f=fold(m.name||""); if(f&&!byName[f])byName[f]=m});
+    function add(key,info,o,q,part){
+      if(!(q>0))return;
+      var e=by[key]; if(!e){e=by[key]={key:key,total:0,ords:[],idx:{},mid:info.mid||"",name:info.name,unit:info.unit,kind:info.kind}}
+      e.total+=q; var x=e.idx[o.id]; if(!x){x=e.idx[o.id]={o:o,q:0,parts:[]}; e.ords.push(x)}
+      x.q+=q; if(part&&x.parts.indexOf(part)<0)x.parts.push(part);
     }
-    matNeedBusy=true;
-    var btn=$("stkneedbtn"); if(btn){btn.disabled=true; btn.textContent="Hesaplanıyor…"}
-    if(nt)nt.hidden=true;
+    function addMat(m,o,q,part){add(m.id,{mid:m.id,name:m.name,unit:m.unit||"adet",kind:m.kind==="ham"?"ham":"yari"},o,q,part)}
+    function addVirt(name,unit,kind,o,q,part){
+      var m=byName[fold(name)]; if(m){addMat(m,o,q,part); return}
+      add("v:"+fold(name),{name:name,unit:unit,kind:kind},o,q,part);
+    }
+    orders.forEach(function(o){
+      if(o.shipped||!(+o.qty>0))return;
+      var ru=IS_CV?0:needRemU(o), used=false;
+      if(IS_CV){
+        var pi=STAGES.map(function(x){return x.sec}).indexOf("pres");
+        if((o.st||[])[pi]&&!stClosed(o,pi)){var rm=Math.max(0,o.qty*muOf(o,pi)-doneOf(o.id,"pres").q); ru=rm;
+          var cp=cpProdOf(o), bm=cp&&cvBarMat(cp), kg=cp?cvKg(cp):0;
+          if(rm>0&&bm&&kg>0)addMat(bm,o,kg*rm,"Cıvata gövdesi")}
+        if(ru>0){nOrd++; needAllOrd[o.id]=1}
+        return;
+      }
+      if(!ru)return;
+      nOrd++;
+      // eski usul katalog reçeteleri (aşama bazlı)
+      STAGES.forEach(function(sg,i){
+        if(!(o.st||[])[i]||stClosed(o,i))return;
+        var rem=Math.max(0,o.qty*muOf(o,i)-doneOf(o.id,sg.sec).q); if(!rem)return;
+        var it=catByS&&catByS[sg.sec]&&catByS[sg.sec][(o.code||"").toLowerCase()];
+        if(!it||!it.rec||!it.rec.length)return;
+        it.rec.forEach(function(r){var m=r.m&&matById(r.m); if(m&&r.q){addMat(m,o,r.q*rem,sg.short); used=true}});
+      });
+      // Z-Rot: stoktan kullanılacak gövde / aşık
+      if(zsOn()&&(o.zsg||o.zsa)){
+        var r3=Math.max(0,o.qty*muOf(o,3)-doneOf(o.id,"montaj").q);
+        if((o.st||[])[3]&&!stClosed(o,3)&&r3>0){
+          if(o.zsg){var mg=matById("zs_govde"); if(mg)addMat(mg,o,r3*muOf(o,0),"Z-Rot gövde (stoktan)")}
+          if(o.zsa&&o.zas){var ma=matById("zs_asik"+o.zas); if(ma)addMat(ma,o,r3*muOf(o,2),"Z-Rot aşık "+o.zas+" mm (stoktan)")}
+        }
+      }
+      if(used)return;
+      // ürün reçetesi: üretilen parçalar (kg) + satın alınan bileşenler
+      var pr=cpProdOf(o);
+      if(!pr||!(pr.parts||[]).length){noRec[prKey(o.code)]=1; return}
+      (pr.parts||[]).forEach(function(p){
+        if(!p||(p.k!=="made"&&p.k!=="buy"))return;
+        var nm0=partName(p)||p.n||"";
+        if(o.zsg&&p.k==="made"&&/govde/.test(fold(nm0)))return;
+        if(o.zsa&&zsIsAsik(p))return;
+        var q=pnum(p.q)||1;
+        if(p.k==="made"){
+          var inf=rawGroupInfo(p), kg=pBrut(p)/1000*q; if(!(kg>0))kg=pnum(p.wt)*q;
+          addVirt(inf.name,"kg","ham",o,kg*ru,nm0||"Parça");
+        }else{
+          var m=p.m?matById(p.m):null;
+          if(m)addMat(m,o,q*ru,nm0||m.name);
+          else if(nm0)addVirt(nm0,p.u||"adet","yari",o,q*ru,nm0);
+        }
+      });
+    });
+    var n=0; Object.keys(noRec).forEach(function(){n++});
+    return {by:by,nOrd:nOrd,noRec:n,at:Date.now()};
+  }
+  function needFinish(res){
+    needBy=res; needAt=Date.now(); matNeed={};
+    Object.keys(res.by).forEach(function(k){var e=res.by[k]; if(e.mid)matNeed[e.mid]=e.total});
+    needBusyN=false;
+    var b=$("stkneedbtn"); if(b)b.disabled=false;
+    try{if(!$("stock").hidden)renderStock()}catch(e){}
+  }
+  function needRun(){
+    if(needBusyN)return;
+    needBusyN=true;
+    var go=function(catByS){try{needFinish(needCalc(catByS))}catch(e){needBusyN=false; var nt=$("stkneednote"); if(nt){nt.hidden=false; nt.className="impnote err show"; nt.textContent="Hesaplanamadı, tekrar dene."}}};
+    if(!orders.length){go(null); return}
     chain.then(function(){return loadProgress(false)}).then(function(){
+      if(IS_CV)return {};
       return Promise.all(SECTIONS.map(function(x){
         return db?db.doc(catPathOf(x.id)).get().then(function(sn){return {sec:x.id,items:(sn.exists&&sn.data().items)||[]}}).catch(function(){return {sec:x.id,items:[]}}):Promise.resolve({sec:x.id,items:[]});
-      }));
-    }).then(function(results){
-      var catByS={};
-      results.forEach(function(r){catByS[r.sec]={}; r.items.forEach(function(it){catByS[r.sec][(it.code||"").toLowerCase()]=it})});
-      var need={};
-      orders.forEach(function(o){
-        STAGES.forEach(function(sg,i){
-          if(!(o.st||[])[i])return;
-          var nd=o.qty*muOf(o,i), dn=doneOf(o.id,sg.sec).q, rem=stClosed(o,i)?0:Math.max(0,nd-dn);
-          if(!rem)return;
-          if(IS_CV){
-            if(sg.sec!=="pres")return;
-            var cp=products.filter(function(x){return (x.code||"").toLowerCase()===(o.code||"").toLowerCase()})[0], bm=cp&&cvBarMat(cp), kg=cp?cvKg(cp):0;
-            if(bm&&kg>0)need[bm.id]=(need[bm.id]||0)+kg*rem;
-            return;
-          }
-          var it=catByS[sg.sec]&&catByS[sg.sec][(o.code||"").toLowerCase()];
-          if(!it||!it.rec||!it.rec.length)return;
-          it.rec.forEach(function(r){if(r.m&&r.q)need[r.m]=(need[r.m]||0)+r.q*rem});
-        });
-      });
-      matNeed=need;
-      matNeedBusy=false; if(btn){btn.disabled=false; btn.textContent="📋 Alım ihtiyacı hesapla"}
-      renderStock();
-    }).catch(function(){
-      matNeedBusy=false; if(btn){btn.disabled=false; btn.textContent="📋 Alım ihtiyacı hesapla"}
-      if(nt){nt.hidden=false; nt.className="impnote err show"; nt.textContent="Hesaplanamadı, tekrar dene."}
+      })).then(function(results){var c={}; results.forEach(function(r){c[r.sec]={}; r.items.forEach(function(it){c[r.sec][(it.code||"").toLowerCase()]=it})}); return c});
+    }).then(go).catch(function(){needBusyN=false; var nt=$("stkneednote"); if(nt){nt.hidden=false; nt.className="impnote err show"; nt.textContent="Hesaplanamadı, tekrar dene."}});
+  }
+  function needAuto(force){
+    if(needBusyN||!db||!matsLoaded||!prLoaded)return;
+    if(!force&&needBy&&Date.now()-needAt<120000)return;
+    needRun();
+  }
+  function computeMaterialNeeds(){needRun()}
+  function needRowsAll(){
+    if(!needBy)return [];
+    return Object.keys(needBy.by).map(function(k){
+      var e=needBy.by[k], m=e.mid?matById(e.mid):null, st=m?(+m.stock||0):0;
+      return {key:m?((m._div||window.__DIV)+":"+m.id):"nv:"+k, e:e, m:m, name:m?m.name:e.name, unit:m?(m.unit||"adet"):e.unit, kind:m?(m.kind==="ham"?"ham":"yari"):e.kind, stock:st, need:e.total, def:Math.max(0,e.total-st+1e-9)>1e-6?Math.max(0,e.total-st):0, linked:!!m};
     });
+  }
+  function needDivOk(){return stkDiv==="all"||stkDiv===window.__DIV}
+  function needRowsList(){
+    if(!needDivOk())return [];
+    var q=fold(matSearch.trim());
+    return needRowsAll().filter(function(r){
+      if(q&&fold(r.name).indexOf(q)<0)return false;
+      if(stkKind&&r.kind!==stkKind)return false;
+      if(needF==="def"&&!(r.def>0))return false; if(needF==="ok"&&r.def>0)return false;
+      return true;
+    }).sort(function(a,b){return (b.def>0)-(a.def>0)||b.def-a.def||b.need-a.need||String(a.name).localeCompare(String(b.name),"tr",{numeric:true})});
+  }
+  function needRowHtml(r){
+    var u=esc(r.unit||"adet"), nO=r.e.ords.length, di=divInfo(window.__DIV);
+    var pill=r.def>0?'<span class="stkpill zero">'+nf.format(Math.round(r.def*100)/100)+' '+u+' eksik</span>':'<span class="stkpill ok">Yeterli</span>';
+    var parts=[]; r.e.ords.forEach(function(x){x.parts.forEach(function(p){if(parts.indexOf(p)<0)parts.push(p)})});
+    return '<div class="stkrow'+(r.key===stkSel?' on':'')+'" data-matsel="'+esc(r.key)+'" role="button" tabindex="0"><div class="nm"><b>'+esc(r.name)+(r.kind==="ham"?'<span class="stkdv" style="--d1:#8A6A2A;--d2:#5A4216">Hammadde</span>':'')+(r.linked?'':'<span class="stkdv" style="--d1:#888;--d2:#555">Stokta yok</span>')+'</b><small>Gereken '+nf.format(Math.round(r.need*100)/100)+' '+u+' · '+nO+' siparişte'+(parts.length?' · '+esc(parts.slice(0,2).join(", "))+(parts.length>2?'…':''):'')+'</small></div>'+
+      '<span class="ct">'+(r.linked?'Stok '+nf.format(Math.round(r.stock*100)/100)+' '+u:'Stokta kayıtlı değil')+'</span><span class="sk">'+pill+'<b class="'+(r.def>0?'zero':'ok')+'">'+nf.format(Math.round(r.stock*100)/100)+' <i>'+u+'</i></b></span><span class="cs"><b>'+nf.format(Math.round(r.need*100)/100)+' '+u+'</b></span></div>';
+  }
+  function needOrdHtml(e,unit){
+    if(!e||!e.ords.length)return '';
+    var u=esc(unit||"adet"), l=e.ords.slice().sort(function(a,b){return b.q-a.q}), cap=stkNAll?l.length:6;
+    return '<div class="nobl"><h4>Hangi siparişler için? <span class="stkun">'+l.length+'</span></h4>'+l.slice(0,cap).map(function(x){
+      var o=x.o, t=(typeof oTi==="function"?oTi(o):o.code)||o.code||"—", sub=[o.cust||"",x.parts.slice(0,2).join(", ")].filter(Boolean).join(" · ");
+      return '<div class="nob"><div><b>'+esc(t)+'</b><small>'+esc(sub)+(o.qty?' · sipariş '+nf.format(o.qty)+' adet':'')+'</small></div><span>'+nf.format(Math.round(x.q*100)/100)+' <i>'+u+'</i></span></div>';
+    }).join("")+(l.length>cap?'<button type="button" class="stkumore" data-nall="1">Hepsini göster · '+(l.length-cap)+' sipariş daha</button>':'')+'</div>';
+  }
+  var stkNAll=false, stkNFor="";
+  function needPanelV(key){
+    var k=key.slice(3), e=needBy&&needBy.by[k], el=$("stkpanel"); if(!el)return;
+    if(!e){el.className="stkpanel"; el.innerHTML='<div class="stkph"><div class="ic">📦</div><b>Malzeme seç</b><small>Soldaki listeden bir malzemeye dokun.</small></div>'; return}
+    var u=esc(e.unit||"adet");
+    el.className="stkpanel"+(stkMobOpen?" open":"");
+    el.innerHTML='<div class="stkpin"><button type="button" class="stkx" data-stkclose="1">‹ Listeye dön</button><div class="stkpt"><div><h3>'+esc(e.name)+'</h3><small>'+esc(divInfo(window.__DIV).name)+' · '+(e.kind==="ham"?'Hammadde':'Parça / bileşen')+' · '+u+'</small></div></div>'+
+      '<div class="stkcur"><small>Mevcut stok</small><b class="zero">Stokta kayıtlı değil</b><div class="stkneed">Açık siparişler için gereken: <b>'+nf.format(Math.round(e.total*100)/100)+'</b> '+u+'</div></div>'+
+      needOrdHtml(e,e.unit)+
+      '<div class="note" style="margin:12px 0;text-align:left">Bu kalem ürün reçetesinden geliyor ama stokta tanımlı değil. Aynı adla stoğa eklersen buradan stok girişi yapabilir, eksik / yeterli durumunu görebilirsin.</div>'+
+      '<button type="button" class="btn" id="nvadd" data-nvk="'+esc(k)+'" style="width:100%">Stoğa ekle (0 '+u+' ile)</button><div class="stkmsg" id="nvmsg"></div></div>';
+  }
+  function needKpi(){
+    var rs=needDivOk()?needRowsAll():[], nd=rs.filter(function(r){return r.def>0}).length;
+    function k(ic,l,v,c){return '<div class="stkk"><span class="ic '+(c||'')+'">'+ic+'</span><div><small>'+l+'</small><b>'+v+'</b></div></div>'}
+    $("stkkpi").innerHTML=k("🧾","İhtiyaç olan kalem",needBy?nf.format(rs.length):"…")+k("⚠","Eksik olan",needBy?nf.format(nd):"…",nd?"bad":"")+k("✓","Yeterli",needBy?nf.format(rs.length-nd):"…")+k("📋","Açık sipariş",needBy?nf.format(needBy.nOrd):"…");
+  }
+  function needChips(){
+    var rs=needDivOk()?needRowsAll():[], nd=rs.filter(function(r){return r.def>0}).length;
+    $("stkchips").innerHTML=[["","Hepsi",rs.length],["def","⚠ Eksik olanlar",nd],["ok","✓ Yeterli",rs.length-nd]].map(function(c){return '<button type="button" data-needf="'+c[0]+'" aria-pressed="'+(needF===c[0])+'">'+c[1]+'<i>'+c[2]+'</i></button>'}).join("")+'<button type="button" data-needref="1">↻ Yeniden hesapla</button>';
+    var nt=$("stkneednote");
+    if(nt){
+      nt.hidden=false; nt.className="impnote"+(needBusyN?"":" show");
+      if(!needDivOk())nt.textContent="Sipariş verisi yalnızca açık olan bölüm için yüklü ("+divInfo(window.__DIV).name+"). Bölüm filtresini “Hepsi” ya da “"+divInfo(window.__DIV).name+"” yap.";
+      else if(needBusyN||!needBy)nt.textContent="Açık siparişlerden ihtiyaç hesaplanıyor…";
+      else nt.textContent=needBy.nOrd+" açık siparişin kalan adedine göre hesaplandı (reçete × kalan adet)"+(needBy.noRec?" · "+needBy.noRec+" üründe reçete yok, hesaba katılamadı":"")+" · "+new Date(needBy.at).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+    }
   }
   $("stkback").addEventListener("click",stockHome);
   $("stksearch").addEventListener("input",function(e){matSearch=e.target.value; stkPage=0; renderStock()});
   $("stkst").addEventListener("change",function(e){stkSt=e.target.value; stkPage=0; renderStock()});
   $("stksort").addEventListener("change",function(e){stkSort=e.target.value; stkPage=0; renderStock()});
   $("stknew").addEventListener("click",function(){matEditId=null; matEditDiv=""; matKindDraft=stkKind==="ham"?"ham":"yari"; matNewDiv=stkDiv!=="all"?stkDiv:window.__DIV; sheetMode="matform";$("ov").hidden=false;renderSheet();});
-  $("stkneedbtn").addEventListener("click",computeMaterialNeeds);
+  $("stkneedbtn").addEventListener("click",function(){stkView=stkView==="need"?"":"need"; stkPage=0; stkSel=""; stkAuto=true; stkNAll=false; if(stkView==="need")needAuto(true); renderStock()});
   function stkSelect(id){
-    stkSel=id; stkMobOpen=true; stkMsg=""; stkMvId=""; renderStock();
+    stkSel=id; stkMobOpen=true; stkMsg=""; stkNAll=false; stkMvId=""; renderStock();
     var rows=$("stkrows"); if(rows)[].forEach.call(rows.querySelectorAll(".stkrow"),function(r){r.classList.toggle("on",r.dataset.matsel===id)});
   }
   function stkSave(){
@@ -8784,9 +8917,20 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     }).catch(function(){btn.disabled=false; stkSetMsg("Kaydedilemedi, tekrar dene.",true)});
   }
   $("stock").addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkuall],[data-stkasg],[data-stkclose],[data-matedit],#stksave,#stkvadd,#stkvbulk"); if(!t||!$("stock").contains(t))return;
+    var t=e.target.closest&&e.target.closest("[data-matsel],[data-stkdiv],[data-stkkind],[data-stkcat],[data-stkpg],[data-stkmode],[data-stkq],[data-stkall],[data-stkuall],[data-stkasg],[data-stkclose],[data-matedit],[data-needf],[data-needref],[data-nall],#nvadd,#stksave,#stkvadd,#stkvbulk"); if(!t||!$("stock").contains(t))return;
     var d=t.dataset;
     if(d.matedit){var em=stkFind(d.matedit); if(!em)return; matEditId=em.id; matEditDiv=em._div; sheetMode="matform";$("ov").hidden=false;renderSheet();return}
+    if(d.needf!==undefined){needF=d.needf; stkPage=0; renderStock(); return}
+    if(d.needref){needRun(); renderStock(); return}
+    if(d.nall){stkNAll=true; stkPanel(); return}
+    if(t.id==="nvadd"){
+      var ne=needBy&&needBy.by[d.nvk]; if(!ne||!db)return; t.disabled=true;
+      db.collection("materials").add({name:ne.name,unit:ne.unit||"adet",kind:ne.kind==="ham"?"ham":"yari",cat:ne.kind==="ham"?"Hammadde":"Bileşen",stock:0,crit:null,p:0,note:"İhtiyaç listesinden eklendi",ts:Date.now()}).then(function(r){
+        logActivity("Stok: "+ne.name+" ihtiyaç listesinden stoğa eklendi","info");
+        stkSel=window.__DIV+":"+r.id; needRun();
+      }).catch(function(){t.disabled=false; var mm=$("nvmsg"); if(mm)mm.textContent="Eklenemedi, tekrar dene."});
+      return;
+    }
     if(d.stkdiv){stkDiv=d.stkdiv; stkCat=""; stkPage=0; renderStock(); return}
     if(d.stkkind!==undefined){stkKind=d.stkkind; stkCat=""; stkPage=0; renderStock(); return}
     if(d.matsel){stkSelect(d.matsel); return}
@@ -12108,7 +12252,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
       products.sort(function(a,b){return String(a.code||"").localeCompare(String(b.code||""),"tr",{numeric:true})});
       prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{if(IS_CV&&$("ords")&&!$("ords").hidden)renderOrders()}catch(e){}
       if(!$("ov").hidden&&sheetMode==="oform"){try{opRender();ofInfo()}catch(e){}}
-      if(!$("stock").hidden&&IS_RZ)renderStock();
+      if(!$("stock").hidden&&IS_RZ)renderStock(); try{if(!$("stock").hidden)needAuto(true)}catch(e){}
       if(!$("prods").hidden)renderProds();
       if(IS_RZ&&!$("ords").hidden)renderCompNeeds();
     },function(){$("prstatus").textContent="Okunamadı"});
