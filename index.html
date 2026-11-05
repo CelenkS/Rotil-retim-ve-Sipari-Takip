@@ -2070,7 +2070,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .osortrow{display:flex;align-items:center;gap:8px;margin:10px 0 2px}
 .osortrow label{font:800 12px var(--font-ui);color:rgba(255,255,255,.85);white-space:nowrap}
 .osortrow select{flex:1;min-width:0;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.14);color:#fff;font:700 13px var(--font-ui);padding:0 10px}
-.osortrow select option{color:#111}
+.osortrow select option{color:inherit}
 /* Kırılım satırları: yüzde çubuğu + ayrı ok */
 #app .bk{row-gap:2px}
 #app .bk.bkcat{grid-template-columns:auto 1fr auto auto}
@@ -3691,6 +3691,12 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .pcvg{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .pcvg b{flex-basis:100%;font:800 12px var(--font-ui);color:var(--accent,#0F8B8D);letter-spacing:.3px}
 .pcvg span{font:600 12px var(--font-ui);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px}
+/* açılır listelerde (select) seçenek renkleri: koyu/cam görünümde beyaz zemin üstünde açık yazı okunmuyordu */
+select option,select optgroup{background-color:#fff;color:#1d1b3a}
+:root[data-theme="dark"] select option,:root[data-theme="dark"] select optgroup,:root[data-theme="glass"] select option,:root[data-theme="glass"] select optgroup{background-color:#1C1B36;color:#F1F0FF}
+:root[data-theme="glass"][data-gmode="light"] select option,:root[data-theme="glass"][data-gmode="light"] select optgroup{background-color:#fff;color:#1d1b3a}
+:root[data-theme="dark"] select option:checked,:root[data-theme="glass"] select option:checked{background-color:#5B4FE0;color:#fff}
+:root[data-theme="glass"][data-gmode="light"] select option:checked{background-color:#E6E3FF;color:#1d1b3a}
 </style>
 </head>
 <body>
@@ -3748,7 +3754,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 03.11 13:53</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:04</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8548,10 +8554,10 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
   function zsStock(id){var m=matById(id); return m?(+m.stock||0):0}
   function zsEnsure(){
     if(!zsOn()||!db||!matsLoaded||!matSrv||zsBusy)return;
-    var miss=ZS_IT.filter(function(x){return !materials.some(function(m){return m.id===x.id})}); if(!miss.length)return; zsBusy=true;
-    Promise.all(miss.map(function(x){var r=db.doc("materials/"+x.id); return r.get().then(function(sn){if(sn.exists)return; return r.set({name:x.n,unit:"adet",kind:"yari",cat:"Z-Rot",stock:0,crit:null,p:0,note:"Z-Rot standart stok parçası",zs:x.k+(x.b||""),ts:Date.now()})})})).catch(function(){}).then(function(){zsBusy=false});
+    var miss=ZS_IT.filter(function(x){return !materials.some(function(m){return m.id===x.id&&m.name})}); if(!miss.length)return; zsBusy=true;
+    Promise.all(miss.map(function(x){var r=db.doc("materials/"+x.id); return r.get().then(function(sn){if(sn.exists&&sn.data().name)return; var o={name:x.n,unit:"adet",kind:"yari",cat:"Z-Rot",crit:null,p:0,note:"Z-Rot standart stok parçası",zs:x.k+(x.b||""),ts:Date.now()}; if(!sn.exists)o.stock=0; return r.set(o,{merge:true})})})).catch(function(){}).then(function(){zsBusy=false});
   }
-  function zsInc(id,d){if(!db||!d||!zsOn())return; db.doc("materials/"+id).set({stock:firebase.firestore.FieldValue.increment(d)},{merge:true}).catch(function(){})}
+  function zsInc(id,d){if(!db||!d||!zsOn())return; var it=zsItem(id), m=matById(id), o={stock:firebase.firestore.FieldValue.increment(d)}; if(it&&!(m&&m.name)){o.name=it.n; o.unit="adet"; o.kind="yari"; o.cat="Z-Rot"; o.zs=it.k+(it.b||"")} db.doc("materials/"+id).set(o,{merge:true}).catch(function(){})}
   function zsAfterLine(l,delta,secId){
     if(!zsOn()||!db||!delta||!l)return; secId=secId||sec.id;
     if(l.zs){if(zsItem(l.zs))zsInc(l.zs,delta); return}
