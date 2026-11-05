@@ -3816,6 +3816,90 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
 #lookpick .lpc[aria-pressed="true"] .ck{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 #lookpick .lpx{width:100%;margin-top:14px}
 @media (max-width:560px){#lookpick .lpgrid{grid-template-columns:1fr 1fr;gap:8px}#lookpick .lpv{height:76px;padding:6px}#lookpick .lpc{padding:6px;gap:6px}#lookpick .lpn small{display:none}#lookpick .lpn b{font-size:13px}#lookpick .lpsub{margin-bottom:10px}}
+
+/* ---- MODERN düzen: sade, ince çerçeveli, vurgu rengi sadece ikon/rakamda (ana sayfa + bölüm ekranı) ---- */
+:root:root:root:root:root .hcards{gap:10px}
+:root:root:root:root:root .hcards .hcard{--cc:var(--h1,#E8A93A);min-height:0!important;padding:14px 16px;gap:14px;justify-content:flex-start;border-radius:20px;background:var(--surface)!important;border:1px solid var(--line)!important;color:var(--ink)!important;box-shadow:0 1px 2px rgba(10,20,40,.05),0 10px 26px -14px rgba(10,20,40,.28)!important;transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s,box-shadow .18s}
+:root:root:root:root:root .hcards .hcard.ordc{--cc:#E8A93A}
+:root:root:root:root:root .hcards .hcard.plnc{--cc:#8B6CF0}
+:root:root:root:root:root .hcards .hcard.stkc{--cc:#E69138}
+:root:root:root:root:root .hcards .hcard.calcc{--cc:#8F74DA}
+:root:root:root:root:root .hcards .hcard.finc{--cc:#2FB57A}
+:root:root:root:root:root .hcards .hcard.stfc{--cc:#4A93D8}
+:root:root:root:root:root .hcards .hcard.prodc{--cc:#17A9AB}
+:root:root:root:root:root .hcards .hcard.notec{--cc:#D9A800}
+:root:root:root:root:root .hcards .hcard.purchc{--cc:#E8605F}
+:root:root:root:root:root .hcards .hcard.prodsc{--cc:#2FA99F}
+:root:root:root:root:root .hcards .hcard.toolc{--cc:#E8793A}
+:root:root:root:root:root .hcards .hcard.sahac{--cc:#F97316}
+:root:root:root:root:root .hcards .hcard.poc{--cc:#7C6FE6}
+:root:root:root:root:root .hcards .hcard.camc{--cc:#4F8EF0}
+:root:root:root:root:root .hcards .hcard.puc{--cc:#E8A93A}
+:root:root:root:root:root .hcards .hcard.ordc{--cc:#E8A93A}
+:root:root:root:root:root .hcards .hcard.ordc.plnc{--cc:#8B6CF0}
+:root:root:root:root:root .hcards .hcard.ordc.stkc{--cc:#E69138}
+:root:root:root:root:root .hcards .hcard.ordc.calcc{--cc:#8F74DA}
+:root:root:root:root:root .hcards .hcard.ordc.finc{--cc:#2FB57A}
+:root:root:root:root:root .hcards .hcard.ordc.stfc{--cc:#4A93D8}
+:root:root:root:root:root .hcards .hcard.ordc.prodc{--cc:#17A9AB}
+:root:root:root:root:root .hcards .hcard.ordc.notec{--cc:#D9A800}
+:root:root:root:root:root .hcards .hcard.ordc.purchc{--cc:#E8605F}
+:root:root:root:root:root .hcards .hcard.ordc.prodsc{--cc:#2FA99F}
+:root:root:root:root:root .hcards .hcard.ordc.toolc{--cc:#E8793A}
+:root:root:root:root:root .hcards .hcard.ordc.sahac{--cc:#F97316}
+:root:root:root:root:root .hcards .hcard.ordc.poc{--cc:#7C6FE6}
+:root:root:root:root:root .hcards .hcard.ordc.camc{--cc:#4F8EF0}
+:root:root:root:root:root .hcards .hcard.ordc.puc{--cc:#E8A93A}
+:root:root:root:root:root .hcards .hcard::after{display:none!important}
+:root:root:root:root:root .hcards .hcard:hover{border-color:color-mix(in srgb,var(--cc) 45%,var(--line))!important;transform:translateY(-1px)}
+:root:root:root:root:root .hcards .hcard .hic{width:46px;height:46px;border-radius:15px;background:color-mix(in srgb,var(--cc) 14%,transparent)!important;color:var(--cc)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cc) 28%,transparent)!important}
+:root:root:root:root:root .hcards .hcard .hic svg{width:22px;height:22px;stroke-width:1.9}
+:root:root:root:root:root .hcards .hcard .hk{font:800 10px var(--font-ui)!important;letter-spacing:.12em;text-transform:uppercase;color:var(--cc)!important;margin-bottom:3px!important}
+:root:root:root:root:root .hcards .hcard .hn{font:700 17px/1.25 var(--font-head)!important;color:var(--ink)!important;letter-spacing:-.005em}
+:root:root:root:root:root .hcards .hcard .hs{margin-top:3px;font:600 12.5px/1.35 var(--font-ui)!important;color:var(--ink2)!important}
+:root:root:root:root:root .hcards .hcard .hs b{color:var(--ink)!important;font-weight:800}
+:root:root:root:root:root .hcards .hcard .go{margin-left:auto;font:500 24px/1 var(--font-head)!important;color:var(--ink2)!important;opacity:.55}
+:root:root:root:root:root .hcards .hcard:hover .go{color:var(--cc)!important;opacity:1}
+:root:root:root:root:root #app>.hero{background:radial-gradient(130% 75% at 100% -12%,color-mix(in srgb,var(--hero1) 40%,transparent),transparent 64%),linear-gradient(180deg,#141B2A 0%,#0B101A 100%)!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:26px;box-shadow:0 22px 44px -22px rgba(8,12,22,.6)!important;padding:20px 18px;color:#fff}
+:root:root:root:root:root #app>.hero::before,:root:root:root:root:root #app>.hero::after{display:none!important}
+:root:root:root:root:root #app .hirow .hi{color:rgba(255,255,255,.6)}
+:root:root:root:root:root #app .hirow .tbtn,:root:root:root:root:root #app .tbtn{background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.1)!important;box-shadow:none!important;color:#E8ECF4!important}
+:root:root:root:root:root #app .tbtn:hover{background:rgba(255,255,255,.12)!important}
+:root:root:root:root:root #app .tbtn.hl{background:color-mix(in srgb,var(--hero1) 78%,#0B101A)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 6px 16px -6px color-mix(in srgb,var(--hero1) 70%,transparent)!important}
+:root:root:root:root:root #app .mnav h1{font:800 28px/1.1 var(--font-head);text-shadow:none;letter-spacing:-.015em;color:#fff}
+:root:root:root:root:root #app .mnav button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);box-shadow:none;color:#E8ECF4}
+:root:root:root:root:root #app .pbar,:root:root:root:root:root #app .tabs{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);box-shadow:none;padding:3px}
+:root:root:root:root:root #app .pbar button,:root:root:root:root:root #app .tabs button{color:rgba(255,255,255,.62)!important;font:700 13px var(--font-head)}
+:root:root:root:root:root #app .pbar button[aria-pressed="true"],:root:root:root:root:root #app .tabs button[aria-pressed="true"]{background:rgba(255,255,255,.15)!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)!important}
+:root:root:root:root:root #app .plabel{font:800 15px var(--font-head);color:rgba(255,255,255,.9)}
+:root:root:root:root:root #app .tot-box{background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important;border-radius:18px}
+:root:root:root:root:root #app .tot-box::before{width:22px;background:var(--hero1)!important;filter:brightness(1.5);opacity:1}
+:root:root:root:root:root #app .tot-box+.tot-box::before{background:#F5D58A!important;filter:none}
+:root:root:root:root:root #app .tot-box span{color:rgba(255,255,255,.55)}
+:root:root:root:root:root #app .tot-box b{font:800 30px/1.1 var(--font-head);color:#fff}
+:root:root:root:root:root #app .tot-box+.tot-box b{color:#F5D58A}
+:root:root:root:root:root #app .gbar,:root:root:root:root:root #app .needbar{background:rgba(255,255,255,.08)}
+:root:root:root:root:root #app .avgline{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.75)}
+:root:root:root:root:root #app .needbox{background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important}
+:root:root:root:root:root #app .needbox.click:hover,:root:root:root:root:root #app .needbox.planbtn:hover{background:rgba(255,255,255,.08)!important}
+:root:root:root:root:root #app .needtop{color:rgba(255,255,255,.6)}
+:root:root:root:root:root #app .needtop b{background:none;padding:0;font:800 22px var(--font-head);color:#fff}
+:root:root:root:root:root #app .needbar i{background:linear-gradient(90deg,color-mix(in srgb,var(--hero1) 55%,#fff),#fff)}
+:root:root:root:root:root #app .needsub{color:rgba(255,255,255,.6)}
+:root:root:root:root:root #app .brk .bar{background:rgba(255,255,255,.07);box-shadow:none;height:10px}
+:root:root:root:root:root #app .rowsx{gap:0;margin-top:12px}
+:root:root:root:root:root #app .bk{background:none!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.07)!important;border-radius:0;padding:13px 2px}
+:root:root:root:root:root #app .rowsx>*:last-child .bk,:root:root:root:root:root #app .rowsx>.bk:last-child{border-bottom:0!important}
+:root:root:root:root:root #app .bkcat:hover .bk{background:rgba(255,255,255,.04)!important}
+:root:root:root:root:root #app .bk .dot{width:10px;height:10px;box-shadow:none}
+:root:root:root:root:root #app .bk .nm{font:700 15px var(--font-head);color:#fff}
+:root:root:root:root:root #app .bk .sub{color:rgba(255,255,255,.55)}
+:root:root:root:root:root #app .bk .pc{font:800 17px var(--font-head)}
+:root:root:root:root:root #app .bk .pc small{opacity:.55}
+:root:root:root:root:root #app .bk .bkb{height:4px;background:rgba(255,255,255,.08);margin-top:10px}
+:root:root:root:root:root #app .bk .bkb i{box-shadow:none}
+:root:root:root:root:root .hcards .hcard::before{display:none!important}
+:root:root:root:root:root .hcards .hcard .go{background:none!important;box-shadow:none!important;border:0!important;width:auto!important;height:auto!important;display:block}
 </style>
 </head>
 <body>
@@ -3873,7 +3957,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 22:32</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 22:46</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -16835,7 +16919,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   }
   function paintHome(id,sm){
     var el=$("hs-"+id); if(!el)return;
-    el.textContent=AY[now.getMonth()]+": "+((sm&&(sm.a||sm.r))?nf.format(sm.a)+" adet · "+money(sm.r)+" ₺":"henüz kayıt yok");
+    el.innerHTML=esc(AY[now.getMonth()])+" · "+((sm&&(sm.a||sm.r))?"<b>"+nf.format(sm.a)+"</b> adet · <b>"+money(sm.r)+" ₺</b>":"henüz kayıt yok");
   }
   var homeView="main";
   var HC_ICONS={
