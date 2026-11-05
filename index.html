@@ -3754,7 +3754,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:06</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:14</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5751,7 +5751,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
       var od=orders.filter(function(x){return x.id===curOid})[0];
       if(!od){html='<div class="empty">Sipariş bulunamadı.</div>'}
       else{
-        html+='<div class="shead"><div><h2 id="sh-title">'+esc(od.code)+'</h2><small>'+esc(od.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[od.cat]||"")+' · sipariş '+nf.format(od.qty)+' adet</small></div><button class="btn" id="odclose">Kapat</button></div>';
+        html+='<div class="shead"><div><h2 id="sh-title">'+esc(oTi(od))+'</h2><small>'+esc(od.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[od.cat]||"")+' · sipariş '+nf.format(od.qty)+' adet</small></div><button class="btn" id="odclose">Kapat</button></div>';
         var otot=orderTotal(od), ocomp=isComplete(od);
         var im0=imgCache[od.id]||od.th;
         if(im0)html+='<img class="oimg" id="odimg" alt="" src="'+im0+'">';
@@ -5895,7 +5895,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
         var o=x.o, pc=x.nd?Math.min(100,Math.round(x.dn/x.nd*100)):0, asg=planAssignFor(o.id), macOpts=machinesInSec(sec.id).filter(function(mm){return !planFCap||(mm.caps||[]).indexOf(planFCap)>-1||mm.id===asg.mid}), selMac=asg.mid?machinesList.filter(function(mm){return mm.id===asg.mid})[0]:null;
         return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
           (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-          '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
+          '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
           '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b></div></div>'+
           '<div class="pg"><div class="pgt"><span>'+esc(sec.name)+' · yapılan '+nf.format(x.dn)+' / '+nf.format(x.nd)+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':'%'+pc)+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
           '<div class="plnwrap"><label class="plnlbl" for="pln-'+o.id+'">'+(planScope==="day"?"Bugün planlanan adet":"Bu haftaki planlanan adet")+'</label><input id="pln-'+o.id+'" class="plninput" type="number" inputmode="numeric" min="0" data-planq="'+o.id+'" data-plnprice="'+x.price+'" value="'+(x.pq||"")+'" placeholder="0" aria-label="'+esc(o.code)+' planlanan adet"></div>'+
@@ -5927,7 +5927,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
         var ikal=Math.max(0,it.plan-it.done), iover=Math.max(0,it.done-it.plan);
         return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
           (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-          '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
+          '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
           '<span class="pvbadge'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div>'+
           '<div class="pvcmp"><div class="pvc"><span>Planlanan</span><b>'+nf.format(it.plan)+'</b></div><div class="pvc dn"><span>'+(it.mid?'Bu makinede yapılan':'Yapılan')+'</span><b>'+nf.format(it.done)+'</b></div><div class="pvc kl'+(fin?' ok':'')+'"><span>'+(iover?'Fazla':'Kalan')+'</span><b>'+nf.format(iover||ikal)+'</b></div></div>'+
           '<div class="pgb"><i style="width:'+ipc+'%"></i></div>'+
@@ -6139,7 +6139,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
             var o=x.o, mu=muOf(o,jsi), rem=x.fin&&stClosed(o,jsi)?0:Math.max(0,x.nd-x.d), pc=x.nd?Math.min(100,Math.round(x.d/x.nd*100)):0;
             return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+jSc+'"><div class="orow">'+
               (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-              '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
+              '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
               '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b>'+(mu>1?'<span>×'+mu+' = '+nf.format(x.nd)+'</span>':'')+'</div></div>'+
               '<div class="pg"><div class="pgt"><span>'+esc(secNameOf(jobDraftSec))+' · yapılan '+nf.format(x.d)+' / '+nf.format(x.nd)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
               (o.dd?'<div class="odates">'+dueChip(o,x.fin)+'</div>':'')+
@@ -6158,7 +6158,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
             var o=x.o, pc=x.planQ?Math.min(100,Math.round(x.wdone/x.planQ*100)):0;
             return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+jSc+'"><div class="orow">'+
               (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-              '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
+              '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
               '<div class="oq2">planlanan<b>'+nf.format(x.planQ)+'</b></div></div>'+
               '<div class="pg"><div class="pgt"><span>bu hafta yapılan '+nf.format(x.wdone)+' / '+nf.format(x.planQ)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(x.rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
               '<button type="button" class="btn" data-jpickorder="'+o.id+'" style="width:100%;margin-top:8px">Bu işi ata</button></div>';
@@ -6250,7 +6250,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
           var mu=muOf(o,stageIdx(sec.id)), rem=x.fin&&stClosed(o,si)?0:Math.max(0,x.nd-x.d), pc=x.nd?Math.min(100,Math.round(x.d/x.nd*100)):0, aq=addQ[o.id]||1;
           return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-            '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
+            '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
             '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b>'+(mu>1?'<span style="color:var(--sc)">×'+mu+' = '+nf.format(x.nd)+'</span>':'')+'</div></div>'+
             '<div class="pg"><div class="pgt"><span>'+esc(sec.name)+' · yapılan '+nf.format(x.d)+' / '+nf.format(x.nd)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
             ((o.dd||t)?'<div class="odates">'+dueChip(o,x.fin)+(t?'<span class="tod">Bugün +'+nf.format(t)+'</span>':'')+'</div>':'')+
@@ -6265,7 +6265,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
           var o=x.o, pc=x.planQ?Math.min(100,Math.round(x.wdone/x.planQ*100)):0, rk=x.rk, aq=addQ[rk]||1, mo=x.mid?machinesList.filter(function(y){return y.id===x.mid})[0]:null;
           return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
             (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-            '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+(x.multi?'<div class="pmac'+(mo?'':' none')+'">🔧 '+(mo?esc(macLabel(mo)):'Makine seçilmedi')+'</div>':(mo?'<div class="pmac">🔧 '+esc(macLabel(mo))+'</div>':''))+'</div>'+
+            '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+(x.multi?'<div class="pmac'+(mo?'':' none')+'">🔧 '+(mo?esc(macLabel(mo)):'Makine seçilmedi')+'</div>':(mo?'<div class="pmac">🔧 '+esc(macLabel(mo))+'</div>':''))+'</div>'+
             '<div class="oq2">planlanan<b>'+nf.format(x.planQ)+'</b></div></div>'+
             '<div class="pg"><div class="pgt"><span>bu hafta yapılan '+nf.format(x.wdone)+' / '+nf.format(x.planQ)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(x.rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
             (x.t?'<div class="odates"><span class="tod">Bugün +'+nf.format(x.t)+'</span></div>':'')+
@@ -7922,8 +7922,8 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   function ocardHtml(x){
     var o=x.o, tot=o.shipped?shTotal(o):orderTotal(o);
     return '<button type="button" class="ocard d'+o.cat+'" data-oid="'+o.id+'"><div class="orow">'+
-      (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-      '<div class="obody"><div class="otop"><span class="ocode">'+esc(o.code)+(o.shipped?' <small class="shipbadge">📦</small>':'')+'</span><span class="oq">'+(o.shipped&&shQty(o)!==o.qty?nf.format(shQty(o))+' / ':'')+nf.format(o.qty)+' adet</span></div>'+
+      (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").replace(/^M/,"").charAt(0).toUpperCase())+'</div>')+
+      '<div class="obody"><div class="otop"><span class="ocode">'+esc(oTi(o))+(o.shipped?' <small class="shipbadge">📦</small>':'')+'</span><span class="oq">'+(o.shipped&&shQty(o)!==o.qty?nf.format(shQty(o))+' / ':'')+nf.format(o.qty)+' adet</span></div>'+
       '<div class="ocust">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+chipsHtml(o)+'</div></div>'+
       (tot?'<div class="oamt"><small>'+(o.shipped?'Gönderilen tutar':'Sipariş tutarı')+'</small><span>'+money(tot)+' ₺</span></div>':'')+
       ((o.od||o.dd)?'<div class="odates">'+(o.od?'<span>Sipariş '+fmtD(o.od)+'</span>':'')+dueChip(o,x.c||o.shipped)+'</div>':'')+
@@ -12106,7 +12106,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     unsubProd=db.collection("products").onSnapshot(function(snap){
       products=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
       products.sort(function(a,b){return String(a.code||"").localeCompare(String(b.code||""),"tr",{numeric:true})});
-      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){}
+      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{if(IS_CV&&$("ords")&&!$("ords").hidden)renderOrders()}catch(e){}
       if(!$("ov").hidden&&sheetMode==="oform"){try{opRender();ofInfo()}catch(e){}}
       if(!$("stock").hidden&&IS_RZ)renderStock();
       if(!$("prods").hidden)renderProds();
@@ -16129,6 +16129,13 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     var route=CP_FLOW.filter(function(id){return rt[id]});
     if(!route.length)route=[noun==="gobek"?"cncg":"pres"];
     return {rt:route,cs:(/kapak|cekirdek/.test(noun)&&pm2)?"disacma":"montaj"};
+  }
+  // Cıvata: siparişte ürün kodu yerine ürün adı (ör. M30x110 DIN931 8.8 BEYAZ) gösterilir
+  var _otiSrc=null, _otiMap={};
+  function oTi(o){
+    if(!IS_CV||!o)return (o&&o.code)||"";
+    if(_otiSrc!==products){_otiSrc=products; _otiMap={}; products.forEach(function(p){if(p.cv&&p.name)_otiMap[prKey(p.code)]=p.name})}
+    return _otiMap[prKey(o.code)]||o.code||"";
   }
   function cpProdOf(o){var k=prKey(o.code); return products.filter(function(p){return prKey(p.code)===k})[0]||null}
   function cpBuild(o){
