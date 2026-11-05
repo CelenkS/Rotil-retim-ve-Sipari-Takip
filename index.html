@@ -3754,7 +3754,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:04</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:06</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4208,6 +4208,8 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
           // (gizli sekme vb.) sessizce eskisi gibi çalışır.
           if(!window.__fsPersist){
             window.__fsPersist=true;
+            // Bazı bilgisayarlarda (antivirüs / güvenlik duvarı / okul-iş ağı) Firestore'un canlı bağlantısı takılır ve ~10-30 sn sonra yedek yönteme düşer; yedek yöntemi baştan otomatik denetle
+            try{fsDb.settings({experimentalAutoDetectLongPolling:true,merge:true})}catch(e){}
             try{fsDb.enablePersistence({synchronizeTabs:true}).catch(function(){})}catch(e){}
           }
           window.__fsRaw=fsDb;
