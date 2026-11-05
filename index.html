@@ -3760,7 +3760,7 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:53</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 05.11 14:58</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -16339,13 +16339,17 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
     if(l.o){var o2=orders.filter(function(x){return x.id===l.o})[0]; (o2&&o2.cj||[]).forEach(function(j){if(j.cs===secId&&+j.q)cpInc(j.k,j.n,-(+j.q)*delta)})}
   }
   // Bileşen satırı "Bileşen" kategorisine değil, ait olduğu ÜRÜNÜN kategorisine yazılır (hangi üründen ne kadar yapıldığı görünsün)
+  function cpFamMode(){ // bölümde ürün-ailesi adlı kategoriler (Çelik Klasik Rozet…) varsa aile modu; sadece Çelik/DKP rozet gibi sipariş kategorileri varsa onlara göre
+    return COLS.some(function(c){c=String(c||"").toLowerCase(); if(/^(genel|bile[sş]en)/.test(c))return false;
+      return !ORDER_CATS.some(function(n){var l=n.toLowerCase(); return c.indexOf(l)===0&&(c.length===l.length||c.charAt(l.length)===" ")})});
+  }
   function cpCatIdx(o){
     try{
-      var f=plNorm(o.code).fam, best=-1; // aynı aileden (Klasik / Menekşe ayrı) kategori varsa o
+      var f=plNorm(o.code).fam, best=-1;
       if(f)COLS.forEach(function(c,i){if(best<0&&!/^bile[sş]en/i.test(c||"")&&plNorm(c).fam===f)best=i});
       if(best>-1)return best;
-      if(f&&COLS.length<8){var lb=String(plNorm(o.code).label||"").trim(); if(lb)return catIndex(lb)} // ürünün ailesi için kategori yoksa (örn. Menekşe) ürün adından açılır
-      if(o.cat!==3){var i2=findCatIdx(COLS,ORDER_CATS[o.cat]||ORDER_CATS[0]); if(i2>-1)return i2}
+      if(f&&cpFamMode()&&COLS.length<8){var lb=String(plNorm(o.code).label||"").trim(); if(lb)return catIndex(lb)}
+      if(o.cat!==3){var nm=ORDER_CATS[o.cat]||ORDER_CATS[0], i2=findCatIdx(COLS,nm); if(i2>-1)return i2; if(COLS.length<8)return catIndex(nm)}
     }catch(e){}
     return catIndex("Bileşen");
   }
