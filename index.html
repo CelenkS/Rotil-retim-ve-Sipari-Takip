@@ -3446,6 +3446,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .stkuth.ph{display:flex;align-items:center;justify-content:center;font:800 12px var(--font-head);color:var(--divc1,#7a5af8);background:color-mix(in srgb,var(--divc1,#7a5af8) 10%,#fff);border-color:transparent}
 .stkut{min-width:0;flex:1}.stkut>b{display:block;font:800 13.5px/1.25 var(--font-head);color:var(--ink);overflow-wrap:anywhere}
 .stkut>small{display:block;font:600 11.5px var(--font-ui);color:var(--ink2);margin-top:1px}
+.stkuc .ord{background:color-mix(in srgb,#E9A23B 18%,transparent);color:var(--m-warn,#8A5A00);font-weight:800}
 .stkuc{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .stkuc span{font:700 10.5px var(--font-ui);padding:2px 8px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
 .stkuc span.w{background:color-mix(in srgb,var(--divc1,#7a5af8) 12%,#fff);border-color:transparent;color:var(--divc1,#7a5af8)}
@@ -4352,7 +4353,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 12:47</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 12:52</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -8989,12 +8990,27 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     try{rawList(ps).forEach(function(r){if(fold(r.name)!==f)return; r.uses.forEach(function(u){add(u.p,u.part,u.wt*1000,u.cut)})})}catch(e){}
     if(m._div==="civata")ps.forEach(function(p){if(p.cv&&fold(cvBarName(p))===f)add(p,"Cıvata gövdesi",cvKg(p)*1000,"")});
     if(!m.virt)ps.forEach(function(p){if(by[p.id])return; (p.parts||[]).forEach(function(x){if(x&&x.m===m.id)add(p,x.n||"Parça",pnum(x.wt)*(pnum(x.q)||1)*1000,"")})});
-    return order.map(function(k){return by[k]}).sort(function(a,b){return String(pTi(a.p)).localeCompare(String(pTi(b.p)),"tr",{numeric:true})});
+    if(m.id==="zs_govde"&&m._div==="rotil"){
+      ps.forEach(function(p){if(+p.cat!==0||ZS_NOGOV[prKey(p.code)]||by[p.id])return; add(p,"Gövde ×"+ZS_GOV_Q,0,"")});
+      if(window.__DIV==="rotil"){
+        var oq={}; orders.forEach(function(o){
+          if(+o.cat!==0||o.shipped||!(+o.qty>0)||ZS_NOGOV[prKey(o.code)])return;
+          var r=0; try{r=needRemU(o)}catch(e){r=+o.qty} if(!(r>0))return;
+          var k=prKey(o.code), z=oq[k]||(oq[k]={q:0,n:0,th:"",cust:o.cust||"",code:o.code}); z.q+=r; z.n++; if(!z.th&&o.th)z.th=o.th;
+        });
+        Object.keys(oq).forEach(function(k){
+          var pp=ps.filter(function(p){return prKey(p.code)===k})[0];
+          if(!pp){pp={id:"o_"+k,code:oq[k].code,cust:oq[k].cust,th:oq[k].th}; add(pp,"Gövde ×"+ZS_GOV_Q,0,"")}
+          by[pp.id].open=oq[k].q; by[pp.id].on=oq[k].n;
+        });
+      }
+    }
+    return order.map(function(k){return by[k]}).sort(function(a,b){return (b.open||0)-(a.open||0)||String(pTi(a.p)).localeCompare(String(pTi(b.p)),"tr",{numeric:true})});
   }
   function stkUseRow(e){
     var p=e.p, t=pTi(p), sub=[p.code&&p.code!==t?p.code:"",p.cust||""].filter(Boolean).join(" · ");
     return '<div class="stkur">'+(p.th?'<img class="stkuth" alt="" src="'+p.th+'">':'<div class="stkuth ph">'+esc(String(t).replace(/[^A-Za-z0-9ÇĞİÖŞÜçğıöşü]/g,"").slice(0,3))+'</div>')+
-      '<div class="stkut"><b>'+esc(t)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'<div class="stkuc">'+e.parts.slice(0,3).map(function(x){return '<span>'+esc(x)+'</span>'}).join("")+(e.cut?'<span>kesim '+esc(e.cut)+'</span>':'')+(e.wt>0?'<span class="w">'+gFmt(e.wt)+' / adet</span>':'')+'</div></div></div>';
+      '<div class="stkut"><b>'+esc(t)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'<div class="stkuc">'+e.parts.slice(0,3).map(function(x){return '<span>'+esc(x)+'</span>'}).join("")+(e.cut?'<span>kesim '+esc(e.cut)+'</span>':'')+(e.wt>0?'<span class="w">'+gFmt(e.wt)+' / adet</span>':'')+(e.open?'<span class="ord">Açık sipariş '+nf.format(e.open)+' adet → '+nf.format(e.open*ZS_GOV_Q)+' gövde</span>':'')+'</div></div></div>';
   }
   function stkUsePaint(){
     var el=$("stkuse"); if(!el)return; var m=stkFind(stkSel); if(!m){el.innerHTML=""; return}
@@ -9002,7 +9018,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var l=stkUsage(m), h='<div class="stkuh"><h4>Kullanıldığı ürünler</h4>'+(l?'<span class="stkun">'+l.length+'</span>':'')+'</div>';
     if(!l)h+='<div class="stkue">Ürünler yükleniyor…</div>';
     else if(!l.length)h+='<div class="stkue">Bu hammadde henüz hiçbir ürün reçetesinde geçmiyor.</div>';
-    else{var cap=stkUAll?l.length:8; h+='<div class="stkul">'+l.slice(0,cap).map(stkUseRow).join("")+'</div>'+(l.length>cap?'<button type="button" class="stkumore" data-stkuall="1">Hepsini göster · '+(l.length-cap)+' ürün daha</button>':'')}
+    else{var cap=stkUAll?l.length:8;
+      if(m.id==="zs_govde"){var tn=0; l.forEach(function(e){tn+=(e.open||0)*ZS_GOV_Q}); if(tn>0){var sk=+m.stock||0; h+='<div class="stkue" style="margin-bottom:8px;text-align:left">Açık siparişler için <b>'+nf.format(tn)+'</b> gövde gerekir · stok <b>'+nf.format(sk)+'</b>'+(sk<tn?' · <u>'+nf.format(tn-sk)+' eksik</u>':' · yeter')+'</div>'}}
+      h+='<div class="stkul">'+l.slice(0,cap).map(stkUseRow).join("")+'</div>'+(l.length>cap?'<button type="button" class="stkumore" data-stkuall="1">Hepsini göster · '+(l.length-cap)+' ürün daha</button>':'')}
     el.innerHTML=h;
   }
   function stkMats(){
@@ -9156,6 +9174,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
 
   /* ---------- Z-Rot stok parçaları: gövde (tek ürün) + aşık (23 / 27 / 30 mm diş boyu) ---------- */
   var ZS_IT=[{id:"zs_govde",n:"Z-Rot Gövde",k:"g",ic:"🔩"},{id:"zs_asik23",n:"Z-Rot Aşık 23 mm",k:"a",b:"23",ic:"🔸"},{id:"zs_asik27",n:"Z-Rot Aşık 27 mm",k:"a",b:"27",ic:"🔸"},{id:"zs_asik30",n:"Z-Rot Aşık 30 mm",k:"a",b:"30",ic:"🔸"}], zsBusy=false, zsQ={}, ordZa="";
+  // Z-Rot gövde: tüm Z-Rot ürünlerinde (kategori 0) üründe 2 adet kullanılır. İstisna ürünler gelince kodları buraya yazılır (küçük harf): {"kod":1}
+  var ZS_NOGOV={}, ZS_GOV_Q=2;
   function zsOn(){return !IS_RZ&&!IS_CV&&window.__DIV==="rotil"}
   function zsItem(id){return ZS_IT.filter(function(x){return x.id===id})[0]||null}
   function zsStock(id){var m=matById(id); return m?(+m.stock||0):0}
