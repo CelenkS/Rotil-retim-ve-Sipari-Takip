@@ -4513,7 +4513,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 14:05</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 14:07</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9605,7 +9605,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         var pi=STAGES.map(function(x){return x.sec}).indexOf("pres");
         if((o.st||[])[pi]&&!stClosed(o,pi)){var rm=Math.max(0,o.qty*muOf(o,pi)-doneOf(o.id,"pres").q); ru=rm;
           var cp=cpProdOf(o), bm=cp&&cvBarMat(cp), kg=cp?cvKg(cp):0;
-          if(rm>0&&bm&&kg>0)addMat(bm,o,kg*rm,"Cıvata gövdesi")}
+          if(rm>0&&kg>0){if(bm)addMat(bm,o,kg*rm,"Cıvata gövdesi"); else if(cp&&cvBarName(cp))addVirt(cvBarName(cp),"kg","ham",o,kg*rm,"Cıvata gövdesi")}
+          else if(rm>0&&(!cp||!(kg>0)))noRec[prKey(o.code)]=1}
         if(ru>0){nOrd++; needAllOrd[o.id]=1}
         return;
       }
