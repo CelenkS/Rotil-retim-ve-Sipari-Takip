@@ -4353,7 +4353,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 12:52</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 13:35</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5091,7 +5091,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   var downloadsApi=null;
   var chain=Promise.resolve(), timer=null, catTimer=null;
   var sheetMode="list", editId=null, editCust=null, formCat=0, search="";
-  var MAC_CAPS=[{id:"dasik",n:"Dövme Aşık",c:"#E8A24B"},{id:"dolasik",n:"Dolu Aşık",c:"#5B8DEF"},{id:"drotil",n:"Dövme Rotil ve Rot başı",c:"#E36B6B"},{id:"dolrotil",n:"Dolu Rotil",c:"#2FA66E"}];
+  var MAC_CAPS=[{id:"dasik",n:"Dövme Aşık",c:"#E8A24B"},{id:"dolasik",n:"Dolu Aşık",c:"#5B8DEF"},{id:"drotil",n:"Dövme Rotil ve Rot başı",c:"#E36B6B"},{id:"dolrotil",n:"Dolu Rotil",c:"#2FA66E"},{id:"civata",n:"Cıvata",c:"#E0702B"}];
   function macCapsOf(m){return MAC_CAPS.filter(function(c){return m&&(m.caps||[]).indexOf(c.id)>-1})}
   function macCapChips(m,empty){
     var cs=macCapsOf(m);
@@ -6324,7 +6324,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   var shStack=[], shPos={};
   var pvWant=null, ordStatWant=null, ordSort="auto"; try{ordSort=localStorage.getItem("ud_osort")||"auto"}catch(e){}
   function renderSheet(){
-    if(sheetMode==="floorsec"||sheetMode==="floorall"){floorScope="day"; floorWeekKey=null}   // makine yerleşimi sadece günlük (haftalık normal plan ayrı yerde durur)
+    if(sheetMode==="floorsec"||sheetMode==="floorall"){floorScope="day"; floorWeekKey=null}
+    if(sheetMode==="floorsec"||sheetMode==="floorall"){try{puLoadProd(floorDayIso().slice(0,7))}catch(e){}}   // makine yerleşimi sadece günlük (haftalık normal plan ayrı yerde durur)
     var sh=$("sheet"), mode=sheetMode, prev=shStack.length?shStack[shStack.length-1]:null, restore=null;
     if(prev!==mode){
       if(prev!==null&&!$("ov").hidden)shPos[prev]=sh.scrollTop;
@@ -6687,7 +6688,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(macLabel(fm))+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div><button type="button" class="btn ghost" id="mddone2">Kapat</button></div>'+
           '<div class="form">'+
           mpHtml(fm)+
-          '<div class="capsel" style="margin:0 0 8px">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mddept="'+d+'" style="--cc:'+(d==="Rotil"?"#2A6FB0":d==="Rozet"?"#B07CE8":"#E8A24B")+'" aria-pressed="'+(macDeptOf(fm)===d)+'">'+d+'</button>'}).join("")+'</div>'+
+          '<div class="capsel" style="margin:0 0 8px">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mddept="'+d+'" style="--cc:'+(MAC_DEPT_COL[d]||"#E8A24B")+'" aria-pressed="'+(macDeptOf(fm)===d)+'">'+d+'</button>'}).join("")+'</div>'+
           '<div class="mdst"><button type="button" data-mdst="ok" aria-pressed="'+!macFault(fm)+'">● Çalışıyor</button><button type="button" data-mdst="ariza" aria-pressed="'+macFault(fm)+'">⚠ Arızalı</button></div>'+
           (macFault(fm)?'<div><label class="fl" for="mdfnote">Arıza notu — ne sorunu var?</label><textarea class="fin" id="mdfnote" rows="2" placeholder="ör. spindle ısınıyor, yağ kaçırıyor, parça bekleniyor…">'+esc(fm.faultNote||"")+'</textarea>'+(fm.faultTs?'<small style="color:var(--ink2)">Arıza başlangıcı: '+esc(new Date(fm.faultTs).toLocaleDateString("tr-TR",{day:"numeric",month:"long"}))+'</small>':"")+'</div>':"")+
           '<div><label class="fl" for="mdnote">Makine notu</label><textarea class="fin" id="mdnote" rows="2" placeholder="ör. bakım tarihi, ayar bilgisi…">'+esc(fm.note||"")+'</textarea></div>'+
@@ -10461,7 +10462,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         jobs.push(d.doc(secCol(sid)+"/"+mk).get().then(function(sn){out[dv.id][sid]=(sn.exists&&sn.data().lines)||{}}).catch(function(){out[dv.id][sid]={}}));
       });
     });
-    return Promise.all(jobs).then(function(){puProd[mk]=out; puProdAt[mk]=Date.now(); delete puLoadMk[mk]; puLoading=Object.keys(puLoadMk).length>0; if(!$("pu").hidden&&$("ov").hidden)puRender(); else if(puD)puFormInfo(); puStaffRefresh()},function(){delete puLoadMk[mk]; puLoading=Object.keys(puLoadMk).length>0; puStaffRefresh()});
+    return Promise.all(jobs).then(function(){puProd[mk]=out; puProdAt[mk]=Date.now(); delete puLoadMk[mk]; puLoading=Object.keys(puLoadMk).length>0; try{if(!$("ov").hidden&&(sheetMode==="floorsec"||sheetMode==="floorall"))renderSheet()}catch(e){} if(!$("pu").hidden&&$("ov").hidden)puRender(); else if(puD)puFormInfo(); puStaffRefresh()},function(){delete puLoadMk[mk]; puLoading=Object.keys(puLoadMk).length>0; puStaffRefresh()});
   }
   function puAutoIdx(mk){
     var P=puProd[mk]; if(!P)return null;
@@ -12158,7 +12159,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     MP.q=e.target.value; var fm=machinesList.filter(function(x){return x.id===floorMacId})[0], l=$("mplist");
     if(fm&&l)l.innerHTML=mpPickListHtml(fm,mpSecNow(fm));
   });
-  var MAC_DEPTS=["Rotil","Rozet","Ortak"];
+  var MAC_DEPTS=["Rotil","Cıvata","Rozet","Ortak"];
   function macDeptOf(m){return (m&&m.dept)||"Rotil"}
   function macLabel(m){return m?macDeptOf(m)+" - "+(m.name||""):""}
   function macFault(m){return m&&m.st==="ariza"}
@@ -12294,7 +12295,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var totalPlan=0,totalDone=0; items.forEach(function(it){totalPlan+=it.planQ; totalDone+=it.wdone});
     return {items:items,totalPlan:totalPlan,totalDone:totalDone};
   }
-  var MAC_DEPT_COL={"Rotil":"#2A6FB0","Rozet":"#B07CE8","Ortak":"#E8A24B"};
+  var MAC_DEPT_COL={"Rotil":"#2A6FB0","Cıvata":"#E0702B","Rozet":"#B07CE8","Ortak":"#E8A24B"};
   function floorBoxHtml(s,scope){
     var h=floorBoxHtml0(s,scope), fm0=floorMachine(s.label);
     if(!fm0)return h;
@@ -12314,6 +12315,27 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     });
     return names.length?'<small class="fbsec">'+esc(names.join(" + "))+'</small>':'';
   }
+  // Bölüm fark etmeden: o makinede (plan olmasa bile) üretim girişlerinden hangi ürün yapılmış
+  function macProdOn(mid,isos){
+    var out={}, ord=[]; if(!mid)return [];
+    isos.forEach(function(iso){
+      var P=puProd[iso.slice(0,7)]; if(!P)return;
+      Object.keys(P).forEach(function(dv){Object.keys(P[dv]).forEach(function(sid){
+        ((P[dv][sid]||{})[iso]||[]).forEach(function(l){
+          if(!l||l.m!==mid||!l.c||!(+l.q>0))return;
+          var k=fold(l.c), e=out[k]; if(!e){e=out[k]={code:l.c,q:0,sec:sid}; ord.push(k)} e.q+=+l.q;
+        });
+      })});
+    });
+    return ord.map(function(k){return out[k]}).sort(function(a,b){return b.q-a.q});
+  }
+  function macProdBox(m,s,pl,cls,style,lbl){
+    var f=pl[0], img="", tot=0; try{img=codeThumb(f.code)||""}catch(e){} pl.forEach(function(x){tot+=x.q});
+    var st=STAGES.filter(function(x){return x.sec===f.sec})[0], stn=st?st.short:secNameOf(f.sec);
+    return '<button type="button" class="'+cls+' busy" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(img?'<img class="fbimg" alt="" src="'+img+'">':'')+
+      '<small class="fbcode">'+esc(f.code)+(pl.length>1?' +'+(pl.length-1):'')+'</small>'+(stn?'<small class="fbsec">'+esc(stn)+'</small>':'')+
+      '<b class="fbstat">'+lbl+' '+nf.format(tot)+'</b><small class="fbdone">Üretimden</small></button>';
+  }
   function floorBoxHtml0(s,scope){
     var m=floorMachine(s.label);
     var style="grid-column:"+s.col+" / span "+s.cs+";grid-row:"+s.row+" / span "+s.rs+";";
@@ -12321,7 +12343,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       var wst=m?jobWeekStats(m,floorWeekMonday()):null;
       var wbusy=!!(m&&(m.job||wst));
       var wcls="fbox"+(m?"":" empty")+(wbusy?" busy":"")+(s.vert?" vert":"");
-      if(!wbusy)return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
+      if(!wbusy){
+        var wmon=floorWeekMonday(), wis=[0,1,2,3,4,5,6].map(function(i){return isoAdd(wmon,i)}), wpl=m?macProdOn(m.id,wis):[];
+        if(wpl.length)return macProdBox(m,s,wpl,wcls,style,"Yapılan");
+        return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
+      }
       if(!wst){
         var wjimg=jobThumb(m.job);
         return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wjimg?'<img class="fbimg" alt="" src="'+wjimg+'">':'')+(m.job.code?'<small class="fbcode">'+esc(m.job.code)+'</small>':'')+fbSecTag([m.job.sec])+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
@@ -12334,7 +12360,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var st=m?jobDayStats(m,floorDayIso()):null;
     var busy=!!(m&&(m.job||st));
     var cls="fbox"+(m?"":" empty")+(busy?" busy":"")+(s.vert?" vert":"");
-    if(!busy)return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
+    if(!busy){
+      var dpl=m?macProdOn(m.id,[floorDayIso()]):[];
+      if(dpl.length)return macProdBox(m,s,dpl,cls,style,"Yapılan");
+      return '<button type="button" class="'+cls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(m?'':'<small>+ ekle</small>')+'</button>';
+    }
     var code=st?st.ord.code:(m.job.code||""), img=jobThumb(st?{oid:st.ord.id}:m.job);
     // Aynı gün bu makineye birden fazla plan satırı girilmişse (farklı ürün / bölüm) ilkini göster, diğerlerini "+N" ile belirt.
     var dayExtra=[]; if(st&&st.fromPlan&&!st.weekly){
