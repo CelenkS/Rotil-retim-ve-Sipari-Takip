@@ -4513,7 +4513,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 14:07</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 15:07</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9220,7 +9220,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var by={}, order=[], f=fold(m.name||"");
     function add(p,part,wt,cut){var e=by[p.id]; if(!e){e=by[p.id]={p:p,parts:[],wt:0,cut:""}; order.push(p.id)} if(part&&e.parts.indexOf(part)<0)e.parts.push(part); e.wt+=wt||0; if(cut&&!e.cut)e.cut=cut}
     try{rawList(ps).forEach(function(r){if(fold(r.name)!==f)return; r.uses.forEach(function(u){add(u.p,u.part,u.wt*1000,u.cut)})})}catch(e){}
-    if(m._div==="civata")ps.forEach(function(p){if(p.cv&&fold(cvBarName(p))===f)add(p,"Cıvata gövdesi",cvKg(p)*1000,"")});
+    if(m._div==="civata")ps.forEach(function(p){if(p.cv&&cvBarKeyM(m.name)&&cvBarKeyM(m.name)===cvBarKeyP(p))add(p,"Cıvata gövdesi",cvKg(p)*1000,"")});
     if(!m.virt)ps.forEach(function(p){if(by[p.id])return; (p.parts||[]).forEach(function(x){if(x&&x.m===m.id)add(p,x.n||"Parça",pnum(x.wt)*(pnum(x.q)||1)*1000,"")})});
     if(m.id==="zs_govde"&&m._div==="rotil"){
       ps.forEach(function(p){if(+p.cat!==0||ZS_NOGOV[prKey(p.code)]||by[p.id])return; add(p,"Gövde ×"+ZS_GOV_Q,0,"")});
@@ -14263,13 +14263,26 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   var cvF={std:"",kal:"",renk:"",m:"",fav:""};
   function cvKg(p){return +(p.nw||0)}
   /* Cıvata hammaddesi: bar çapı = metrik ölçü; 10.9 → 5140, 8.8 → 1040 */
+  // Çap: ürünün M ölçüsünden (M27 → 27); kalite: 8.8 → 1040, 10.9 → 5140
+  function cvBarD(p){
+    var c=p&&p.cv; if(!c)return 0;
+    var m=String(c.m||"").match(/(\d+(?:[.,]\d+)?)/)||String(p.name||p.code||"").match(/M\s*(\d+(?:[.,]\d+)?)/i);
+    return m?parseFloat(String(m[1]).replace(",",".")):(+c.d||0);
+  }
+  function cvBarSt(p){
+    var c=p&&p.cv; if(!c)return ""; var k=String(c.kal||"").replace(",","."); if(!k){var mm=String(p.name||p.code||"").match(/\b(8\.8|10\.9)\b/); k=mm?mm[1]:""}
+    return k==="10.9"?"5140":(k==="8.8"?"1040":"");
+  }
+  function cvBarKeyP(p){var d=cvBarD(p), st=cvBarSt(p); return (d>0&&st)?(d+"|"+st):""}
+  function cvBarKeyM(n){var m=String(n||"").match(/^\s*S[ıi]cak [ÇC]elik Bar\s+(\d+(?:[.,]\d+)?)\s*X\s*(1040|5140)\b/i); return m?(parseFloat(m[1].replace(",","."))+"|"+m[2]):""}
   function cvBarName(p){
-    var c=p&&p.cv; if(!c||!(+c.d>0))return ""; var k=String(c.kal), st=k==="10.9"?"5140":(k==="8.8"?"1040":""); if(!st)return "";
-    return "Sıcak Çelik Bar "+String(c.d)+"X"+st+" ("+k+" sınıfı)";
+    var d=cvBarD(p), st=cvBarSt(p); if(!(d>0)||!st)return "";
+    var k=st==="5140"?"10.9":"8.8";
+    return "Sıcak Çelik Bar "+String(d).replace(".",",")+"X"+st+" ("+k+" sınıfı)";
   }
   function cvBarMat(p){
-    var n=cvBarName(p); if(!n)return null; var f=fold(n), l=(amBy&&amBy.civata)||[];
-    return l.filter(function(m){return fold(m.name||"")===f})[0]||null;
+    var key=cvBarKeyP(p); if(!key)return null; var l=(amBy&&amBy.civata)||[];
+    return l.filter(function(m){return cvBarKeyM(m.name)===key})[0]||null;
   }
   function cvBarTxt(p){
     var n=cvBarName(p); if(!n)return "—"; var m=cvBarMat(p), kg=cvKg(p), t=esc(n);
