@@ -4513,7 +4513,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 13:55</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 14:05</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5210,7 +5210,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function subOf(id){return subDepts.filter(function(x){return x.id===id})[0]||null}
   function subLabel(x){return x?(x.g+" - "+x.n):""}
   var stfQ="", stfGrp="", stfSub="", stfNat="", stfMF="", empDetId=null, employees=[], unsubEmp=null, machinesList=[], unsubMac=null, stfTab="emp", empEditId=null, macEditId=null;
-  var empSecsDraft=[], empMacsDraft=[], mcSecsDraft=[], macBulkSecsDraft=[];
+  var empSecsDraft=[], empMacsDraft=[], mcSecsDraft=[], mcDeptsDraft=null, macBulkSecsDraft=[];
   // Eleman/makine üretim girişine bağlanıyor: her bölümün kendi curEmp/curMac'i var (müşteri
   // seçimi curCust gibi), sadece o bölüme atanmış elemanlar/makineler arasından seçiliyor.
   var curEmp="", curMac="";
@@ -5656,7 +5656,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     box.innerHTML='<div class="dph"><h3>'+(selected===todayIso?"Bugünün planı":esc(isoDayLabel(selected))+" planı")+' · '+items.length+' ürün</h3>'+(pend>1?'<button type="button" class="dpall" data-dpall="1">▶ Hepsini üretime gir</button>':'')+'</div>'+
       items.map(function(pe){
         var o=orders.filter(function(z){return z.id===pe.oid})[0], mo=pe.mid?machinesList.filter(function(m){return m.id===pe.mid})[0]:null, st=dpStarted(pe), key=pe.oid+"|"+(pe.mid||"");
-        return '<div class="dpr"><div class="dpt"><b>'+esc(o.code)+'</b><small>'+esc((o.cust||"Müşteri yok")+" · planlanan "+nf.format(pe.q)+(mo?" · "+macLabel(mo):""))+'</small></div>'+
+        return '<div class="dpr"><div class="dpt"><b>'+esc(oTi(o))+'</b><small>'+esc((o.cust||"Müşteri yok")+" · planlanan "+nf.format(pe.q)+(mo?" · "+macLabel(mo):""))+'</small></div>'+
           '<button type="button" class="dpau'+(pe.au?' on':'')+'" data-dpau="'+esc(key)+'" aria-pressed="'+(pe.au?'true':'false')+'">'+(pe.au?'⏱ Otomatik açık':'⏱ Otomatik kapalı')+'</button>'+
           (st?'<span class="dpok">✓ Üretimde</span>':'<button type="button" class="dpg" data-dpgo="'+esc(key)+'">▶ Üretime gir</button>')+'</div>';
       }).join("");
@@ -6135,7 +6135,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       var html=matches.map(function(m){
         var l=m.l, catName=COLS[l.k]||"";
         return '<button type="button" class="gline d'+l.k+'" data-date="'+m.iso+'">'+
-          '<div class="ltop"><span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="ltime">'+fmtD(m.iso)+' · '+fmtTime(l.t)+'</span><span class="amt">'+money(l.q*l.p)+' ₺</span></div>'+
+          '<div class="ltop"><span class="code">'+esc(cvTi(l.c))+(l.o?'<span class="ot">Sipariş</span>':'')+'</span><span class="ltime">'+fmtD(m.iso)+' · '+fmtTime(l.t)+'</span><span class="amt">'+money(l.q*l.p)+' ₺</span></div>'+
           '<div class="gsub"><span class="gcat">'+esc(catName)+'</span> · '+esc(l.u||"Müşteri yok")+' · '+nf.format(l.q)+' adet</div>'+
           '</button>';
       }).join("");
@@ -6183,7 +6183,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         var emp=nameOf(employees,l.e), mac=(function(){var mo=machinesList.filter(function(y){return y.id===l.m})[0]; return mo?macLabel(mo):""})(), tm=fmtTime(l.t);
         h+='<div class="dcard '+cls+'">'+
           (img?'<img class="dcth" alt="" src="'+img+'">':'<div class="dcth ph">'+esc((l.c||"?").charAt(0).toUpperCase())+'</div>')+
-          '<div class="dcb"><div class="dcc"><b>'+esc(l.c)+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
+          '<div class="dcb"><div class="dcc"><b>'+esc(cvTi(l.c))+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
           '<div class="dcu">'+esc(l.u||"Müşteri yok")+'</div>'+
           ((emp||mac||tm||(l.a&&l.b))?'<div class="dcm">'+(tm?'<span>🕒 '+tm+'</span>':'')+(wkNet(l.a,l.b)?'<span>⏱ '+esc(l.a)+'–'+esc(l.b)+' · net '+wkFmt(wkNet(l.a,l.b).net)+'</span>':'')+(mac?'<span>⚙ '+esc(mac)+'</span>':'')+(emp?'<span>👤 '+esc(emp)+'</span>':'')+'</div>':'')+'</div>'+
           '<div class="dcr"><b>'+nf.format(l.q)+'</b><small>adet</small><em>'+money(l.q*l.p)+' ₺</em></div>'+
@@ -6256,7 +6256,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         var dchips=x.days.map(function(d){return '<button type="button" class="dcday" data-wday="'+d.iso+'">'+(+d.iso.slice(8))+' '+AY[+d.iso.slice(5,7)-1]+' · '+nf.format(d.q)+'</button>'}).join("");
         h+='<div class="dcard '+cls+'">'+
           (img?'<img class="dcth" alt="" src="'+img+'">':'<div class="dcth ph">'+esc((l.c||"?").charAt(0).toUpperCase())+'</div>')+
-          '<div class="dcb"><div class="dcc"><b>'+esc(l.c)+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
+          '<div class="dcb"><div class="dcc"><b>'+esc(cvTi(l.c))+'</b>'+(l.o?'<span class="ot">Sipariş</span>':'')+'</div>'+
           '<div class="dcu">'+esc(l.u||"Müşteri yok")+'</div>'+
           (cardMode==="ay"?'<details class="dcdet"><summary>'+x.days.length+' gün üretildi</summary><div class="dcdays">'+dchips+'</div></details>':'<div class="dcdays">'+dchips+'</div>')+'</div>'+
           '<div class="dcr"><b>'+nf.format(l.q)+'</b><small>adet</small><em>'+money(x.rev)+' ₺</em></div>'+
@@ -6299,7 +6299,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           var l=ls[i];
           var lod=l.o?orders.filter(function(x){return x.id===l.o})[0]:null;
           html+='<div class="line '+headClass+'" data-idx="'+i+'">'+
-            '<div class="ltop">'+(function(){var th=(lod&&lod.th)||(l.cj?"":codeThumb(l.c)); return th?'<img class="lthumb" alt="" src="'+th+'">':''})()+'<span class="code">'+esc(l.c)+(l.o?'<span class="ot">Sipariş</span>':'')+(l.cj?'<span class="ot">Bileşen</span>':'')+(l.zs?'<span class="ot">Stok</span>':'')+'</span><span class="ltime" id="lt'+i+'">'+fmtTime(l.t)+'</span><span class="amt" id="la'+i+'"></span></div>'+
+            '<div class="ltop">'+(function(){var th=(lod&&lod.th)||(l.cj?"":codeThumb(l.c)); return th?'<img class="lthumb" alt="" src="'+th+'">':''})()+'<span class="code">'+esc(cvTi(l.c))+(l.o?'<span class="ot">Sipariş</span>':'')+(l.cj?'<span class="ot">Bileşen</span>':'')+(l.zs?'<span class="ot">Stok</span>':'')+'</span><span class="ltime" id="lt'+i+'">'+fmtTime(l.t)+'</span><span class="amt" id="la'+i+'"></span></div>'+
             ((l.o||l.cj)?'<div class="lord" id="lo'+i+'"></div>':'')+
             ((IS_RZ&&sec.id==="cncg"&&!l.cj)?'<div class="sdsel" role="group" aria-label="Ön veya arka işleme">'+[["","Genel"],["o","Ön işleme"],["a","Arka işleme"]].map(function(x){return '<button type="button" data-sdset="'+i+'" data-sdv="'+x[0]+'" aria-pressed="'+((l.sd||"")===x[0])+'">'+x[1]+'</button>'}).join("")+'</div>':'')+
             '<select class="lsel" data-f="u" aria-label="'+esc(l.c)+' müşteri">'+custOptions(l.u||"")+'</select>'+
@@ -6663,13 +6663,13 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       html+='<div class="items" style="margin-top:12px">'+(plist.length?plist.map(function(x){
         var o=x.o, pc=x.nd?Math.min(100,Math.round(x.dn/x.nd*100)):0, asg=planAssignFor(o.id), macOpts=machinesInSec(sec.id).filter(function(mm){return !planFCap||(mm.caps||[]).indexOf(planFCap)>-1||mm.id===asg.mid}), selMac=asg.mid?machinesList.filter(function(mm){return mm.id===asg.mid})[0]:null;
         return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
-          (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+          (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
           '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
           '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b></div></div>'+
           '<div class="pg"><div class="pgt"><span>'+esc(sec.name)+' · yapılan '+nf.format(x.dn)+' / '+nf.format(x.nd)+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':'%'+pc)+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
-          '<div class="plnwrap"><label class="plnlbl" for="pln-'+o.id+'">'+(planScope==="day"?"Bugün planlanan adet":"Bu haftaki planlanan adet")+'</label><input id="pln-'+o.id+'" class="plninput" type="number" inputmode="numeric" min="0" data-planq="'+o.id+'" data-plnprice="'+x.price+'" value="'+(x.pq||"")+'" placeholder="0" aria-label="'+esc(o.code)+' planlanan adet"></div>'+
+          '<div class="plnwrap"><label class="plnlbl" for="pln-'+o.id+'">'+(planScope==="day"?"Bugün planlanan adet":"Bu haftaki planlanan adet")+'</label><input id="pln-'+o.id+'" class="plninput" type="number" inputmode="numeric" min="0" data-planq="'+o.id+'" data-plnprice="'+x.price+'" value="'+(x.pq||"")+'" placeholder="0" aria-label="'+esc(oTi(o))+' planlanan adet"></div>'+
           (planScope==="day"?'<label class="plau"><input type="checkbox" data-planau="'+o.id+'"'+(asg.au?' checked':'')+'> Günü gelince üretime gir <small>(adet akşam yazılır)</small></label>':'')+
-          (planScope==="day"?(function(){var pt=planTimeFor(o.id); return '<div class="ptm"><span class="ptl">⏱ Süre</span><input type="time" data-plta="'+o.id+'" value="'+esc(pt.a)+'" aria-label="'+esc(o.code)+' başlangıç"><span class="lts">–</span><input type="time" data-pltb="'+o.id+'" value="'+esc(pt.b)+'" aria-label="'+esc(o.code)+' bitiş"></div><div class="ptmi" data-plti="'+o.id+'">'+planTimeInfo(o.code,pt.a,pt.b,x.pq)+'</div>'})():'')+
+          (planScope==="day"?(function(){var pt=planTimeFor(o.id); return '<div class="ptm"><span class="ptl">⏱ Süre</span><input type="time" data-plta="'+o.id+'" value="'+esc(pt.a)+'" aria-label="'+esc(oTi(o))+' başlangıç"><span class="lts">–</span><input type="time" data-pltb="'+o.id+'" value="'+esc(pt.b)+'" aria-label="'+esc(oTi(o))+' bitiş"></div><div class="ptmi" data-plti="'+o.id+'">'+planTimeInfo(o.code,pt.a,pt.b,x.pq)+'</div>'})():'')+
           (x.pq>0&&macOpts.length?(
             '<div class="plnwrap" style="margin-top:6px"><label class="plnlbl">Hangi makine yapacak</label><select class="fin" data-planmid="'+o.id+'" style="height:40px;font-size:13px">'+
               '<option value="">Seçilmedi</option>'+
@@ -6695,7 +6695,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
         var ikal=Math.max(0,it.plan-it.done), iover=Math.max(0,it.done-it.plan);
         return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
-          (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+          (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
           '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
           '<span class="pvbadge'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div>'+
           '<div class="pvcmp"><div class="pvc"><span>Planlanan</span><b>'+nf.format(it.plan)+'</b></div><div class="pvc dn"><span>'+(it.mid?'Bu makinede yapılan':'Yapılan')+'</span><b>'+nf.format(it.done)+'</b></div><div class="pvc kl'+(fin?' ok':'')+'"><span>'+(iover?'Fazla':'Kalan')+'</span><b>'+nf.format(iover||ikal)+'</b></div></div>'+
@@ -6816,7 +6816,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       html+='<div class="shead"><div><h2 id="sh-title">'+(macEditId?"Makineyi düzenle":"Yeni makine")+'</h2><small>Ad ve bölüm(ler) — aynı makine birden fazla bölümde (ör. ortak bir CNC havuzu) kullanılıyorsa hepsini seç</small></div></div>'+
         '<div class="form">'+
         '<div><label class="fl" for="mcname">Makine adı</label><input class="fin" id="mcname" autocomplete="off" placeholder="ör. CNC 1" value="'+esc(mc.name)+'"></div>'+
-        '<div><label class="fl" for="mcdept">Hangi bölümün makinesi</label><select class="fin" id="mcdept">'+MAC_DEPTS.map(function(d){return '<option value="'+d+'"'+(macDeptOf(mc)===d?" selected":"")+'>'+d+(d==="Ortak"?" (Rotil + Rozet ortak)":"")+'</option>'}).join("")+'</select></div>'+
+        '<div><span class="fl">Hangi bölümün makinesi <small>(birden fazla seçilebilir)</small></span><div class="chiprow" id="mcdepts">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mcdept="'+d+'" aria-pressed="'+((mcDeptsDraft||macDeptsOf(mc)).indexOf(d)>-1)+'">'+d+(d==="Ortak"?" (Rotil + Rozet ortak)":"")+'</button>'}).join("")+'</div></div>'+
         '<div><label class="fl" for="mctype">Makine türü (makine bölümü)</label><input class="fin" id="mctype" autocomplete="off" list="mctypedl" placeholder="ör. CNC, Transfer, Testere, Pres — boşsa addan bulunur" value="'+esc(mc.tp||"")+'"><datalist id="mctypedl">'+(function(){var seen={},o=["CNC","Transfer","Testere","Pres","Ovalama"]; machinesList.forEach(function(m){o.push(macTypeOf(m))}); return o.filter(function(x){var k=fold(x); if(seen[k])return false; seen[k]=1; return true}).map(function(x){return '<option value="'+esc(x)+'">'}).join("")})()+'</datalist></div>'+
         '<div><span class="fl">Bölüm(ler)</span><div class="chiprow">'+SECTIONS.map(function(x){return '<button type="button" data-mcsec="'+x.id+'" aria-pressed="'+(mcSecsDraft.indexOf(x.id)>-1)+'">'+esc(x.name)+'</button>'}).join("")+'</div></div>'+
         '<div><label class="fl" for="mcbrand">Marka</label><input class="fin" id="mcbrand" autocomplete="off" placeholder="ör. Fanuc Series 0i-TF Plus" value="'+esc(mc.brand||"")+'"></div>'+
@@ -6856,7 +6856,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         html+='<div class="shead"><div><h2 id="sh-title" style="font-size:22px">'+esc(macLabel(fm))+'</h2><small>'+(macFault(fm)?"⚠ Arızalı":"Çalışıyor")+(fmBusy?" · aktif iş var":"")+'</small></div><button type="button" class="btn ghost" id="mddone2">Kapat</button></div>'+
           '<div class="form">'+
           mpHtml(fm)+
-          '<div class="capsel" style="margin:0 0 8px">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mddept="'+d+'" style="--cc:'+(MAC_DEPT_COL[d]||"#E8A24B")+'" aria-pressed="'+(macDeptOf(fm)===d)+'">'+d+'</button>'}).join("")+'</div>'+
+          '<div class="capsel" style="margin:0 0 8px">'+MAC_DEPTS.map(function(d){return '<button type="button" data-mddept="'+d+'" style="--cc:'+(MAC_DEPT_COL[d]||"#E8A24B")+'" aria-pressed="'+(macDeptsOf(fm).indexOf(d)>-1)+'">'+d+'</button>'}).join("")+'</div>'+
           '<div class="mdst"><button type="button" data-mdst="ok" aria-pressed="'+!macFault(fm)+'">● Çalışıyor</button><button type="button" data-mdst="ariza" aria-pressed="'+macFault(fm)+'">⚠ Arızalı</button></div>'+
           (macFault(fm)?'<div><label class="fl" for="mdfnote">Arıza notu — ne sorunu var?</label><textarea class="fin" id="mdfnote" rows="2" placeholder="ör. spindle ısınıyor, yağ kaçırıyor, parça bekleniyor…">'+esc(fm.faultNote||"")+'</textarea>'+(fm.faultTs?'<small style="color:var(--ink2)">Arıza başlangıcı: '+esc(new Date(fm.faultTs).toLocaleDateString("tr-TR",{day:"numeric",month:"long"}))+'</small>':"")+'</div>':"")+
           '<div><label class="fl" for="mdnote">Makine notu</label><textarea class="fin" id="mdnote" rows="2" placeholder="ör. bakım tarihi, ayar bilgisi…">'+esc(fm.note||"")+'</textarea></div>'+
@@ -6866,7 +6866,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           (fmBusy?
             ('<div class="mdjob"><div class="mdjt">AKTİF İŞ (şu an üzerinde çalışılan)</div><div class="mdjrow">'+
              (fmImg?'<img class="mdjimg" alt="" src="'+fmImg+'">':'<div class="mdjimg ph">'+esc((fm.job.code||"?").charAt(0).toUpperCase())+'</div>')+
-             '<div style="flex:1;min-width:0"><div class="mdjcode">'+esc(fm.job.code)+'</div><div class="esub" style="font:600 13px var(--font-ui);color:var(--ink2);margin-top:2px">'+esc(secNameOf(fm.job.sec))+(fm.job.cust?' · '+esc(fm.job.cust):'')+'</div></div>'+
+             '<div style="flex:1;min-width:0"><div class="mdjcode">'+esc(cvTi(fm.job.code))+'</div><div class="esub" style="font:600 13px var(--font-ui);color:var(--ink2);margin-top:2px">'+esc(secNameOf(fm.job.sec))+(fm.job.cust?' · '+esc(fm.job.cust):'')+'</div></div>'+
              '</div>'+
              '<button type="button" class="btn" data-jobenter="1" style="margin-top:14px;width:100%;padding:15px;font-size:16px">Üretim gir</button>'+
              '<button type="button" class="btn ghost" data-jobclear="1" style="margin-top:8px;width:100%">İşi bitir / kaldır</button></div>')
@@ -6907,7 +6907,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           html+='<div class="items">'+(jol.length?jol.map(function(x){
             var o=x.o, mu=muOf(o,jsi), rem=x.fin&&stClosed(o,jsi)?0:Math.max(0,x.nd-x.d), pc=x.nd?Math.min(100,Math.round(x.d/x.nd*100)):0;
             return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+jSc+'"><div class="orow">'+
-              (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+              (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
               '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
               '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b>'+(mu>1?'<span>×'+mu+' = '+nf.format(x.nd)+'</span>':'')+'</div></div>'+
               '<div class="pg"><div class="pgt"><span>'+esc(secNameOf(jobDraftSec))+' · yapılan '+nf.format(x.d)+' / '+nf.format(x.nd)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
@@ -6926,7 +6926,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           html+='<div class="items">'+(jpl.length?jpl.map(function(x){
             var o=x.o, pc=x.planQ?Math.min(100,Math.round(x.wdone/x.planQ*100)):0;
             return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+jSc+'"><div class="orow">'+
-              (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+              (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
               '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
               '<div class="oq2">planlanan<b>'+nf.format(x.planQ)+'</b></div></div>'+
               '<div class="pg"><div class="pgt"><span>bu hafta yapılan '+nf.format(x.wdone)+' / '+nf.format(x.planQ)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(x.rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
@@ -7018,7 +7018,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           var o=x.o, t=0; lines(selected).forEach(function(l){if(l.o===o.id)t+=l.q});
           var mu=muOf(o,stageIdx(sec.id)), rem=x.fin&&stClosed(o,si)?0:Math.max(0,x.nd-x.d), pc=x.nd?Math.min(100,Math.round(x.d/x.nd*100)):0, aq=addQ[o.id]||1;
           return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
-            (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+            (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
             '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div></div>'+
             '<div class="oq2">sipariş<b>'+nf.format(o.qty)+'</b>'+(mu>1?'<span style="color:var(--sc)">×'+mu+' = '+nf.format(x.nd)+'</span>':'')+'</div></div>'+
             '<div class="pg"><div class="pgt"><span>'+esc(sec.name)+' · yapılan '+nf.format(x.d)+' / '+nf.format(x.nd)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
@@ -7033,7 +7033,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         html+=head+emRow+srch+'<div class="items">'+(pl.length?pl.map(function(x){
           var o=x.o, pc=x.planQ?Math.min(100,Math.round(x.wdone/x.planQ*100)):0, rk=x.rk, aq=addQ[rk]||1, mo=x.mid?machinesList.filter(function(y){return y.id===x.mid})[0]:null;
           return '<div class="oc2 d'+(o.cat||0)+(x.fin?' fin2':'')+'" style="--sc:'+sec.h1+'"><div class="orow">'+
-            (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
+            (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
             '<div class="obody"><div class="code" style="font:700 16px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+' · '+esc(ORDER_CATS[o.cat]||"")+'</div>'+(x.multi?'<div class="pmac'+(mo?'':' none')+'">🔧 '+(mo?esc(macLabel(mo)):'Makine seçilmedi')+'</div>':(mo?'<div class="pmac">🔧 '+esc(macLabel(mo))+'</div>':''))+'</div>'+
             '<div class="oq2">planlanan<b>'+nf.format(x.planQ)+'</b></div></div>'+
             '<div class="pg"><div class="pgt"><span>bu hafta yapılan '+nf.format(x.wdone)+' / '+nf.format(x.planQ)+' · %'+pc+'</span><span class="rem'+(x.fin?' ok':'')+'">'+(x.fin?'✓ Tamam':nf.format(x.rem)+'<small>kalan</small>')+'</span></div><div class="pgb"><i style="width:'+pc+'%"></i></div></div>'+
@@ -7696,6 +7696,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       if(db&&empEditId)db.doc("employees/"+empEditId).delete().catch(function(){});
       empEditId=null; closeSheet(); return;
     }
+    if(t.dataset.mcdept!==undefined){
+      var mcdl=(mcDeptsDraft||macDeptsOf(machinesList.filter(function(x){return x.id===macEditId})[0])).slice(), mcdi=mcdl.indexOf(t.dataset.mcdept);
+      if(mcdi>-1){if(mcdl.length>1)mcdl.splice(mcdi,1)}else mcdl.push(t.dataset.mcdept);
+      mcDeptsDraft=mcdl; renderSheet(); return;
+    }
     if(t.dataset.mcsec!==undefined){
       var mcsid=t.dataset.mcsec, mcsidx=mcSecsDraft.indexOf(mcsid);
       if(mcsidx>-1)mcSecsDraft.splice(mcsidx,1); else mcSecsDraft.push(mcsid);
@@ -7707,7 +7712,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       var mcnote=($("mcnote")?$("mcnote").value.trim():"");
       var mcbrand=($("mcbrand")?$("mcbrand").value.trim():""), mcmodel=($("mcmodel")?$("mcmodel").value.trim():""), mcyear=($("mcyear")?$("mcyear").value.trim():"");
       if(!db){$("stfstatus").textContent="Bağlantı yok, kaydedilemedi";return}
-      var mcdata={name:mcname,dept:($("mcdept")?$("mcdept").value:"Rotil"),tp:($("mctype")?$("mctype").value.trim():""),secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
+      var mcDs=MAC_DEPTS.filter(function(d){return (mcDeptsDraft||[]).indexOf(d)>-1}); if(!mcDs.length)mcDs=macEditId?macDeptsOf(machinesList.filter(function(x){return x.id===macEditId})[0]):["Rotil"]; mcDeptsDraft=null;
+      var mcdata={name:mcname,dept:mcDs[0],depts:mcDs,tp:($("mctype")?$("mctype").value.trim():""),secs:mcSecsDraft.slice(),note:mcnote,brand:mcbrand,model:mcmodel,modelYear:mcyear};
       // Makinede henüz floorSlot yoksa (ör. toplu eklenen eski CNC 1-18 gibi, hâlâ ada göre
       // eşleşiyordu) — hangi ekrandan düzenlendiğine bakmaksızın (kroki kartından VEYA düz
       // Makineler listesinden "düzenle"), eski adı bir kroki kutusu etiketiyle birebir
@@ -7779,7 +7785,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(t.id==="mdopen"){
       if(!floorMacId)return;
       var fme=machinesList.filter(function(x){return x.id===floorMacId})[0]; if(!fme)return;
-      macEditId=fme.id; mcSecsDraft=(fme.secs||[]).slice(); sheetMode="macform"; renderSheet(); return;
+      macEditId=fme.id; mcDeptsDraft=macDeptsOf(fme).slice(); mcSecsDraft=(fme.secs||[]).slice(); sheetMode="macform"; renderSheet(); return;
     }
     if(t.dataset.jobenter!==undefined){
       var fmj=floorMacId?machinesList.filter(function(x){return x.id===floorMacId})[0]:null; if(!fmj||!fmj.job)return;
@@ -7956,7 +7962,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     // yoksa hangi elemanın ne kadar ürettiği karışır.
     arr.forEach(function(l,i){if(hit<0&&l.o===o.id&&l.p===price&&l.k===k&&(l.e||"")===curEmp&&(l.m||"")===mc)hit=i});
     if(hit>-1){var l=Object.assign({},arr[hit]);l.q+=n;l.t=Date.now();arr[hit]=l}
-    else{arr.push(cnSd({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:mc||"",t:Date.now()},o)); logActivity(sec.name+": "+o.code+" için "+nf.format(n)+" adet üretim girildi (sipariş)","prod",{oid:o.id,code:o.code,sec:sec.id})}
+    else{arr.push(cnSd({c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,e:curEmp||"",m:mc||"",t:Date.now()},o)); logActivity(sec.name+": "+oTi(o)+" için "+nf.format(n)+" adet üretim girildi (sipariş)","prod",{oid:o.id,code:o.code,sec:sec.id})}
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
     applyRecipeUsage(o.code,n); cpAfterLine({o:o.id},n); zsAfterLine({o:o.id},n);
@@ -7973,7 +7979,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var arr=lines(selected).slice();
     if(arr.some(function(l){return l.o===o.id&&(!mac||(l.m||"")===mac)}))return false; // zaten bugün listede
     arr.push(cnSd({c:o.code,k:k,q:0,p:price,u:o.cust||"",o:o.id,e:eid||curEmp||"",m:mc||"",t:Date.now()},o));
-    logActivity(sec.name+": "+o.code+" üretime girdi (adet akşam girilecek)","prod",{oid:o.id,code:o.code,sec:sec.id});
+    logActivity(sec.name+": "+oTi(o)+" üretime girdi (adet akşam girilecek)","prod",{oid:o.id,code:o.code,sec:sec.id});
     lns[selected]=arr; touch(); renderLines();
     if(COLS.length!==before)renderAll();
     return true;
@@ -8433,8 +8439,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function nliHtml(o,secId,catIdx){
     var si=stageIdx(secId), sg=STAGES[si], nd=o.qty*muOf(o,si), dn=Math.min(doneOf(o.id,secId).q,nd), pc=nd?Math.round(dn/nd*100):0, fin=nd>0&&dn>=nd;
     return '<div role="button" tabindex="0" class="nli'+(fin?' nfin':'')+'" data-oid="'+o.id+'">'+
-      (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-      '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b>'+statusChips(o)+'</div>'+
+      (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
+      '<div class="nlb"><div class="nlt"><b>'+esc(oTi(o))+'</b>'+statusChips(o)+'</div>'+
       '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
       '<div class="nlqs"><div class="nlq"><span>Sipariş adedi</span><b>'+nf.format(o.qty)+' adet</b></div>'+amtChip([o])+'</div>'+
       '<div class="nlbar"><i style="width:'+Math.min(100,pc)+'%;background:var(--p'+catIdx+')"></i></div></div>'+
@@ -8487,8 +8493,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function statRowHtml(o){
     var c=isComplete(o), tot=o.shipped?shTotal(o):orderTotal(o);
     return '<div role="button" tabindex="0" class="nli" data-oid="'+o.id+'">'+
-      (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-      '<div class="nlb"><div class="nlt"><b>'+esc(o.code)+'</b></div>'+
+      (o.th?'<img class="nlth" alt="" src="'+o.th+'">':'<div class="nlth ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
+      '<div class="nlb"><div class="nlt"><b>'+esc(oTi(o))+'</b></div>'+
       '<div class="nlc">'+esc(o.cust||"Müşteri yok")+'</div>'+
       '<div class="nlcat"><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p'+(o.cat%6)+');margin-right:5px"></span>'+esc(ORDER_CATS[o.cat]||"")+'</div>'+
       '<div class="nlchips">'+statusChips(o)+(o.shipped&&o.shipDate?'<span class="due ok">Gönderim '+fmtD(o.shipDate)+'</span>':dueChip(o,c||o.shipped))+'</div></div>'+
@@ -8596,7 +8602,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         h+='<div class="needsplit">'+cs.map(function(c){
           var cp=Math.round(c.done/c.req*100), co=cnKey===sg.sec+"|"+c.k;
           var r='<button type="button" class="needcatrow click" data-cnk="'+esc(sg.sec+"|"+c.k)+'"><span class="nn2">'+esc(c.n)+'<span class="nchev">'+(co?'▾':'▸')+'</span></span><span class="nv2">'+nf.format(c.done)+' / '+nf.format(c.req)+' · %'+cp+'</span><div class="nbar sm" style="grid-column:1/3;height:5px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:'+Math.min(100,cp)+'%;background:'+so.h1+'"></i></div></button>';
-          if(co)r+=c.os.slice().sort(function(a,b){return (b.pq-b.dn)-(a.pq-a.dn)}).slice(0,40).map(function(x){return '<button type="button" class="cn-o" data-oid="'+esc(x.o.id)+'"><i style="font-style:normal"><b>'+esc(x.o.code)+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+'</i><span>'+nf.format(x.dn)+' / '+nf.format(x.pq)+'</span></button>'}).join("");
+          if(co)r+=c.os.slice().sort(function(a,b){return (b.pq-b.dn)-(a.pq-a.dn)}).slice(0,40).map(function(x){return '<button type="button" class="cn-o" data-oid="'+esc(x.o.id)+'"><i style="font-style:normal"><b>'+esc(oTi(x.o))+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+'</i><span>'+nf.format(x.dn)+' / '+nf.format(x.pq)+'</span></button>'}).join("");
           return r;
         }).join("")+'</div>';
       }
@@ -11336,7 +11342,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var why="";
     if(c.st==="saat")why='saat girilmemiş'; else if(c.st==="sure")why='operasyon süresi yok'; else if(c.st==="adet")why='adet girilmemiş';
     return '<div class="pur '+(c.c||"n")+'" data-purow="'+esc(r.id)+'" data-puemp="'+esc(r.emp)+'" role="button" tabindex="0">'+
-      '<div class="pur1"><span class="pus">'+esc(puSecName(r.div,r.sec))+dvTag+'</span><b>'+esc(r.code||"—")+'</b>'+(r.auto?'<span class="pua">üretimden</span>':'')+(r.ov?'<span class="pua man">üretimle eşleşti</span>':'')+puPill(c.c,c.pct)+'</div>'+
+      '<div class="pur1"><span class="pus">'+esc(puSecName(r.div,r.sec))+dvTag+'</span><b>'+esc(cvTi(r.code,r.div||window.__DIV)||"—")+'</b>'+(r.auto?'<span class="pua">üretimden</span>':'')+(r.ov?'<span class="pua man">üretimle eşleşti</span>':'')+puPill(c.c,c.pct)+'</div>'+
       puProdBlock(r,c)+
       '<div class="pur2">'+(mac?'⚙ '+esc(mac)+' · ':'')+(info.join(" · ")||'<span class="puwarn">saat yok</span>')+'</div>'+
       '<div class="pur3">'+(c.dk>0?'':'<span class="puwarn">operasyon süresi yok</span>')+
@@ -12825,8 +12831,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     return (c.list.length?c.list.slice(0,40).map(function(x){
       var o=x.o, im=jobThumb({oid:o.id});
       return '<button type="button" class="mpitem'+(x.mine?' added':'')+'" data-mpadd="'+secId+'|'+o.id+'"><span class="mpi1">'+
-        (im?'<img class="mdjimg" alt="" src="'+im+'">':'<span class="mdjimg ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</span>')+
-        '<span class="mpit"><b>'+esc(o.code)+'</b><small>'+esc((o.cust||"Müşteri yok")+" · "+(ORDER_CATS[o.cat]||"")+(x.oth?" · "+x.oth+" makinede planlı":""))+'</small></span>'+
+        (im?'<img class="mdjimg" alt="" src="'+im+'">':'<span class="mdjimg ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</span>')+
+        '<span class="mpit"><b>'+esc(oTi(o))+'</b><small>'+esc((o.cust||"Müşteri yok")+" · "+(ORDER_CATS[o.cat]||"")+(x.oth?" · "+x.oth+" makinede planlı":""))+'</small></span>'+
         (x.mine?'<span class="mpkal mpok"><b>✓</b><small>eklendi</small></span>':'<span class="mpkal"><b>'+nf.format(x.kal)+'</b><small>kalan</small></span>')+'</span>'+mpStagesHtml(o,secId)+'</button>';
     }).join("")+(c.list.length>40?'<div class="note">İlk 40 sonuç gösteriliyor — aramayı daralt.</div>':''):'<div class="empty">Uygun sipariş yok.</div>');
   }
@@ -12858,8 +12864,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       tot+=x.pe.q; tdone+=done;
       var eName=x.pe.eid?((employees.filter(function(e){return e.id===x.pe.eid})[0]||{}).name||""):"";
       return '<div class="mprow"><div class="mpr1">'+
-        (im?'<img class="mdjimg" alt="" src="'+im+'">':'<div class="mdjimg ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-        '<div class="mpit"><b>'+esc(o.code)+'</b><small>'+esc((o.cust||"Müşteri yok")+(secs.length>1?" · "+secNameOf(x.secId):"")+(eName?" · "+eName:""))+'</small></div>'+
+        (im?'<img class="mdjimg" alt="" src="'+im+'">':'<div class="mdjimg ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
+        '<div class="mpit"><b>'+esc(oTi(o))+'</b><small>'+esc((o.cust||"Müşteri yok")+(secs.length>1?" · "+secNameOf(x.secId):"")+(eName?" · "+eName:""))+'</small></div>'+
         '<button type="button" class="mprm" data-mprm="'+x.secId+'|'+o.id+'" aria-label="Plandan çıkar">✕</button></div>'+
         '<div class="mpr2"><div class="mpstep"><button type="button" data-mpstep="'+x.secId+'|'+o.id+'|-100" aria-label="100 azalt">−</button>'+
         '<input class="mpq" inputmode="numeric" id="mpq-'+o.id+'" data-mpsc="'+x.secId+'|'+o.id+'" value="'+x.pe.q+'" aria-label="Planlanan adet">'+
@@ -12937,8 +12943,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(fm&&l)l.innerHTML=mpPickListHtml(fm,mpSecNow(fm));
   });
   var MAC_DEPTS=["Rotil","Cıvata","Rozet","Ortak"];
-  function macDeptOf(m){return (m&&m.dept)||"Rotil"}
-  function macLabel(m){return m?macDeptOf(m)+" - "+(m.name||""):""}
+  function macDeptsOf(m){var a=(m&&m.depts&&m.depts.length?m.depts:[(m&&m.dept)||"Rotil"]).filter(function(d){return MAC_DEPTS.indexOf(d)>-1}); return a.length?a:["Rotil"]}
+  function macDeptOf(m){return macDeptsOf(m)[0]}
+  function macLabel(m){return m?macDeptsOf(m).join("+")+" - "+(m.name||""):""}
   function macFault(m){return m&&m.st==="ariza"}
   function macTypeOf(m){var t=String(m.tp||"").trim(); if(!t)t=String(m.name||"").replace(/[\s\-_.]*\d+\s*$/,"").trim()||String(m.name||"Diğer").trim()||"Diğer"; return t.toLocaleUpperCase("tr")}
   function macTypeKey(m){return fold(macTypeOf(m))}
@@ -13077,8 +13084,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var h=floorBoxHtml0(s,scope), fm0=floorMachine(s.label);
     if(!fm0)return h;
     if(macFault(fm0))h=h.replace('class="fbox','class="fbox fault');
-    var dp=macDeptOf(fm0), dots=macCapsOf(fm0).map(function(c){return '<u style="background:'+c.c+'"></u>'}).join("");
-    var extra='<i class="fbd" style="--dc:'+(MAC_DEPT_COL[dp]||"#888")+'">'+esc(dp.toLocaleUpperCase("tr"))+'</i>'+(dots?'<em class="fbm">'+dots+'</em>':'');
+    var dps=macDeptsOf(fm0), dp=dps[0], dots=macCapsOf(fm0).map(function(c){return '<u style="background:'+c.c+'"></u>'}).join("");
+    var extra='<i class="fbd" style="--dc:'+(MAC_DEPT_COL[dp]||"#888")+'">'+esc(dps.join("+").toLocaleUpperCase("tr"))+'</i>'+(dots?'<em class="fbm">'+dots+'</em>':'');
     var i=h.lastIndexOf('</button>'); return i>-1?h.slice(0,i)+extra+h.slice(i):h;
   }
   function floorLegendHtml(){
@@ -13127,7 +13134,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       }
       if(!wst){
         var wjimg=jobThumb(m.job);
-        return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wjimg?'<img class="fbimg" alt="" src="'+wjimg+'">':'')+(m.job.code?'<small class="fbcode">'+esc(m.job.code)+'</small>':'')+fbSecTag([m.job.sec])+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
+        return '<button type="button" class="'+wcls+'" style="'+style+'" data-floor="'+esc(s.label)+'"><span>'+esc(s.label)+'</span>'+(wjimg?'<img class="fbimg" alt="" src="'+wjimg+'">':'')+(m.job.code?'<small class="fbcode">'+esc(cvTi(m.job.code))+'</small>':'')+fbSecTag([m.job.sec])+'<b class="fbstat" style="opacity:.65">Bu hafta plan yok</b></button>';
       }
       var wf=wst.items[0], wimg=jobThumb({oid:wf.ord.id});
       var wcode=wst.items.length>1?(wf.ord.code+" +"+(wst.items.length-1)):wf.ord.code;
@@ -13263,14 +13270,14 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           '<div class="mb"><u style="width:'+Math.round(ok/t.all.length*100)+'%"></u></div></button>';
       }).join(""):"";
       var secsUsed=SECTIONS.filter(function(x){return machinesList.some(function(m){return (m.secs||[]).indexOf(x.id)>-1})});
-      var mf=[{k:"",l:"Hepsi",n:machinesList.length},{k:"__ok",l:"Çalışıyor",n:nok},{k:"__bad",l:"Arızalı",n:nbad}].concat(MAC_DEPTS.map(function(d){return {k:"dp:"+d,l:d,n:machinesList.filter(function(m){return macDeptOf(m)===d}).length}})).concat(MAC_CAPS.map(function(c){return {k:"cap:"+c.id,l:c.n,n:machinesList.filter(function(m){return (m.caps||[]).indexOf(c.id)>-1}).length}})).concat(secsUsed.map(function(x){return {k:x.id,l:x.name}}));
+      var mf=[{k:"",l:"Hepsi",n:machinesList.length},{k:"__ok",l:"Çalışıyor",n:nok},{k:"__bad",l:"Arızalı",n:nbad}].concat(MAC_DEPTS.map(function(d){return {k:"dp:"+d,l:d,n:machinesList.filter(function(m){return macDeptsOf(m).indexOf(d)>-1}).length}})).concat(MAC_CAPS.map(function(c){return {k:"cap:"+c.id,l:c.n,n:machinesList.filter(function(m){return (m.caps||[]).indexOf(c.id)>-1}).length}})).concat(secsUsed.map(function(x){return {k:x.id,l:x.name}}));
       if(stfMF.indexOf("tp:")!==0&&mf.every(function(x){return x.k!==stfMF}))stfMF="";
       $("stffilt").innerHTML=stfFiltHtml(mf,stfMF,"data-smf");
       var ml=machinesList.filter(function(m){
         if(stfMF==="__ok"&&macFault(m))return false;
         if(stfMF==="__bad"&&!macFault(m))return false;
         if(stfMF.indexOf("tp:")===0){if(macTypeKey(m)!==stfMF.slice(3))return false}
-        else if(stfMF.indexOf("dp:")===0){if(macDeptOf(m)!==stfMF.slice(3))return false}
+        else if(stfMF.indexOf("dp:")===0){if(macDeptsOf(m).indexOf(stfMF.slice(3))<0)return false}
         else if(stfMF.indexOf("cap:")===0){if((m.caps||[]).indexOf(stfMF.slice(4))<0)return false}
         else if(stfMF&&stfMF.indexOf("__")!==0&&(m.secs||[]).indexOf(stfMF)<0)return false;
         if(!q)return true;
@@ -13473,7 +13480,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var q=fold(msPickQ.trim()), l=orders.filter(function(o){return !o.shipped&&(!q||fold(o.code+" "+(o.cust||"")).indexOf(q)>-1)}).slice(0,40);
     return '<div class="shead"><div><h2 id="sh-title">Siparişten seç</h2><small>Açık siparişler</small></div><button type="button" class="tpill" id="mspcancel">Geri</button></div><div class="form">'+
       '<input class="search" id="mspq" type="search" autocomplete="off" placeholder="Ürün kodu / müşteri ara…" value="'+esc(msPickQ)+'">'+
-      (l.length?l.map(function(o){return '<button type="button" class="fcard fgo msopick" data-mspo="'+o.id+'"><div class="ftx"><b>'+esc(o.code)+'</b><small>'+esc(o.cust||"Müşteri yok")+' · '+nf.format(o.qty)+' adet · '+esc(ORDER_CATS[o.cat]||"")+'</small></div><span class="fchev">＋</span></button>'}).join(""):'<div class="empty">Açık sipariş bulunamadı.</div>')+'</div>';
+      (l.length?l.map(function(o){return '<button type="button" class="fcard fgo msopick" data-mspo="'+o.id+'"><div class="ftx"><b>'+esc(oTi(o))+'</b><small>'+esc(o.cust||"Müşteri yok")+' · '+nf.format(o.qty)+' adet · '+esc(ORDER_CATS[o.cat]||"")+'</small></div><span class="fchev">＋</span></button>'}).join(""):'<div class="empty">Açık sipariş bulunamadı.</div>')+'</div>';
   }
   /* --- Toplu mesai --- */
   function msBulkSheetHtml(){
@@ -16363,7 +16370,10 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(sheetMode!=="macdetail"||!floorMacId)return;
     var t=e.target.closest("button"); if(!t)return;
     if(t.dataset.mddept!==undefined){
-      macSaveFields(floorMacId,{dept:t.dataset.mddept}); renderSheet(); if(!$("staff").hidden)renderStaff(); return;
+      var mdm=machinesList.filter(function(x){return x.id===floorMacId})[0], mdl=macDeptsOf(mdm).slice(), mdi=mdl.indexOf(t.dataset.mddept);
+      if(mdi>-1){if(mdl.length>1)mdl.splice(mdi,1)}else mdl.push(t.dataset.mddept);
+      mdl=MAC_DEPTS.filter(function(d){return mdl.indexOf(d)>-1});
+      macSaveFields(floorMacId,{dept:mdl[0],depts:mdl}); renderSheet(); if(!$("staff").hidden)renderStaff(); return;
     }
     if(t.dataset.mdcap!==undefined){
       var cm=machinesList.filter(function(x){return x.id===floorMacId})[0]; if(!cm)return;
@@ -16453,7 +16463,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   $("stfnew").addEventListener("click",function(){
     floorMacId=null;
     if(stfTab==="emp"){empEditId=null;empFromFin=false;empSecsDraft=[];empMacsDraft=[];sheetMode="empform";}
-    else{macEditId=null;mcSecsDraft=[];sheetMode="macform";}
+    else{macEditId=null;mcSecsDraft=[];mcDeptsDraft=["Rotil"];sheetMode="macform";}
     $("ov").hidden=false; renderSheet();
   });
   $("stflist").addEventListener("click",function(e){
@@ -16469,7 +16479,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       floorMacId=null; // yerleşim kartından değil, düz makine listesinden açılıyor
       macEditId=mb.dataset.macedit;
       var mm=machinesList.filter(function(x){return x.id===macEditId})[0];
-      mcSecsDraft=(mm&&mm.secs)?mm.secs.slice():[];
+      mcSecsDraft=(mm&&mm.secs)?mm.secs.slice():[]; mcDeptsDraft=mm?macDeptsOf(mm).slice():["Rotil"];
       sheetMode="macform";$("ov").hidden=false;renderSheet();return;
     }
   });
@@ -17292,11 +17302,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var h='<b>Tamamlanan:</b> '+c.n+' sipariş · '+nf.format(c.q)+' adet · '+money(c.t)+' ₺<br><b>Gönderilen:</b> '+s.n+' sipariş · '+nf.format(s.q)+' adet · '+money(s.t)+' ₺<br><i>(tüm zamanlar; aylık görünümde tarihe göre süzülür)</i>';
     h+='<br><br><b>Gönderilmiş ama tamamlanmamış görünen:</b> '+sn.n+' sipariş · '+nf.format(sn.q)+' adet · '+money(sn.t)+' ₺';
     d.shipNotDone.forEach(function(x){
-      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(x.o.code)+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(shQty(x.o))+' adet · '+money(shTotal(x.o))+' ₺<br><small>eksik: '+(x.miss.length?x.miss.map(function(m){return esc(m.name)+' %'+m.pc}).join(", "):'?')+'</small><span class="go">›</span></button>';
+      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(oTi(x.o))+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(shQty(x.o))+' adet · '+money(shTotal(x.o))+' ₺<br><small>eksik: '+(x.miss.length?x.miss.map(function(m){return esc(m.name)+' %'+m.pc}).join(", "):'?')+'</small><span class="go">›</span></button>';
     });
     h+='<br><br><b>Tamamlanmış ama henüz gönderilmemiş:</b> '+dn.n+' sipariş · '+nf.format(dn.q)+' adet · '+money(dn.t)+' ₺ (bu bir hata değil, bekleyen sevkiyat).';
     d.doneNotShip.forEach(function(o){
-      h+='<button type="button" class="frk" data-oid="'+o.id+'"><b>'+esc(o.code)+'</b> · '+esc(o.cust||"—")+' · '+nf.format(o.qty)+' adet · '+money(orderTotal(o))+' ₺<br><small>'+esc(ORDER_CATS[o.cat]||"")+'</small><span class="go">›</span></button>';
+      h+='<button type="button" class="frk" data-oid="'+o.id+'"><b>'+esc(oTi(o))+'</b> · '+esc(o.cust||"—")+' · '+nf.format(o.qty)+' adet · '+money(orderTotal(o))+' ₺<br><small>'+esc(ORDER_CATS[o.cat]||"")+'</small><span class="go">›</span></button>';
     });
     var fixable=d.shipNotDone.filter(function(x){return x.miss.some(function(m){return m.i===5||m.i===6})});
     if(fixable.length){
@@ -17354,7 +17364,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     h+='<b>'+esc(stgdName(A))+':</b> '+nf.format(tA)+' adet · '+money(rA)+' ₺<br><b>'+esc(stgdName(B))+':</b> '+nf.format(tB)+' adet · '+money(rB)+' ₺<br><b>Fark:</b> '+(tA-tB>0?'+':'')+nf.format(tA-tB)+' adet · '+(rA-rB>0?'+':'')+money(rA-rB)+' ₺ <small>('+rows.length+' üründe fark var)</small>';
     if(!rows.length)h+='<br><br>Bu iki aşama arasında adet farkı olan ürün yok.';
     rows.slice(0,60).forEach(function(x){
-      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(x.o.code)+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(x.o.qty)+' adet sipariş<br><small>'+esc(STAGES[ia].short)+' '+nf.format(x.qa)+'/'+nf.format(x.na)+' · '+esc(STAGES[ib].short)+' '+nf.format(x.qb)+'/'+nf.format(x.nb)+' → <b>'+(x.d>0?'+':'')+nf.format(x.d)+' adet</b> · '+money(x.ra-x.rb)+' ₺ ciro farkı</small><span class="go">›</span></button>';
+      h+='<button type="button" class="frk" data-oid="'+x.o.id+'"><b>'+esc(oTi(x.o))+'</b> · '+esc(x.o.cust||"—")+' · '+nf.format(x.o.qty)+' adet sipariş<br><small>'+esc(STAGES[ia].short)+' '+nf.format(x.qa)+'/'+nf.format(x.na)+' · '+esc(STAGES[ib].short)+' '+nf.format(x.qb)+'/'+nf.format(x.nb)+' → <b>'+(x.d>0?'+':'')+nf.format(x.d)+' adet</b> · '+money(x.ra-x.rb)+' ₺ ciro farkı</small><span class="go">›</span></button>';
     });
     if(rows.length>60)h+='<br><small>İlk 60 ürün gösteriliyor.</small>';
     // Ciro kontrolü: bölüm kartındaki aylık ciro = siparişe bağlı + elle / ürün listesinden girilen
@@ -17586,8 +17596,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
         (open?('<div class="items">'+vItems.map(function(it){
           var o=it.o, ipc=it.plan?Math.min(100,Math.round(it.done/it.plan*100)):0, fin=it.done>=it.plan;
           return '<div class="oc2 d'+(o.cat||0)+(fin?' fin2':'')+'" style="--sc:'+x.h1+';cursor:pointer" data-oid="'+o.id+'"><div class="orow">'+
-            (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((o.code||"?").charAt(0).toUpperCase())+'</div>')+
-            '<div class="obody"><div class="code" style="font:700 15px var(--font-head)">'+esc(o.code)+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
+            (o.th?'<img class="othumb" alt="" src="'+o.th+'">':'<div class="othumb ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>')+
+            '<div class="obody"><div class="code" style="font:700 15px var(--font-head)">'+esc(oTi(o))+'</div><div class="osub" style="font:600 12px var(--font-ui);color:var(--ink2)">'+esc(o.cust||"Müşteri yok")+'</div>'+planAssignLine(it.mid,it.eid)+'</div>'+
             '<div class="oq2">planlanan<b>'+nf.format(it.plan)+'</b></div></div>'+
             '<div class="pg"><div class="pgt"><span>'+(it.mid?'bu makinede yapılan ':'yapılan ')+'<b>'+nf.format(it.done)+'</b> / '+nf.format(it.plan)+'</span><span class="rem'+(fin?' ok':'')+'">'+(fin?'✓ Tamam':'%'+ipc)+'</span></div><div class="pgb"><i style="width:'+ipc+'%"></i></div>'+(it.mid&&it.tot!==it.done?'<div class="osub" style="margin-top:4px;font:600 11.5px var(--font-ui);color:var(--ink2)">Ürünün tüm makinelerdeki toplam yapılanı: '+nf.format(it.tot)+'</div>':'')+'</div>'+
             mpStagesHtml(o,x.id,"Tüm işlemler · yapılan / gereken")+
@@ -17779,6 +17789,12 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   // Cıvata: siparişte ürün kodu yerine ürün adı (ör. M30x110 DIN931 8.8 BEYAZ) gösterilir
   var _otiSrc=null, _otiMap={};
+  function cvTi(code,div){
+    if(!code)return ""; div=div||window.__DIV; if(div!=="civata")return code;
+    if(IS_CV)return oTi({code:code});
+    var ps=stkProdsOf("civata")||[], k=prKey(code), p=ps.filter(function(x){return x.cv&&x.name&&prKey(x.code)===k})[0];
+    return p?p.name:code;
+  }
   function oTi(o){
     if(!IS_CV||!o)return (o&&o.code)||"";
     if(_otiSrc!==products){_otiSrc=products; _otiMap={}; products.forEach(function(p){if(p.cv&&p.name)_otiMap[prKey(p.code)]=p.name})}
@@ -17818,7 +17834,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var h='<div><span class="fl">Stok · iş emirleri</span><div class="note" style="margin:4px 0 0;text-align:left;color:var(--ink)">Stokta <b>'+nf.format(+(m&&m.stock)||0)+'</b> '+esc((m&&m.unit)||"adet")+'</div>';
     if(!l.length)return h+'<div class="note" style="margin:3px 0 0;text-align:left">Açık siparişlerde bu bileşen yok.</div></div>';
     return h+l.slice(0,15).map(function(x){var need=x.o.qty*(+x.j.q||1), last=(x.j.rt||[])[(x.j.rt||[]).length-1], dn=last?doneCj(x.o.id,x.j.k,last).q:0;
-      return '<div class="note" style="margin:3px 0 0;text-align:left;color:var(--ink)"><b>'+esc(x.o.code)+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+' · gereken '+nf.format(need)+(x.j.b?'':(+x.j.pq>0?' · iş emri '+nf.format(x.j.pq)+' (yapılan '+nf.format(dn)+')':' · stoktan'))+'</div>'}).join("")+'</div>';
+      return '<div class="note" style="margin:3px 0 0;text-align:left;color:var(--ink)"><b>'+esc(oTi(x.o))+'</b>'+(x.o.cust?' · '+esc(x.o.cust):'')+' · gereken '+nf.format(need)+(x.j.b?'':(+x.j.pq>0?' · iş emri '+nf.format(x.j.pq)+' (yapılan '+nf.format(dn)+')':' · stoktan'))+'</div>'}).join("")+'</div>';
   }
   $("sheet").addEventListener("click",function(e){
     var t=e.target.closest&&e.target.closest("[data-prcsrc],[data-prcrt]"); if(!t||!IS_RZ||sheetMode!=="comp"||!prCDraft)return;
@@ -17921,7 +17937,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(!o)return '<div class="empty">Sipariş bulunamadı.</div>';
     if(!cpDraft||cpDraft.oid!==o.id||cpDraft.noprod){var rr=cpBuild(o); cpDraft={oid:o.id,rows:rr||[],noprod:!rr}; if(!rr&&!prLoaded)setTimeout(function(){if(sheetMode==="cplan"&&!$("ov").hidden)renderSheet()},900)}
     var d=cpDraft, h='<div class="shead"><div><h2 id="sh-title">Bileşen planı</h2><small>'+esc(o.code)+' · '+nf.format(o.qty)+' adet sipariş</small></div><button type="button" class="tpill" id="cpback">Geri</button></div><div class="form">';
-    if(d.noprod)return h+'<div class="note" style="margin:0">'+(prLoaded?'Bu koda ait ürün kartı (reçete) bulunamadı. Önce Ürünlerim\'de <b>'+esc(o.code)+'</b> kodlu kartı aç.':'Reçeteler yükleniyor, birkaç saniye sonra tekrar aç.')+'</div></div>';
+    if(d.noprod)return h+'<div class="note" style="margin:0">'+(prLoaded?'Bu koda ait ürün kartı (reçete) bulunamadı. Önce Ürünlerim\'de <b>'+esc(oTi(o))+'</b> kodlu kartı aç.':'Reçeteler yükleniyor, birkaç saniye sonra tekrar aç.')+'</div></div>';
     if(!d.rows.length)return h+'<div class="note" style="margin:0">Bu ürünün reçetesinde üretilen (çelik/sac) bileşen yok.</div></div>';
     h+='<div class="note" style="margin:0;text-align:left">Gereken = sipariş × reçetedeki adet. Stoğu yaz, üretilecek miktar otomatik hesaplanır (istersen değiştir). Aşama zincirini sen belirle: bileşen sırayla bu aşamalardan geçer, <b>son aşamada stoğa girer</b>.</div>';
     d.rows.forEach(function(r){
@@ -19829,7 +19845,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var mx=Math.max.apply(null,ms.map(function(x){return byM[x.k]||0}).concat([1]));
     var bars=ms.map(function(x){var v=byM[x.k]||0; return '<div class="dbar'+(x.k===mk?' on':'')+'"><span>'+(v?dashShort(v):'')+'</span><i style="height:'+Math.max(3,Math.round(v/mx*100))+'%"></i><u>'+x.l+'</u></div>'}).join("");
     var lst=up.length?up.map(function(x){var o=x.o, cls=x.n<0?" bad":(x.n<=3?" warn":""), t=x.n<0?(-x.n)+" gün gecikti":(x.n===0?"Bugün":x.n+" gün");
-      return '<button type="button" class="dli" data-nav="orders"><div><b>'+esc(o.code)+'</b><small>'+esc(o.cust||"Müşteri yok")+' · '+nf.format(o.qty)+' adet</small></div><span class="dd'+cls+'">'+t+'</span></button>'}).join(""):'<div class="empty">Termini girilmiş açık sipariş yok.</div>';
+      return '<button type="button" class="dli" data-nav="orders"><div><b>'+esc(oTi(o))+'</b><small>'+esc(o.cust||"Müşteri yok")+' · '+nf.format(o.qty)+' adet</small></div><span class="dd'+cls+'">'+t+'</span></button>'}).join(""):'<div class="empty">Termini girilmiş açık sipariş yok.</div>';
     // dünün (veya seçilen günün) bölüm cirosu
     var di=dashPickDay(), dr=dashDayRow(di), mxr=Math.max.apply(null,dr.rows.map(function(r){return r.r}).concat([1]));
     if(dr.miss)dashLoad(false,[dashMonthOf(di)]);
