@@ -752,6 +752,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcard.ordc.finc{border-color:rgba(70,200,140,.55)}
 .hcard.ordc.finc::after{background:rgba(70,200,140,.16)}
 .hcard.ordc.finc .hk,.hcard.ordc.finc .go{color:#46C88C}
+.hcard.ordc.fvc .hk,.hcard.ordc.fvc .go{color:#E3B341}
 .hcard.ordc.stfc{border-color:rgba(94,166,230,.55)}
 .hcard.ordc.stfc::after{background:rgba(94,166,230,.16)}
 .hcard.ordc.stfc .hk{color:#5EA6E6}
@@ -1275,7 +1276,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .hcards .hcard.ordc .hs{font:600 13px var(--font-ui);color:rgba(255,255,255,.78);margin-top:6px}
 .hcards .hcard.ordc .hs b{color:var(--ac)}
 .hcards .hcard.ordc .go{color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,transparent)}
-.hcards .hcard.plnc{--ac:#A78BFA}.hcards .hcard.stkc{--ac:#F0A04B}.hcards .hcard.calcc{--ac:#A58BEA}.hcards .hcard.finc{--ac:#46C88C}.hcards .hcard.stfc{--ac:#5EA6E6}.hcards .hcard.prodc{--ac:#2EC4C6}.hcards .hcard.notec{--ac:#FACC15}.hcards .hcard.purchc{--ac:#FF8A8A}
+.hcards .hcard.plnc{--ac:#A78BFA}.hcards .hcard.stkc{--ac:#F0A04B}.hcards .hcard.calcc{--ac:#A58BEA}.hcards .hcard.finc{--ac:#46C88C}.hcards .hcard.fvc{--ac:#E3B341}.hcards .hcard.stfc{--ac:#5EA6E6}.hcards .hcard.prodc{--ac:#2EC4C6}.hcards .hcard.notec{--ac:#FACC15}.hcards .hcard.purchc{--ac:#FF8A8A}
 .hcards .hcard[data-sec]{min-height:104px;padding:18px 16px 18px 18px;border:1px solid rgba(255,255,255,.18);background:radial-gradient(120% 150% at 100% 0%,rgba(255,255,255,.26) 0%,transparent 55%),linear-gradient(145deg,var(--h1),var(--h2));box-shadow:0 14px 28px color-mix(in srgb,var(--h2) 48%,transparent),inset 0 1px 0 rgba(255,255,255,.22)}
 .hcards .hcard[data-sec]::after{width:120px;height:120px;right:-30px;top:auto;bottom:-50px;background:rgba(255,255,255,.1)}
 .hcards .hcard[data-sec] .hic{color:#fff;background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.32)}
@@ -1402,35 +1403,35 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 #app tr.grand td.a,#app tr.grand td.c{font:800 21px var(--font-head)}
 
 /* ---- Diğer ekranlar (siparişler, plan, bildirim, stok, satın alma, notlar, maaş, işçilik, eleman): yeni tasarım — sadece görünüm; geri almak için bu bloğu sil ---- */
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .hero.ohero{padding:22px 18px 20px;border-radius:28px;gap:14px;border:1px solid rgba(255,255,255,.2);
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .hero.ohero{padding:22px 18px 20px;border-radius:28px;gap:14px;border:1px solid rgba(255,255,255,.2);
   background:radial-gradient(120% 70% at 100% 0%,rgba(255,255,255,.26) 0%,transparent 58%),radial-gradient(90% 60% at 0% 100%,color-mix(in srgb,var(--hero2) 70%,#000) 0%,transparent 70%),linear-gradient(155deg,var(--hero1),var(--hero2));
   box-shadow:0 18px 40px color-mix(in srgb,var(--hero2) 42%,transparent),inset 0 1px 0 rgba(255,255,255,.3)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ohero .oeyebrow{color:rgba(255,255,255,.82);letter-spacing:.18em}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ohero .obig b{font-size:clamp(38px,11vw,52px);text-shadow:0 2px 14px rgba(0,0,0,.22)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ohero .obl{font-weight:800;color:rgba(255,255,255,.86)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ohero .obs{color:rgba(255,255,255,.72)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ohero .tbtn{background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:8px 14px}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .otabs{gap:3px;padding:4px;border-radius:18px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .otabs button{border-radius:14px;padding:10px 6px;font:800 12.5px var(--font-ui);color:var(--ink2);transition:background .18s,color .18s,box-shadow .18s;line-height:1.2}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .otabs button[aria-pressed="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--hero1) 88%,#fff),var(--hero2));color:#fff;box-shadow:0 6px 16px color-mix(in srgb,var(--hero2) 40%,transparent)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .chiprow{gap:7px}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .chiprow button{border-radius:12px;padding:8px 13px;background:var(--surface);border:1px solid var(--line);box-shadow:0 1px 2px rgba(10,25,30,.05);transition:background .15s,transform .1s}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .chiprow button:active{transform:scale(.97)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .chiprow button[aria-pressed="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--hero1) 88%,#fff),var(--hero2));border-color:transparent;color:#fff;box-shadow:0 5px 14px color-mix(in srgb,var(--hero2) 38%,transparent)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .search{height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238FA6AA' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 15px 50%;padding-left:44px;box-shadow:0 2px 8px rgba(10,25,30,.05);font-size:15px}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .search:focus{border-color:var(--hero1);box-shadow:0 0 0 4px color-mix(in srgb,var(--hero1) 22%,transparent)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .btn{border-radius:16px;padding:13px 18px;font:800 14px var(--font-ui);background:linear-gradient(145deg,color-mix(in srgb,var(--hero1) 88%,#fff),var(--hero2));color:#fff;box-shadow:0 8px 20px color-mix(in srgb,var(--hero2) 34%,transparent);transition:transform .12s,box-shadow .12s}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .btn:active{transform:scale(.98);box-shadow:0 3px 8px color-mix(in srgb,var(--hero2) 30%,transparent)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .btn.ghost{background:var(--surface);color:var(--ink);box-shadow:0 2px 8px rgba(10,25,30,.06),inset 0 0 0 1px var(--line)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .btn.danger{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 35%,transparent)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .empty{border:0;border-radius:22px;padding:30px 18px;background:linear-gradient(160deg,var(--soft),transparent);box-shadow:inset 0 0 0 1px var(--line);line-height:1.6}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .impnote{border-radius:16px;box-shadow:inset 0 0 0 1px var(--line)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .status{padding:6px 0}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ohero .oeyebrow{color:rgba(255,255,255,.82);letter-spacing:.18em}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ohero .obig b{font-size:clamp(38px,11vw,52px);text-shadow:0 2px 14px rgba(0,0,0,.22)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ohero .obl{font-weight:800;color:rgba(255,255,255,.86)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ohero .obs{color:rgba(255,255,255,.72)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ohero .tbtn{background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:8px 14px}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .otabs{gap:3px;padding:4px;border-radius:18px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .otabs button{border-radius:14px;padding:10px 6px;font:800 12.5px var(--font-ui);color:var(--ink2);transition:background .18s,color .18s,box-shadow .18s;line-height:1.2}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .otabs button[aria-pressed="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--hero1) 88%,#fff),var(--hero2));color:#fff;box-shadow:0 6px 16px color-mix(in srgb,var(--hero2) 40%,transparent)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .chiprow{gap:7px}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .chiprow button{border-radius:12px;padding:8px 13px;background:var(--surface);border:1px solid var(--line);box-shadow:0 1px 2px rgba(10,25,30,.05);transition:background .15s,transform .1s}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .chiprow button:active{transform:scale(.97)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .chiprow button[aria-pressed="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--hero1) 88%,#fff),var(--hero2));border-color:transparent;color:#fff;box-shadow:0 5px 14px color-mix(in srgb,var(--hero2) 38%,transparent)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .search{height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238FA6AA' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 15px 50%;padding-left:44px;box-shadow:0 2px 8px rgba(10,25,30,.05);font-size:15px}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .search:focus{border-color:var(--hero1);box-shadow:0 0 0 4px color-mix(in srgb,var(--hero1) 22%,transparent)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .btn{border-radius:16px;padding:13px 18px;font:800 14px var(--font-ui);background:linear-gradient(145deg,color-mix(in srgb,var(--hero1) 88%,#fff),var(--hero2));color:#fff;box-shadow:0 8px 20px color-mix(in srgb,var(--hero2) 34%,transparent);transition:transform .12s,box-shadow .12s}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .btn:active{transform:scale(.98);box-shadow:0 3px 8px color-mix(in srgb,var(--hero2) 30%,transparent)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .btn.ghost{background:var(--surface);color:var(--ink);box-shadow:0 2px 8px rgba(10,25,30,.06),inset 0 0 0 1px var(--line)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .btn.danger{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 35%,transparent)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .empty{border:0;border-radius:22px;padding:30px 18px;background:linear-gradient(160deg,var(--soft),transparent);box-shadow:inset 0 0 0 1px var(--line);line-height:1.6}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .impnote{border-radius:16px;box-shadow:inset 0 0 0 1px var(--line)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .status{padding:6px 0}
 #ords .ocards{gap:14px}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ocard{border-radius:24px;border:1px solid var(--line);border-left:0;box-shadow:0 8px 22px rgba(10,25,30,.08),inset 6px 0 0 var(--c);padding:16px 16px 16px 20px;transition:transform .12s,box-shadow .12s;animation:cin .45s cubic-bezier(.2,.8,.2,1) both}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ocard:active{transform:scale(.99)}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ocard{border-radius:24px;border:1px solid var(--line);border-left:0;box-shadow:0 8px 22px rgba(10,25,30,.08),inset 6px 0 0 var(--c);padding:16px 16px 16px 20px;transition:transform .12s,box-shadow .12s;animation:cin .45s cubic-bezier(.2,.8,.2,1) both}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ocard:active{transform:scale(.99)}
 @keyframes cin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .ocard,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .purc,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .nt,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .nrow,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .matrow{animation:none!important}}
+@media (prefers-reduced-motion:reduce){:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .ocard,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .purc,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .nt,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .nrow,:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .matrow{animation:none!important}}
 #purch .purc{border-radius:22px;border:1px solid var(--line);padding:16px 16px 14px 22px;box-shadow:0 8px 22px rgba(10,25,30,.08);animation:cin .45s cubic-bezier(.2,.8,.2,1) both}
 #purch .purc::before{width:7px;border-radius:0 6px 6px 0;top:14px;bottom:14px}
 #purch .purc .pn{font-size:17px}
@@ -1464,7 +1465,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 
 #plans .mnav button{width:40px;height:40px;border:0;border-radius:50%;background:var(--soft);color:var(--ink);font:800 20px var(--font-ui);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;padding:0}
 #plans .mnav h1{flex:1;text-align:center;margin:0;color:var(--ink)}
-:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) .chiprow:empty{display:none}
+:is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) .chiprow:empty{display:none}
 #ords .ohero .obig b{font-size:clamp(24px,7.2vw,30px);line-height:1.1;text-shadow:none}
 #ords .ohero .obig{gap:3px;padding:2px 0}
 #ords .ohero{gap:12px}
@@ -1839,17 +1840,17 @@ button.msrow2.tot{border-top:2px solid var(--line)}
 :root[data-theme="glass"] .status{color:var(--ink2)}
 @media (min-width:1000px){
   /* Basit başlıklı ekranlar: başlık kartı üstte tam genişlikte, içerik altında (ana sayfadaki gibi) */
-  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>*{grid-column:1/-1!important}
-  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero{position:static;max-height:none;grid-row:auto;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:24px;padding:18px 24px}
-  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero .hirow{grid-column:1/-1}
-  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero .obig{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:6px 16px;grid-column:1/-1}
-  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#staff,#prods)>.ohero .obig b{font-size:40px}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#fv,#staff,#prods)>*{grid-column:1/-1!important}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#fv,#staff,#prods)>.ohero{position:static;max-height:none;grid-row:auto;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:24px;padding:18px 24px}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#fv,#staff,#prods)>.ohero .hirow{grid-column:1/-1}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#fv,#staff,#prods)>.ohero .obig{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:6px 16px;grid-column:1/-1}
+  :root[data-theme="glass"] :is(#plans,#notifs,#stock,#purch,#notes,#calc,#fv,#staff,#prods)>.ohero .obig b{font-size:40px}
   :root[data-theme="glass"] #stklist,:root[data-theme="glass"] #stflist,:root[data-theme="glass"] #prlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px;align-content:start}
   :root[data-theme="glass"] #stklist>.empty,:root[data-theme="glass"] #stflist>.empty,:root[data-theme="glass"] #prlist>.empty,:root[data-theme="glass"] #stflist>.fsec{grid-column:1/-1}
 }
-:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;box-shadow:0 6px 18px rgba(79,70,229,.4)}
-:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;border-color:transparent!important}
-:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .hero button[aria-pressed="true"]{background:#fff!important;color:#2E2A8F!important}
+:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;box-shadow:0 6px 18px rgba(79,70,229,.4)}
+:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:linear-gradient(135deg,#7C6CFF,#4F46E5)!important;color:#fff!important;border-color:transparent!important}
+:root[data-theme="glass"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) .hero button[aria-pressed="true"]{background:#fff!important;color:#2E2A8F!important}
 
 /* ---- Ana sayfa: dünün cirosu + plan + notlar ---- */
 #dash .dbox{position:relative;overflow:hidden;border-radius:26px;padding:20px;background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 92%,#8B7CFF),var(--surface));border:1px solid color-mix(in srgb,var(--line) 80%,#8B7CFF);box-shadow:0 10px 30px rgba(0,0,0,.18)}
@@ -3099,6 +3100,171 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .pofoot{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.pofoot .btn{min-width:130px}
 #pomsg:empty{display:none}
 .hcard.ordc.poc{border-color:rgba(124,111,230,.55)}.hcard.ordc.poc::after{background:rgba(124,111,230,.16)}.hcard.ordc.poc .hk,.hcard.ordc.poc .go{color:#A79FF5}.hcards .hcard.poc{--ac:#8F85F0}
+/* ---------- Finans Merkezi ---------- */
+#fv{--fvr:20px}
+#fv .fvtools{display:flex;gap:8px;flex-wrap:wrap}
+#fv .fvtools[hidden]{display:none}
+#fv .fvtools .tbtn{font-size:12px}
+#fv.fvhide .fva{filter:blur(8px);user-select:none;-webkit-user-select:none}
+#fv .fva{font-variant-numeric:tabular-nums}
+#fv .pos{color:var(--good)}#fv .neg{color:var(--bad)}
+#fv .fvtabs{display:flex;gap:6px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:5;background:var(--bg)}
+#fv .fvtabs::-webkit-scrollbar{display:none}
+#fv .fvtabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:14px;padding:9px 14px;font:800 13px var(--font-ui);white-space:nowrap}
+#fv .fvtabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+#fv .fvtabs.sm{position:static;padding:10px 0 2px;background:none}
+#fv .fvtabs.sm button{flex:1}
+#fv .fvtabs.sm em{font-style:normal;opacity:.7;margin-left:4px}
+#fv .fvcard{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--fvr);padding:14px;box-shadow:var(--shadow)}
+#fv .fvcard h3{margin:0 0 10px;font:800 14px var(--font-head);color:var(--ink)}
+#fv .fvcard h3 small{font:700 11px var(--font-ui);color:var(--ink2)}
+#fv .fvcard.fvempty{text-align:center;padding:24px 16px}
+#fv .fvempty p{margin:6px 0 14px;color:var(--ink2);font:600 14px/1.45 var(--font-ui)}
+#fv .fvrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#fv .fvgrow{flex:1}
+#fv .fvrow .fvgrow{margin:0}
+#fv .fvkpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#fv .fvk{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);border-left:4px solid var(--line);color:var(--ink)}
+#fv .fvk small{font:800 11px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+#fv .fvk b{font:800 20px var(--font-head);font-variant-numeric:tabular-nums}
+#fv .fvk em{font:600 11.5px var(--font-ui);color:var(--ink2);font-style:normal}
+#fv .fvk.bad{border-left-color:var(--bad)}#fv .fvk.ok{border-left-color:var(--good)}
+#fv .fval-list{display:flex;flex-direction:column;gap:8px}
+#fv .fval{display:flex;justify-content:space-between;align-items:center;gap:10px;border:0;border-radius:14px;padding:11px 13px;text-align:left;font:700 13.5px var(--font-ui);color:var(--ink);background:var(--soft)}
+#fv .fval.bad{background:color-mix(in srgb,var(--bad) 13%,var(--surface));color:var(--bad)}
+#fv .fval.warn{background:color-mix(in srgb,var(--warn) 15%,var(--surface));color:var(--warn)}
+#fv .fval.ok{background:color-mix(in srgb,var(--good) 13%,var(--surface));color:var(--good)}
+#fv .fval span{font-weight:800;white-space:nowrap}
+#fv .fvsvg{width:100%;height:auto;display:block}
+#fv .fvsvg .in{fill:var(--good)}#fv .fvsvg .out{fill:var(--bad)}
+#fv .fvsvg .ln{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+#fv .fvsvg .dot{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+#fv .fvsvg .ax{stroke:var(--line);stroke-width:1}
+#fv .fvsvg text{fill:var(--ink2);font:700 9.5px var(--font-ui)}
+#fv .fvsvg text.v{font-size:9px}
+#fv .fvsvg .tl{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+#fv .fvsvg .tl.bad{stroke:var(--bad)}#fv .fvsvg .tl.ok{stroke:var(--good)}#fv .fvsvg .tl.ln{stroke:var(--accent)}
+#fv .fvleg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font:700 12px var(--font-ui);color:var(--ink2)}
+#fv .fvleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+#fv .fvleg i.in{background:var(--good)}#fv .fvleg i.out{background:var(--bad)}#fv .fvleg i.ln{background:var(--accent);height:3px;border-radius:2px;vertical-align:3px}
+#fv .fvnote{display:block;margin-top:10px;color:var(--ink2);font:600 12px/1.4 var(--font-ui)}
+#fv .fvbars{display:flex;flex-direction:column;gap:9px}
+#fv .fvbr{display:grid;grid-template-columns:minmax(70px,34%) 1fr auto;gap:8px;align-items:center;font:700 12.5px var(--font-ui)}
+#fv .fvbr .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+#fv .fvbr .b{height:10px;border-radius:99px;background:var(--soft);overflow:hidden}
+#fv .fvbr .b i{display:block;height:100%;border-radius:99px}
+#fv .fvbr .b i.bad{background:var(--bad)}#fv .fvbr .b i.ok{background:var(--good)}
+#fv .fvbr .v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#fv .fvbr .v small{display:block;color:var(--ink2);font-weight:700;font-size:10.5px}
+#fv .fvtwo{display:grid;grid-template-columns:1fr;gap:0}
+#fv .fvli{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:10px 2px;border-bottom:1px solid var(--line);color:var(--ink);font:700 13.5px var(--font-ui)}
+#fv .fvli:last-child{border-bottom:0}
+#fv .fvli.static{cursor:default}
+#fv .fvli>span{display:flex;flex-direction:column;min-width:0}
+#fv .fvli b{font-weight:800;overflow:hidden;text-overflow:ellipsis}
+#fv .fvli small{color:var(--ink2);font:600 11.5px var(--font-ui)}
+#fv .fvli em{font-style:normal;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+#fv .fvnone{padding:14px 4px;text-align:center;color:var(--ink2);font:600 13px var(--font-ui)}
+#fv .fvcalh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+#fv .fvcalh>div{text-align:center}#fv .fvcalh h3{margin:0}
+#fv .fvcalh small{font:700 11.5px var(--font-ui);color:var(--ink2)}
+#fv .fvnav{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:800 18px var(--font-ui)}
+#fv .fvdow,#fv .fvgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+#fv .fvdow span{text-align:center;font:800 10.5px var(--font-ui);color:var(--ink2);padding:4px 0}
+#fv .fvday{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:1px;min-height:62px;padding:5px 3px 5px 5px;border-radius:12px;border:1px solid transparent;background:var(--soft);color:var(--ink);overflow:hidden}
+#fv .fvday.e{background:none;pointer-events:none}
+#fv .fvday b{font:800 12px var(--font-ui)}
+#fv .fvday i{font:800 9px var(--font-ui);font-style:normal;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:clip}
+#fv .fvday.has{border-color:var(--line);background:var(--surface);box-shadow:0 1px 4px rgba(10,25,30,.07)}
+#fv .fvday.today{border-color:var(--accent)}
+#fv .fvday.sel{background:color-mix(in srgb,var(--accent) 18%,var(--surface));border-color:var(--accent)}
+#fv .fvbar{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+#fv .fvbar .search{flex:1 1 150px;min-width:0}
+#fv .fvchips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+#fv .fvchips::-webkit-scrollbar{display:none}
+#fv .fvchips button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:99px;padding:7px 13px;font:800 12px var(--font-ui)}
+#fv .fvchips button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:transparent}
+#fv .fvchips.dv{padding-top:4px}
+#fv .fvlist{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--fvr);box-shadow:var(--shadow);overflow:hidden}
+#fv .fvlist.flat{box-shadow:none;border:0;margin-top:0}
+#fv .fvrow2{display:grid;grid-template-columns:1fr auto;grid-template-areas:"n a" "d a";gap:4px 10px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:12px 14px;border-bottom:1px solid var(--line);color:var(--ink)}
+#fv .fvrow2:active{background:var(--soft)}
+#fv .fvrow2 .n{grid-area:n;min-width:0;display:flex;flex-direction:column;gap:4px}
+#fv .fvrow2 .n b{font:800 14px var(--font-ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fv .fvrow2 .n small{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+#fv .fvrow2 .d{grid-area:d}
+#fv .fvrow2 .a{grid-area:a;text-align:right;font:800 15px var(--font-head);font-variant-numeric:tabular-nums;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+#fv .fvrow2 .a small{font:700 11px var(--font-ui);color:var(--ink2)}
+#fv .fvnt{font:600 11.5px var(--font-ui);font-style:normal;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+#fv .fvp{display:inline-block;font:800 11px var(--font-ui);font-style:normal;padding:3px 9px;border-radius:99px;background:var(--soft);color:var(--ink2);white-space:nowrap}
+#fv .fvp.ok{background:color-mix(in srgb,var(--good) 15%,var(--surface));color:var(--good)}
+#fv .fvp.warn{background:color-mix(in srgb,var(--warn) 17%,var(--surface));color:var(--warn)}
+#fv .fvp.bad{background:color-mix(in srgb,var(--bad) 15%,var(--surface));color:var(--bad)}
+#fv .fvp.info{background:var(--soft);color:var(--ink)}
+#fv .fvp.via{background:var(--soft);color:var(--ink2)}
+#fv .fvtot{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;background:var(--soft);font:800 14px var(--font-ui)}
+#fv .fvtot b{font:800 16px var(--font-head);font-variant-numeric:tabular-nums}
+#fv .fvmonths{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+#fv .fvmonths span{flex:0 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column}
+#fv .fvmonths small{font:800 10.5px var(--font-ui);color:var(--ink2);text-transform:uppercase}
+#fv .fvmonths b{font:800 14px var(--font-head)}
+#fv .fvaccts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#fv .fvac{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:12px 14px;color:var(--ink);box-shadow:var(--shadow)}
+#fv .fvac.sel{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+#fv .fvac small{font:800 10.5px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+#fv .fvac b{font:800 14px var(--font-ui)}
+#fv .fvac em{font:800 17px var(--font-head);font-style:normal;font-variant-numeric:tabular-nums}
+#fv .fvtable{display:flex;flex-direction:column}
+#fv .fvth,#fv .fvtr{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:6px;padding:9px 2px;border-bottom:1px solid var(--line);font:700 12.5px var(--font-ui);align-items:center}
+#fv .fvth{color:var(--ink2);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+#fv .fvtr:last-child{border-bottom:0}
+#fv .fvtable .r{text-align:right;font-variant-numeric:tabular-nums}
+#fv .fvp-t{margin:0 0 12px;color:var(--ink2);font:600 13px/1.5 var(--font-ui)}
+#fv .fvchk{display:flex;align-items:flex-start;gap:10px;margin:12px 0;font:700 13.5px/1.4 var(--font-ui);color:var(--ink)}
+#fv .fvchk input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--accent)}
+#fv .fvmsg{min-height:0;margin:8px 0 0;font:700 13px var(--font-ui);color:var(--ink2)}
+#fv .fvmsg:empty{display:none}
+#fv .fvmsg.bad,#fv #fvmmsg{color:var(--bad)}
+#fv .fvtoast{background:color-mix(in srgb,var(--good) 16%,var(--surface));color:var(--good);border:1px solid color-mix(in srgb,var(--good) 40%,transparent);border-radius:14px;padding:10px 14px;font:800 13px var(--font-ui);margin-top:12px}
+#fv .fvlock{max-width:420px;margin:22px auto 10px;background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:24px 20px;text-align:center;box-shadow:var(--shadow)}
+#fv .fvlock .fvlk{font-size:44px;line-height:1}
+#fv .fvlock h2{margin:10px 0 6px;font:800 20px var(--font-head);color:var(--ink)}
+#fv .fvlock p{margin:0 0 14px;color:var(--ink2);font:600 13.5px/1.5 var(--font-ui)}
+#fv .fvlock .fl{display:block;text-align:left;margin:10px 0 4px}
+#fv .fvlock .btn{width:100%;margin-top:6px}
+#fv .fvlock .fvchk{text-align:left}
+#fv .fvwarn{text-align:left;background:color-mix(in srgb,var(--warn) 14%,var(--surface));color:var(--ink);border-radius:14px;padding:10px 12px;font:600 12.5px/1.45 var(--font-ui);margin:8px 0}
+#fv .fvmodal{position:fixed;inset:0;z-index:95;display:flex;align-items:flex-end;justify-content:center}
+#fv .fvmodal[hidden]{display:none}
+#fv .fvmbd{position:absolute;inset:0;background:rgba(6,12,18,.55);backdrop-filter:blur(2px)}
+#fv .fvmbox{position:relative;width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;background:var(--surface);color:var(--ink);border-radius:26px 26px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.3);overflow:hidden}
+#fv .fvmh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 10px}
+#fv .fvmh h3{margin:0;font:800 17px var(--font-head);overflow:hidden;text-overflow:ellipsis}
+#fv .fvx{width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--ink);font:800 14px var(--font-ui);flex:none}
+#fv .fvmb{padding:4px 18px 8px;overflow-y:auto;flex:1 1 auto;-webkit-overflow-scrolling:touch}
+#fv .fvmbox>.fvmsg{padding:0 18px}
+#fv .fvmf{display:flex;gap:8px;flex-wrap:wrap;padding:10px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+#fv .fvmf .btn{flex:1 1 auto}
+#fv .fvgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#fv .fvgrid2 .w2{grid-column:1/-1}
+#fv .fvgrid2 .fl{display:block;margin-bottom:4px}
+#fv .fvbig{margin:4px 0 12px}
+#fv .fvbig{font:800 30px var(--font-head);font-variant-numeric:tabular-nums}
+#fv .fvbig small{display:block;font:700 12.5px var(--font-ui);color:var(--ink2);margin-top:2px}
+#fv .fvkv{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:6px 0 10px;font:600 13.5px var(--font-ui)}
+#fv .fvkv span{color:var(--ink2)}#fv .fvkv b{text-align:right;font-weight:800;overflow-wrap:anywhere}
+#fv .fvsub h4{margin:14px 0 4px;font:800 12px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+@media (min-width:720px){
+  #fv .fvkpis{grid-template-columns:repeat(3,1fr)}
+  #fv .fvtwo{grid-template-columns:1fr 1fr;gap:12px}
+  #fv .fvaccts{grid-template-columns:repeat(3,1fr)}
+  #fv .fvday{min-height:78px;padding:7px}
+  #fv .fvday i{font-size:11px}
+  #fv .fvrow2{grid-template-columns:1fr 200px 170px;grid-template-areas:"n d a"}
+  #fv .fvmodal{align-items:center}
+  #fv .fvmbox{border-radius:26px;max-height:86vh}
+}
+
 /* ---------- Satış ---------- */
 #sl{--poa:#1F9D6B;--poa2:#0F5C40}
 #sl .sltabs{display:inline-flex;gap:4px;padding:4px;border-radius:14px;background:var(--surface);border:1px solid var(--line);margin:2px 0 12px}
@@ -3730,10 +3896,10 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 :root[data-theme="glass"][data-gstyle="frost"] .hero,:root[data-theme="glass"][data-gstyle="frost"] .rv-hero,:root[data-theme="glass"][data-gstyle="frost"] .divbar{background:linear-gradient(150deg,rgba(34,26,20,.66),rgba(34,26,20,.42))!important;-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);border:1px solid rgba(255,255,255,.35);box-shadow:0 12px 34px rgba(40,20,6,.26),inset 0 1.5px 0 rgba(255,255,255,.3)}
 :root[data-theme="glass"][data-gstyle="frost"] .hero::before,:root[data-theme="glass"][data-gstyle="frost"] .hero::after{background:rgba(255,160,90,.10)}
 :root[data-theme="glass"][data-gstyle="frost"] .hcards .hcard.ordc{background:radial-gradient(130% 150% at 100% 0%,color-mix(in srgb,var(--ac) 28%,transparent) 0%,transparent 62%),linear-gradient(155deg,rgba(255,255,255,.55),rgba(255,255,255,.28))}
-:root[data-theme="glass"][data-gstyle="frost"] .btn:not(.ghost),:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:var(--fblk)!important;color:#fff!important;border-radius:99px;box-shadow:0 8px 20px rgba(20,10,4,.32)!important}
+:root[data-theme="glass"][data-gstyle="frost"] .btn:not(.ghost),:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:var(--fblk)!important;color:#fff!important;border-radius:99px;box-shadow:0 8px 20px rgba(20,10,4,.32)!important}
 :root[data-theme="glass"][data-gstyle="frost"] .btn.ghost,:root[data-theme="glass"][data-gstyle="frost"] .tpill{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);color:var(--ink);border-radius:99px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 :root[data-theme="glass"][data-gstyle="frost"] .stffilt button,:root[data-theme="glass"][data-gstyle="frost"] .gcshapes button,:root[data-theme="glass"][data-gstyle="frost"] .gcmat button,:root[data-theme="glass"][data-gstyle="frost"] .prlgrp button{background:rgba(255,255,255,.5);border-color:rgba(255,255,255,.8);color:var(--ink)}
-:root[data-theme="glass"][data-gstyle="frost"] .stffilt button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .dvtog button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] #app .dvtog button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .pbar button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .otabs button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:var(--fblk)!important;color:#fff!important;border-color:transparent;box-shadow:0 6px 16px rgba(20,10,4,.3)!important}
+:root[data-theme="glass"][data-gstyle="frost"] .stffilt button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .dvtog button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] #app .dvtog button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .pbar button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] .otabs button[aria-pressed="true"],:root[data-theme="glass"][data-gstyle="frost"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:var(--fblk)!important;color:#fff!important;border-color:transparent;box-shadow:0 6px 16px rgba(20,10,4,.3)!important}
 :root[data-theme="glass"][data-gstyle="frost"] .dvtog,:root[data-theme="glass"][data-gstyle="frost"] .pbar,:root[data-theme="glass"][data-gstyle="frost"] .otabs,:root[data-theme="glass"][data-gstyle="frost"] .ddnav{background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 :root[data-theme="glass"][data-gstyle="frost"] .fin,:root[data-theme="glass"][data-gstyle="frost"] .search,:root[data-theme="glass"][data-gstyle="frost"] select,:root[data-theme="glass"][data-gstyle="frost"] textarea{background:rgba(255,255,255,.55);color:var(--ink);border-color:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 :root[data-theme="glass"][data-gstyle="frost"] .search{background-color:rgba(255,255,255,.62)!important;border-color:rgba(255,255,255,.9)!important}
@@ -3911,9 +4077,9 @@ select option,select optgroup{background-color:#fff;color:#1d1b3a}
 :root[data-theme="glass"][data-gstyle="emerald"] .hero{background:linear-gradient(135deg,#1F9A68 0%,#15694A 55%,#0C3A2A 100%)!important;border:1px solid rgba(255,255,255,.14);box-shadow:0 6px 20px rgba(39,168,111,.3)}
 :root[data-theme="glass"][data-gstyle="emerald"] .tbtn.hl{background:#fff;color:#0C3A2A}
 :root[data-theme="glass"][data-gstyle="emerald"] .otabs button[aria-pressed="true"]{background:linear-gradient(135deg,#6FE0A6,#27A86F);color:#04241A;box-shadow:0 4px 14px rgba(39,168,111,.4)}
-:root[data-theme="glass"][data-gstyle="emerald"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:linear-gradient(135deg,#6FE0A6,#27A86F)!important;color:#04241A!important;box-shadow:0 6px 18px rgba(39,168,111,.4)}
-:root[data-theme="glass"][data-gstyle="emerald"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:linear-gradient(135deg,#6FE0A6,#27A86F)!important;color:#04241A!important;border-color:transparent!important}
-:root[data-theme="glass"][data-gstyle="emerald"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app) .hero button[aria-pressed="true"]{background:#fff!important;color:#0C3A2A!important}
+:root[data-theme="glass"][data-gstyle="emerald"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) .btn:not(.ghost):not(.bad){background:linear-gradient(135deg,#6FE0A6,#27A86F)!important;color:#04241A!important;box-shadow:0 6px 18px rgba(39,168,111,.4)}
+:root[data-theme="glass"][data-gstyle="emerald"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) button[aria-pressed="true"]:not(.snitem){background:linear-gradient(135deg,#6FE0A6,#27A86F)!important;color:#04241A!important;border-color:transparent!important}
+:root[data-theme="glass"][data-gstyle="emerald"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app) .hero button[aria-pressed="true"]{background:#fff!important;color:#0C3A2A!important}
 :root[data-theme="glass"][data-gstyle="emerald"] #dash .dbox{position:relative;overflow:hidden;border-radius:26px;padding:20px;background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 92%,#7FE3B0),var(--surface));border:1px solid color-mix(in srgb,var(--line) 80%,#7FE3B0);box-shadow:0 10px 30px rgba(0,0,0,.18)}
 :root[data-theme="glass"][data-gstyle="emerald"] #dash .dbox::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(111,224,166,.16),transparent 70%);pointer-events:none}
 :root[data-theme="glass"][data-gstyle="emerald"] .dic{flex:0 0 auto;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#7FE3B0,#27A86F);box-shadow:0 8px 20px rgba(39,168,111,.4),inset 0 0 0 1px rgba(255,255,255,.25)}
@@ -4303,11 +4469,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .tbtn{background:transparent!important;color:var(--ink)!important;border:1px solid var(--m-cardbd)!important;border-radius:10px;padding:8px 13px;font:600 12.5px var(--font-ui);box-shadow:none!important}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .tbtn:hover{border-color:var(--m-acc-line)!important}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .tbtn.hl{background:var(--m-acc-dim)!important;color:var(--accent)!important;border-color:var(--m-acc-line)!important}
-html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app,#home,#po,#sl,#pu,#tools) .btn:not(.ghost):not(.bad):not(.danger){background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none!important;border-radius:11px;font-weight:700;border:0!important}
-html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app,#home,#po,#sl,#pu,#tools) .btn.ghost{background:transparent!important;border:1px solid var(--m-cardbd)!important;color:var(--ink)!important;box-shadow:none!important;border-radius:11px}
-html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app,#po,#sl,#pu,#tools) button[aria-pressed="true"]:not(.snitem):not(.dvseg button){background:var(--m-chipbg)!important;color:var(--m-chipink)!important;box-shadow:none!important;border-color:transparent!important}
-html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#app,#po,#sl,#pu,#tools) :is(.otabs,.pctabs,.stffilt,.fltr,.tabs,.pbar,.dvtog){background:var(--surface2)!important;border:1px solid var(--line)!important;box-shadow:none!important}
-html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#calc,#staff,#prods,#po,#sl,#pu,#tools) button:not([aria-pressed="true"]):not(.btn):not(.tbtn):not(.snitem):is(.stkchip,.pchip,.ochip,.chip,.stfchip,.fchip,.otab,.pctab,.stkf){color:var(--ink2)}
+html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app,#home,#po,#sl,#pu,#tools) .btn:not(.ghost):not(.bad):not(.danger){background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none!important;border-radius:11px;font-weight:700;border:0!important}
+html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app,#home,#po,#sl,#pu,#tools) .btn.ghost{background:transparent!important;border:1px solid var(--m-cardbd)!important;color:var(--ink)!important;box-shadow:none!important;border-radius:11px}
+html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app,#po,#sl,#pu,#tools) button[aria-pressed="true"]:not(.snitem):not(.dvseg button){background:var(--m-chipbg)!important;color:var(--m-chipink)!important;box-shadow:none!important;border-color:transparent!important}
+html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#app,#po,#sl,#pu,#tools) :is(.otabs,.pctabs,.stffilt,.fltr,.tabs,.pbar,.dvtog){background:var(--surface2)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#purch,#notes,#fin,#fv,#calc,#staff,#prods,#po,#sl,#pu,#tools) button:not([aria-pressed="true"]):not(.btn):not(.tbtn):not(.snitem):is(.stkchip,.pchip,.ochip,.chip,.stfchip,.fchip,.otab,.pctab,.stkf){color:var(--ink2)}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(.card,.fcard,.ocard,.oc2,.rv-sec,.rv-meta>div,.rv-info,.pc,.prmore,.stfsum>div,.fstats div,.ctile,.ctpl,.nt,.purc,.pickcard,.mssum,.msday,.frk,.emprow,.matrow,.dcard,.stkrow,.osumcard,.needcard,.oprog,.fcard){background:var(--surface)!important;border:1px solid var(--m-cardbd)!important;box-shadow:var(--m-cardsh)!important;backdrop-filter:none!important;border-radius:16px}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .sheet{background:var(--surface)!important;border:1px solid var(--m-cardbd);border-bottom:0}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .search{background-color:var(--surface2)!important;border:1px solid var(--line)!important;border-radius:12px;color:var(--ink)}
@@ -4328,7 +4494,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .stkdv{background:color-mix(in srgb,var(--dc,var(--ink2)) 14%,transparent)!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:7px;font-weight:600}
 
 /* sipariş kartları */
-html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#calc,#staff) :is(.ocard,.oc2){background:var(--surface)!important;border:1px solid var(--m-cardbd)!important;border-left:1px solid var(--m-cardbd)!important;box-shadow:var(--m-cardsh)!important;border-radius:16px!important;position:relative;overflow:hidden;padding:14px 14px 14px 18px}
+html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(#ords,#plans,#notifs,#stock,#tools,#purch,#notes,#fin,#fv,#calc,#staff) :is(.ocard,.oc2){background:var(--surface)!important;border:1px solid var(--m-cardbd)!important;border-left:1px solid var(--m-cardbd)!important;box-shadow:var(--m-cardsh)!important;border-radius:16px!important;position:relative;overflow:hidden;padding:14px 14px 14px 18px}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] :is(.ocard,.oc2)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--accent))}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .ocard .ocode{font:650 17px var(--font-head);letter-spacing:-.02em;color:var(--ink)}
 html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="modern"] .ocard .oq{font:600 13px var(--font-ui);color:var(--ink)}
@@ -4513,7 +4679,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 06.11 15:07</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 20:58</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4732,6 +4898,16 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   </section>
   <div id="slbody"></div>
   <div class="status" id="slstatus"></div>
+</div>
+<div class="wrap" id="fv" hidden style="--hero1:#1E3A5F;--hero2:#0B1B33">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Sadece sana özel · şifreli kasa 🔐</div><button class="tbtn" id="fvback">‹ Ana sayfa</button></div>
+    <div class="obig"><span class="obl">Net finansal durum</span><b id="fvamt">•••••</b><span class="obs" id="fvsub"></span></div>
+    <div class="fvtools" id="fvtools" hidden><button type="button" class="tbtn" id="fvhide" aria-pressed="false">👁 Tutarları gizle</button><button type="button" class="tbtn" id="fvlockbtn">🔒 Kilitle</button></div>
+  </section>
+  <div id="fvbody"></div>
+  <div class="status" id="fvstatus" style="margin-top:8px"></div>
+  <div class="fvmodal" id="fvmodal" hidden></div>
 </div>
 <div class="wrap" id="pu" hidden style="--hero1:#1F8F7A;--hero2:#0F4C5C">
   <section class="hero ohero">
@@ -11188,6 +11364,692 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   });
   $("sl").addEventListener("keydown",function(e){
     if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&(e.target.dataset.slopen||e.target.dataset.slsupopen)&&e.target.getAttribute("role")==="button"){e.preventDefault(); e.target.click()}
+  });
+  /* ---------- Finans Merkezi (sadece sahibi görür · tarayıcıda şifrelenen kasa) ----------
+     Tüm finans verisi AES-GCM ile cihazda şifrelenir, Firestore'a yalnızca şifreli metin yazılır
+     (finvault/meta = tuz + şifre doğrulama, finvault/core = şifreli veri). Şifre sunucuya gitmez. */
+  var FV_VIA={banka:"Banka",cek:"Çek",gr:"G.R. Hesap",nakit:"Nakit"};
+  var FV_VIAK=["banka","cek","gr","nakit"];
+  var FV_CST={portfoy:"Portföyde",bekleniyor:"Bekleniyor",ciro:"Ödemede kullanıldı",tahsil:"Tahsil edildi",karsiliksiz:"Karşılıksız",verildi:"Verildi",odendi:"Ödendi",iptal:"İptal"};
+  var FV_TABS=[["ozet","Özet"],["takvim","Takvim"],["borc","Borçlar"],["alacak","Alacaklar"],["cek","Çekler"],["hesap","Hesaplar"],["rapor","Raporlar"],["ayar","Ayarlar"]];
+  var FV={F:null,st:"idle",tab:"ozet",key:null,meta:null,q:"",flt:"",div:"all",ctab:"in",cal:null,calSel:"",dirty:false,own:{},saveT:0,unsub:null,hide:false,msg:"",err:"",acct:"",mflt:"open"};
+  try{FV.hide=localStorage.getItem("fv_hide")==="1"}catch(e){}
+  function fvDb(){return dbDiv("rotil")}
+  function fvBlank(){return {v:1,ts:0,accts:[],pay:[],rec:[],chq:[],mov:[],snap:[],imports:[],cfg:{netVadeli:false}}}
+  /* ---- şifreleme ---- */
+  function fvB64(buf){var b=new Uint8Array(buf),s=""; for(var i=0;i<b.length;i+=8192)s+=String.fromCharCode.apply(null,b.subarray(i,i+8192)); return btoa(s)}
+  function fvUnB64(s){var b=atob(s),a=new Uint8Array(b.length); for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i); return a}
+  function fvDerive(pass,salt){
+    return crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]).then(function(k){
+      return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:250000,hash:"SHA-256"},k,{name:"AES-GCM",length:256},true,["encrypt","decrypt"])});
+  }
+  function fvGz(bytes){
+    if(typeof CompressionStream==="undefined")return Promise.resolve({z:0,b:bytes});
+    var cs=new CompressionStream("gzip"), w=cs.writable.getWriter(); w.write(bytes); w.close();
+    return new Response(cs.readable).arrayBuffer().then(function(ab){return {z:1,b:new Uint8Array(ab)}});
+  }
+  function fvUnGz(bytes){var ds=new DecompressionStream("gzip"), w=ds.writable.getWriter(); w.write(bytes); w.close(); return new Response(ds.readable).arrayBuffer().then(function(ab){return new Uint8Array(ab)})}
+  function fvEnc(obj,key){
+    var iv=crypto.getRandomValues(new Uint8Array(12));
+    return fvGz(new TextEncoder().encode(JSON.stringify(obj))).then(function(g){
+      return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},key,g.b).then(function(ct){return {iv:fvB64(iv),ct:fvB64(ct),z:g.z}})});
+  }
+  function fvDec(rec,key){
+    return crypto.subtle.decrypt({name:"AES-GCM",iv:fvUnB64(rec.iv)},key,fvUnB64(rec.ct)).then(function(pt){var u=new Uint8Array(pt); return rec.z?fvUnGz(u):u}).then(function(u){return JSON.parse(new TextDecoder().decode(u))});
+  }
+  function fvRemember(key){try{crypto.subtle.exportKey("raw",key).then(function(r){localStorage.setItem("fv_k",fvB64(r))})}catch(e){}}
+  function fvForget(){try{localStorage.removeItem("fv_k")}catch(e){}}
+  /* ---- açma / kilit ---- */
+  function openFV(){
+    if(!finOwner())return;
+    closeSheet(); NAV_WRAPS.forEach(function(i){var e=$(i); if(e)e.hidden=true}); $("fv").hidden=false; window.scrollTo(0,0);
+    if(FV.st==="open"){fvRender(); return}
+    fvBoot();
+  }
+  function fvHome(){$("fv").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
+  function fvBoot(){
+    var d=fvDb(); if(!d){FV.st="nodb"; fvRender(); return}
+    FV.st="loading"; fvRender();
+    d.doc("finvault/meta").get().then(function(sn){
+      if(!sn.exists){FV.meta=null; FV.st="setup"; fvRender(); return}
+      FV.meta=sn.data(); var rk=null; try{rk=localStorage.getItem("fv_k")}catch(e){}
+      if(!rk){FV.st="locked"; fvRender(); return}
+      return crypto.subtle.importKey("raw",fvUnB64(rk),{name:"AES-GCM"},true,["encrypt","decrypt"]).then(function(k){
+        return fvDec(FV.meta.chk,k).then(function(){return fvOpenWith(k)})
+      }).catch(function(){fvForget(); FV.st="locked"; fvRender()});
+    }).catch(function(){FV.st="locked"; FV.err="Bağlantı kurulamadı, tekrar dene."; fvRender()});
+  }
+  function fvOpenWith(k){
+    FV.key=k; var d=fvDb();
+    return d.doc("finvault/core").get().then(function(sn){
+      if(!sn.exists){FV.F=fvBlank(); return fvEnc(FV.F,k).then(function(r){r.ts=Date.now(); return d.doc("finvault/core").set(r)})}
+      return fvDec(sn.data(),k).then(function(f){FV.F=fvNorm(f)});
+    }).then(function(){
+      FV.st="open"; FV.err=""; fvListen(); fvSnapMonth(); fvRender();
+    });
+  }
+  function fvNorm(f){var b=fvBlank(); Object.keys(b).forEach(function(k){if(f[k]===undefined)f[k]=b[k]}); f.cfg=Object.assign({netVadeli:false},f.cfg||{}); return f}
+  function fvListen(){
+    if(FV.unsub)return; var d=fvDb(); if(!d)return;
+    FV.unsub=d.doc("finvault/core").onSnapshot(function(sn){
+      if(!sn.exists||FV.dirty||!FV.key)return; var r=sn.data(); if(r.ts&&(FV.own[r.ts]||(FV.F&&r.ts===FV.F.ts)))return;
+      fvDec(r,FV.key).then(function(f){FV.F=fvNorm(f); if(!$("fv").hidden&&!FV.modal)fvRender()}).catch(function(){});
+    },function(){});
+  }
+  function fvLock(forget){
+    FV.key=null; FV.F=null; FV.st="locked"; FV.modal=false; if(forget)fvForget(); if(FV.unsub){try{FV.unsub()}catch(e){} FV.unsub=null}
+    fvRender();
+  }
+  function fvSetup(){
+    var p1=$("fvp1").value, p2=$("fvp2").value, rem=$("fvrem").checked;
+    if(p1.length<8){FV.err="Şifre en az 8 karakter olmalı."; fvRender(); return}
+    if(p1!==p2){FV.err="İki şifre aynı değil."; fvRender(); return}
+    FV.st="loading"; FV.err=""; fvRender();
+    var salt=crypto.getRandomValues(new Uint8Array(16)), d=fvDb();
+    fvDerive(p1,salt).then(function(k){
+      return fvEnc({ok:1,t:Date.now()},k).then(function(chk){
+        FV.meta={v:1,salt:fvB64(salt),chk:chk,ts:Date.now()};
+        return d.doc("finvault/meta").set(FV.meta)
+      }).then(function(){if(rem)fvRemember(k); return fvOpenWith(k)});
+    }).catch(function(){FV.st="setup"; FV.err="Kasa kurulamadı, tekrar dene."; fvRender()});
+  }
+  function fvUnlock(){
+    var p=$("fvp1").value, rem=$("fvrem").checked; if(!p)return;
+    FV.st="loading"; FV.err=""; fvRender();
+    fvDerive(p,fvUnB64(FV.meta.salt)).then(function(k){
+      return fvDec(FV.meta.chk,k).then(function(){if(rem)fvRemember(k); else fvForget(); return fvOpenWith(k)},function(){throw new Error("bad")});
+    }).catch(function(){FV.st="locked"; FV.err="Şifre yanlış."; fvRender()});
+  }
+  function fvChangePass(){
+    var o=$("fvpo").value, n1=$("fvpn1").value, n2=$("fvpn2").value, m=$("fvmmsg");
+    if(n1.length<8){m.textContent="Yeni şifre en az 8 karakter olmalı."; return}
+    if(n1!==n2){m.textContent="Yeni şifreler aynı değil."; return}
+    fvDerive(o,fvUnB64(FV.meta.salt)).then(function(k){return fvDec(FV.meta.chk,k)}).then(function(){
+      var salt=crypto.getRandomValues(new Uint8Array(16)), d=fvDb();
+      return fvDerive(n1,salt).then(function(k2){
+        return Promise.all([fvEnc({ok:1,t:Date.now()},k2),fvEnc(FV.F,k2)]).then(function(r){
+          var meta={v:1,salt:fvB64(salt),chk:r[0],ts:Date.now()}, core=r[1]; core.ts=FV.F.ts=Date.now();
+          return d.doc("finvault/core").set(core).then(function(){return d.doc("finvault/meta").set(meta)}).then(function(){FV.meta=meta; FV.key=k2; var rem=false; try{rem=!!localStorage.getItem("fv_k")}catch(e){} if(rem)fvRemember(k2); fvModalClose(); FV.msg="Şifre değişti ✓"; fvRender()});
+        });
+      });
+    }).catch(function(){m.textContent="Eski şifre yanlış."});
+  }
+  /* ---- kaydetme ---- */
+  function fvSave(){FV.dirty=true; clearTimeout(FV.saveT); FV.saveT=setTimeout(fvFlush,450); var s=$("fvstatus"); if(s)s.textContent="Kaydediliyor…"}
+  function fvFlush(){
+    if(!FV.key||!FV.F)return; var d=fvDb(); if(!d)return; var ts=FV.F.ts=Date.now(); FV.own[ts]=1; clearTimeout(FV.saveT);
+    fvEnc(FV.F,FV.key).then(function(r){r.ts=ts; return d.doc("finvault/core").set(r)}).then(function(){if(FV.F&&FV.F.ts===ts)FV.dirty=false; var s=$("fvstatus"); if(s)s.textContent="Şifreli kaydedildi ✓"}).catch(function(){var s=$("fvstatus"); if(s)s.textContent="Kaydedilemedi — bağlantıyı kontrol et"});
+  }
+  /* ---- yardımcılar ---- */
+  function fvM(n){n=+n||0; return nf.format(Math.round(n*100)/100)+" ₺"}
+  function fvA(n){return '<span class="fva">'+fvM(n)+'</span>'}
+  function fvMc(n,t){var a=Math.abs(+n||0), s=(+n||0)<0?"−":""; if(a>=1e6)return s+(Math.round(a/1e5)/10).toString().replace(".",",")+(t?"M":" Mn"); if(a>=1e3)return s+Math.round(a/1e3)+(t?"B":" B"); return s+Math.round(a)}
+  function fvDate(iso){if(!iso)return "—"; var a=iso.split("-"); var y=+a[0]; return (+a[2])+" "+AY[+a[1]-1].slice(0,3)+((y!==now.getFullYear())?" "+String(y).slice(2):"")}
+  function fvDateL(iso){if(!iso)return "—"; var a=iso.split("-"); return (+a[2])+" "+AY[+a[1]-1]+" "+a[0]}
+  function fvKalP(p){return Math.max(0,(+p.amt||0)-(+p.paid||0))}
+  function fvKalR(r){return Math.max(0,(+r.amt||0)-(+r.got||0))}
+  function fvMk(iso){return iso?iso.slice(0,7):""}
+  function fvIsoOf(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+  function fvAddDays(iso,n){var a=iso.split("-"), d=new Date(+a[0],+a[1]-1,+a[2]+n); return fvIsoOf(d)}
+  function fvDivName(id){if(!id)return "—"; try{return divInfo(id).name}catch(e){return id}}
+  function fvDays(iso){return iso?daysTo(iso):null}
+  function fvDuePill(iso,kal){
+    if(!iso)return '<i class="fvp warn">Vade yok</i>';
+    var n=daysTo(iso); if(kal===0)return '<i class="fvp">'+fvDate(iso)+'</i>';
+    if(n<0)return '<i class="fvp bad">'+fvDate(iso)+' · '+(-n)+' gün geçti</i>';
+    if(n===0)return '<i class="fvp warn">Bugün</i>';
+    if(n<=7)return '<i class="fvp warn">'+fvDate(iso)+' · '+n+' gün</i>';
+    return '<i class="fvp">'+fvDate(iso)+'</i>';
+  }
+  function fvAcct(id){return FV.F.accts.filter(function(a){return a.id===id})[0]||null}
+  function fvLogMov(acct,amt,note,ref){FV.F.mov.unshift({id:uid(),d:isoToday(),ts:Date.now(),acct:acct,amt:amt,note:note||"",ref:ref||""}); if(FV.F.mov.length>1500)FV.F.mov.length=1500}
+  function fvHist(x,amt,note){x.hist=(x.hist||[]).concat([{d:isoToday(),ts:Date.now(),amt:amt,note:note||""}]).slice(-60)}
+  /* ---- hesaplamalar ---- */
+  function fvCalc(){
+    var F=FV.F, T={borc:0,alacak:0,vadeli:0,hesap:0,cekIn:0,cekOut:0,borcVia:{},alacakDiv:{},nBorc:0,nAlacak:0,vadesiz:0,vadesizN:0,geciken:0,gecikenN:0,agBorc:{gec:0,h1:0,h2:0,h3:0,yok:0}};
+    F.accts.forEach(function(a){T.hesap+=+a.bal||0});
+    F.pay.forEach(function(p){var k=fvKalP(p); if(k<=0.005)return; T.borc+=k; T.nBorc++; T.borcVia[p.via||""]=(T.borcVia[p.via||""]||0)+k;
+      if(!p.due){T.vadesiz+=k; T.vadesizN++; T.agBorc.yok+=k}
+      else{var n=daysTo(p.due); if(n<0){T.geciken+=k; T.gecikenN++; T.agBorc.gec+=k} else if(n<=7)T.agBorc.h1+=k; else if(n<=30)T.agBorc.h2+=k; else T.agBorc.h3+=k}});
+    F.rec.forEach(function(r){var k=fvKalR(r); if(k<=0.005)return; if(r.kind==="vadeli"){T.vadeli+=k; return} T.alacak+=k; T.nAlacak++; T.alacakDiv[r.div||""]=(T.alacakDiv[r.div||""]||0)+k});
+    F.chq.forEach(function(c){if(c.dir==="in"&&(c.status==="portfoy"))T.cekIn+=+c.amt||0; if(c.dir==="out"&&c.status==="verildi")T.cekOut+=+c.amt||0});
+    T.net=T.hesap+T.alacak+T.cekIn+(F.cfg.netVadeli?T.vadeli:0)-T.borc-T.cekOut;
+    return T;
+  }
+  function fvEvents(){
+    var F=FV.F, ev=[];
+    F.pay.forEach(function(p){var k=fvKalP(p); if(k>0.005)ev.push({d:p.due||"",k:"pay",id:p.id,amt:-k,title:p.firm,sub:"Borç · "+(FV_VIA[p.via]||"—")})});
+    F.rec.forEach(function(r){var k=fvKalR(r); if(k>0.005&&r.kind!=="vadeli")ev.push({d:r.due||"",k:"rec",id:r.id,amt:k,title:r.cust,sub:"Alacak · "+fvDivName(r.div)})});
+    F.chq.forEach(function(c){
+      if(c.dir==="in"&&(c.status==="portfoy"||c.status==="bekleniyor"))ev.push({d:c.due||"",k:"cin",id:c.id,amt:+c.amt||0,title:(c.party||"Çek")+(c.no?" · "+c.no:""),sub:"Alınan çek"+(c.status==="bekleniyor"?" (bekleniyor)":"")});
+      if(c.dir==="out"&&c.status==="verildi")ev.push({d:c.due||"",k:"cout",id:c.id,amt:-(+c.amt||0),title:(c.party||"Çek")+(c.no?" · "+c.no:""),sub:"Verilen çek"});
+    });
+    return ev;
+  }
+  function fvSnapMonth(){
+    try{
+      var F=FV.F; if(!F||!(F.pay.length||F.rec.length))return; var ym=monthKeyNow(), T=fvCalc();
+      var ex=F.snap.filter(function(s){return s.ym===ym})[0];
+      if(!ex){F.snap.push({ym:ym,borc:Math.round(T.borc),alacak:Math.round(T.alacak),net:Math.round(T.net),hesap:Math.round(T.hesap)}); F.snap.sort(function(a,b){return a.ym<b.ym?-1:1}); fvSave()}
+    }catch(e){}
+  }
+  /* ---- ana çizim ---- */
+  function fvRender(){
+    var b=$("fvbody"); if(!b)return; var h="";
+    $("fv").classList.toggle("fvhide",!!FV.hide);
+    if(FV.st!=="open"){
+      $("fvamt").textContent="•••••"; $("fvsub").textContent=FV.st==="open"?"":"Şifreli kasa kilitli";
+      $("fvtools").hidden=true; b.innerHTML=fvLockHtml(); return;
+    }
+    $("fvtools").hidden=false;
+    var T=fvCalc(); $("fvamt").innerHTML=fvA(T.net); $("fvsub").textContent="Net durum · hesaplar + alacaklar + portföy çekleri − borçlar − verilen çekler";
+    $("fvhide").setAttribute("aria-pressed",!!FV.hide); $("fvhide").textContent=FV.hide?"👁 Tutarlar gizli":"👁 Tutarları gizle";
+    h+='<div class="fvtabs" role="tablist">'+FV_TABS.map(function(t){return '<button type="button" data-fvtab="'+t[0]+'" aria-pressed="'+(FV.tab===t[0])+'">'+t[1]+'</button>'}).join("")+'</div>';
+    if(!FV.F.pay.length&&!FV.F.rec.length&&!FV.F.chq.length&&!FV.F.accts.length)h+=fvEmptyHtml();
+    var fn={ozet:fvOzet,takvim:fvTakvim,borc:fvBorc,alacak:fvAlacak,cek:fvCek,hesap:fvHesap,rapor:fvRapor,ayar:fvAyar}[FV.tab];
+    h+=fn(T);
+    var ae=document.activeElement, id=ae&&(ae.id==="fvq")?ae.id:"", kp=id?ae.selectionStart:0;
+    b.innerHTML=h; if(FV.msg){var m=document.createElement("div"); m.className="fvtoast"; m.textContent=FV.msg; b.insertBefore(m,b.firstChild); FV.msg=""; setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},3500)}
+    if(id){var ni=$(id); if(ni){ni.focus(); try{ni.setSelectionRange(kp,kp)}catch(e){}}}
+  }
+  function fvLockHtml(){
+    var m=FV.st, e=FV.err?'<div class="fvmsg bad">'+esc(FV.err)+'</div>':'';
+    if(m==="loading")return '<div class="fvlock"><div class="fvlk">🔐</div><h2>Kasa açılıyor…</h2><p>Veriler cihazında çözülüyor.</p></div>';
+    if(m==="nodb")return '<div class="fvlock"><div class="fvlk">⚠️</div><h2>Bağlantı yok</h2><p>Veritabanına bağlanılamadı. Giriş yaptığından emin ol.</p></div>';
+    if(m==="setup")return '<div class="fvlock"><div class="fvlk">🔐</div><h2>Şifreli kasayı kur</h2>'+
+      '<p>Finans verilerin senin belirleyeceğin bir şifreyle <b>bu cihazda şifrelenir</b>. Sunucuya yalnızca anlamsız şifreli metin gider; hesabı olan başka biri (annen, baban) veritabanına baksa bile okuyamaz.</p>'+
+      '<label class="fl" for="fvp1">Kasa şifresi (en az 8 karakter)</label><input class="fin" id="fvp1" type="password" autocomplete="new-password" placeholder="••••••••">'+
+      '<label class="fl" for="fvp2">Şifre (tekrar)</label><input class="fin" id="fvp2" type="password" autocomplete="new-password" placeholder="••••••••">'+
+      '<label class="fvchk"><input type="checkbox" id="fvrem" checked><span>Bu cihazda hatırla (tekrar şifre sorma)</span></label>'+e+
+      '<div class="fvwarn">Şifreyi unutursan veriler <b>geri getirilemez</b> — kimse sıfırlayamaz. Şifreni güvenli bir yere not et; Ayarlar’dan yedek de alabilirsin.</div>'+
+      '<button type="button" class="btn" data-fva="setup">Kasayı kur</button></div>';
+    return '<div class="fvlock"><div class="fvlk">🔒</div><h2>Kasa kilitli</h2><p>Finans verilerini görmek için kasa şifreni gir.</p>'+
+      '<label class="fl" for="fvp1">Kasa şifresi</label><input class="fin" id="fvp1" type="password" autocomplete="current-password" placeholder="••••••••">'+
+      '<label class="fvchk"><input type="checkbox" id="fvrem"><span>Bu cihazda hatırla</span></label>'+e+
+      '<button type="button" class="btn" data-fva="unlock">Kilidi aç</button></div>';
+  }
+  function fvEmptyHtml(){
+    return '<div class="fvcard fvempty"><h3>Kasa hazır, içi boş</h3><p>Excel’deki ödeme ve alacak listeni aktarmak için Ayarlar’daki “Excel verisini aktar”ı kullan ya da aşağıdan elle ekle.</p>'+
+      '<div class="fvrow"><button class="btn" data-fvtab="ayar">Aktarmaya git</button><button class="btn ghost" data-fva="payadd">+ Borç ekle</button><button class="btn ghost" data-fva="recadd">+ Alacak ekle</button></div></div>';
+  }
+  /* ---- Özet ---- */
+  function fvKpi(lbl,val,sub,tab,tone){return '<button type="button" class="fvk '+(tone||"")+'" data-fvtab="'+tab+'"><small>'+lbl+'</small><b>'+fvA(val)+'</b><em>'+sub+'</em></button>'}
+  function fvOzet(T){
+    var F=FV.F, h='';
+    h+='<div class="fvkpis">'+
+      fvKpi("Toplam borç",T.borc,T.nBorc+" firma","borc","bad")+
+      fvKpi("Toplam alacak",T.alacak,T.nAlacak+" müşteri","alacak","ok")+
+      fvKpi("Hesaplar",T.hesap,F.accts.length+" hesap","hesap","")+
+      fvKpi("Portföydeki çekler",T.cekIn,"alınan çek","cek","ok")+
+      fvKpi("Verilen çekler",T.cekOut,"ödenecek çek","cek","bad")+
+      (T.vadeli>0?fvKpi("Vadeli alacak",T.vadeli,"Excel alt tablosu"+(F.cfg.netVadeli?" · neta dahil":" · neta dahil değil"),"alacak",""):"")+
+    '</div>';
+    // dikkat
+    var al=[];
+    if(T.gecikenN)al.push('<button type="button" class="fval bad" data-fvtab="borc" data-fvf="late"><b>'+T.gecikenN+' borcun vadesi geçti</b><span>'+fvA(T.geciken)+'</span></button>');
+    if(T.vadesizN)al.push('<button type="button" class="fval warn" data-fvtab="borc" data-fvf="nodue"><b>'+T.vadesizN+' borca vade atanmamış</b><span>'+fvA(T.vadesiz)+'</span></button>');
+    var ev=fvEvents().filter(function(e){return e.d}), t7=fvAddDays(isoToday(),7), w={out:0,in:0};
+    ev.forEach(function(e){if(e.d>=isoToday()&&e.d<=t7){if(e.amt<0)w.out+=-e.amt; else w.in+=e.amt}});
+    if(w.out>0)al.push('<button type="button" class="fval warn" data-fvtab="takvim"><b>Bu hafta ödenecek</b><span>'+fvA(w.out)+'</span></button>');
+    if(w.in>0)al.push('<button type="button" class="fval ok" data-fvtab="takvim"><b>Bu hafta tahsil beklenen</b><span>'+fvA(w.in)+'</span></button>');
+    var lateR=F.rec.filter(function(r){return fvKalR(r)>0.005&&r.kind!=="vadeli"&&r.due&&daysTo(r.due)<0}).length; if(lateR)al.push('<button type="button" class="fval warn" data-fvtab="alacak"><b>'+lateR+' alacağın beklenen tarihi geçti</b><span></span></button>');
+    if(al.length)h+='<div class="fvcard"><h3>Dikkat</h3><div class="fval-list">'+al.join("")+'</div></div>';
+    // nakit akışı
+    h+='<div class="fvcard"><h3>Nakit akışı · önümüzdeki 8 hafta</h3>'+fvFlowSvg(T)+'<small class="fvnote">Çubuklar vadesi belli borç/çek (kırmızı) ve alacak/çek (yeşil) toplamı. Çizgi, hesap bakiyesinden başlayan tahmini bakiye. Vadesi girilmemiş kayıtlar dahil değil.</small></div>';
+    // dağılımlar
+    var vk=Object.keys(T.borcVia).sort(function(a,b){return T.borcVia[b]-T.borcVia[a]});
+    h+='<div class="fvtwo"><div class="fvcard"><h3>Borç · ödeme kanalı</h3>'+(vk.length?fvBars(vk.map(function(k){return [FV_VIA[k]||"Belirsiz",T.borcVia[k]]}),T.borc,"bad"):'<div class="fvnone">Açık borç yok</div>')+'</div>'+
+      '<div class="fvcard"><h3>Alacak · bölüm</h3>'+(Object.keys(T.alacakDiv).length?fvBars(Object.keys(T.alacakDiv).sort(function(a,b){return T.alacakDiv[b]-T.alacakDiv[a]}).map(function(k){return [fvDivName(k),T.alacakDiv[k]]}),T.alacak,"ok"):'<div class="fvnone">Açık alacak yok</div>')+'</div></div>';
+    // en büyük borçlar ve yaklaşanlar
+    var top=F.pay.filter(function(p){return fvKalP(p)>0.005}).sort(function(a,b){return fvKalP(b)-fvKalP(a)}).slice(0,8);
+    h+='<div class="fvtwo"><div class="fvcard"><h3>En büyük borçlar</h3>'+(top.length?top.map(function(p){return '<button type="button" class="fvli" data-fva="paydet" data-id="'+p.id+'"><span><b>'+esc(p.firm)+'</b><small>'+esc(FV_VIA[p.via]||"")+'</small></span><em>'+fvA(fvKalP(p))+'</em></button>'}).join(""):'<div class="fvnone">Borç yok</div>')+'</div>';
+    var up=ev.filter(function(e){return e.d>=isoToday()}).sort(function(a,b){return a.d<b.d?-1:1}).slice(0,8);
+    h+='<div class="fvcard"><h3>Yaklaşan vadeler</h3>'+(up.length?up.map(function(e){return '<button type="button" class="fvli" data-fva="evopen" data-k="'+e.k+'" data-id="'+e.id+'"><span><b>'+esc(e.title)+'</b><small>'+fvDate(e.d)+' · '+esc(e.sub)+'</small></span><em class="'+(e.amt<0?'neg':'pos')+'">'+fvA(Math.abs(e.amt))+'</em></button>'}).join(""):'<div class="fvnone">Vadesi girilmiş yaklaşan kayıt yok</div>')+'</div></div>';
+    return h;
+  }
+  function fvBars(rows,total,tone){
+    return '<div class="fvbars">'+rows.map(function(r){var p=total>0?Math.max(2,Math.round(r[1]/total*100)):0; return '<div class="fvbr"><span class="n">'+esc(r[0])+'</span><span class="b"><i class="'+tone+'" style="width:'+p+'%"></i></span><span class="v">'+fvA(r[1])+'<small>%'+(total>0?Math.round(r[1]/total*100):0)+'</small></span></div>'}).join("")+'</div>';
+  }
+  function fvFlowSvg(T){
+    var today=isoToday(), ev=fvEvents().filter(function(e){return e.d}), W=8, bk=[];
+    var late={lbl:"Gecikmiş",in:0,out:0}, ws=[]; for(var i=0;i<W;i++){var a=fvAddDays(today,i*7), b=fvAddDays(today,i*7+6), p=a.split("-"), q=b.split("-"); ws.push({a:a,b:b,lbl:(+p[2])+"–"+(+q[2])+" "+AY[+q[1]-1].slice(0,3),in:0,out:0})}
+    ev.forEach(function(e){if(e.d<today){if(e.amt<0)late.out+=-e.amt; else late.in+=e.amt; return} ws.forEach(function(w){if(e.d>=w.a&&e.d<=w.b){if(e.amt<0)w.out+=-e.amt; else w.in+=e.amt}})});
+    bk=[late].concat(ws); var run=T.hesap, pts=[]; bk.forEach(function(b){run+=b.in-b.out; pts.push(run)});
+    var mx=Math.max(1,Math.max.apply(null,bk.map(function(b){return Math.max(b.in,b.out)}))), Wd=660, H=230, pl=8, pr=8, pt=18, pb=34, cw=(Wd-pl-pr)/bk.length, ch=H-pt-pb;
+    var mn=Math.min.apply(null,pts.concat([0])), mxp=Math.max.apply(null,pts.concat([1])), rng=(mxp-mn)||1;
+    var s='<svg class="fvsvg" viewBox="0 0 '+Wd+' '+H+'" role="img" aria-label="Nakit akışı grafiği">';
+    s+='<line x1="'+pl+'" x2="'+(Wd-pr)+'" y1="'+(pt+ch)+'" y2="'+(pt+ch)+'" class="ax"/>';
+    bk.forEach(function(b,i){
+      var x=pl+i*cw, bw=Math.min(22,cw*0.32), hi=b.in/mx*ch*0.9, ho=b.out/mx*ch*0.9;
+      s+='<rect x="'+(x+cw/2-bw-1)+'" y="'+(pt+ch-hi)+'" width="'+bw+'" height="'+Math.max(0,hi)+'" rx="3" class="in"/>';
+      s+='<rect x="'+(x+cw/2+1)+'" y="'+(pt+ch-ho)+'" width="'+bw+'" height="'+Math.max(0,ho)+'" rx="3" class="out"/>';
+      if(b.out>0)s+='<text x="'+(x+cw/2+1+bw/2)+'" y="'+(pt+ch-ho-4)+'" class="v" text-anchor="middle">'+fvMc(b.out)+'</text>';
+      if(b.in>0)s+='<text x="'+(x+cw/2-1-bw/2)+'" y="'+(pt+ch-hi-4)+'" class="v" text-anchor="middle">'+fvMc(b.in)+'</text>';
+      s+='<text x="'+(x+cw/2)+'" y="'+(H-14)+'" class="lb" text-anchor="middle">'+esc(b.lbl)+'</text>';
+    });
+    var path=pts.map(function(v,i){var x=pl+i*cw+cw/2, y=pt+ch-((v-mn)/rng)*ch*0.9-4; return (i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1)}).join(" ");
+    s+='<path d="'+path+'" class="ln"/>'; pts.forEach(function(v,i){var x=pl+i*cw+cw/2, y=pt+ch-((v-mn)/rng)*ch*0.9-4; s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" class="dot"/>'});
+    s+='</svg><div class="fvleg"><span><i class="in"></i>Gelen</span><span><i class="out"></i>Giden</span><span><i class="ln"></i>Tahmini bakiye: '+fvA(pts[pts.length-1])+'</span></div>';
+    return s;
+  }
+  /* ---- Takvim ---- */
+  function fvTakvim(T){
+    if(!FV.cal)FV.cal={y:now.getFullYear(),m:now.getMonth()};
+    var y=FV.cal.y, m=FV.cal.m, first=new Date(y,m,1), off=(first.getDay()+6)%7, dim=new Date(y,m+1,0).getDate(), mk=y+"-"+pad(m+1);
+    var ev=fvEvents(), by={}, sumIn=0, sumOut=0;
+    ev.forEach(function(e){if(!e.d)return; (by[e.d]=by[e.d]||[]).push(e); if(fvMk(e.d)===mk){if(e.amt<0)sumOut+=-e.amt; else sumIn+=e.amt}});
+    var h='<div class="fvcard"><div class="fvcalh"><button type="button" class="fvnav" data-fva="calprev" aria-label="Önceki ay">‹</button><div><h3>'+AY[m]+' '+y+'</h3><small>Tahsil <b class="pos">'+fvA(sumIn)+'</b> · Ödeme <b class="neg">'+fvA(sumOut)+'</b></small></div><button type="button" class="fvnav" data-fva="calnext" aria-label="Sonraki ay">›</button></div>';
+    h+='<div class="fvcal"><div class="fvdow">'+["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(function(d){return '<span>'+d+'</span>'}).join("")+'</div><div class="fvgrid">';
+    for(var i=0;i<off;i++)h+='<span class="fvday e"></span>';
+    for(var d=1;d<=dim;d++){
+      var iso=mk+"-"+pad(d), es=by[iso]||[], pin=0, pout=0; es.forEach(function(e){if(e.amt<0)pout+=-e.amt; else pin+=e.amt});
+      h+='<button type="button" class="fvday'+(iso===isoToday()?' today':'')+(iso===FV.calSel?' sel':'')+(es.length?' has':'')+'" data-fva="calsel" data-d="'+iso+'"><b>'+d+'</b>'+(pin?'<i class="pos">'+fvMc(pin,1)+'</i>':'')+(pout?'<i class="neg">'+fvMc(pout,1)+'</i>':'')+'</button>';
+    }
+    h+='</div></div></div>';
+    var sel=FV.calSel&&fvMk(FV.calSel)===mk?FV.calSel:"";
+    if(sel){var es2=(by[sel]||[]); h+='<div class="fvcard"><h3>'+fvDateL(sel)+'</h3>'+(es2.length?es2.map(fvEvRow).join(""):'<div class="fvnone">Bu güne kayıt yok</div>')+'</div>'}
+    else{
+      var list=ev.filter(function(e){return e.d&&fvMk(e.d)===mk}).sort(function(a,b){return a.d<b.d?-1:1});
+      h+='<div class="fvcard"><h3>'+AY[m]+' ayı hareketleri</h3>'+(list.length?list.map(fvEvRow).join(""):'<div class="fvnone">Bu ay için vadesi girilmiş kayıt yok</div>')+'</div>';
+    }
+    var nod=ev.filter(function(e){return !e.d});
+    if(nod.length)h+='<div class="fvcard"><h3>Vadesiz kayıtlar <small>('+nod.length+')</small></h3>'+nod.slice(0,12).map(fvEvRow).join("")+(nod.length>12?'<div class="fvnone">+'+(nod.length-12)+' kayıt daha — Borçlar / Alacaklar sekmesinden vade ata</div>':'')+'</div>';
+    return h;
+  }
+  function fvEvRow(e){
+    return '<button type="button" class="fvli" data-fva="evopen" data-k="'+e.k+'" data-id="'+e.id+'"><span><b>'+esc(e.title)+'</b><small>'+(e.d?fvDate(e.d)+' · ':'')+esc(e.sub)+'</small></span><em class="'+(e.amt<0?'neg':'pos')+'">'+(e.amt<0?'−':'+')+fvA(Math.abs(e.amt))+'</em></button>';
+  }
+  /* ---- Borçlar ---- */
+  function fvPayList(){
+    var q=fold(FV.q.trim()), f=FV.flt;
+    return FV.F.pay.filter(function(p){
+      var k=fvKalP(p), open=k>0.005;
+      if(f==="paid"){if(open)return false} else if(!open)return false;
+      if(f==="late"&&!(p.due&&daysTo(p.due)<0))return false;
+      if(f==="nodue"&&p.due)return false;
+      if(FV_VIAK.indexOf(f)>-1&&p.via!==f)return false;
+      if(q&&fold(p.firm+" "+(p.note||"")+" "+(FV_VIA[p.via]||"")).indexOf(q)<0)return false;
+      return true;
+    }).sort(function(a,b){var da=a.due||"9999", db2=b.due||"9999"; return da<db2?-1:da>db2?1:fvKalP(b)-fvKalP(a)});
+  }
+  function fvBorc(T){
+    var l=fvPayList(), tot=l.reduce(function(a,p){return a+fvKalP(p)},0);
+    var chips=[["","Açık"],["late","Gecikmiş"],["nodue","Vadesiz"],["banka","Banka"],["cek","Çek"],["gr","G.R."],["nakit","Nakit"],["paid","Ödenmiş"]];
+    var h='<div class="fvbar"><input class="search" id="fvq" type="search" autocomplete="off" placeholder="Firma ara…" value="'+esc(FV.q)+'" aria-label="Borç ara"><button class="btn" data-fva="payadd">+ Yeni borç</button><button class="btn ghost" data-fva="bulkdue">Toplu vade</button></div>';
+    h+='<div class="fvchips">'+chips.map(function(c){return '<button type="button" data-fvf="'+c[0]+'" aria-pressed="'+(FV.flt===c[0])+'">'+c[1]+'</button>'}).join("")+'</div>';
+    h+='<div class="fvlist">'+(l.length?l.map(fvPayRow).join(""):'<div class="fvnone">Bu filtrede borç yok.</div>')+'<div class="fvtot"><span>'+l.length+' kayıt</span><b>'+(FV.flt==="paid"?"":"Kalan ")+fvA(tot)+'</b></div></div>';
+    return h;
+  }
+  function fvPayRow(p){
+    var k=fvKalP(p), planned=FV.F.chq.filter(function(c){return c.dir==="in"&&c.assign===p.id&&c.status==="portfoy"});
+    return '<button type="button" class="fvrow2" data-fva="paydet" data-id="'+p.id+'"><span class="n"><b>'+esc(p.firm)+'</b><small>'+(p.via?'<i class="fvp via">'+esc(FV_VIA[p.via]||p.via)+'</i>':'')+(planned.length?'<i class="fvp info">Çek planlı · '+planned.length+'</i>':'')+(p.note?'<i class="fvnt">'+esc(p.note)+'</i>':'')+'</small></span><span class="d">'+fvDuePill(p.due,k)+'</span><span class="a">'+(k>0.005?fvA(k):'<i class="fvp ok">Ödendi</i>')+(+p.paid>0&&k>0.005?'<small>/ '+fvM(p.amt)+'</small>':'')+'</span></button>';
+  }
+  /* ---- Alacaklar ---- */
+  function fvRecList(vad){
+    var q=fold(FV.q.trim()), f=FV.flt;
+    return FV.F.rec.filter(function(r){
+      var k=fvKalR(r), open=k>0.005; if((r.kind==="vadeli")!==!!vad)return false;
+      if(f==="paid"){if(open)return false} else if(!open)return false;
+      if(f==="late"&&!(r.due&&daysTo(r.due)<0))return false;
+      if(f==="nodue"&&r.due)return false;
+      if(FV.div!=="all"&&(r.div||"")!==FV.div)return false;
+      if(q&&fold(r.cust+" "+(r.note||"")).indexOf(q)<0)return false;
+      return true;
+    }).sort(function(a,b){return fvKalR(b)-fvKalR(a)});
+  }
+  function fvAlacak(T){
+    var l=fvRecList(false), lv=fvRecList(true), tot=l.reduce(function(a,r){return a+fvKalR(r)},0), totv=lv.reduce(function(a,r){return a+fvKalR(r)},0);
+    var chips=[["","Açık"],["late","Tarihi geçen"],["nodue","Tarihsiz"],["paid","Tahsil edilmiş"]];
+    var dv=['all'].concat((window.__DIVS||[]).map(function(d){return d.id}));
+    var h='<div class="fvbar"><input class="search" id="fvq" type="search" autocomplete="off" placeholder="Müşteri ara…" value="'+esc(FV.q)+'" aria-label="Alacak ara"><button class="btn" data-fva="recadd">+ Yeni alacak</button></div>';
+    h+='<div class="fvchips">'+chips.map(function(c){return '<button type="button" data-fvf="'+c[0]+'" aria-pressed="'+(FV.flt===c[0])+'">'+c[1]+'</button>'}).join("")+'</div>';
+    h+='<div class="fvchips dv">'+dv.map(function(k){var di=k==="all"?null:divInfo(k); return '<button type="button" data-fvd="'+k+'" aria-pressed="'+(FV.div===k)+'">'+(di?esc(di.name):"Hepsi")+'</button>'}).join("")+'</div>';
+    h+='<div class="fvlist">'+(l.length?l.map(fvRecRow).join(""):'<div class="fvnone">Bu filtrede alacak yok.</div>')+'<div class="fvtot"><span>'+l.length+' kayıt</span><b>Kalan '+fvA(tot)+'</b></div></div>';
+    if(lv.length){h+='<div class="fvcard" style="margin-top:14px"><h3>Vadeli / çekli alacak <small>(Excel’deki alt tablo)</small></h3><div class="fvlist flat">'+lv.map(fvRecRow).join("")+'<div class="fvtot"><span>'+lv.length+' kayıt</span><b>'+fvA(totv)+'</b></div></div><small class="fvnote">Bu tutarlar “Toplam alacak”a katılmaz. Net durumuna katmak için Ayarlar’dan aç.</small></div>'}
+    return h;
+  }
+  function fvRecRow(r){
+    var k=fvKalR(r), range=r.dueFrom&&r.due?(fvDate(r.dueFrom)+" – "+fvDate(r.due)):"";
+    return '<button type="button" class="fvrow2" data-fva="recdet" data-id="'+r.id+'"><span class="n"><b>'+esc(r.cust)+'</b><small>'+(r.div?'<i class="fvp via">'+esc(fvDivName(r.div))+'</i>':'')+(r.note?'<i class="fvnt">'+esc(r.note)+'</i>':'')+'</small></span><span class="d">'+(range&&k>0.005?'<i class="fvp info">'+range+'</i>':fvDuePill(r.due,k).replace("Vade yok","Tarih yok"))+'</span><span class="a">'+(k>0.005?fvA(k):'<i class="fvp ok">Tahsil edildi</i>')+(+r.got>0&&k>0.005?'<small>/ '+fvM(r.amt)+'</small>':'')+'</span></button>';
+  }
+  /* ---- Çekler ---- */
+  function fvCek(T){
+    var dir=FV.ctab, list=FV.F.chq.filter(function(c){return c.dir===dir}), showAll=FV.flt==="all";
+    var act=dir==="in"?["portfoy","bekleniyor"]:["verildi"];
+    var l=list.filter(function(c){return showAll||act.indexOf(c.status)>-1}).sort(function(a,b){var da=a.due||"9999", db2=b.due||"9999"; return da<db2?-1:da>db2?1:0});
+    var tot=l.reduce(function(a,c){return a+(+c.amt||0)},0), months={};
+    l.forEach(function(c){var k=c.due?fvMk(c.due):"yok"; months[k]=(months[k]||0)+(+c.amt||0)});
+    var h='<div class="fvtabs sm"><button type="button" data-fvct="in" aria-pressed="'+(dir==="in")+'">Alınan çekler <em>'+FV.F.chq.filter(function(c){return c.dir==="in"&&(c.status==="portfoy"||c.status==="bekleniyor")}).length+'</em></button><button type="button" data-fvct="out" aria-pressed="'+(dir==="out")+'">Verilen çekler <em>'+FV.F.chq.filter(function(c){return c.dir==="out"&&c.status==="verildi"}).length+'</em></button></div>';
+    h+='<div class="fvbar"><span class="fvgrow"></span><button class="btn" data-fva="chqadd">+ '+(dir==="in"?"Alınan":"Verilen")+' çek</button></div>';
+    h+='<div class="fvchips"><button type="button" data-fvf="" aria-pressed="'+(!showAll)+'">Aktif</button><button type="button" data-fvf="all" aria-pressed="'+showAll+'">Tümü</button></div>';
+    var mk=Object.keys(months).sort();
+    if(mk.length)h+='<div class="fvmonths">'+mk.map(function(k){var lbl=k==="yok"?"Vadesiz":(AY[+k.slice(5)-1].slice(0,3)+" "+k.slice(2,4)); return '<span><small>'+lbl+'</small><b>'+fvA(months[k])+'</b></span>'}).join("")+'</div>';
+    h+='<div class="fvlist">'+(l.length?l.map(fvChqRow).join(""):'<div class="fvnone">'+(dir==="in"?"Portföyde çek yok.":"Verilmiş çek yok.")+'</div>')+'<div class="fvtot"><span>'+l.length+' çek</span><b>'+fvA(tot)+'</b></div></div>';
+    return h;
+  }
+  function fvChqRow(c){
+    var st=c.status, tone=(st==="portfoy"||st==="verildi")?"info":(st==="bekleniyor"?"warn":(st==="karsiliksiz"?"bad":"ok")), asg=c.assign?FV.F.pay.filter(function(p){return p.id===c.assign})[0]:null;
+    return '<button type="button" class="fvrow2" data-fva="chqdet" data-id="'+c.id+'"><span class="n"><b>'+esc(c.party||"—")+'</b><small>'+(c.no?'<i class="fvnt">No '+esc(c.no)+'</i>':'')+(c.bank?'<i class="fvnt">'+esc(c.bank)+'</i>':'')+(asg?'<i class="fvp info">→ '+esc(asg.firm)+'</i>':'')+(c.usedTo?'<i class="fvp ok">'+esc(c.usedTo)+' ödemesinde kullanıldı</i>':'')+'</small></span><span class="d">'+(c.status==="portfoy"||c.status==="verildi"||c.status==="bekleniyor"?fvDuePill(c.due,1):'')+'</span><span class="a">'+fvA(c.amt)+'<small><i class="fvp '+tone+'">'+(FV_CST[st]||st)+'</i></small></span></button>';
+  }
+  /* ---- Hesaplar ---- */
+  function fvHesap(T){
+    var F=FV.F, h='<div class="fvbar"><span class="fvgrow"></span><button class="btn ghost" data-fva="transfer">Transfer</button><button class="btn" data-fva="acctadd">+ Hesap</button></div>';
+    if(!F.accts.length)return h+'<div class="fvcard fvempty"><h3>Henüz hesap yok</h3><p>Banka, kasa ya da G.R. hesabını ekle; bakiyeler net durumuna girer, ödeme ve tahsilatlar hesaplara işlenir.</p></div>';
+    h+='<div class="fvaccts">'+F.accts.map(function(a){return '<button type="button" class="fvac'+(FV.acct===a.id?' sel':'')+'" data-fva="acctsel" data-id="'+a.id+'"><small>'+esc(a.type==="nakit"?"Nakit":"Hesap")+'</small><b>'+esc(a.name)+'</b><em class="'+((+a.bal||0)<0?'neg':'')+'">'+fvA(a.bal)+'</em></button>'}).join("")+'</div>';
+    var sel=fvAcct(FV.acct)||F.accts[0]; FV.acct=sel.id;
+    var mv=F.mov.filter(function(m){return m.acct===sel.id}).slice(0,40);
+    h+='<div class="fvcard"><div class="fvrow"><h3 class="fvgrow">'+esc(sel.name)+' · hareketler</h3><button class="btn ghost sm" data-fva="acctedit" data-id="'+sel.id+'">Düzenle / bakiye düzelt</button></div>'+(mv.length?mv.map(function(m){return '<div class="fvli static"><span><b>'+esc(m.note||"Hareket")+'</b><small>'+fvDate(m.d)+'</small></span><em class="'+(m.amt<0?'neg':'pos')+'">'+(m.amt<0?'−':'+')+fvA(Math.abs(m.amt))+'</em></div>'}).join(""):'<div class="fvnone">Henüz hareket yok. Ödeme ve tahsilatlar burada görünür.</div>')+'</div>';
+    return h;
+  }
+  /* ---- Raporlar ---- */
+  function fvRapor(T){
+    var F=FV.F, h='';
+    h+='<div class="fvcard"><h3>Borç yaşlandırma</h3>'+fvBars([["Vadesi geçmiş",T.agBorc.gec],["0–7 gün",T.agBorc.h1],["8–30 gün",T.agBorc.h2],["30 günden sonra",T.agBorc.h3],["Vadesiz",T.agBorc.yok]].filter(function(r){return r[1]>0}),T.borc,"bad")+(T.borc?'':'<div class="fvnone">Açık borç yok</div>')+'</div>';
+    // aylık vade toplamları
+    var ev=fvEvents().filter(function(e){return e.d}), ms={}; ev.forEach(function(e){var k=fvMk(e.d); ms[k]=ms[k]||{in:0,out:0}; if(e.amt<0)ms[k].out+=-e.amt; else ms[k].in+=e.amt});
+    var mk=Object.keys(ms).sort();
+    h+='<div class="fvcard"><h3>Aylara göre vadeler</h3>'+(mk.length?'<div class="fvtable"><div class="fvth"><span>Ay</span><span class="r">Tahsil</span><span class="r">Ödeme</span><span class="r">Fark</span></div>'+mk.map(function(k){var m=ms[k], d=m.in-m.out; return '<div class="fvtr"><span>'+AY[+k.slice(5)-1]+' '+k.slice(0,4)+'</span><span class="r pos">'+fvA(m.in)+'</span><span class="r neg">'+fvA(m.out)+'</span><span class="r '+(d<0?'neg':'pos')+'">'+fvA(d)+'</span></div>'}).join("")+'</div>':'<div class="fvnone">Vadesi girilmiş kayıt yok</div>')+'</div>';
+    // en büyük alacaklar
+    var tr=F.rec.filter(function(r){return fvKalR(r)>0.005&&r.kind!=="vadeli"}).sort(function(a,b){return fvKalR(b)-fvKalR(a)}).slice(0,10);
+    h+='<div class="fvtwo"><div class="fvcard"><h3>En büyük alacaklar</h3>'+(tr.length?fvBars(tr.map(function(r){return [r.cust,fvKalR(r)]}),T.alacak,"ok"):'<div class="fvnone">Alacak yok</div>')+'</div>';
+    var tp=F.pay.filter(function(p){return fvKalP(p)>0.005}).sort(function(a,b){return fvKalP(b)-fvKalP(a)}).slice(0,10);
+    h+='<div class="fvcard"><h3>En büyük borçlar</h3>'+(tp.length?fvBars(tp.map(function(p){return [p.firm,fvKalP(p)]}),T.borc,"bad"):'<div class="fvnone">Borç yok</div>')+'</div></div>';
+    // aylık durum kaydı
+    h+='<div class="fvcard"><div class="fvrow"><h3 class="fvgrow">Aylık durum geçmişi</h3><button class="btn ghost sm" data-fva="snapnow">Bugünkü durumu kaydet</button></div>'+fvTrendSvg()+'</div>';
+    return h;
+  }
+  function fvTrendSvg(){
+    var S=FV.F.snap; if(S.length<2)return '<div class="fvnone">'+(S.length?'Her ayın ilk açılışında durum otomatik kaydedilir. Trend grafiği için en az 2 ay gerekir. Şu an: '+S.length+' kayıt.':'Henüz kayıt yok.')+'</div>'+(S.length?fvSnapTable(S):'');
+    var W=660,H=210,pl=10,pr=10,pt=14,pb=28, ser=[["borc","bad"],["alacak","ok"],["net","ln"]], all=[]; S.forEach(function(s){ser.forEach(function(k){all.push(s[k[0]]||0)})});
+    var mn=Math.min.apply(null,all.concat([0])), mx=Math.max.apply(null,all.concat([1])), rg=mx-mn||1, cw=(W-pl-pr)/(S.length-1);
+    var s='<svg class="fvsvg" viewBox="0 0 '+W+' '+H+'">';
+    ser.forEach(function(k){var p=S.map(function(x,i){return (i?"L":"M")+(pl+i*cw).toFixed(1)+" "+(pt+(H-pt-pb)-(((x[k[0]]||0)-mn)/rg)*(H-pt-pb)).toFixed(1)}).join(" "); s+='<path d="'+p+'" class="tl '+k[1]+'"/>'});
+    S.forEach(function(x,i){if(S.length<=14||i%Math.ceil(S.length/10)===0)s+='<text x="'+(pl+i*cw)+'" y="'+(H-8)+'" class="lb" text-anchor="middle">'+AY[+x.ym.slice(5)-1].slice(0,3)+' '+x.ym.slice(2,4)+'</text>'});
+    s+='</svg><div class="fvleg"><span><i class="out"></i>Borç</span><span><i class="in"></i>Alacak</span><span><i class="ln"></i>Net</span></div>';
+    return s+fvSnapTable(S);
+  }
+  function fvSnapTable(S){return '<div class="fvtable"><div class="fvth"><span>Ay</span><span class="r">Borç</span><span class="r">Alacak</span><span class="r">Net</span></div>'+S.slice().reverse().slice(0,12).map(function(s){return '<div class="fvtr"><span>'+AY[+s.ym.slice(5)-1]+' '+s.ym.slice(0,4)+'</span><span class="r neg">'+fvA(s.borc)+'</span><span class="r pos">'+fvA(s.alacak)+'</span><span class="r '+(s.net<0?'neg':'pos')+'">'+fvA(s.net)+'</span></div>'}).join("")+'</div>'}
+  /* ---- Ayarlar ---- */
+  function fvAyar(T){
+    var rem=false; try{rem=!!localStorage.getItem("fv_k")}catch(e){}
+    return '<div class="fvcard"><h3>Veri aktarımı</h3><p class="fvp-t">Excel’den hazırlanan finans dosyasını (.json) seç; borçlar, alacaklar ve çekler kasaya şifrelenerek yazılır. Aynı dosyayı ikinci kez seçersen çift kayıt olmaz.</p><div class="fvrow"><button class="btn" data-fva="importpick">📥 Excel verisini aktar</button><input type="file" id="fvfile" accept=".json,application/json" hidden></div><div class="fvmsg" id="fvimsg"></div></div>'+
+      '<div class="fvcard"><h3>Görünüm ve hesap</h3>'+
+      '<label class="fvchk"><input type="checkbox" id="fvcfg-nv" '+(FV.F.cfg.netVadeli?'checked':'')+'><span>Vadeli / çekli alacakları (Excel alt tablosu) net duruma kat</span></label>'+
+      '<label class="fvchk"><input type="checkbox" id="fvcfg-rem" '+(rem?'checked':'')+'><span>Bu cihazda kasa şifresini hatırla</span></label></div>'+
+      '<div class="fvcard"><h3>Yedek</h3><p class="fvp-t">Verilerini şifresiz bir dosya olarak indirirsin — dosyayı güvenli yerde sakla.</p><div class="fvrow"><button class="btn ghost" data-fva="exportjson">Yedek indir (.json)</button><button class="btn ghost" data-fva="exportcsv">Borç + alacak (.csv)</button></div></div>'+
+      '<div class="fvcard"><h3>Güvenlik</h3><p class="fvp-t">Veriler cihazında AES-256 ile şifrelenir. Şifre sunucuya gitmez ve kimse sıfırlayamaz.</p><div class="fvrow"><button class="btn ghost" data-fva="passchg">Şifreyi değiştir</button><button class="btn ghost" data-fva="lock">Kasayı kilitle</button><button class="btn ghost" data-fva="lockforget">Kilitle ve bu cihazı unut</button></div></div>';
+  }
+  /* ---- pencere (modal) ---- */
+  function fvModal(title,body,foot){
+    FV.modal=true; var m=$("fvmodal"); m.hidden=false;
+    m.innerHTML='<div class="fvmbd" data-fva="mclose"></div><div class="fvmbox" role="dialog" aria-label="'+esc(title)+'"><div class="fvmh"><h3>'+esc(title)+'</h3><button type="button" class="fvx" data-fva="mclose" aria-label="Kapat">✕</button></div><div class="fvmb">'+body+'</div><div class="fvmsg" id="fvmmsg"></div>'+(foot?'<div class="fvmf">'+foot+'</div>':'')+'</div>';
+    var f=m.querySelector("input:not([type=hidden]),select"); if(f&&!/Mobi|iPhone|Android/i.test(navigator.userAgent))try{f.focus()}catch(e){}
+  }
+  function fvModalClose(){FV.modal=false; var m=$("fvmodal"); m.hidden=true; m.innerHTML=""}
+  function fvV(id){var e=$(id); return e?e.value:""}
+  function fvNum(id){var v=String(fvV(id)).replace(/\./g,"").replace(",","."); var n=parseFloat(v); return isFinite(n)?n:0}
+  function fvF(lbl,id,val,attrs,cls){return '<div'+(cls?' class="'+cls+'"':'')+'><label class="fl" for="'+id+'">'+lbl+'</label><input class="fin" id="'+id+'" value="'+esc(val==null?"":val)+'" '+(attrs||"")+'></div>'}
+  function fvSel(lbl,id,opts,val,cls){return '<div'+(cls?' class="'+cls+'"':'')+'><label class="fl" for="'+id+'">'+lbl+'</label><select class="fin" id="'+id+'">'+opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(o[0])===String(val)?' selected':'')+'>'+esc(o[1])+'</option>'}).join("")+'</select></div>'}
+  function fvAcctOpts(blank){return (blank?[["",blank]]:[]).concat(FV.F.accts.map(function(a){return [a.id,a.name+" · "+fvM(a.bal)]}))}
+  /* borç formu */
+  function fvPayForm(p){
+    var n=!p; p=p||{firm:"",amt:"",via:"banka",due:"",note:"",cat:""};
+    fvModal(n?"Yeni borç":"Borcu düzenle",'<div class="fvgrid2">'+fvF("Firma","fvf-firm",p.firm,'autocomplete="off"')+fvF("Borç tutarı (₺)","fvf-amt",p.amt===""?"":p.amt,'inputmode="decimal"')+fvSel("Ödeme kanalı","fvf-via",FV_VIAK.map(function(k){return [k,FV_VIA[k]]}),p.via||"banka")+fvF("Vade","fvf-due",p.due||"",'type="date"')+fvF("Not","fvf-note",p.note||"",'autocomplete="off"','w2')+'</div>',
+      '<button class="btn" data-fva="paysave" data-id="'+(p.id||"")+'">Kaydet</button>'+(n?'':'<button class="btn danger" data-fva="paydel" data-id="'+p.id+'">Sil</button>'));
+  }
+  function fvPaySave(id){
+    var firm=fvV("fvf-firm").trim(), amt=fvNum("fvf-amt"), m=$("fvmmsg"); if(!firm){m.textContent="Firma adı gerekli."; return} if(!(amt>0)){m.textContent="Tutar gir."; return}
+    var p=id?FV.F.pay.filter(function(x){return x.id===id})[0]:null;
+    if(p){p.firm=firm; p.amt=amt; p.via=fvV("fvf-via"); p.due=fvV("fvf-due"); p.note=fvV("fvf-note").trim()}
+    else FV.F.pay.push({id:uid(),firm:firm,amt:amt,paid:0,via:fvV("fvf-via"),due:fvV("fvf-due"),note:fvV("fvf-note").trim(),ts:Date.now(),hist:[]});
+    fvSave(); fvModalClose(); fvRender();
+  }
+  /* borç detayı */
+  function fvPayDet(id){
+    var p=FV.F.pay.filter(function(x){return x.id===id})[0]; if(!p)return; var k=fvKalP(p);
+    var planned=FV.F.chq.filter(function(c){return c.dir==="in"&&c.assign===p.id&&c.status==="portfoy"});
+    var body='<div class="fvdet"><div class="fvbig">'+fvA(k)+'<small>kalan'+(+p.paid>0?' · toplam '+fvM(p.amt)+' · ödenen '+fvM(p.paid):'')+'</small></div>'+
+      '<div class="fvkv"><span>Kanal</span><b>'+esc(FV_VIA[p.via]||"—")+'</b><span>Vade</span><b>'+fvDateL(p.due)+'</b>'+(p.note?'<span>Not</span><b>'+esc(p.note)+'</b>':'')+'</div>'+
+      (planned.length?'<div class="fvsub"><h4>Bu ödemede kullanılacak çekler</h4>'+planned.map(function(c){return '<div class="fvli static"><span><b>'+esc(c.party||"Çek")+(c.no?' · '+esc(c.no):'')+'</b><small>Vade '+fvDate(c.due)+'</small></span><em>'+fvA(c.amt)+'</em></div>'}).join("")+'</div>':'')+
+      ((p.hist||[]).length?'<div class="fvsub"><h4>Ödeme geçmişi</h4>'+(p.hist||[]).slice().reverse().map(function(h){return '<div class="fvli static"><span><b>'+esc(h.note||"Ödeme")+'</b><small>'+fvDateL(h.d)+'</small></span><em class="pos">'+fvA(h.amt)+'</em></div>'}).join("")+'</div>':'')+'</div>';
+    fvModal(p.firm,body,(k>0.005?'<button class="btn" data-fva="payexec" data-id="'+p.id+'">💸 Ödeme yap</button>':'')+'<button class="btn ghost" data-fva="payedit" data-id="'+p.id+'">Düzenle</button>');
+  }
+  function fvPayExec(id){
+    var p=FV.F.pay.filter(function(x){return x.id===id})[0]; if(!p)return; var k=fvKalP(p);
+    var ports=FV.F.chq.filter(function(c){return c.dir==="in"&&c.status==="portfoy"&&(+c.amt||0)<=k+0.005}).sort(function(a,b){return (a.assign===p.id?-1:0)-(b.assign===p.id?-1:0)});
+    var src=[["acct","Hesaptan öde"+(FV.F.accts.length?"":" (önce hesap ekle)")]];
+    if(ports.length)src.push(["chqin","Portföydeki çeki ciro et"]); src.push(["newchq","Yeni çek ver"]); src.push(["rec","Sadece kaydet (hesaptan düşme)"]);
+    fvModal(p.firm+" · ödeme",'<div class="fvbig">'+fvA(k)+'<small>kalan borç</small></div><div class="fvgrid2">'+fvSel("Nasıl ödenecek?","fvx-src",src,p.via==="cek"&&ports.length?"chqin":(p.via==="cek"?"newchq":"acct"),"w2")+fvF("Tarih","fvx-d",isoToday(),'type="date"')+
+      '<div id="fvx-acctw" class="w2">'+fvSel("Hesap","fvx-acct",fvAcctOpts("Hesap seç"),"")+'</div>'+
+      '<div id="fvx-amtw">'+fvF("Tutar (₺)","fvx-amt",k,'inputmode="decimal"')+'</div>'+
+      '<div id="fvx-chqw" class="w2" hidden>'+fvSel("Çek seç (tutarı borçtan büyük olanlar listelenmez)","fvx-chq",ports.map(function(c){return [c.id,(c.party||"Çek")+(c.no?" · "+c.no:"")+" · "+fvM(c.amt)+" · vade "+fvDate(c.due)+(c.assign===p.id?" · bu ödemeye planlı":"")]}),ports[0]?ports[0].id:"")+'</div>'+
+      '<div id="fvx-newc" class="w2" hidden><div class="fvgrid2">'+fvF("Çek no","fvx-cno","",'autocomplete="off"')+fvF("Banka","fvx-cbank","",'autocomplete="off"')+fvF("Vade","fvx-cdue",p.due||"",'type="date"')+'</div></div></div>',
+      '<button class="btn" data-fva="payexecdo" data-id="'+p.id+'">Ödemeyi işle</button>');
+    fvExecToggle();
+  }
+  function fvExecToggle(){var s=fvV("fvx-src"); var set=function(id,v){var e=$(id); if(e)e.hidden=!v}; set("fvx-acctw",s==="acct"); set("fvx-chqw",s==="chqin"); set("fvx-newc",s==="newchq"); set("fvx-amtw",s!=="chqin")}
+  function fvPayExecDo(id){
+    var p=FV.F.pay.filter(function(x){return x.id===id})[0]; if(!p)return; var k=fvKalP(p), m=$("fvmmsg"), s=fvV("fvx-src"), d=fvV("fvx-d")||isoToday(), amt=fvNum("fvx-amt");
+    if(s!=="chqin"){if(!(amt>0)){m.textContent="Tutar gir."; return} if(amt>k+0.005){m.textContent="Tutar kalan borçtan büyük olamaz."; return}}
+    if(s==="acct"){var a=fvAcct(fvV("fvx-acct")); if(!a){m.textContent="Hesap seç."; return} a.bal=(+a.bal||0)-amt; fvLogMov(a.id,-amt,p.firm+" ödemesi",p.id); p.paid=(+p.paid||0)+amt; fvHist(p,amt,a.name+" hesabından")}
+    else if(s==="chqin"){var c=FV.F.chq.filter(function(x){return x.id===fvV("fvx-chq")})[0]; if(!c){m.textContent="Çek seç."; return} c.status="ciro"; c.usedFor=p.id; c.usedTo=p.firm; c.usedD=d; c.assign=""; p.paid=(+p.paid||0)+(+c.amt||0); fvHist(p,+c.amt||0,"Alınan çek ciro edildi"+(c.party?" ("+c.party+")":""))}
+    else if(s==="newchq"){FV.F.chq.push({id:uid(),dir:"out",no:fvV("fvx-cno").trim(),bank:fvV("fvx-cbank").trim(),party:p.firm,amt:amt,due:fvV("fvx-cdue"),status:"verildi",usedFor:p.id,ts:Date.now()}); p.paid=(+p.paid||0)+amt; fvHist(p,amt,"Çek verildi"+(fvV("fvx-cno")?" · "+fvV("fvx-cno"):""))}
+    else{p.paid=(+p.paid||0)+amt; fvHist(p,amt,"Kayıt (hesaptan düşülmedi)")}
+    if(p.hist&&p.hist.length)p.hist[p.hist.length-1].d=d;
+    fvSave(); fvModalClose(); FV.msg="Ödeme işlendi ✓"; fvRender();
+  }
+  /* alacak formu */
+  function fvRecForm(r){
+    var n=!r; r=r||{cust:"",amt:"",div:"",due:"",note:""};
+    fvModal(n?"Yeni alacak":"Alacağı düzenle",'<div class="fvgrid2">'+fvF("Müşteri","fvf-cust",r.cust,'autocomplete="off"')+fvF("Alacak tutarı (₺)","fvf-amt",r.amt===""?"":r.amt,'inputmode="decimal"')+
+      fvSel("Bölüm","fvf-div",[["","—"]].concat((window.__DIVS||[]).map(function(d){return [d.id,d.name]})),r.div||"")+fvF("Beklenen tahsil tarihi","fvf-due",r.due||"",'type="date"')+fvF("Not","fvf-note",r.note||"",'autocomplete="off"','w2')+'</div>',
+      '<button class="btn" data-fva="recsave" data-id="'+(r.id||"")+'">Kaydet</button>'+(n?'':'<button class="btn danger" data-fva="recdel" data-id="'+r.id+'">Sil</button>'));
+  }
+  function fvRecSave(id){
+    var cust=fvV("fvf-cust").trim(), amt=fvNum("fvf-amt"), m=$("fvmmsg"); if(!cust){m.textContent="Müşteri adı gerekli."; return} if(!(amt>0)){m.textContent="Tutar gir."; return}
+    var r=id?FV.F.rec.filter(function(x){return x.id===id})[0]:null, due=fvV("fvf-due");
+    if(r){r.cust=cust; r.amt=amt; r.div=fvV("fvf-div"); if(due!==r.due){r.due=due; r.dueFrom=""} r.note=fvV("fvf-note").trim()}
+    else FV.F.rec.push({id:uid(),cust:cust,amt:amt,got:0,div:fvV("fvf-div"),due:due,note:fvV("fvf-note").trim(),kind:"normal",ts:Date.now(),hist:[]});
+    fvSave(); fvModalClose(); fvRender();
+  }
+  function fvRecDet(id){
+    var r=FV.F.rec.filter(function(x){return x.id===id})[0]; if(!r)return; var k=fvKalR(r);
+    var body='<div class="fvdet"><div class="fvbig">'+fvA(k)+'<small>kalan'+(+r.got>0?' · toplam '+fvM(r.amt)+' · tahsil '+fvM(r.got):'')+'</small></div><div class="fvkv"><span>Bölüm</span><b>'+esc(fvDivName(r.div))+'</b><span>Beklenen tarih</span><b>'+(r.dueFrom&&r.due?fvDateL(r.dueFrom)+" – "+fvDateL(r.due):fvDateL(r.due))+'</b>'+(r.note?'<span>Not</span><b>'+esc(r.note)+'</b>':'')+(r.kind==="vadeli"?'<span>Tür</span><b>Vadeli / çekli alacak</b>':'')+'</div>'+
+      ((r.hist||[]).length?'<div class="fvsub"><h4>Tahsilat geçmişi</h4>'+(r.hist||[]).slice().reverse().map(function(h){return '<div class="fvli static"><span><b>'+esc(h.note||"Tahsilat")+'</b><small>'+fvDateL(h.d)+'</small></span><em class="pos">'+fvA(h.amt)+'</em></div>'}).join("")+'</div>':'')+'</div>';
+    fvModal(r.cust,body,(k>0.005?'<button class="btn" data-fva="recexec" data-id="'+r.id+'">💰 Tahsil et</button>':'')+'<button class="btn ghost" data-fva="recedit" data-id="'+r.id+'">Düzenle</button>');
+  }
+  function fvRecExec(id){
+    var r=FV.F.rec.filter(function(x){return x.id===id})[0]; if(!r)return; var k=fvKalR(r);
+    fvModal(r.cust+" · tahsilat",'<div class="fvbig">'+fvA(k)+'<small>kalan alacak</small></div><div class="fvgrid2">'+fvF("Tahsil edilen (₺)","fvx-amt",k,'inputmode="decimal"')+fvF("Tarih","fvx-d",isoToday(),'type="date"')+
+      fvSel("Nasıl alındı?","fvx-src",[["acct","Hesaba geçti"],["chq","Çek alındı"],["rec","Sadece kaydet (hesaba işleme)"]],"acct","w2")+
+      '<div id="fvx-acctw">'+fvSel("Hesap","fvx-acct",fvAcctOpts("Hesap seç"),"")+'</div>'+
+      '<div id="fvx-newc" hidden class="w2"><div class="fvgrid2">'+fvF("Çek no","fvx-cno","",'autocomplete="off"')+fvF("Banka","fvx-cbank","",'autocomplete="off"')+fvF("Çek vadesi","fvx-cdue","",'type="date"')+'</div></div></div>',
+      '<button class="btn" data-fva="recexecdo" data-id="'+r.id+'">Tahsilatı işle</button>');
+  }
+  function fvRecToggle(){var s=fvV("fvx-src"), a=$("fvx-acctw"), c=$("fvx-newc"); if(a)a.hidden=s!=="acct"; if(c)c.hidden=s!=="chq"}
+  function fvRecExecDo(id){
+    var r=FV.F.rec.filter(function(x){return x.id===id})[0]; if(!r)return; var k=fvKalR(r), amt=fvNum("fvx-amt"), s=fvV("fvx-src"), d=fvV("fvx-d")||isoToday(), m=$("fvmmsg");
+    if(!(amt>0)){m.textContent="Tutar gir."; return} if(amt>k+0.005){m.textContent="Tutar kalan alacaktan büyük olamaz."; return}
+    if(s==="acct"){var a=fvAcct(fvV("fvx-acct")); if(!a){m.textContent="Hesap seç."; return} a.bal=(+a.bal||0)+amt; fvLogMov(a.id,amt,r.cust+" tahsilatı",r.id); fvHist(r,amt,a.name+" hesabına")}
+    else if(s==="chq"){FV.F.chq.push({id:uid(),dir:"in",no:fvV("fvx-cno").trim(),bank:fvV("fvx-cbank").trim(),party:r.cust,amt:amt,due:fvV("fvx-cdue"),status:"portfoy",from:r.id,div:r.div,ts:Date.now()}); fvHist(r,amt,"Çek alındı"+(fvV("fvx-cno")?" · "+fvV("fvx-cno"):""))}
+    else fvHist(r,amt,"Kayıt (hesaba işlenmedi)");
+    r.got=(+r.got||0)+amt; r.hist[r.hist.length-1].d=d; fvSave(); fvModalClose(); FV.msg="Tahsilat işlendi ✓"; fvRender();
+  }
+  /* çek formu / detayı */
+  function fvChqForm(c){
+    var n=!c; c=c||{dir:FV.ctab,no:"",bank:"",party:"",amt:"",due:"",status:FV.ctab==="in"?"portfoy":"verildi",note:""};
+    var sts=c.dir==="in"?[["portfoy","Portföyde"],["bekleniyor","Bekleniyor (henüz gelmedi)"],["tahsil","Tahsil edildi"],["karsiliksiz","Karşılıksız"]]:[["verildi","Verildi"],["odendi","Ödendi"],["iptal","İptal"]];
+    fvModal(n?(c.dir==="in"?"Alınan çek ekle":"Verilen çek ekle"):"Çeki düzenle",'<div class="fvgrid2">'+fvF(c.dir==="in"?"Kimden (müşteri)":"Kime (firma)","fvf-party",c.party,'autocomplete="off"')+fvF("Tutar (₺)","fvf-amt",c.amt===""?"":c.amt,'inputmode="decimal"')+fvF("Çek no","fvf-no",c.no,'autocomplete="off"')+fvF("Banka","fvf-bank",c.bank,'autocomplete="off"')+fvF("Vade","fvf-due",c.due||"",'type="date"')+fvSel("Durum","fvf-st",sts,c.status)+fvF("Not","fvf-note",c.note||"",'autocomplete="off"','w2')+'<input type="hidden" id="fvf-dir" value="'+c.dir+'"></div>',
+      '<button class="btn" data-fva="chqsave" data-id="'+(c.id||"")+'">Kaydet</button>'+(n?'':'<button class="btn danger" data-fva="chqdel" data-id="'+c.id+'">Sil</button>'));
+  }
+  function fvChqSave(id){
+    var amt=fvNum("fvf-amt"), m=$("fvmmsg"); if(!(amt>0)){m.textContent="Tutar gir."; return}
+    var c=id?FV.F.chq.filter(function(x){return x.id===id})[0]:null, o={party:fvV("fvf-party").trim(),amt:amt,no:fvV("fvf-no").trim(),bank:fvV("fvf-bank").trim(),due:fvV("fvf-due"),status:fvV("fvf-st"),note:fvV("fvf-note").trim()};
+    if(c)Object.assign(c,o); else FV.F.chq.push(Object.assign({id:uid(),dir:fvV("fvf-dir"),ts:Date.now()},o));
+    fvSave(); fvModalClose(); fvRender();
+  }
+  function fvChqDet(id){
+    var c=FV.F.chq.filter(function(x){return x.id===id})[0]; if(!c)return;
+    var asg=c.assign?FV.F.pay.filter(function(p){return p.id===c.assign})[0]:null, act="";
+    if(c.dir==="in"&&c.status==="portfoy")act='<button class="btn" data-fva="chquse" data-id="'+c.id+'">Ödemede kullan</button><button class="btn ghost" data-fva="chqcash" data-id="'+c.id+'">Tahsil edildi</button><button class="btn ghost" data-fva="chqbad" data-id="'+c.id+'">Karşılıksız</button>';
+    else if(c.dir==="in"&&c.status==="bekleniyor")act='<button class="btn" data-fva="chqarrived" data-id="'+c.id+'">Çek geldi → portföye al</button>';
+    else if(c.dir==="out"&&c.status==="verildi")act='<button class="btn" data-fva="chqpaid" data-id="'+c.id+'">Ödendi (hesaptan çıktı)</button>';
+    var body='<div class="fvdet"><div class="fvbig">'+fvA(c.amt)+'<small>'+(c.dir==="in"?"Alınan çek":"Verilen çek")+' · '+esc(FV_CST[c.status]||c.status)+'</small></div><div class="fvkv"><span>'+(c.dir==="in"?"Kimden":"Kime")+'</span><b>'+esc(c.party||"—")+'</b><span>Çek no</span><b>'+esc(c.no||"—")+'</b><span>Banka</span><b>'+esc(c.bank||"—")+'</b><span>Vade</span><b>'+fvDateL(c.due)+'</b>'+(asg?'<span>Planlanan ödeme</span><b>'+esc(asg.firm)+'</b>':'')+(c.usedTo?'<span>Kullanıldığı ödeme</span><b>'+esc(c.usedTo)+'</b>':'')+(c.note?'<span>Not</span><b>'+esc(c.note)+'</b>':'')+'</div></div>';
+    fvModal((c.party||"Çek")+(c.no?" · "+c.no:""),body,act+'<button class="btn ghost" data-fva="chqedit" data-id="'+c.id+'">Düzenle</button>');
+  }
+  function fvChqUse(id){
+    var c=FV.F.chq.filter(function(x){return x.id===id})[0]; if(!c)return;
+    var opts=FV.F.pay.filter(function(p){return fvKalP(p)>0.005}).sort(function(a,b){return (a.via==="cek"?0:1)-(b.via==="cek"?0:1)||fvKalP(b)-fvKalP(a)});
+    if(!opts.length){fvModal("Çeki kullan",'<div class="fvnone">Açık borç yok.</div>',""); return}
+    fvModal("Bu çeki hangi ödemede kullanacaksın?",'<div class="fvbig">'+fvA(c.amt)+'<small>'+esc(c.party||"")+(c.no?" · "+esc(c.no):"")+' · vade '+fvDate(c.due)+'</small></div><div class="fvgrid2">'+
+      fvSel("Ödeme / borç","fvx-pay",opts.map(function(p){return [p.id,p.firm+" · kalan "+fvM(fvKalP(p))+(p.via==="cek"?" · çekle ödenecek":"")]}),c.assign||opts[0].id,"w2")+fvF("Tarih","fvx-d",isoToday(),'type="date"')+'</div><small class="fvnote">“Planla” çeki bu ödemeye ayırır (portföyde kalır). “Şimdi kullan” çeki ciro eder ve borçtan düşer. Çek tutarı borçtan büyükse ciro edilemez.</small>',
+      '<button class="btn" data-fva="chqusedo" data-id="'+c.id+'" data-now="1">Şimdi kullan (ciro)</button><button class="btn ghost" data-fva="chqusedo" data-id="'+c.id+'" data-now="0">Sadece planla</button>'+(c.assign?'<button class="btn ghost" data-fva="chqunassign" data-id="'+c.id+'">Planı kaldır</button>':''));
+  }
+  function fvChqUseDo(id,now0){
+    var c=FV.F.chq.filter(function(x){return x.id===id})[0], p=FV.F.pay.filter(function(x){return x.id===fvV("fvx-pay")})[0], m=$("fvmmsg"); if(!c||!p)return;
+    if(now0){ if((+c.amt||0)>fvKalP(p)+0.005){m.textContent="Çek tutarı bu borçtan büyük — “Sadece planla” seç ya da başka ödeme seç."; return}
+      c.status="ciro"; c.usedFor=p.id; c.usedTo=p.firm; c.usedD=fvV("fvx-d")||isoToday(); c.assign=""; p.paid=(+p.paid||0)+(+c.amt||0); fvHist(p,+c.amt||0,"Alınan çek ciro edildi"+(c.party?" ("+c.party+")":"")); p.hist[p.hist.length-1].d=c.usedD; FV.msg="Çek ciro edildi, borçtan düşüldü ✓"}
+    else{c.assign=p.id; FV.msg="Çek “"+p.firm+"” ödemesine planlandı ✓"}
+    fvSave(); fvModalClose(); fvRender();
+  }
+  function fvChqCash(id){
+    var c=FV.F.chq.filter(function(x){return x.id===id})[0]; if(!c)return;
+    fvModal("Çek tahsil edildi",'<div class="fvbig">'+fvA(c.amt)+'</div><div class="fvgrid2">'+fvSel("Hangi hesaba geçti?","fvx-acct",fvAcctOpts("Hesap seç"),"","w2")+fvF("Tarih","fvx-d",isoToday(),'type="date"')+'</div>',
+      '<button class="btn" data-fva="chqcashdo" data-id="'+c.id+'">İşle</button>');
+  }
+  function fvChqPaid(id){
+    var c=FV.F.chq.filter(function(x){return x.id===id})[0]; if(!c)return;
+    fvModal("Verilen çek ödendi",'<div class="fvbig">'+fvA(c.amt)+'</div><div class="fvgrid2">'+fvSel("Hangi hesaptan çıktı?","fvx-acct",fvAcctOpts("Hesaptan düşme"),"","w2")+fvF("Tarih","fvx-d",isoToday(),'type="date"')+'</div>',
+      '<button class="btn" data-fva="chqpaiddo" data-id="'+c.id+'">İşle</button>');
+  }
+  /* hesap formları */
+  function fvAcctForm(a){
+    var n=!a; a=a||{name:"",type:"banka",bal:""};
+    fvModal(n?"Yeni hesap":"Hesabı düzenle",'<div class="fvgrid2">'+fvF("Hesap adı","fvf-name",a.name,'autocomplete="off" placeholder="ör. Ziraat Bankası"')+fvSel("Tür","fvf-type",[["banka","Banka hesabı"],["nakit","Nakit / kasa"]],a.type)+fvF(n?"Açılış bakiyesi (₺)":"Güncel bakiye (₺)","fvf-bal",a.bal===""?"":a.bal,'inputmode="decimal"','w2')+'</div>',
+      '<button class="btn" data-fva="acctsave" data-id="'+(a.id||"")+'">Kaydet</button>'+(n?'':'<button class="btn danger" data-fva="acctdel" data-id="'+a.id+'">Sil</button>'));
+  }
+  function fvAcctSave(id){
+    var name=fvV("fvf-name").trim(), bal=fvNum("fvf-bal"), m=$("fvmmsg"); if(!name){m.textContent="Hesap adı gerekli."; return}
+    var a=id?fvAcct(id):null;
+    if(a){var diff=bal-(+a.bal||0); a.name=name; a.type=fvV("fvf-type"); if(Math.abs(diff)>0.005){a.bal=bal; fvLogMov(a.id,diff,"Bakiye düzeltme")}}
+    else{var na={id:uid(),name:name,type:fvV("fvf-type"),bal:bal}; FV.F.accts.push(na); FV.acct=na.id; if(bal)fvLogMov(na.id,bal,"Açılış bakiyesi")}
+    fvSave(); fvModalClose(); fvRender();
+  }
+  function fvTransfer(){
+    if(FV.F.accts.length<2){fvModal("Transfer",'<div class="fvnone">Transfer için en az 2 hesap gerekir.</div>',""); return}
+    fvModal("Hesaplar arası transfer",'<div class="fvgrid2">'+fvSel("Nereden","fvx-from",fvAcctOpts(),FV.F.accts[0].id,"w2")+fvSel("Nereye","fvx-to",fvAcctOpts(),FV.F.accts[1].id,"w2")+fvF("Tutar (₺)","fvx-amt","",'inputmode="decimal"')+fvF("Tarih","fvx-d",isoToday(),'type="date"')+'</div>','<button class="btn" data-fva="transferdo">Transfer et</button>');
+  }
+  function fvBulkDue(){
+    fvModal("Toplu vade ata",'<p class="fvp-t">Aynı vadeyi birden çok borca tek seferde ver.</p><div class="fvgrid2">'+fvSel("Hangi borçlara?","fvx-scope",[["nodue","Vadesi girilmemiş tüm borçlar"],["banka","Vadesiz · Banka kanalı"],["cek","Vadesiz · Çek kanalı"],["gr","Vadesiz · G.R. Hesap kanalı"],["all","Tüm açık borçlar (mevcut vadelerin üzerine yazar)"]],"nodue")+fvF("Vade","fvx-d",fvAddDays(isoToday(),7),'type="date"')+'</div>','<button class="btn" data-fva="bulkduedo">Vadeyi ata</button>');
+  }
+  /* ---- dışa / içe aktarım ---- */
+  function fvDownload(name,text,type){var b=new Blob([text],{type:type||"application/json"}), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href); a.remove()},500)}
+  function fvCsv(){
+    var rows=[["Tür","Firma / Müşteri","Tutar","Ödenen/Tahsil","Kalan","Kanal/Bölüm","Vade","Not"]];
+    FV.F.pay.forEach(function(p){rows.push(["Borç",p.firm,p.amt,p.paid||0,fvKalP(p),FV_VIA[p.via]||"",p.due||"",p.note||""])});
+    FV.F.rec.forEach(function(r){rows.push(["Alacak",r.cust,r.amt,r.got||0,fvKalR(r),fvDivName(r.div),r.due||"",r.note||""])});
+    return "﻿"+rows.map(function(r){return r.map(function(x){x=String(x==null?"":x); return /[";\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}).join(";")}).join("\n");
+  }
+  function fvImport(file){
+    var msg=$("fvimsg"); var rd=new FileReader();
+    rd.onload=function(){
+      var j; try{j=JSON.parse(rd.result)}catch(e){msg.textContent="Dosya okunamadı (geçerli bir .json değil)."; return}
+      if(!j||j.kind!=="finans-aktar"){msg.textContent="Bu dosya Finans aktarım dosyası değil."; return}
+      var F=FV.F, key=j.id||("imp:"+(j.asOf||""));
+      if(F.imports.indexOf(key)>-1){msg.textContent="Bu dosya zaten aktarılmış ("+(j.asOf||"")+"). Çift kayıt olmaması için tekrar eklenmedi."; return}
+      var n={pay:0,rec:0,chq:0,acc:0};
+      (j.accts||[]).forEach(function(a){F.accts.push({id:uid(),name:a.name,type:a.type||"banka",bal:+a.bal||0}); n.acc++});
+      (j.pay||[]).forEach(function(p){F.pay.push({id:uid(),firm:p.firm,amt:+p.amt||0,paid:+p.paid||0,via:p.via||"",due:p.due||"",note:p.note||"",ym:p.ym||"",ts:Date.now(),hist:[],imp:key}); n.pay++});
+      (j.rec||[]).forEach(function(r){F.rec.push({id:uid(),cust:r.cust,amt:+r.amt||0,got:+r.got||0,div:r.div||"",due:r.due||"",dueFrom:r.dueFrom||"",note:r.note||"",kind:r.kind||"normal",ym:r.ym||"",ts:Date.now(),hist:[],imp:key}); n.rec++});
+      (j.chq||[]).forEach(function(c){F.chq.push({id:uid(),dir:c.dir,no:c.no||"",bank:c.bank||"",party:c.party||"",amt:+c.amt||0,due:c.due||"",status:c.status||(c.dir==="in"?"portfoy":"verildi"),note:c.note||"",ts:Date.now(),imp:key}); n.chq++});
+      (j.snaps||[]).forEach(function(s){if(!F.snap.some(function(x){return x.ym===s.ym}))F.snap.push(s)}); F.snap.sort(function(a,b){return a.ym<b.ym?-1:1});
+      F.imports.push(key); fvSave(); FV.tab="ozet"; FV.msg="Aktarıldı ✓ "+n.pay+" borç, "+n.rec+" alacak"+(n.chq?", "+n.chq+" çek":"")+(n.acc?", "+n.acc+" hesap":""); fvRender();
+    };
+    rd.readAsText(file);
+  }
+  /* ---- olaylar ---- */
+  $("fvback").addEventListener("click",fvHome);
+  $("fvhide").addEventListener("click",function(){FV.hide=!FV.hide; try{localStorage.setItem("fv_hide",FV.hide?"1":"0")}catch(e){} fvRender()});
+  $("fvlockbtn").addEventListener("click",function(){fvLock(false)});
+  $("fv").addEventListener("input",function(e){var t=e.target; if(t.id==="fvq"){FV.q=t.value; fvRender()}});
+  $("fv").addEventListener("change",function(e){
+    var t=e.target;
+    if(t.id==="fvx-src"){fvExecToggle(); fvRecToggle(); return}
+    if(t.id==="fvcfg-nv"){FV.F.cfg.netVadeli=t.checked; fvSave(); fvRender(); return}
+    if(t.id==="fvcfg-rem"){if(t.checked){if(FV.key)fvRemember(FV.key)} else fvForget(); return}
+    if(t.id==="fvfile"&&t.files&&t.files[0]){fvImport(t.files[0]); t.value=""}
+  });
+  $("fv").addEventListener("keydown",function(e){
+    if(e.key==="Enter"&&(e.target.id==="fvp1"||e.target.id==="fvp2")){e.preventDefault(); var s=FV.st; if(s==="setup")fvSetup(); else if(s==="locked")fvUnlock()}
+    if(e.key==="Escape"&&FV.modal)fvModalClose();
+  });
+  $("fv").addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("[data-fvtab],[data-fvf],[data-fvd],[data-fvct],[data-fva]"); if(!t||!$("fv").contains(t))return;
+    var d=t.dataset;
+    if(d.fvtab){FV.tab=d.fvtab; if(d.fvf!==undefined)FV.flt=d.fvf; else FV.flt=""; FV.q=""; FV.div="all"; FV.calSel=""; if(FV.modal)fvModalClose(); fvRender(); window.scrollTo(0,0); return}
+    if(d.fvf!==undefined&&!d.fva){FV.flt=d.fvf; fvRender(); return}
+    if(d.fvd!==undefined){FV.div=d.fvd; fvRender(); return}
+    if(d.fvct){FV.ctab=d.fvct; FV.flt=""; fvRender(); return}
+    var a=d.fva, id=d.id; if(!a)return;
+    if(a==="setup"){fvSetup(); return}
+    if(a==="unlock"){fvUnlock(); return}
+    if(a==="lock"){fvLock(false); return}
+    if(a==="lockforget"){fvLock(true); return}
+    if(a==="mclose"){fvModalClose(); return}
+    if(FV.st!=="open")return;
+    if(a==="calprev"||a==="calnext"){var c=FV.cal, m=c.m+(a==="calnext"?1:-1); c.y+=Math.floor(m/12); c.m=((m%12)+12)%12; FV.calSel=""; fvRender(); return}
+    if(a==="calsel"){FV.calSel=(FV.calSel===d.d)?"":d.d; fvRender(); return}
+    if(a==="evopen"){fvModalClose(); if(d.k==="pay")fvPayDet(id); else if(d.k==="rec")fvRecDet(id); else fvChqDet(id); return}
+    if(a==="payadd"){fvPayForm(null); return}
+    if(a==="paydet"){fvPayDet(id); return}
+    if(a==="payedit"){fvPayForm(FV.F.pay.filter(function(x){return x.id===id})[0]); return}
+    if(a==="paysave"){fvPaySave(id); return}
+    if(a==="paydel"){ if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return} FV.F.pay=FV.F.pay.filter(function(x){return x.id!==id}); FV.F.chq.forEach(function(c){if(c.assign===id)c.assign=""}); fvSave(); fvModalClose(); fvRender(); return}
+    if(a==="payexec"){fvPayExec(id); return}
+    if(a==="payexecdo"){fvPayExecDo(id); return}
+    if(a==="bulkdue"){fvBulkDue(); return}
+    if(a==="bulkduedo"){
+      var sc=fvV("fvx-scope"), dt=fvV("fvx-d"); if(!dt){$("fvmmsg").textContent="Vade tarihi seç."; return} var cnt=0;
+      FV.F.pay.forEach(function(p){if(fvKalP(p)<=0.005)return; var ok=sc==="all"||(sc==="nodue"&&!p.due)||((sc==="banka"||sc==="cek"||sc==="gr")&&!p.due&&p.via===sc); if(ok){p.due=dt; cnt++}});
+      fvSave(); fvModalClose(); FV.msg=cnt+" borca vade atandı ✓"; fvRender(); return;
+    }
+    if(a==="recadd"){fvRecForm(null); return}
+    if(a==="recdet"){fvRecDet(id); return}
+    if(a==="recedit"){fvRecForm(FV.F.rec.filter(function(x){return x.id===id})[0]); return}
+    if(a==="recsave"){fvRecSave(id); return}
+    if(a==="recdel"){ if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return} FV.F.rec=FV.F.rec.filter(function(x){return x.id!==id}); fvSave(); fvModalClose(); fvRender(); return}
+    if(a==="recexec"){fvRecExec(id); return}
+    if(a==="recexecdo"){fvRecExecDo(id); return}
+    if(a==="chqadd"){fvChqForm(null); return}
+    if(a==="chqdet"){fvChqDet(id); return}
+    if(a==="chqedit"){fvChqForm(FV.F.chq.filter(function(x){return x.id===id})[0]); return}
+    if(a==="chqsave"){fvChqSave(id); return}
+    if(a==="chqdel"){ if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return} FV.F.chq=FV.F.chq.filter(function(x){return x.id!==id}); fvSave(); fvModalClose(); fvRender(); return}
+    if(a==="chquse"){fvChqUse(id); return}
+    if(a==="chqusedo"){fvChqUseDo(id,d.now==="1"); return}
+    if(a==="chqunassign"){var c0=FV.F.chq.filter(function(x){return x.id===id})[0]; if(c0)c0.assign=""; fvSave(); fvModalClose(); fvRender(); return}
+    if(a==="chqcash"){fvChqCash(id); return}
+    if(a==="chqcashdo"){var c1=FV.F.chq.filter(function(x){return x.id===id})[0], ac=fvAcct(fvV("fvx-acct")); if(!c1)return; if(!ac){$("fvmmsg").textContent="Hesap seç."; return} ac.bal=(+ac.bal||0)+(+c1.amt||0); fvLogMov(ac.id,+c1.amt||0,(c1.party||"Çek")+" çeki tahsil",c1.id); c1.status="tahsil"; c1.usedD=fvV("fvx-d")||isoToday(); fvSave(); fvModalClose(); FV.msg="Çek tahsil edildi ✓"; fvRender(); return}
+    if(a==="chqbad"){var c2=FV.F.chq.filter(function(x){return x.id===id})[0]; if(c2){c2.status="karsiliksiz"; c2.assign=""} fvSave(); fvModalClose(); fvRender(); return}
+    if(a==="chqarrived"){var c3=FV.F.chq.filter(function(x){return x.id===id})[0]; if(c3){c3.status="portfoy"} fvSave(); fvModalClose(); fvChqForm(c3); return}
+    if(a==="chqpaid"){fvChqPaid(id); return}
+    if(a==="chqpaiddo"){var c4=FV.F.chq.filter(function(x){return x.id===id})[0], ap=fvAcct(fvV("fvx-acct")); if(!c4)return; if(ap){ap.bal=(+ap.bal||0)-(+c4.amt||0); fvLogMov(ap.id,-(+c4.amt||0),(c4.party||"Çek")+" çeki ödendi",c4.id)} c4.status="odendi"; c4.usedD=fvV("fvx-d")||isoToday(); fvSave(); fvModalClose(); FV.msg="Çek ödendi ✓"; fvRender(); return}
+    if(a==="acctadd"){fvAcctForm(null); return}
+    if(a==="acctedit"){fvAcctForm(fvAcct(id)); return}
+    if(a==="acctsel"){FV.acct=id; fvRender(); return}
+    if(a==="acctsave"){fvAcctSave(id); return}
+    if(a==="acctdel"){ if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return} FV.F.accts=FV.F.accts.filter(function(x){return x.id!==id}); FV.F.mov=FV.F.mov.filter(function(x){return x.acct!==id}); FV.acct=""; fvSave(); fvModalClose(); fvRender(); return}
+    if(a==="transfer"){fvTransfer(); return}
+    if(a==="transferdo"){
+      var fa=fvAcct(fvV("fvx-from")), ta=fvAcct(fvV("fvx-to")), am=fvNum("fvx-amt"), mm=$("fvmmsg"); if(!fa||!ta||fa===ta){mm.textContent="İki farklı hesap seç."; return} if(!(am>0)){mm.textContent="Tutar gir."; return}
+      fa.bal=(+fa.bal||0)-am; ta.bal=(+ta.bal||0)+am; fvLogMov(fa.id,-am,"Transfer → "+ta.name); fvLogMov(ta.id,am,"Transfer ← "+fa.name); fvSave(); fvModalClose(); FV.msg="Transfer işlendi ✓"; fvRender(); return;
+    }
+    if(a==="snapnow"){var ym=monthKeyNow(), T=fvCalc(), ex=FV.F.snap.filter(function(s){return s.ym===ym})[0], rec={ym:ym,borc:Math.round(T.borc),alacak:Math.round(T.alacak),net:Math.round(T.net),hesap:Math.round(T.hesap)}; if(ex)Object.assign(ex,rec); else FV.F.snap.push(rec); FV.F.snap.sort(function(x,y){return x.ym<y.ym?-1:1}); fvSave(); FV.msg="Bu ayın durumu kaydedildi ✓"; fvRender(); return}
+    if(a==="importpick"){$("fvfile").click(); return}
+    if(a==="exportjson"){fvDownload("finans-yedek-"+isoToday()+".json",JSON.stringify(FV.F,null,1)); return}
+    if(a==="exportcsv"){fvDownload("borc-alacak-"+isoToday()+".csv",fvCsv(),"text/csv;charset=utf-8"); return}
+    if(a==="passchg"){fvModal("Şifreyi değiştir",'<div class="fvgrid2">'+'<div class="w2"><label class="fl" for="fvpo">Eski şifre</label><input class="fin" id="fvpo" type="password" autocomplete="current-password"></div><div><label class="fl" for="fvpn1">Yeni şifre</label><input class="fin" id="fvpn1" type="password" autocomplete="new-password"></div><div><label class="fl" for="fvpn2">Yeni şifre (tekrar)</label><input class="fin" id="fvpn2" type="password" autocomplete="new-password"></div></div>','<button class="btn" data-fva="passdo">Değiştir</button>'); return}
+    if(a==="passdo"){fvChangePass(); return}
   });
   /* ---------- Puantaj (günlük eleman performansı: makine · ürün · saat · operasyon süresi · hedef) ---------- */
   // Satır kaynakları: (1) üretim girişindeki satırlar (eleman + makine + başlangıç/bitiş + adet) otomatik gelir,
@@ -18237,6 +19099,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     purch:'<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>',
     stock:'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/>',
     prod:'<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><path d="M17 18h1M12 18h1M7 18h1"/>',
+    fv:'<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="M9 12.5l2 2 4-4.5"/>',
     fin:'<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
     calc:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M16 14v.01M12 14v.01M8 14v.01M12 18v.01M8 18v.01M12 10v.01M8 10v.01M16 10v.01M16 18v.01"/>',
     tools:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
@@ -18255,7 +19118,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   if(IS_RZ){HC_ICONS.testere='<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>'; HC_ICONS.polisaj='<path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>'; HC_ICONS.kaynak='<rect x="2" y="2" width="16" height="6" rx="2"/><path d="M10 16v-2a2 2 0 0 1 2-2h8a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="8" y="16" width="4" height="6" rx="1"/>'; HC_ICONS.disacma='<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>'}
   function hcIcon(k){return '<span class="hic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(HC_ICONS[k]||"")+'</svg></span>'}
   /* ---------- sol menü (geniş ekran, cam görünüm) + genel bakış ---------- */
-  var NAV_WRAPS=["home","prods","ords","app","plans","notifs","stock","tools","purch","po","sl","pu","notes","staff","fin","calc","cams","saha"];
+  var NAV_WRAPS=["home","prods","ords","app","plans","notifs","stock","tools","purch","po","sl","pu","notes","staff","fin","fv","calc","cams","saha"];
   /* ---------- Takım malzemeleri (CNC · Transfer): stok, makineye takma, ömür, maliyet ---------- */
   // tools/{id}: {name,code,cat,price,life(adet),crit,codes[],note,th,ts}
   // toolmoves/{id}: {tid,t:"in"|"mount"|"end"|"use",q,p,mid,d,ref,why,u,note,ts}
@@ -19593,7 +20456,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       '<div class="sngrp">Genel</div>'+it("home","prod","Ana sayfa")+
       '<div class="sngrp">'+esc(window.__DIVO.name)+' bölümü</div>'+it("orders","orders","Siparişler")+it("prods","prods","Ürünlerim")+it("plans","plans","Planlar")+SECTIONS.map(function(x){return it("sec:"+x.id,x.id,x.name)}).join("")+
       '<div class="sngrp">Tüm bölümler (ortak)</div>'+it("stock","stock","Stok")+it("purch","purch","İhtiyaçlar")+it("po","po","Satın Alma")+it("sl","sl","Satış")+it("pu","pu","Puantaj")+it("tools","tools","Takımlar ve elmaslar")+it("staff","staff","Eleman, makine ve mesai")+it("notes","notes","Notlarım")+(finOwner()?it("cams","cam","Kameralar"):"")+
-      '<div class="sngrp">Sana özel</div>'+(finOwner()?(sfOn()?it("saha","saha","Saha satış"):"")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
+      '<div class="sngrp">Sana özel</div>'+(finOwner()?(sfOn()?it("saha","saha","Saha satış"):"")+it("fv","fv","Finans Merkezi")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
       '<div class="snsp"></div><button type="button" class="snitem" data-nav="div"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>Bölüm değiştir</span></button><button type="button" class="snitem" data-nav="look"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Görünüm: '+({glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam"}[lookNow()]||"")+' ›</span></button>';
     nv.innerHTML=h; [].forEach.call(nv.querySelectorAll(".snitem"),function(b){var sp=b.querySelector("span"); if(sp)b.title=sp.textContent}); var fd=$("fbdiv"); if(fd)fd.textContent=window.__DIVO.name; paintSideActive();
   }
@@ -19604,7 +20467,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   function paintSideActive(){
     var nv=$("sidenav"), k="home"; if(!nv)return;
-    var map={ords:"orders",plans:"plans",notifs:"notifs",stock:"stock",tools:"tools",purch:"purch",po:"po",sl:"sl",pu:"pu",notes:"notes",staff:"staff",fin:"fin",calc:"calc",prods:"prods",cams:"cams",saha:"saha"};
+    var map={ords:"orders",plans:"plans",notifs:"notifs",stock:"stock",tools:"tools",purch:"purch",po:"po",sl:"sl",pu:"pu",notes:"notes",staff:"staff",fv:"fv",fin:"fin",calc:"calc",prods:"prods",cams:"cams",saha:"saha"};
     if(!$("app").hidden&&typeof sec!=="undefined"&&sec)k="sec:"+sec.id; else Object.keys(map).forEach(function(w){if($(w)&&!$(w).hidden)k=map[w]});
     [].forEach.call(nv.querySelectorAll(".snitem[data-nav]"),function(b){if(b.dataset.nav===k)b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current")});
     try{snPillMove()}catch(e){}
@@ -19618,7 +20481,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     NAV_WRAPS.forEach(function(i){var e=$(i); if(e)e.hidden=true});
     if(k==="home"){$("home").hidden=false; setHomeView("main"); paintSideActive(); return}
     if(k==="orders")openOrders(); else if(k==="plans")openPlansScreen(); else if(k==="notifs")openNotifs(); else if(k==="stock")openStock(); else if(k==="tools")openTools(); else if(k==="purch")openPurch(); else if(k==="po")openPO(); else if(k==="sl")openSL(); else if(k==="pu")openPU();
-    else if(k==="notes")openNotes(); else if(k==="staff")openStaff(); else if(k==="prods")openProds(); else if(k==="fin")openFin(); else if(k==="calc")openCalc(); else if(k==="cams")openCams(); else if(k==="saha")openSaha();
+    else if(k==="notes")openNotes(); else if(k==="staff")openStaff(); else if(k==="prods")openProds(); else if(k==="fv")openFV(); else if(k==="fin")openFin(); else if(k==="calc")openCalc(); else if(k==="cams")openCams(); else if(k==="saha")openSaha();
     else if(k.indexOf("sec:")===0)enterSection(k.slice(4));
     paintSideActive();
   }
@@ -19952,6 +20815,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var poC='<button type="button" class="hcard ordc poc" data-po="1">'+hcIcon("po")+'<div><div class="hk">Tedarik · teklif · sipariş</div><div class="hn">Satın Alma</div><div class="hs" id="hs-po">Tedarikçi, teklif, sipariş ve teslim alma</div></div><span class="go">›</span></button>';
     var puC='<button type="button" class="hcard ordc puc" data-pu="1">'+hcIcon("pu")+'<div><div class="hk">Eleman · makine · hedef</div><div class="hn">Puantaj</div><div class="hs" id="hs-pu">Günlük eleman performansı ve aylık renk özeti</div></div><span class="go">›</span></button>';
     var stockC='<button type="button" class="hcard ordc stkc" data-stock="1">'+hcIcon("stock")+'<div><div class="hk">Hammadde</div><div class="hn">Stok</div><div class="hs" id="hs-stock">Malzeme stoğu ve ürün reçeteleri</div></div><span class="go">›</span></button>';
+    var fvC=finOwner()?'<button type="button" class="hcard ordc fvc" data-fv="1">'+hcIcon("fv")+'<div><div class="hk">Sadece sana özel · şifreli kasa</div><div class="hn">Finans Merkezi</div><div class="hs">🔐 Borç, alacak, çek, vade ve takvim</div></div><span class="go">›</span></button>':"";
     var finC=finOwner()?'<button type="button" class="hcard ordc finc" data-fin="1">'+hcIcon("fin")+'<div><div class="hk">Sadece sana özel</div><div class="hn">Maaş ve giderler</div><div class="hs">🔒 Sadece senin girişinde görünür</div></div><span class="go">›</span></button>':"";
     var calcC=finOwner()?'<button type="button" class="hcard ordc calcc" data-calc="1">'+hcIcon("calc")+'<div><div class="hk">Sadece sana özel · gelecek planı</div><div class="hn">İşçilik hesaplama</div><div class="hs">🧮 Adet başı maliyet senaryoları</div></div><span class="go">›</span></button>':"";
     var camC=!finOwner()?"":'<button type="button" class="hcard ordc camc" data-cams="1">'+hcIcon("cam")+'<div><div class="hk">Canlı görüntü</div><div class="hn">Kameralar</div><div class="hs">Fabrikadaki kameraları izle</div></div><span class="go">›</span></button>';
@@ -19970,7 +20834,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     }else{
       $("homeh1").textContent="Ana sayfa"; $("homep").textContent="Ne yapmak istiyorsun?";
       $("hcards").innerHTML='<div class="hsech"><b><span class="hdot"></span>'+esc(window.__DIVO.name)+' bölümü</b><small>Siparişler, ürünler ve üretim bu bölüme özel</small></div>'+ordersC+prodsC+prodC+
-        '<div class="hsech shared"><b>Tüm bölümler</b><small>Stok, satın alma, takım, not, ekip ve maaş her bölümde aynı</small></div>'+stockC+purchC+poC+slC+toolC+staffC+puC+notesC+finC+calcC+camC+sahaC;
+        '<div class="hsech shared"><b>Tüm bölümler</b><small>Stok, satın alma, takım, not, ekip ve maaş her bölümde aynı</small></div>'+stockC+purchC+poC+slC+toolC+staffC+puC+notesC+fvC+finC+calcC+camC+sahaC;
     }
     paintOrdersHome();
     try{renderSideNav()}catch(e){}
@@ -20027,10 +20891,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-tools],[data-staff],[data-purch],[data-po],[data-sl],[data-pu],[data-notes],[data-prod],[data-fin],[data-calc],[data-cams],[data-saha],[data-homeback]"); if(!b)return;
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-tools],[data-staff],[data-purch],[data-po],[data-sl],[data-pu],[data-notes],[data-prod],[data-fin],[data-fv],[data-calc],[data-cams],[data-saha],[data-homeback]"); if(!b)return;
     if(b.dataset.saha){openSaha();return}
     if(b.dataset.cams){openCams();return}
     if(b.dataset.tools){openTools();return}
+    if(b.dataset.fv){openFV();return}
     if(b.dataset.fin){openFin();return}
     if(b.dataset.calc){openCalc();return}
     if(b.dataset.prod){setHomeView("prod");return}
