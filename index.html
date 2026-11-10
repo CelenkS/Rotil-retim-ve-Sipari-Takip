@@ -4015,6 +4015,19 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .pctdt img{width:100%;height:100%;object-fit:contain;background:#fff;display:block}
 .pctdt b{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.62);color:#fff;border-radius:99px;font:700 11px var(--font-ui);padding:2px 8px}
 .pctdc{display:flex;flex-wrap:wrap;gap:8px}
+.pctdh{display:flex;align-items:center;gap:8px;font:800 13px var(--font-ui);color:var(--ink);margin:14px 0 8px}.pctdh:first-child{margin-top:0}
+.pctdh i{font-style:normal;font:800 11px var(--font-ui);background:var(--soft);color:var(--ink2);border-radius:99px;padding:2px 8px}
+.pctdt .ph.pdf{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%;font-size:34px;background:var(--soft)}
+.pctdt .ph.pdf em{font:700 11px var(--font-ui);font-style:normal;padding:0 8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
+.tdgh{font:800 14px var(--font-ui);margin:16px 0 8px}.tdgh:first-of-type{margin-top:4px}
+.tdgh i{font-style:normal;font:800 11px var(--font-ui);color:var(--ink2);margin-left:4px}
+.tdrow{flex-wrap:wrap}
+#tdview .tdpdf{display:flex;flex-direction:column;height:100%;width:100%}
+#tdview .tdpdfh{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 12px 10px;color:#fff}
+#tdview .tdpdfh b{flex:1 1 100%;font:700 14px var(--font-ui);overflow:hidden;text-overflow:ellipsis}
+#tdview .tdpl{background:rgba(255,255,255,.16);color:#fff;border-radius:12px;padding:11px 16px;font:700 14px var(--font-ui);text-decoration:none}
+#tdview .tdpdf iframe{flex:1;border:0;background:#fff;width:100%;min-height:60vh}
+#tdview.ispdf [data-tda=zin],#tdview.ispdf [data-tda=zout]{display:none}
 .pcdr .pcraf,.pcraf{display:inline-block;padding:2px 12px;border-radius:99px;background:#0F8B8D;color:#fff !important;font:800 14px var(--font-num);letter-spacing:.5px}
 .wkrow.s2{flex-wrap:wrap}
 .wkrow.s2 em{flex-basis:100%;text-align:right;order:5;margin-top:-2px}
@@ -4679,7 +4692,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 21:32</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 21:55</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5328,7 +5341,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   // sonraki adım. Performans (yeşil/kırmızı) hesaplaması bu süreler üzerinden yapılacak.
   var stdTime=[];
   var fImgTh="", fImgFull=null, fImgDirty=false, pendingNewCode="", catImgCache={};
-  var techCode="", techBack="list", techIdx={}, techCache={}, techDelArm=-1, tdV=null, TD_MAX=6;   // Teknik resim: ürün koduna bağlı. tech/{kodAnahtarı}={code,ids:[]}, resimler techimg/{id}={d}. Sadece "📐 Teknik resim"e basınca okunur.
+  var techCode="", techBack="list", techIdx={}, techIdxA={}, techMeta={}, techCache={}, techDelArm=-1, tdV=null, TD_MAX=6, TD_ROT=window.__DIV==="rotil", TD_PDF_MAX=6291456, TD_CH=700000;   // Teknik resim: ürün koduna bağlı. tech/{kodAnahtarı}={code,ids:[]}, resimler techimg/{id}={d}. Sadece "📐 Teknik resim"e basınca okunur.
   function setCats(a){COLS.length=0;a.forEach(function(c){COLS.push(c)})}
   function zero(){var o=[];for(var i=0;i<COLS.length;i++)o.push(0);return o}
   function fit(a){var o=[];for(var i=0;i<COLS.length;i++)o.push((a&&a[i])||0);return o}
@@ -5683,22 +5696,35 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     techCode=code; techBack=back||"list"; techDelArm=-1; sheetMode="tech"; renderSheet();
     var k=techKey(code); if(techIdx[k]!==undefined)return;
     if(!db){techIdx[k]=[]; renderSheet(); return}
-    db.doc("tech/"+k).get().then(function(sn){techIdx[k]=(sn.exists&&sn.data().ids)||[]}).catch(function(){techIdx[k]=[]}).then(function(){if(sheetMode==="tech"&&techKey(techCode)===k)renderSheet()});
+    db.doc("tech/"+k).get().then(function(sn){techApply(k,sn.exists?sn.data():{})}).catch(function(){techApply(k,{})}).then(function(){if(sheetMode==="tech"&&techKey(techCode)===k)renderSheet()});
+  }
+  /* Rotil'de teknik resim ikiye ayrılır: Gövde (tech.ids) ve Aşık (tech.aids). Dosya PDF olabilir (id "pdf_" ile başlar, ad/parça sayısı tech.meta'da). */
+  function techApply(k,d){d=d||{}; techIdx[k]=(d.ids||[]).slice(); techIdxA[k]=(d.aids||[]).slice(); techMeta[k]=d.meta||{}}
+  function techGroups(){return TD_ROT?[["ids","Gövde teknik resim"],["aids","Aşık teknik resim"]]:[["ids","Teknik resim"]]}
+  function techArr(k,g){return (g==="aids"?techIdxA[k]:techIdx[k])||[]}
+  function techAll(k){return techArr(k,"ids").concat(TD_ROT?techArr(k,"aids"):[])}
+  function techIsPdf(id){return String(id).indexOf("pdf_")===0}
+  function techNames(k){var m=techMeta[k]||{}, o={}; Object.keys(m).forEach(function(i){o[i]=m[i].name}); return o}
+  function techGLabel(g){return (techGroups().filter(function(x){return x[0]===g})[0]||[0,"Teknik resim"])[1]}
+  function techWrite(k,fn,cb){
+    if(!db)return cb(false);
+    db.doc("tech/"+k).get().then(function(sn){var d=sn.exists?sn.data():{}; d.code=techCode||d.code||""; fn(d); return db.doc("tech/"+k).set(d).then(function(){techApply(k,d); cb(true)})}).catch(function(){cb(false)});
   }
   function techHtml(){
-    var k=techKey(techCode), ids=techIdx[k];
-    var h='<div class="shead"><div><h2 id="sh-title">Teknik resim</h2><small>'+esc(techCode)+'</small></div><button class="btn" id="techback">Geri</button></div>';
-    if(ids===undefined)return h+'<div class="empty">Yükleniyor…</div>';
-    h+=ids.length?ids.map(function(id,i){
-      return '<div class="tdrow"><span>📐 Teknik resim '+(i+1)+'</span><button type="button" class="btn" data-tdview="'+i+'">Gör</button><button type="button" class="btn ghost" data-tddel="'+i+'"'+(techDelArm===i?' style="color:#c0392b;border-color:#c0392b"':'')+'>'+(techDelArm===i?'Emin misin?':'Sil')+'</button></div>';
-    }).join(""):'<div class="empty">Bu ürün için henüz teknik resim yok.</div>';
-    if(ids.length<TD_MAX)h+='<label class="btn ghost" for="tdf" style="width:100%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-top:8px">+ Teknik resim ekle</label><input id="tdf" type="file" accept="image/*" multiple style="display:none">';
-    h+='<div class="status" id="tdstatus"></div><div class="note">Galeriden seçebilir ya da kameradan çekebilirsin. Aynı kodlu her siparişte görünür. En fazla '+TD_MAX+' resim.</div>';
+    var k=techKey(techCode), h='<div class="shead"><div><h2 id="sh-title">Teknik resim</h2><small>'+esc(techCode)+'</small></div><button class="btn" id="techback">Geri</button></div>';
+    if(techIdx[k]===undefined)return h+'<div class="empty">Yükleniyor…</div>';
+    var gs=techGroups(), meta=techMeta[k]||{};
+    gs.forEach(function(g){
+      var ids=techArr(k,g[0]);
+      h+=(gs.length>1?'<div class="tdgh">'+g[1]+' <i>'+ids.length+'/'+TD_MAX+'</i></div>':'');
+      h+=ids.length?ids.map(function(id,i){
+        var pdf=techIsPdf(id), arm=(techDelArm===g[0]+i);
+        return '<div class="tdrow"><span>'+(pdf?'📄 '+esc((meta[id]&&meta[id].name)||"PDF"):'📐 Teknik resim '+(i+1))+'</span><button type="button" class="btn" data-tdview="'+i+'" data-g="'+g[0]+'">Gör</button>'+(gs.length>1?'<button type="button" class="btn ghost" data-tdmove="'+i+'" data-g="'+g[0]+'">'+(g[0]==="ids"?"→ Aşık":"→ Gövde")+'</button>':'')+'<button type="button" class="btn ghost" data-tddel="'+i+'" data-g="'+g[0]+'"'+(arm?' style="color:#c0392b;border-color:#c0392b"':'')+'>'+(arm?'Emin misin?':'Sil')+'</button></div>';
+      }).join(""):'<div class="empty">'+(gs.length>1?g[1]+' eklenmemiş.':'Bu ürün için henüz teknik resim yok.')+'</div>';
+      if(ids.length<TD_MAX)h+='<label class="btn ghost" for="tdf-'+g[0]+'" style="width:100%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-top:8px">+ '+(gs.length>1?g[1]+' ekle (resim / PDF)':'Teknik resim ekle (resim / PDF)')+'</label><input id="tdf-'+g[0]+'" data-tdg="'+g[0]+'" type="file" accept="image/*,application/pdf" multiple style="display:none">';
+    });
+    h+='<div class="status" id="tdstatus"></div><div class="note">Galeriden seçebilir, kameradan çekebilir ya da PDF ekleyebilirsin. Aynı kodlu her siparişte görünür. Her bölümde en fazla '+TD_MAX+' dosya, PDF en fazla 6 MB.</div>';
     return h;
-  }
-  function techSave(k,ids,cb){
-    if(!db)return cb(false);
-    db.doc("tech/"+k).set({code:techCode,ids:ids}).then(function(){cb(true)}).catch(function(){cb(false)});
   }
   function resizeTech(file,cb){
     var st=[[1800,.82],[1500,.75],[1200,.7],[1000,.65]], i=0;
@@ -5713,32 +5739,43 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function tdLoad(id,cb){
     if(techCache[id])return cb(techCache[id]);
     if(!db)return cb(null);
-    db.doc((tdV&&tdV.coll?tdV.coll:"techimg")+"/"+id).get().then(function(sn){
-      if(sn.exists&&sn.data().d){techCache[id]=sn.data().d;cb(techCache[id])}else cb(null);
+    var coll=(tdV&&tdV.coll?tdV.coll:"techimg");
+    db.doc(coll+"/"+id).get().then(function(sn){
+      if(!(sn.exists&&sn.data().d)){cb(null);return}
+      var x=sn.data(), n=x.n||1;
+      if(n<=1){techCache[id]=x.d; cb(x.d); return}
+      var ps=[]; for(var j=1;j<n;j++)ps.push(db.doc(coll+"/"+id+"_"+j).get());
+      Promise.all(ps).then(function(rs){var t=x.d; rs.forEach(function(r){t+=(r.exists&&r.data().d)||""}); techCache[id]=t; cb(t)}).catch(function(){cb(null)});
     }).catch(function(){cb(null)});
   }
   var TD_Z=[1,1.5,2,3,4,6];
-  function tdShow(ids,i,coll,label){
+  function tdShow(ids,i,coll,label,names){
     if(!ids||!ids.length)return;
-    tdV={ids:ids,i:i||0,z:0,coll:coll||"",label:label||"Teknik resim"}; $("tdview").hidden=false; tdPaint();
+    tdV={ids:ids,i:i||0,z:0,coll:coll||"",label:label||"Teknik resim",names:names||{},blob:""}; $("tdview").hidden=false; tdPaint();
   }
   function tdZoomApply(){var im=$("tdimg"); if(im&&tdV)im.style.width=(TD_Z[tdV.z]*100)+"%"}
   function tdPaint(){
     var v=tdV; if(!v)return;
     var id=v.ids[v.i], box=$("tdbox");
     $("tdtitle").textContent=(v.label||"Teknik resim")+" "+(v.i+1)+" / "+v.ids.length;
-    box.scrollTop=0; box.scrollLeft=0;
+    box.scrollTop=0; box.scrollLeft=0; $("tdview").classList.toggle("ispdf",techIsPdf(id));
     box.innerHTML='<div class="empty" style="color:#fff;border-color:rgba(255,255,255,.3)">Yükleniyor…</div>';
     tdLoad(id,function(d){
       if(!tdV||tdV.ids[tdV.i]!==id)return;
       if(!d){box.innerHTML='<div class="empty" style="color:#fff;border-color:rgba(255,255,255,.3)">Resim yüklenemedi, bağlantını kontrol edip tekrar aç.</div>';return}
+      if(d.indexOf("data:application/pdf")===0){
+        if(tdV.blob){try{URL.revokeObjectURL(tdV.blob)}catch(e){}}
+        var bs=atob(d.split(",")[1]), ba=new Uint8Array(bs.length); for(var q=0;q<bs.length;q++)ba[q]=bs.charCodeAt(q);
+        var bu=tdV.blob=URL.createObjectURL(new Blob([ba],{type:"application/pdf"})), nm=(tdV.names&&tdV.names[id])||"teknik-resim.pdf";
+        box.innerHTML='<div class="tdpdf"><div class="tdpdfh"><b>📄 '+esc(nm)+'</b><a class="tdpl" href="'+bu+'" target="_blank" rel="noopener">Yeni sekmede aç</a><a class="tdpl" href="'+bu+'" download="'+esc(nm)+'">İndir</a></div><iframe title="PDF" src="'+bu+'"></iframe></div>'; return;
+      }
       box.innerHTML='<img alt="Teknik resim" id="tdimg" src="'+d+'">'; tdZoomApply();
     });
   }
   $("tdview").addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b||!tdV)return;
     var a=b.dataset.tda;
-    if(a==="close"){$("tdview").hidden=true; tdV=null; $("tdbox").innerHTML=""; return}
+    if(a==="close"){$("tdview").hidden=true; if(tdV.blob){try{URL.revokeObjectURL(tdV.blob)}catch(e){}} tdV=null; $("tdbox").innerHTML=""; return}
     if(a==="prev"&&tdV.i>0){tdV.i--; tdV.z=0; tdPaint(); return}
     if(a==="next"&&tdV.i<tdV.ids.length-1){tdV.i++; tdV.z=0; tdPaint(); return}
     if(a==="zin"&&tdV.z<TD_Z.length-1){tdV.z++; tdZoomApply(); return}
@@ -7411,15 +7448,21 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var t=e.target.closest("button"); if(!t)return;
     if(t.dataset.techcode!==undefined){techOpen(t.dataset.techcode,sheetMode==="odetail"?"odetail":"list"); return}
     if(sheetMode==="tech"){
-      var tk0=techKey(techCode), tids=techIdx[tk0]||[];
+      var tk0=techKey(techCode), tmeta=techMeta[tk0]||{};
       if(t.id==="techback"){sheetMode=techBack; techDelArm=-1; renderSheet(); return}
-      if(t.dataset.tdview!==undefined){tdShow(tids.slice(),+t.dataset.tdview); return}
+      if(t.dataset.tdview!==undefined){var g0=t.dataset.g||"ids"; tdShow(techArr(tk0,g0).slice(),+t.dataset.tdview,"",techGLabel(g0),techNames(tk0)); return}
+      if(t.dataset.tdmove!==undefined){
+        var g1=t.dataset.g||"ids", i1=+t.dataset.tdmove, tg=g1==="ids"?"aids":"ids", full=false;
+        techWrite(tk0,function(d){var a=(d[g1]||[]).slice(), b=(d[tg]||[]).slice(); if(b.length>=TD_MAX){full=true; return} var id=a.splice(i1,1)[0]; if(id)b.push(id); d[g1]=a; d[tg]=b},function(ok){
+          if(sheetMode==="tech")renderSheet(); var o=$("tdstatus"); if(o)o.textContent=!ok?"Taşınamadı, bağlantını kontrol edip tekrar dene":(full?"Hedef bölüm dolu (en fazla "+TD_MAX+")":"Taşındı ✓");
+        }); return;
+      }
       if(t.dataset.tddel!==undefined){
-        var di=+t.dataset.tddel;
-        if(techDelArm!==di){techDelArm=di; renderSheet(); return}
-        techDelArm=-1; var did=tids[di]; var nids=tids.filter(function(x,j){return j!==di});
-        techSave(tk0,nids,function(ok){
-          if(ok){techIdx[tk0]=nids; delete techCache[did]; if(db)db.doc("techimg/"+did).delete().catch(function(){})}
+        var g2=t.dataset.g||"ids", di=+t.dataset.tddel, key=g2+di;
+        if(techDelArm!==key){techDelArm=key; renderSheet(); return}
+        techDelArm=-1; var did=techArr(tk0,g2)[di], mt=tmeta[did];
+        techWrite(tk0,function(d){var a=(d[g2]||[]).slice(); a.splice(di,1); d[g2]=a; if(d.meta)delete d.meta[did]},function(ok){
+          if(ok){delete techCache[did]; if(db){db.doc("techimg/"+did).delete().catch(function(){}); if(mt&&mt.n>1)for(var j=1;j<mt.n;j++)db.doc("techimg/"+did+"_"+j).delete().catch(function(){})}}
           else{var s4=$("tdstatus"); if(s4)s4.textContent="Silinemedi, bağlantını kontrol edip tekrar dene"}
           if(sheetMode==="tech")renderSheet();
         });
@@ -8092,31 +8135,42 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       })(0);
       return;
     }
-    if(e.target.id==="tdf"){
-      var fl=[].slice.call(e.target.files||[]); e.target.value=""; if(!fl.length||!db)return;
-      var tk=techKey(techCode), cur=(techIdx[tk]||[]).slice(), room=TD_MAX-cur.length;
+    if(e.target.id==="tdf-ids"||e.target.id==="tdf-aids"){
+      var tg2=e.target.dataset.tdg||"ids", fl=[].slice.call(e.target.files||[]); e.target.value=""; if(!fl.length||!db)return;
+      var tk=techKey(techCode), cur=techArr(tk,tg2).slice(), room=TD_MAX-cur.length;
       var skipped=fl.length>room; fl=fl.slice(0,Math.max(0,room));
       var stat=function(m){var o=$("tdstatus"); if(o&&sheetMode==="tech"&&techKey(techCode)===tk)o.textContent=m};
       var msgs=[];
       (function nx(i){
         if(i>=fl.length){
-          if(skipped)msgs.push("En fazla "+TD_MAX+" resim eklenebilir, fazlası alınmadı");
-          if(sheetMode==="tech"&&techKey(techCode)===tk){renderSheet(); stat(msgs.join(" · "))}
+          if(skipped)msgs.push("Bu bölüme en fazla "+TD_MAX+" dosya eklenebilir, fazlası alınmadı");
+          if(sheetMode==="tech"&&techKey(techCode)===tk){renderSheet(); stat(msgs.length?msgs.join(" · "):"Eklendi ✓")}
           return;
         }
-        stat("Resim "+(i+1)+"/"+fl.length+" küçültülüyor ve kaydediliyor…");
-        resizeTech(fl[i],function(d){
-          if(!d){msgs.push("Bir resim okunamadı ya da çok büyük"); nx(i+1); return}
-          var id=uid()+i;
-          db.doc("techimg/"+id).set({d:d}).then(function(){
-            return db.doc("tech/"+tk).get();
-          }).then(function(sn){
-            var ids=((sn&&sn.exists&&sn.data().ids)||[]).slice(); ids.push(id);
-            return db.doc("tech/"+tk).set({code:techCode,ids:ids}).then(function(){techIdx[tk]=ids; techCache[id]=d});
-          }).catch(function(){msgs.push("Bir resim kaydedilemedi")}).then(function(){
+        var f=fl[i], isPdf=f.type==="application/pdf"||/\.pdf$/i.test(f.name||"");
+        stat("Dosya "+(i+1)+"/"+fl.length+" kaydediliyor…");
+        var done=function(id,meta){
+          techWrite(tk,function(d){var a=(d[tg2]||[]).slice(); a.push(id); d[tg2]=a; if(meta){d.meta=d.meta||{}; d.meta[id]=meta}},function(ok){
+            if(!ok)msgs.push("Bir dosya kaydedilemedi");
             if(sheetMode==="tech"&&techKey(techCode)===tk)renderSheet();
             nx(i+1);
           });
+        };
+        if(isPdf){
+          if(f.size>TD_PDF_MAX){msgs.push("PDF 6 MB'tan büyük, eklenmedi: "+f.name); nx(i+1); return}
+          var rd=new FileReader();
+          rd.onload=function(){
+            var d=String(rd.result).replace(/^data:[^;,]*/,"data:application/pdf"), parts=[], id="pdf_"+uid()+i;
+            for(var o=0;o<d.length;o+=TD_CH)parts.push(d.slice(o,o+TD_CH));
+            Promise.all(parts.map(function(pc,j){var ob={d:pc}; if(j===0){ob.n=parts.length; ob.t="pdf"} return db.doc("techimg/"+(j?id+"_"+j:id)).set(ob)})).then(function(){techCache[id]=d; done(id,{name:f.name||"teknik-resim.pdf",n:parts.length,sz:f.size})}).catch(function(){msgs.push("PDF kaydedilemedi: "+f.name); nx(i+1)});
+          };
+          rd.onerror=function(){msgs.push("PDF okunamadı: "+f.name); nx(i+1)};
+          rd.readAsDataURL(f); return;
+        }
+        resizeTech(f,function(d){
+          if(!d){msgs.push("Bir resim okunamadı ya da çok büyük"); nx(i+1); return}
+          var id=uid()+i;
+          db.doc("techimg/"+id).set({d:d}).then(function(){techCache[id]=d; done(id,null)}).catch(function(){msgs.push("Bir resim kaydedilemedi"); nx(i+1)});
         });
       })(0);
       return;
@@ -9220,7 +9274,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     unsubMat=db.collection("materials").onSnapshot(function(snap){
       materials=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(m){return m.free!==true});
       materials.sort(function(a,b){return (a.name||"").localeCompare(b.name||"","tr")});
-      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{zsEnsure()}catch(e){} try{if(!$("stock").hidden)needAuto()}catch(e){}
+      matsLoaded=true; matSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{zrRepair()}catch(e){} try{katFill()}catch(e){} try{zsEnsure()}catch(e){} try{if(!$("stock").hidden)needAuto()}catch(e){}
       if(IS_RZ&&!$("ords").hidden)renderCompNeeds();
     },function(){});
     watchAllMats();
@@ -9716,25 +9770,33 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   /* ürün kartı: teknik resim bölümü (siparişteki 📐 ile aynı kayıt) */
   var pcTdBusy={};
   function pcTdBody(p){
-    var code=p.code||pcTitle(p), k=techKey(code), ids=techIdx[k], tab=(pcSel||[]).indexOf("tdr")>-1;
-    if(ids===undefined){
-      if(!pcTdBusy[k]&&db){pcTdBusy[k]=1; db.doc("tech/"+k).get().then(function(sn){techIdx[k]=(sn.exists&&sn.data().ids)||[]}).catch(function(){techIdx[k]=[]}).then(function(){pcTdBusy[k]=0; if(sheetMode==="prview"&&!$("ov").hidden){var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc}})}
+    var code=p.code||pcTitle(p), k=techKey(code), tab=(pcSel||[]).indexOf("tdr")>-1;
+    if(techIdx[k]===undefined){
+      if(!pcTdBusy[k]&&db){pcTdBusy[k]=1; db.doc("tech/"+k).get().then(function(sn){techApply(k,sn.exists?sn.data():{})}).catch(function(){techApply(k,{})}).then(function(){pcTdBusy[k]=0; if(sheetMode==="prview"&&!$("ov").hidden){var sc=$("sheet").scrollTop; renderSheet(); $("sheet").scrollTop=sc}})}
       return '<div class="rxe">Yükleniyor…</div>';
     }
-    var h;
-    if(!ids.length)h='<div class="rxe">Teknik resim eklenmemiş.<small>“Resim ekle” ile fotoğraf çek ya da galeriden seç.</small></div>';
-    else if(tab){
-      h='<div class="pctdg">'+ids.map(function(id,i){return '<button type="button" class="pctdt" data-pctd="'+i+'" aria-label="Teknik resim '+(i+1)+'">'+(techCache[id]?'<img alt="" src="'+techCache[id]+'">':'<span class="ph" data-tdph="'+id+'">📐</span>')+'<b>'+(i+1)+'</b></button>'}).join("")+'</div>';
-      ids.forEach(function(id){if(!techCache[id])tdLoad(id,function(d){if(!d)return; var el=document.querySelector('[data-tdph="'+id+'"]'); if(el)el.outerHTML='<img alt="" src="'+d+'">'})});
-    }else h='<div class="pctdc">'+ids.map(function(id,i){return '<button type="button" class="pcbtn" data-pctd="'+i+'">📐 Resim '+(i+1)+'</button>'}).join("")+'</div>';
-    return h+'<div class="pctdc" style="margin-top:10px"><button type="button" class="pcbtn pri" data-pctdman="1">＋ Resim ekle / yönet</button></div>';
+    var gs=techGroups(), meta=techMeta[k]||{}, h="";
+    gs.forEach(function(g){
+      var ids=techArr(k,g[0]);
+      if(gs.length>1)h+='<div class="pctdh">'+g[1]+(ids.length?'<i>'+ids.length+'</i>':'')+'</div>';
+      if(!ids.length)h+='<div class="rxe">'+(gs.length>1?g[1]+' eklenmemiş.':'Teknik resim eklenmemiş.')+'</div>';
+      else if(tab){
+        h+='<div class="pctdg">'+ids.map(function(id,i){
+          var pdf=techIsPdf(id);
+          return '<button type="button" class="pctdt" data-pctd="'+i+'" data-g="'+g[0]+'" aria-label="'+g[1]+' '+(i+1)+'">'+(pdf?'<span class="ph pdf">📄<em>'+esc((meta[id]&&meta[id].name)||"PDF")+'</em></span>':(techCache[id]?'<img alt="" src="'+techCache[id]+'">':'<span class="ph" data-tdph="'+id+'">📐</span>'))+'<b>'+(i+1)+'</b></button>';
+        }).join("")+'</div>';
+        ids.forEach(function(id){if(!techIsPdf(id)&&!techCache[id])tdLoad(id,function(d){if(!d)return; var el=document.querySelector('[data-tdph="'+id+'"]'); if(el)el.outerHTML='<img alt="" src="'+d+'">'})});
+      }else h+='<div class="pctdc">'+ids.map(function(id,i){return '<button type="button" class="pcbtn" data-pctd="'+i+'" data-g="'+g[0]+'">'+(techIsPdf(id)?'📄 '+esc((meta[id]&&meta[id].name)||"PDF"):'📐 Resim '+(i+1))+'</button>'}).join("")+'</div>';
+    });
+    return h+'<div class="pctdc" style="margin-top:10px"><button type="button" class="pcbtn pri" data-pctdman="1">＋ Resim / PDF ekle · yönet</button></div>';
   }
   document.addEventListener("click",function(e){
     if(sheetMode!=="prview")return; var t=e.target.closest&&e.target.closest("[data-pctd],[data-pctdman]"); if(!t)return;
     var p=prVProd(); if(!p)return; e.stopPropagation(); e.preventDefault();
     var code=p.code||pcTitle(p), k=techKey(code);
     if(t.dataset.pctdman){techOpen(code,"prview"); return}
-    tdShow((techIdx[k]||[]).slice(),+t.dataset.pctd);
+    var g=t.dataset.g||"ids";
+    tdShow(techArr(k,g).slice(),+t.dataset.pctd,"",techGLabel(g),techNames(k));
   },true);
   function applyRecipeUsage(code,deltaQty){
     if(!db||!deltaQty||!code)return;
@@ -14752,7 +14814,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     unsubProd=db.collection("products").onSnapshot(function(snap){
       products=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
       products.sort(function(a,b){return String(a.code||"").localeCompare(String(b.code||""),"tr",{numeric:true})});
-      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{katFill()}catch(e){} try{if(IS_CV&&$("ords")&&!$("ords").hidden)renderOrders()}catch(e){}
+      prLoaded=true; prSrv=!(snap.metadata&&snap.metadata.fromCache); try{dovRepair()}catch(e){} try{zrRepair()}catch(e){} try{katFill()}catch(e){} try{if(IS_CV&&$("ords")&&!$("ords").hidden)renderOrders()}catch(e){}
       if(!$("ov").hidden&&sheetMode==="oform"){try{opRender();ofInfo()}catch(e){}}
       if(!$("stock").hidden&&IS_RZ)renderStock(); try{if(!$("stock").hidden)needAuto(true)}catch(e){}
       if(!$("prods").hidden)renderProds();
@@ -14900,7 +14962,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   /* --- ürün formu --- */
   function prNewDraft(){return {id:"",code:"",name:"",cust:"",cat:1,note:"",oem:"",veh:"",nw:"",len:"",thr:"",raf:"",th:"",full:null,dirty:false,parts:[]}}
-  function prPartNew(k){return k==="made"?{k:"made",n:"",kal:"",d:"",l:"",f:"0",wt:"",q:"1",p:"",m:"",th:"",nt:""}:k==="coat"?{k:"coat",n:"Kaplama",wt:"",q:"1",p:"",m:"",th:"",nt:""}:k==="lab"?{k:"lab",n:"",q:"1",p:"",m:"",th:"",nt:""}:{k:"buy",n:"",q:"1",u:"adet",p:"",sup:"",m:"",th:"",nt:""}}
+  function prPartNew(k){return k==="made"?{k:"made",n:"",kal:"",d:"",l:"",f:"0",wt:"",q:"1",p:"",m:"",th:"",nt:""}:k==="coat"?{k:"coat",n:"Kaplama",wt:"",q:"1",p:"",m:"",th:"",nt:""}:k==="lab"?{k:"lab",n:"",q:"1",p:"",m:"",th:"",nt:""}:{k:"buy",n:"",q:((typeof prDraft!=="undefined"&&prDraft&&prDraft.cat===0&&zsOn())?"2":"1"),u:"adet",p:"",sup:"",m:"",th:"",nt:""}}
   function prCostTxt(p){var c=partCost(p); return c>0?'Parça maliyeti: <b>'+pf(c)+' ₺</b>'+(!pnum(p.p)&&p.m?' (bileşen fiyatından)':''):'Fiyat girilirse maliyet hesaplanır'}
   var prOpenI=-1, prAdv={}, prMoreOpen=false;
   var PR_KCOL={made:"--p4",buy:"--p1",coat:"--p5",lab:"--p0"};
@@ -15163,7 +15225,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(t.dataset.prvdiscard){prVW=null; renderSheet(); return}
     if(t.dataset.prvsave){
       if(!db||!prVW||prVWid!==p.id)return; t.disabled=true; var np=JSON.parse(JSON.stringify(prVW));
-      db.doc("products/"+p.id).set({parts:np,ts:Date.now()},{merge:true}).then(function(){p.parts=np; prVW=null; $("prstatus").textContent="Kaydedildi"; if(sheetMode==="prview")renderSheet()}).catch(function(){t.disabled=false; t.textContent="Kaydedilemedi, tekrar dene"});
+      if(zsOn()&&p.cat===0){var no0=(p.parts||[]).length; np=zrParts(np,no0)||np; np=np.map(function(x){return (x&&x.k==="buy"&&zrIsPack(x)&&(pnum(x.q)||1)===2)?Object.assign({},x,{q:1}):x})}
+      db.doc("products/"+p.id).set(zsOn()&&p.cat===0?{parts:np,zq:1,ts:Date.now()}:{parts:np,ts:Date.now()},{merge:true}).then(function(){p.parts=np; prVW=null; $("prstatus").textContent="Kaydedildi"; if(sheetMode==="prview")renderSheet()}).catch(function(){t.disabled=false; t.textContent="Kaydedilemedi, tekrar dene"});
       return;
     }
     if(sheetMode!=="prvrow")return;
@@ -15590,7 +15653,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       add("tek","⚙","Teknik bilgiler","Teknik Bilgiler","R",pcTechTable(p));
       add("sure","⏱","İşlem süreleri","Operasyonlar","R",opBoxHtml(p),any?"✓":"");
     }
-    (function(){var tn=techIdx[techKey(p.code||pcTitle(p))]; add("tdr","📐","Teknik resim","Teknik Resim","L",pcTdBody(p),tn&&tn.length?tn.length:"")})();
+    (function(){var tk9=techKey(p.code||pcTitle(p)), tn=techIdx[tk9]!==undefined?techAll(tk9):null; add("tdr","📐","Teknik resim","Teknik Resim","L",pcTdBody(p),tn&&tn.length?tn.length:"")})();
     if(p.note)add("not","📝","Not","Not","R",'<div class="pcnote" style="margin:0">'+esc(p.note)+'</div>');
     return S;
   }
@@ -16763,6 +16826,34 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   /* Bir kerelik onarım (ayarlar/dovFix2; kodu "10943 ŞEM LASTİK" gibi olan ürünler de 10943 dövmesine bağlanır): bağlı dövmesi olmayan her ürüne, kodu aynı olan Dövme bileşenini bağlar */
   var dovFixRun=false, prSrv=false, matSrv=false;
+  /* Z-Rot: satın alınan bileşenlerin (pul, iç yuva, toz lastik, segman…) hepsi üründe 2 adet; koli / ambalaj girilirse 1 adet.
+     Mevcut Z-Rot ürünleri bir kez düzeltilir (ürün başına zq:1 işareti, eski adetler zqo'da yedek). */
+  var zrRun=false;
+  function zrIsPack(x){var lm=x&&x.m?matById(x.m):null; return /koli|ambalaj/.test(fold(((x&&x.n)||"")+" "+(lm?lm.name:"")+" "+((x&&x.mn)||"")))}
+  /* Z-Rot adetleri: satın alınanlar 2 (koli/ambalaj 1) · çelik: aşık 2, gövde 2, mil 1 */
+  function zrWant(x){
+    if(!x)return 0;
+    if(x.k==="buy")return zrIsPack(x)?1:2;
+    if(x.k==="made"){var n=fold((typeof partName==="function"?partName(x):"")||x.n||""); if(/govde/.test(n))return 2; if(/asik/.test(n))return 2; if(/(^|[^a-z])mil($|[^a-z])/.test(n))return 1}
+    return 0;
+  }
+  function zrParts(parts,onlyFrom){
+    var ch=false, np=(parts||[]).map(function(x,i){if(!x||(onlyFrom!==undefined&&i<onlyFrom))return x; var w=zrWant(x); if(!w||(pnum(x.q)||1)===w)return x; ch=true; return Object.assign({},x,{q:w})});
+    return ch?np:null;
+  }
+  function zrRepair(){
+    if(zrRun||!zsOn()||!db||!prLoaded||!prSrv||!matsLoaded||!matSrv)return; zrRun=true;
+    var mk=db.doc("ayarlar/zrq2");
+    mk.get().then(function(sn){
+      if(sn.exists)return;
+      var ops=[]; products.forEach(function(p){
+        if(p.cat!==0||p.zq)return; var np=zrParts(p.parts);
+        ops.push([p.id,np,np?(p.parts||[]).map(function(x){return pnum(x&&x.q)||1}):null]);
+      });
+      var chunks=[]; for(var i=0;i<ops.length;i+=400)chunks.push(ops.slice(i,i+400));
+      return chunks.reduce(function(pr,ch){return pr.then(function(){var b=db.batch(); ch.forEach(function(o){var d={zq:1}; if(o[1]){d.parts=o[1]; d.zqo=o[2]} b.set(db.collection("products").doc(o[0]),d,{merge:true})}); return b.commit()})},Promise.resolve()).then(function(){return mk.set({ts:Date.now(),n:ops.length})});
+    }).catch(function(){zrRun=false});
+  }
   function dovRepair(){
     if(dovFixRun||IS_RZ||IS_CV||window.__DIV!=="rotil"||!db||!prLoaded||!prSrv||!matsLoaded||!matSrv)return; dovFixRun=true;
     var mk=db.doc("ayarlar/dovFix2");
@@ -17108,6 +17199,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       var parts=d.parts.filter(function(x){return !(x.slot&&prSlotEmpty(x))}).map(prSaveDraftPart);
       if(!d.id){var dap=dovAutoPart(d.code,parts); if(dap)parts.unshift(dap)}
       var doc2={code:d.code,name:d.name.trim(),cust:d.cust.trim(),cat:d.cat,note:d.note.trim(),oem:d.oem.trim(),veh:d.veh.trim(),nw:pnum(d.nw),len:pnum(d.len),thr:d.thr.trim(),raf:String(d.raf||"").trim().toUpperCase(),th:d.th||"",parts:parts,ts:Date.now()};
+      if(zsOn()&&d.cat===0){doc2.zq=1; if(!d.id){doc2.parts=zrParts(doc2.parts)||doc2.parts} else doc2.parts=doc2.parts.map(function(x){return (x&&x.k==="buy"&&zrIsPack(x)&&(pnum(x.q)||1)===2)?Object.assign({},x,{q:1}):x})}
       if(d.id){var exP=products.filter(function(x){return x.id===d.id})[0]; if(exP&&exP.rt)doc2.rt=exP.rt; if(exP&&exP.cv)doc2.cv=exP.cv; if(exP&&exP.tech)doc2.tech=exP.tech}
       var ref=d.id?db.doc("products/"+d.id):db.collection("products").doc(), id=ref.id;
       ref.set(doc2).then(function(){
