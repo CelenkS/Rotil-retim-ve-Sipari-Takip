@@ -2828,7 +2828,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .pcrg span{flex:1;font:600 11.5px var(--font-ui);color:var(--ink2)}.pcrg em{font:800 13px var(--font-num);font-style:normal}
 .pcrf{display:flex;justify-content:space-between;align-items:center;padding:14px;border-top:2px solid var(--line);font:800 14px var(--font-ui)}.pcrf b{font:800 20px var(--font-num);color:var(--divc2,#1b5f7a)}
 @media (min-width:900px){
-  .pcrh,.pcrr{grid-template-columns:36px minmax(0,1fr) 92px 64px 118px 118px}.pcrh{display:grid}
+  .pcrh,.pcrr{grid-template-columns:36px minmax(0,1fr) 112px 52px 132px 118px}.pcrh{display:grid}
   .pcrr .q,.pcrr .u,.pcrr .up{display:block;padding-top:1px}.pcrr .q,.pcrr .up,.pcrh .r{text-align:right}.pcrr.smp .nm .sb{display:none}
 }
 .pccost{display:flex;flex-direction:column;gap:2px}
@@ -3957,6 +3957,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 .pcrr .nm small.rvstk.low{background:color-mix(in srgb,var(--bad) 12%,transparent)}
 .pcrr .q,.pcrr .up,.pcrr .u{font:700 14px var(--font-num);color:var(--ink)}.pcrr .u{color:var(--ink2);font-weight:600}
 .pcrr .am{font:800 15.5px var(--font-num);letter-spacing:-.2px}
+.pcrr .q .zq1,.pcrr .up .zq1{display:block;font:800 14px var(--font-num)}.pcrr .q small,.pcrr .up small{display:block;font:600 11px/1.35 var(--font-ui);color:var(--ink2);white-space:nowrap}.pcrr .q small.zqt{font:800 11.5px var(--font-num);color:var(--ink)}
 .pcrr.miss .am{color:var(--bad)}
 .pcrr.edt:hover{background:color-mix(in srgb,var(--divc1,#0f8b8d) 9%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--divc1,#0f8b8d) 20%,transparent)}
 .pcrf{margin-top:16px;padding:17px 20px;border:0;border-radius:18px;color:#fff;background:linear-gradient(135deg,var(--divc2,#1b5f7a),color-mix(in srgb,var(--divc2,#1b5f7a) 50%,#04161B));box-shadow:0 14px 28px color-mix(in srgb,var(--divc2,#1b5f7a) 34%,transparent);position:relative;overflow:hidden}
@@ -4692,7 +4693,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 21:55</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 22:12</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -15748,13 +15749,19 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   },true);
   document.addEventListener("focusout",function(e){if(e.target&&e.target.id==="pcgs")setTimeout(function(){var g=$("pcgsr"); if(g)g.hidden=true},220)},true);
   function pcRecRow(p,idx,orig,n){
-    var c=partCost(p), u=partUnit(p), q=pnum(p.q)||1, lm=matById(p.m), nm=(lm&&p.k==="buy"?lm.name:(p.k==="made"?partName(p):p.n))||"Parça", sub="", w="", tag="", mq, un, up;
+    var c=partCost(p), u=partUnit(p), q=pnum(p.q)||1, lm=matById(p.m), nm=(lm&&p.k==="buy"?lm.name:(p.k==="made"?partName(p):p.n))||"Parça", sub="", w="", tag="", mq, un, up, zrm=0;
     var kf=function(v){return v.toLocaleString("tr-TR",{maximumFractionDigits:3})};
     if(p.k==="buy"){ if(lm&&lm.cat)tag=PR_CATLBL[lm.cat]||lm.cat; else{var sp=nm.split(" · "); if(sp.length>1){tag=sp.shift(); nm=sp.join(" · ")}} }
     if(p.k==="made"){
       var rgi=IS_RZ?rawGroupInfo(p):null, dim=[rgi&&rgi.cut?rgi.name:p.kal,pnum(p.d)?"Ø"+nf.format(pnum(p.d)):"",pnum(p.l)?nf.format(pnum(p.l))+(pnum(p.ek)?" +"+nf.format(pnum(p.ek)):"")+" mm":""].filter(Boolean).join(" · ");
       sub=(dim?dim+" · ":"")+(pnum(p.wa)>0?"otomatik · ":"")+gFmt(pBrut(p))+(u?" × "+pf(u)+" ₺/kg":"")+(q>1?" × "+nf.format(q)+" adet":""); if(!u)w="kg fiyatı girilmemiş";
       mq=kf(pBrut(p)/1000*q); un="kg"; up=u?pf(u)+" ₺/kg":"—";
+      if(zsOn()&&q>1){ zrm=1; /* Z-Rot: 1 adetin gramajı · × adet · toplam gramaj · 1 adet maliyeti · toplam */
+        var g1=pBrut(p)/1000, qs=nf.format(q);
+        sub=(dim?dim+" · ":"")+(pnum(p.wa)>0?"otomatik · ":"")+"1 adet "+kf(g1)+" kg × "+qs+" adet = "+kf(g1*q)+" kg"+(u?" · "+pf(u)+" ₺/kg · 1 adet "+pf(c/q)+" ₺":" · kg fiyatı girilmemiş"); w="";
+        mq='<b class="zq1">'+kf(g1)+'</b><small>× '+qs+' adet</small><small class="zqt">= '+kf(g1*q)+' kg</small>';
+        up=u?'<b class="zq1">'+pf(c/q)+' ₺</b><small>1 adet · '+pf(u)+' ₺/kg</small>':"—";
+      }
     }else if(p.k==="coat"){
       sub=nf.format(pnum(p.wt))+" kg"+(u?" × "+pf(u)+" ₺/kg":"")+(q>1?" × "+nf.format(q)+" adet":""); if(!u)w="kaplama fiyatı girilmemiş";
       mq=kf(pnum(p.wt)*q); un="kg"; up=u?pf(u)+" ₺/kg":"—";
@@ -15763,7 +15770,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       sub=mq+" "+un+(u?" × "+pf(u)+" ₺":""); if(!u)w="fiyat girilmemiş"; up=u?pf(u)+" ₺":"—";
     }
     var edt=(p.k==="buy"||p.k==="lab"||(p.k==="made"&&pnum(p.d)>0&&pnum(p.l)>0&&(pnum(p.wt)>0||pnum(p.wa)>0)))&&idx!==undefined, chg=orig&&JSON.stringify(orig)!==JSON.stringify(p), oc=orig?partCost(orig):0;
-    var smp=(p.k==="buy"||p.k==="lab");
+    var smp=(p.k==="buy"||p.k==="lab"||zrm);
     return '<div class="pcrr'+(c>0?'':' miss')+(edt?' edt':'')+(chg?' chg':'')+(smp?' smp':'')+'"'+(edt?' role="button" tabindex="0" data-prvr="'+idx+'"':'')+'><span class="n">'+n+'</span><div class="nm"><b>'+(tag?'<span class="rv-tag">'+esc(tag)+'</span>':'')+esc(nm)+(p.k==="buy"&&p.m?'<span class="lk" title="Bileşen listesine bağlı">🔗</span>':'')+'</b><small class="sb'+(w?' w':'')+'">'+esc(w||sub)+'</small>'+(p.nt?'<small>'+esc(p.nt)+'</small>':'')+zsDetRow(p)+((p.k==="buy"&&lm)?(function(){var sk=+lm.stock||0, lw=(sk<=0)||(+lm.crit>0&&sk<=+lm.crit)||sk<q; return '<small class="rvstk'+(lw?' low':'')+'">📦 Stok: <b>'+nf.format(sk)+'</b> '+esc(lm.unit||"adet")+(lw?(sk<=0?' · stokta yok':' · az'):'')+'</small>'})():'')+((IS_RZ&&p.k==="made"&&idx!==undefined)?'<button type="button" class="prpnb" data-prpn="'+idx+'" aria-label="Parçanın adını değiştir">Ad ✎</button>':'')+'</div>'+
       '<span class="q">'+mq+'</span><span class="u">'+esc(un)+'</span><span class="up">'+up+'</span><div class="am">'+(chg&&oc!==c?'<span class="was">'+(oc>0?pf(oc)+' ₺':'—')+'</span>':'')+(c>0?pf(c)+' ₺':'—')+(edt?'<span class="ed">✎</span>':'')+'</div></div>';
   }
