@@ -4734,7 +4734,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 23:04</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 23:17</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12323,8 +12323,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(ckMailOk(em))h+='<a class="ckl" href="mailto:'+esc(em)+'">✉ '+esc(em)+'</a>';
     return h||'<span class="cknc">İletişim bilgisi yok</span>';
   }
-  function ckSort(a,b){return ckRelOrd(a.r)-ckRelOrd(b.r)||String(a.c||"").localeCompare(String(b.c||""),"tr")||String(a.n||"").localeCompare(String(b.n||""),"tr")}
-  function ckCountries(l){var m={}; l.forEach(function(x){if(x.c)m[x.c]=(m[x.c]||0)+1}); return Object.keys(m).sort(function(a,b){return a.localeCompare(b,"tr")}).map(function(k){return [k,m[k]]})}
+  function ckSort(a,b){return (a.c==="Türkiye"?1:0)-(b.c==="Türkiye"?1:0)||ckRelOrd(a.r)-ckRelOrd(b.r)||String(a.c||"").localeCompare(String(b.c||""),"tr")||String(a.n||"").localeCompare(String(b.n||""),"tr")}
+  function ckCountries(l){var m={}; l.forEach(function(x){if(x.c)m[x.c]=(m[x.c]||0)+1}); return Object.keys(m).sort(function(a,b){return (a==="Türkiye"?1:0)-(b==="Türkiye"?1:0)||a.localeCompare(b,"tr")}).map(function(k){return [k,m[k]]})}
   function ckWatch(){
     var d=ckDb(); if(!d||!ckOn())return;
     if(!CK.unL)CK.unL=d.collection("ck").onSnapshot(function(sn){
