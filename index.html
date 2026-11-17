@@ -4759,7 +4759,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:09</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:11</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12634,6 +12634,49 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       });
     })).then(function(){return out});
   }
+  function asDivNames(){var m={}; (window.__DIVS||[]).forEach(function(d){m[d.id]=d.name}); return m}
+  function asMonthsOf(div,iso){
+    var d=dbDiv(div); if(!d)return Promise.resolve({});
+    var mk=iso.slice(0,7), ids=PU_SECIDS[div]||[], out={};
+    return Promise.all(ids.map(function(sid){return d.doc(secCol(sid)+"/"+mk).get().then(function(sn){out[sid]=sn.exists?sn.data():{}}).catch(function(){out[sid]={}})})).then(function(){return out});
+  }
+  function asProdDiv(div,iso){
+    var d=dbDiv(div); if(!d)return Promise.resolve([]);
+    return Promise.all([d.collection("orders").get().then(function(sn){var m={}; sn.docs.forEach(function(x){m[x.id]=x.data()}); return m}).catch(function(){return {}}),asMonthsOf(div,iso)]).then(function(r){
+      var om=r[0], md=r[1], out=[];
+      (PU_SECIDS[div]||[]).forEach(function(sid){
+        var data=md[sid]||{}, ls=(data.lines||{})[iso]||[], tot=daySums(data.days,data.lines,data.rev)[iso]||{a:0,r:0}, by={};
+        ls.forEach(function(l){
+          var o=l.o?om[l.o]:null, nm=o?(o.code||o.name||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"");
+          var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); e.adet+=(+l.q||0);
+        });
+        if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:(PU_NAMES[div]||{})[sid]||sid,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,20)});
+      });
+      return out;
+    });
+  }
+  function asProdAll(iso,only){
+    var names=asDivNames(), ids=only&&names[only]?[only]:Object.keys(names), res={};
+    return Promise.all(ids.map(function(div){
+      return (div===window.__DIV?asEnsure([iso]).then(function(){return asProd(iso)}):asProdDiv(div,iso)).catch(function(){return []}).then(function(p){res[names[div]||div]=p.length?p:"üretim girişi yok"});
+    })).then(function(){return res});
+  }
+  function asCiroAll(){
+    var names=asDivNames(), td=asToday(), yd=isoAdd(td,-1), res={}, tg=0, tm=0;
+    return Promise.all(Object.keys(names).map(function(div){
+      var mks=[td]; if(yd.slice(0,7)!==td.slice(0,7))mks.push(yd);
+      return Promise.all(mks.map(function(i){return asMonthsOf(div,i)})).then(function(arr){
+        var dun=0, ay=0;
+        (PU_SECIDS[div]||[]).forEach(function(sid){
+          arr.forEach(function(md,ix){
+            var data=md[sid]||{}, ds=daySums(data.days,data.lines,data.rev), mk=mks[ix].slice(0,7);
+            Object.keys(ds).forEach(function(i){if(i===yd)dun+=ds[i].r||0; if(mk===td.slice(0,7)&&i<=td&&ix===0)ay+=ds[i].r||0});
+          });
+        });
+        res[names[div]||div]={dun_ciro_TL:Math.round(dun),bu_ay_ciro_TL:Math.round(ay)}; tg+=dun; tm+=ay;
+      }).catch(function(){res[names[div]||div]={hata:"okunamadı"}});
+    })).then(function(){res.TOPLAM={dun_ciro_TL:Math.round(tg),bu_ay_ciro_TL:Math.round(tm)}; return res});
+  }
   function asPlan(iso){
     return asEnsure([iso]).then(function(){
       var out=[];
@@ -12733,10 +12776,10 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   function asNotes(){return {notlar:notesAll.slice(0,30).map(function(n){return asSlim(n)})}}
   var AS_TOOLS=[
-    {name:"uretim_gunu",description:"Verilen günde (YYYY-MM-DD) şu an açık olan bölümde, üretim bölümü bölümü yapılan adet, ciro ve ürün kalemlerini döndürür.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"}},required:["tarih"]}},
+    {name:"uretim_gunu",description:"Verilen günde (YYYY-MM-DD) üretim bölümü bölümü yapılan adet, ciro ve ürün kalemlerini döndürür. bolum: rotil, civata, rozet veya hepsi (varsayılan hepsi).",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},bolum:{type:"string"}},required:["tarih"]}},
     {name:"plan_gunu",description:"Verilen günün planını döndürür: hangi bölümde hangi makinede hangi ürün, kaç adet, hangi eleman.",input_schema:{type:"object",properties:{tarih:{type:"string"}},required:["tarih"]}},
     {name:"siparisler",description:"Açık siparişleri (müşteri, adet, termin, kalan gün) döndürür. sadece_geciken true ise sadece termini geçenleri.",input_schema:{type:"object",properties:{sadece_geciken:{type:"boolean"}}}},
-    {name:"ciro",description:"Dünün cirosu, bu ayın cirosu ve açık siparişlerin toplam tutarı.",input_schema:{type:"object",properties:{}}},
+    {name:"ciro",description:"Tüm bölümler (Rotil, Cıvata, Rozet) için dünün cirosu ve bu ayın cirosu, ayrıca şu an açık olan bölümün açık siparişlerinin toplam tutarı.",input_schema:{type:"object",properties:{}}},
     {name:"finans",description:"Finans özeti (sadece sahip): borç, alacak, çekler, hesaplar, bu hafta ödenecek ve tahsil beklenen tutar.",input_schema:{type:"object",properties:{}}},
     {name:"malzeme_ihtiyaci",description:"Açık siparişlere göre gereken ve eksik olan malzemeleri ve kritik seviyenin altındaki stokları döndürür.",input_schema:{type:"object",properties:{}}},
     {name:"maas_gider",description:"Sahibe özel 'Maaş ve giderler': verilen ayın (ay: YYYY-MM, boşsa bu ay) toplam net maaş ve sigorta, kira/elektrik/yemek/mazot/kart/genel giderler ve maaşların bölüm bölüm dağılımı. detay true ise kişi kişi maaş da döner; sadece kullanıcı açıkça isterse kullan.",input_schema:{type:"object",properties:{ay:{type:"string"},detay:{type:"boolean"}}}},
@@ -12747,10 +12790,10 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     {name:"veri_oku",description:"Diğer her veriyi okumak için: bir Firestore koleksiyonundan belge okur. koleksiyon: "+Object.keys(AS_COL).join(", ")+". bolum: rotil, civata veya rozet (boşsa şu anki). alan+deger ile eşitlik filtresi.",input_schema:{type:"object",properties:{koleksiyon:{type:"string"},bolum:{type:"string"},alan:{type:"string"},deger:{},limit:{type:"number"}},required:["koleksiyon"]}}
   ];
   function asTool(n,a){
-    if(n==="uretim_gunu")return asEnsure([a.tarih]).then(function(){return asProd(a.tarih)}).then(function(p){return {tarih:a.tarih,bolum:window.__DIVO.name,uretim:p}});
+    if(n==="uretim_gunu")return asProdAll(a.tarih,a.bolum&&a.bolum!=="hepsi"?a.bolum:null).then(function(p){return {tarih:a.tarih,uretim:p}});
     if(n==="plan_gunu")return asPlan(a.tarih).then(function(p){return {tarih:a.tarih,bolum:window.__DIVO.name,plan:p}});
     if(n==="siparisler")return Promise.resolve(asOrders(!!a.sadece_geciken));
-    if(n==="ciro")return asEnsure([asToday(),isoAdd(asToday(),-1)]).then(asCiro);
+    if(n==="ciro")return Promise.all([asCiroAll(),asEnsure([asToday(),isoAdd(asToday(),-1)]).then(asCiro)]).then(function(r){return {bolumler:r[0],acik_bolum:window.__DIVO.name,acik_siparis_tutari_TL:r[1].acik_siparislerin_toplam_tutari_TL,acik_siparis_adedi:r[1].acik_siparis}});
     if(n==="finans")return asFin();
     if(n==="malzeme_ihtiyaci")return asMat();
     if(n==="maas_gider")return asMaas(a);
@@ -12767,7 +12810,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     return "Sen Yusuf Çelenk'in kişisel üretim ve iş asistanısın. Yusuf; Rotil (kürenin rotil), Cıvata ve Rozet bölümleri olan bir fabrikanın sahibi, 'Üretim Defteri' uygulamasını kullanıyor. "+
       "Bugün "+asToday()+" "+GUN[(d.getDay()+6)%7]+", saat "+pad(d.getHours())+":"+pad(d.getMinutes())+". Şu an uygulamada açık bölüm: "+window.__DIVO.name+". "+
       "Kuralların: Türkçe, samimi ve kısa konuş ('kanka' diyebilirsin). Cevapların sesli okunacak: markdown, tablo, madde işareti, emoji kullanma; rakamları ve paraları okunacak şekilde yaz (örn. '12 bin 400 lira'). "+
-      "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Üretim, plan, sipariş, ciro ve malzeme araçları şu an açık olan bölümün verisini verir; başka bölüm sorulursa veri_oku ile oku ya da kullanıcıdan o bölüme geçmesini iste. "+
+      "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Üretim ve ciro araçları üç bölümü (Rotil, Cıvata, Rozet) birden verir. Plan, sipariş ve malzeme araçları şu an açık olan bölümün verisini verir; başka bölüm sorulursa veri_oku ile oku ya da kullanıcıdan o bölüme geçmesini iste. "+
       "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. Sadece toplantı ekleme/silme gibi yazma yapabilirsin; başka kayıt değiştiremezsin. Silmeden önce kullanıcıya hangisini sildiğini söyle. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
   }
   function asCall(messages,tools,system,maxTok){
@@ -12881,8 +12924,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
     asStopSay(); asPrime(); asUi("u","☀ Sabah raporu"); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Rapor hazırlanıyor…");
     var td=asToday(), yd=isoAdd(td,-1), data={bugun:td,dun:yd,bolum:window.__DIVO.name};
-    asEnsure([td,yd]).then(function(){return asProd(yd)}).then(function(p){data.dunku_uretim=p; return asPlan(td)}).then(function(p){
-      data.bugunku_plan=p; data.ciro=asCiro(); data.termini_gecen_siparisler=asOrders(true).siparisler.slice(0,10); data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
+    asEnsure([td,yd]).then(function(){return asProdAll(yd)}).then(function(p){data.dunku_uretim_tum_bolumler=p; return asCiroAll()}).then(function(c){data.ciro_tum_bolumler=c; data.acik_bolum_siparis_ciro=asCiro(); return asPlan(td)}).then(function(p){
+      data.bugunku_plan=p; data.termini_gecen_siparisler=asOrders(true).siparisler.slice(0,10); data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
     }).then(function(f){data.finans=f; return asMaas({}).then(function(mm){data.maas_ve_giderler_bu_ay=mm; return asMat()})}).then(function(m){data.malzeme=m;
       return asCall([{role:"user",content:"Aşağıdaki verilerle Yusuf'a sesli okunacak bir sabah raporu yaz. Sırayla: dünkü üretim (hangi ürünler, hangi bölümde, kaç adet) ve ciro, bugünün planı (makine ve ürün), toplantılar, termini geçen siparişler, finans (varsa borç/alacak/bu hafta ödenecek ve tahsil), bu ayki maaş ve gider toplamı, siparişlere göre eksik malzemeler. Veride olmayanı uydurma, boş olanı kısaca 'yok' de. Markdown ve madde işareti kullanma, düz konuşma dili, en fazla yaklaşık 250 kelime.\n\n"+JSON.stringify(data)}],[],asSystem(),1200);
     }).then(function(j){
