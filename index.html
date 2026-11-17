@@ -4734,7 +4734,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 10.11 23:17</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 10:17</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12298,8 +12298,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   /* ---------- Çelik Kapıcılar (Rozet · sadece sahibine özel): dünyadaki çelik kapı üreticileri ----------
      "ck" = senin listen, "ckaday" = aday havuzu (seçip listene ekle). Rotil yolundaki ortak db'de durur, index.html'e gömülmez. */
   var CK_REL=[["yuksek","Çelik kapı üreticisi"],["orta","Belki"],["dusuk","Alakasız olabilir"]];
+  var CK_TP=[["uretici","Rozet / defender üreticisi"],["kapi","Kapı üreticisi (alıcı olabilir)"]];
   var CK_ST=[["yeni","Yeni"],["aranacak","Aranacak"],["gorusuldu","Görüşüldü"],["olumlu","Olumlu"],["olumsuz","Olumsuz"]];
-  var CK={list:[],cand:[],unL:null,unC:null,tab:"list",q:"",fc:"",fr:"",fs:"",cq:"",cfc:"",cfr:"yo",cfon:false,sel:{},modal:false,cur:null,lim:60,clim:60,busy:false,draft:null};
+  var CK={list:[],cand:[],roz:[],unL:null,unC:null,unR:null,rq:"",rfc:"",rlim:60,col:"ck",tab:"list",q:"",fc:"",fr:"",fs:"",cq:"",cfc:"",cfr:"yo",cfon:false,sel:{},modal:false,cur:null,lim:60,clim:60,busy:false,draft:null};
   function ckOn(){return typeof finOwner==="function"&&finOwner()&&window.__DIV==="rozet"}
   function ckDb(){return dbDiv("rotil")}
   function ckHash(s){var h=5381,i; for(i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36)}
@@ -12335,6 +12336,10 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       CK.cand=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())});
       if(!$("ck").hidden&&!CK.modal)ckRender();
     },function(err){var s=$("ckstatus"); if(s)s.textContent="Aday liste okunamadı: "+((err&&(err.code||err.message))||"")});
+    if(!CK.unR)CK.unR=d.collection("ckroz").onSnapshot(function(sn){
+      CK.roz=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())});
+      if(!$("ck").hidden&&!CK.modal)ckRender();
+    },function(err){var s=$("ckstatus"); if(s)s.textContent="Rozetçi listesi okunamadı: "+((err&&(err.code||err.message))||"")});
   }
   function ckPaintHome(){
     var el=$("hs-ck"); if(!el)return; var n=CK.list.length;
@@ -12365,9 +12370,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var b=$("ckbody"); if(!b)return;
     var cs=ckCountries(CK.list), got=CK.list.filter(function(x){return x.st&&x.st!=="yeni"&&x.st!=="aranacak"}).length;
     $("ckamt").textContent=CK.list.length; $("cksub").textContent=cs.length+" ülke · "+got+" görüşülen"+(CK.cand.length?" · "+CK.cand.length+" aday bekliyor":"");
-    var h='<div class="fvtabs sm"><button type="button" data-ckt="list" aria-pressed="'+(CK.tab==="list")+'">Listem<em>'+CK.list.length+'</em></button><button type="button" data-ckt="cand" aria-pressed="'+(CK.tab==="cand")+'">Aday liste<em>'+CK.cand.filter(function(x){return !CK.list.some(function(y){return y.id===x.id})}).length+'</em></button></div>';
-    h+=CK.tab==="list"?ckListHtml(cs):ckCandHtml();
-    var ae=document.activeElement, kid=(ae&&(ae.id==="ckq"||ae.id==="ckcq"))?ae.id:"", kp=kid?ae.selectionStart:0;
+    var h='<div class="fvtabs sm"><button type="button" data-ckt="list" aria-pressed="'+(CK.tab==="list")+'">Listem<em>'+CK.list.length+'</em></button><button type="button" data-ckt="cand" aria-pressed="'+(CK.tab==="cand")+'">Aday liste<em>'+CK.cand.filter(function(x){return !CK.list.some(function(y){return y.id===x.id})}).length+'</em></button><button type="button" data-ckt="roz" aria-pressed="'+(CK.tab==="roz")+'">Rozetçiler<em>'+CK.roz.length+'</em></button></div>';
+    h+=CK.tab==="list"?ckListHtml(cs):CK.tab==="roz"?ckRozHtml():ckCandHtml();
+    var ae=document.activeElement, kid=(ae&&(ae.id==="ckq"||ae.id==="ckcq"||ae.id==="ckrq"))?ae.id:"", kp=kid?ae.selectionStart:0;
     b.innerHTML=h; if(kid){var ni=$(kid); if(ni){ni.focus(); try{ni.setSelectionRange(kp,kp)}catch(e){}}}
   }
   function ckHost(w){var u=ckUrl(w); if(!u)return ""; try{return new URL(u).hostname.replace(/^www\./i,"")}catch(e){return ""}}
@@ -12387,10 +12392,22 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     h+='<div class="fvlist">'+(l.length?l.slice(0,lim).map(ckRowHtml).join(""):'<div class="fvnone">Filtreye uyan firma yok.</div>')+(l.length>lim?'<button type="button" class="pcmore" data-cka="more">Daha fazla göster ('+(l.length-lim)+')</button>':'')+(l.length?'<div class="fvtot"><span>'+l.length+' firma</span><b></b></div>':'')+'</div>';
     return h;
   }
-  function ckRowHtml(x){
-    var st=x.st||"yeni";
-    return '<div class="ckrow"><div class="ckh"><div class="ckt">'+ckLogo(x)+'<b>'+esc(x.n||"—")+'</b></div>'+ckRelTag(x.r)+'</div><small class="ckmeta">'+esc([x.c,x.ct].filter(Boolean).join(" · ")||"Ülke yok")+'</small>'+(x.t?'<small class="cknote">'+esc(x.t)+'</small>':'')+(x.nt?'<small class="cknote my">📝 '+esc(x.nt)+'</small>':'')+
-      '<div class="ckact">'+ckLinks(x)+'</div><div class="ckfoot"><select class="fin ckst st-'+esc(st)+'" data-ckst="'+esc(x.id)+'" aria-label="Durum">'+CK_ST.map(function(o){return '<option value="'+o[0]+'"'+(o[0]===st?" selected":"")+'>'+esc(o[1])+'</option>'}).join("")+'</select><button type="button" class="btn ghost ckedit" data-cka="edit" data-id="'+esc(x.id)+'">Düzenle</button></div></div>';
+  function ckTpTag(t){var o=CK_TP.filter(function(x){return x[0]===t})[0]||CK_TP[0]; return '<span class="ckrel r-'+(o[0]==="kapi"?"yuksek":"orta")+'">'+esc(o[1])+'</span>'}
+  function ckRowHtml(x,col){
+    var st=x.st||"yeni", rz=col==="ckroz";
+    return '<div class="ckrow"><div class="ckh"><div class="ckt">'+ckLogo(x)+'<b>'+esc(x.n||"—")+'</b></div>'+(rz?ckTpTag(x.tp):ckRelTag(x.r))+'</div><small class="ckmeta">'+esc([x.c,x.ct].filter(Boolean).join(" · ")||"Ülke yok")+'</small>'+(x.t?'<small class="cknote">'+esc(x.t)+'</small>':'')+(x.nt?'<small class="cknote my">📝 '+esc(x.nt)+'</small>':'')+
+      '<div class="ckact">'+ckLinks(x)+'</div><div class="ckfoot"><select class="fin ckst st-'+esc(st)+'" data-ckst="'+esc(x.id)+'"'+(rz?' data-ckcol="ckroz"':'')+' aria-label="Durum">'+CK_ST.map(function(o){return '<option value="'+o[0]+'"'+(o[0]===st?" selected":"")+'>'+esc(o[1])+'</option>'}).join("")+'</select><button type="button" class="btn ghost ckedit" data-cka="edit" data-id="'+esc(x.id)+'"'+(rz?' data-col="ckroz"':'')+'>Düzenle</button></div></div>';
+  }
+  function ckRozHtml(){
+    var cs=ckCountries(CK.roz), q=fold(CK.rq||"");
+    var l=CK.roz.filter(function(x){return (!CK.rfc||x.c===CK.rfc)&&(!q||fold([x.n,x.c,x.ct,x.t,x.nt,x.w].join(" ")).indexOf(q)>-1)}).sort(function(a,b){return (a.c==="Türkiye"?1:0)-(b.c==="Türkiye"?1:0)||String(a.c||"").localeCompare(String(b.c||""),"tr")||(a.tp==="kapi"?1:0)-(b.tp==="kapi"?1:0)||String(a.n||"").localeCompare(String(b.n||""),"tr")});
+    var h='<div class="fvcard ckinfo"><b>Çelik rozetçiler</b><p>Bizim gibi çelik kapı rozeti / defender üreten firmalar ve rozet alabilecek kapı üreticileri. <b>İletişim bilgisi sitelerinden alındı, aramadan önce teyit et.</b></p></div>';
+    h+='<div class="fvbar"><input class="search" id="ckrq" type="search" autocomplete="off" placeholder="Firma, ülke, not ara…" value="'+esc(CK.rq)+'" aria-label="Rozetçi ara"><button class="btn" data-cka="addr">+ Firma ekle</button></div>';
+    h+='<div class="ckfilt">'+ckSelect("rfc",CK.rfc,cs.map(function(c){return [c[0],c[0]+" ("+c[1]+")"]}),"Tüm ülkeler",'data-ckf="rfc"')+'</div>';
+    if(!CK.roz.length)return h+'<div class="fvcard fvempty"><p>Henüz rozetçi eklenmedi. “+ Firma ekle” ile ekleyebilirsin.</p></div>';
+    var lim=Math.min(l.length,CK.rlim);
+    h+='<div class="fvlist">'+(l.length?l.slice(0,lim).map(function(x){return ckRowHtml(x,"ckroz")}).join(""):'<div class="fvnone">Filtreye uyan firma yok.</div>')+(l.length>lim?'<button type="button" class="pcmore" data-cka="rmore">Daha fazla göster ('+(l.length-lim)+')</button>':'')+(l.length?'<div class="fvtot"><span>'+l.length+' firma</span><b></b></div>':'')+'</div>';
+    return h;
   }
   function ckCandVisible(){
     var inL={}; CK.list.forEach(function(x){inL[x.id]=1});
@@ -12474,27 +12491,29 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var f=$("ckf-n"); if(f&&!/Mobi|iPhone|Android/i.test(navigator.userAgent))try{f.focus()}catch(e){}
   }
   function ckModalClose(){CK.modal=false; CK.cur=null; CK.draft=null; var m=$("ckmodal"); if(m){m.hidden=true; m.innerHTML=""}}
-  function ckForm(x){
-    var n=!x; CK.cur=x?x.id:null; x=x||{n:"",c:"",ct:"",w:"",p:"",e:"",r:"yuksek",st:"yeni",t:"",nt:"",s:"Elle eklendi"};
-    CK.draft={r:x.r||"orta",st:x.st||"yeni"};
+  function ckForm(x,col){
+    var n=!x, rz=col==="ckroz"; CK.col=rz?"ckroz":"ck"; CK.cur=x?x.id:null; x=x||{n:"",c:"",ct:"",w:"",p:"",e:"",r:"yuksek",tp:"uretici",st:"yeni",t:"",nt:"",s:"Elle eklendi"};
+    CK.draft={r:rz?(x.tp||"uretici"):(x.r||"orta"),st:x.st||"yeni"};
     function f(id,lbl,val,ph,cls){return '<div'+(cls?' class="'+cls+'"':'')+'><label class="fl" for="ckf-'+id+'">'+lbl+'</label><input class="fin" id="ckf-'+id+'" autocomplete="off" placeholder="'+esc(ph||"")+'" value="'+esc(val||"")+'"></div>'}
     var body='<div class="fvgrid2">'+f("n","Firma adı",x.n,"Firma adı","w2")+f("c","Ülke",x.c,"ör. Türkiye")+f("ct","Şehir",x.ct,"")+f("w","Web sitesi",x.w,"firma.com","w2")+f("p","Telefon",x.p,"+90 …")+f("e","E-posta",x.e,"info@…")+
-      '<div class="w2"><span class="fl">Çelik kapıyla ilgisi</span><div class="fvchips ckpk">'+CK_REL.map(function(o){return '<button type="button" data-ckpickr="'+o[0]+'" aria-pressed="'+(CK.draft.r===o[0])+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
+      '<div class="w2"><span class="fl">'+(rz?'Firma türü':'Çelik kapıyla ilgisi')+'</span><div class="fvchips ckpk">'+(rz?CK_TP:CK_REL).map(function(o){return '<button type="button" data-ckpickr="'+o[0]+'" aria-pressed="'+(CK.draft.r===o[0])+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
       '<div class="w2"><span class="fl">Durum</span><div class="fvchips ckpk">'+CK_ST.map(function(o){return '<button type="button" data-ckpicks="'+o[0]+'" aria-pressed="'+(CK.draft.st===o[0])+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
       '<div class="w2"><label class="fl" for="ckf-t">Ne üretiyor?</label><textarea class="fin" id="ckf-t" rows="2">'+esc(x.t||"")+'</textarea></div>'+
       '<div class="w2"><label class="fl" for="ckf-nt">Notlarım</label><textarea class="fin" id="ckf-nt" rows="3" placeholder="Görüşme notu, kimle konuşuldu, numune…">'+esc(x.nt||"")+'</textarea></div></div>'+(x.s?'<small class="fvnote">Kaynak: '+esc(x.s)+'</small>':'');
-    ckModal(n?"Yeni firma":"Firmayı düzenle",body,'<button class="btn" data-cka="save">Kaydet</button>'+(n?'':'<button class="btn danger" data-cka="del" data-id="'+esc(x.id)+'">Sil</button>'));
+    ckModal(n?(rz?"Yeni rozetçi":"Yeni firma"):"Firmayı düzenle",body,'<button class="btn" data-cka="save">Kaydet</button>'+(n?'':'<button class="btn danger" data-cka="del" data-id="'+esc(x.id)+'">Sil</button>'));
   }
   function ckSave(){
     var g=function(i){var e=$("ckf-"+i); return e?(e.value||"").trim():""}, m=$("ckmsg"), nm=g("n");
     if(!nm){m.textContent="Firma adını yaz."; return}
     var d=ckDb(); if(!d){m.textContent="Bağlantı yok, kaydedilemedi."; return}
-    var ex=CK.cur?CK.list.filter(function(x){return x.id===CK.cur})[0]:null;
-    var o={n:nm,c:g("c"),ct:g("ct"),w:g("w"),p:g("p"),e:g("e"),r:CK.draft.r,st:CK.draft.st,t:g("t"),nt:g("nt")};
+    var rz=CK.col==="ckroz", arr=rz?CK.roz:CK.list;
+    var ex=CK.cur?arr.filter(function(x){return x.id===CK.cur})[0]:null;
+    var o={n:nm,c:g("c"),ct:g("ct"),w:g("w"),p:g("p"),e:g("e"),st:CK.draft.st,t:g("t"),nt:g("nt")};
+    if(rz)o.tp=CK.draft.r; else o.r=CK.draft.r;
     var id=CK.cur||ckKey(nm,o.c);
-    if(!CK.cur&&CK.list.some(function(x){return x.id===id})){m.textContent="Bu firma listende zaten var."; return}
+    if(!CK.cur&&arr.some(function(x){return x.id===id})){m.textContent="Bu firma listende zaten var."; return}
     if(ex){o.s=ex.s||""; o.ts=ex.ts||Date.now(); o.by=ex.by||""; o.edited=Date.now()} else {o.s="Elle eklendi"; o.ts=Date.now(); try{o.by=whoAmI()}catch(e){}}
-    d.doc("ck/"+id).set(o).then(function(){ckStatus("Kaydedildi ✓")}).catch(function(){ckStatus("Kaydedilemedi — bağlantıyı kontrol et")});
+    d.doc((rz?"ckroz/":"ck/")+id).set(o).then(function(){ckStatus("Kaydedildi ✓")}).catch(function(){ckStatus("Kaydedilemedi — bağlantıyı kontrol et")});
     ckModalClose(); ckRender();
   }
   /* ---- olaylar ---- */
@@ -12502,13 +12521,14 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   $("ck").addEventListener("input",function(e){
     if(e.target.id==="ckq"){CK.q=e.target.value; CK.lim=60; ckRender()}
     else if(e.target.id==="ckcq"){CK.cq=e.target.value; CK.clim=60; ckRender()}
+    else if(e.target.id==="ckrq"){CK.rq=e.target.value; CK.rlim=60; ckRender()}
   });
   $("ck").addEventListener("keydown",function(e){if(e.key==="Escape"&&CK.modal)ckModalClose()});
   $("ck").addEventListener("change",function(e){
     var t=e.target; if(!t||!t.dataset)return;
     if(t.id==="ckfile"){var f=t.files&&t.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ckImportText(f.name,String(rd.result||""))}; rd.readAsText(f,"utf-8"); t.value=""; return}
-    if(t.dataset.ckf){var k=t.dataset.ckf; CK[k]=t.value; CK.lim=60; CK.clim=60; ckRender(); return}
-    if(t.dataset.ckst){var d=ckDb(); if(!d){ckStatus("Bağlantı yok, kaydedilemedi"); return} d.doc("ck/"+t.dataset.ckst).set({st:t.value,edited:Date.now()},{merge:true}).then(function(){ckStatus("Durum güncellendi ✓")}).catch(function(){ckStatus("Kaydedilemedi")}); t.className="fin ckst st-"+t.value}
+    if(t.dataset.ckf){var k=t.dataset.ckf; CK[k]=t.value; CK.lim=60; CK.clim=60; CK.rlim=60; ckRender(); return}
+    if(t.dataset.ckst){var d=ckDb(); if(!d){ckStatus("Bağlantı yok, kaydedilemedi"); return} d.doc((t.dataset.ckcol==="ckroz"?"ckroz/":"ck/")+t.dataset.ckst).set({st:t.value,edited:Date.now()},{merge:true}).then(function(){ckStatus("Durum güncellendi ✓")}).catch(function(){ckStatus("Kaydedilemedi")}); t.className="fin ckst st-"+t.value}
   });
   $("ck").addEventListener("error",function(e){var t=e.target; if(t&&t.classList&&t.classList.contains("cklgi"))t.remove()},true);
   $("ck").addEventListener("load",function(e){var t=e.target; if(t&&t.classList&&t.classList.contains("cklgi")){ if(t.naturalWidth<=16){t.remove(); return} if(t.naturalWidth<48)t.classList.add("sm"); t.parentNode.classList.add("ok")}},true);
@@ -12523,7 +12543,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var a=d.cka;
     if(a==="mclose"){ckModalClose(); return}
     if(a==="add"){ckForm(null); return}
-    if(a==="edit"){ckForm(CK.list.filter(function(x){return x.id===d.id})[0]); return}
+    if(a==="addr"){ckForm(null,"ckroz"); return}
+    if(a==="rmore"){CK.rlim+=60; ckRender(); return}
+    if(a==="edit"){ckForm((d.col==="ckroz"?CK.roz:CK.list).filter(function(x){return x.id===d.id})[0],d.col); return}
     if(a==="save"){ckSave(); return}
     if(a==="more"){CK.lim+=60; ckRender(); return}
     if(a==="cmore"){CK.clim+=60; ckRender(); return}
@@ -12535,7 +12557,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(a==="rmsel"){ckRemoveSel(t); return}
     if(a==="del"){
       if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return}
-      var db2=ckDb(); if(db2)db2.doc("ck/"+d.id).delete().catch(function(){}); ckModalClose(); ckRender(); return;
+      var db2=ckDb(); if(db2)db2.doc((CK.col==="ckroz"?"ckroz/":"ck/")+d.id).delete().catch(function(){}); ckModalClose(); ckRender(); return;
     }
   });
   /* ---------- Puantaj (günlük eleman performansı: makine · ürün · saat · operasyon süresi · hedef) ---------- */
