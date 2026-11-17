@@ -3336,6 +3336,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 #as .aschips button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:7px 13px;font:700 13px var(--font-ui);cursor:pointer}
 #as .aschips button:active{background:var(--accent);color:var(--accent-ink)}
 #as .asbar .status{text-align:center;min-height:16px;margin:0 0 4px}
+#as.assett .asbar{display:none}
 #ck .ckdock{position:sticky;bottom:10px;z-index:6;display:flex;gap:8px;align-items:center;margin-top:14px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 #ck .ckdock span{flex:1;font:800 13px var(--font-ui);color:var(--ink)}
 #ck .ckdock .btn{padding:11px 14px}#ck .ckdock .btn[disabled]{opacity:.45}
@@ -5400,7 +5401,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 00:01</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 00:08</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13382,6 +13383,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-5-5",fast:"claude-haiku-5-5",bvoice:"",rate:1,xvl:[],bud:{b:15,u:0,n:0},mode:"fast",use:{i:0,o:0,usd:0},hour:7,sett:false,mt:[],unM:null,built:false,chats:[],cur:{id:""},listOpen:false,sp:null,delArm:"",noWeb:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0,pend:[],cfListen:false,hed:{},ct:null,ctAt:0};
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
+  function asStorOk(){try{localStorage.setItem("as_t","1"); var r=localStorage.getItem("as_t")==="1"; localStorage.removeItem("as_t"); return r}catch(e){return false}}
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
   function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-5-5"; if(AS.model==="claude-sonnet-4-5"){AS.model="claude-sonnet-5-5"; asLs("as_model","claude-sonnet-5-5")} AS.fast=asLs("as_fast")||"claude-haiku-5-5"; AS.bvoice=asLs("as_bvoice")||""; AS.rate=+(asLs("as_rate")||1)||1; AS.mode=asLs("as_mode")==="strong"?"strong":"fast"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"; if(!/^[A-Za-z0-9]{18,24}$/.test(AS.xvoice))AS.xvoice="DYkrAHD8iwork3YSUBbs"; AS.noWeb=asLs("as_noweb")==="1"}
   function asDb(){return dbDiv("rotil")}
@@ -14116,7 +14118,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   }
   try{if(window.speechSynthesis)speechSynthesis.addEventListener("voiceschanged",function(){if(!$("as").hidden&&AS.sett)asSettPaint()})}catch(e){}
   function asSettPaint(){
-    var w=$("assettw"); if(!w)return;
+    var w=$("assettw"); if(!w)return; try{var asr=$("as"); if(asr)asr.classList.toggle("assett",!!(AS.sett||!AS.key))}catch(e){}
     if(!AS.sett&&AS.key){w.innerHTML=""; return}
     w.innerHTML='<div class="fvcard"><h3>Ayarlar</h3><label class="fl" for="askey">Anthropic API anahtarı</label><input class="fin asmask" id="askey" name="as-k-1" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="'+(AS.key?"kayıtlı (••••"+esc(AS.key.slice(-4))+") — değiştirmek için yapıştır":"sk-ant-… yapıştır")+'">'+
       '<small class="fvnote">Anahtar sadece bu cihazda saklanır, koda ya da veritabanına yazılmaz. Sorular ve veriler Anthropic\'e gönderilir.</small>'+
@@ -14128,7 +14130,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       '<label class="fl" for="asmodel" style="margin-top:10px">Güçlü model (sabah raporu ve "Güçlü" modu)</label><input class="fin" id="asmodel" type="text" autocomplete="off" value="'+esc(AS.model)+'">'+
       '<label class="fl" for="asfast" style="margin-top:10px">Hızlı model (günlük sorular, ucuz)</label><input class="fin" id="asfast" type="text" autocomplete="off" value="'+esc(AS.fast)+'">'+
       '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
-      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div><div class="status nocap" id="asvres" style="margin-top:10px;white-space:normal;font-weight:600"></div>'+((AS.key||AS.xkey||AS.xvoice)?'<label class="fl" style="margin-top:14px">Başka cihaza taşı (kopyala, orada yapıştır)</label><div class="fvrow">'+(AS.key?'<button type="button" class="btn ghost" data-asa="cp" data-w="key">📋 Anthropic anahtarı</button>':'')+(AS.xkey?'<button type="button" class="btn ghost" data-asa="cp" data-w="xkey">📋 Ses anahtarı</button>':'')+(AS.xvoice?'<button type="button" class="btn ghost" data-asa="cp" data-w="xvoice">📋 Ses kimliği</button>':'')+'</div>':'')+'</div>';
+      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.key?'<button type="button" class="btn ghost" data-asa="sett">✕ Kapat</button>':'')+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div><div class="status nocap" id="asvres" style="margin-top:10px;white-space:normal;font-weight:600">'+(asStorOk()?'':'⚠ Bu tarayıcı bilgi saklamıyor (gizli sekme?). Anahtarlar kaydolmaz. Chrome\'da normal sekmede aç.')+'</div>'+((AS.key||AS.xkey||AS.xvoice)?'<label class="fl" style="margin-top:14px">Başka cihaza taşı (kopyala, orada yapıştır)</label><div class="fvrow">'+(AS.key?'<button type="button" class="btn ghost" data-asa="cp" data-w="key">📋 Anthropic anahtarı</button>':'')+(AS.xkey?'<button type="button" class="btn ghost" data-asa="cp" data-w="xkey">📋 Ses anahtarı</button>':'')+(AS.xvoice?'<button type="button" class="btn ghost" data-asa="cp" data-w="xvoice">📋 Ses kimliği</button>':'')+'</div>':'')+'</div>';
   }
   function asHedPaint(){
     var w=$("ashed"); if(!w)return; var names=asDivNames(), ids=Object.keys(names), act=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.ashi;
@@ -14318,7 +14320,15 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   function asHome(){asLeave(function(){asStopSay(); $("as").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()})}
   $("asback").addEventListener("click",asHome);
   function asGrow(el){if(!el)return; el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,200)+"px"}
-  $("as").addEventListener("input",function(e){if(e.target.id==="asin")asGrow(e.target)});
+  $("as").addEventListener("input",function(e){
+    if(e.target.id==="asin")asGrow(e.target);
+    /* anahtar kutusuna yapıştırılır yapıştırılmaz kaydet; "Kaydet"e basmayı unutunca ya da ekran yenilenince boşa gitmesin */
+    var id=e.target.id; if(id==="asxkey"||id==="askey"){
+      var v=e.target.value||"", mx=v.match(/sk_[A-Za-z0-9]{20,}/), ma=v.match(/sk-ant-[A-Za-z0-9_\-]{20,}/);
+      if(mx||ma){ if(mx)asLs("as_xkey",mx[0]); if(ma)asLs("as_key",ma[0]); var okw=(!mx||asLs("as_xkey")===mx[0])&&(!ma||asLs("as_key")===ma[0]); asLoad(); asSettPaint(); asStatus(!okw?"KAYDEDİLEMEDİ: bu tarayıcı bilgi saklamıyor (gizli sekme olabilir). Chrome'da normal sekmede aç.":mx?"ElevenLabs anahtarı kaydedildi ✓ Şimdi 🔊 Sesi dene'ye bas":"Anthropic anahtarı kaydedildi ✓"); }
+      else if(v.trim().length>4){ asStatus("Yapıştırdığın yazı anahtara benzemiyor (başı: "+v.trim().slice(0,3)+"…, uzunluk: "+v.trim().length+"). ElevenLabs anahtarı sk_ ile, Anthropic anahtarı sk-ant- ile başlar."); }
+    }
+  });
   $("as").addEventListener("change",function(e){
     var t=e.target, k=t.dataset&&t.dataset.asv; if(!k)return;
     if(k==="b"){AS.bvoice=t.value; asLs("as_bvoice",t.value||null)}
