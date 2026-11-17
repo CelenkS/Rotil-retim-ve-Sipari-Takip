@@ -3302,6 +3302,30 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 #ck .ckbar{display:flex;gap:8px;margin:10px 0 0}#ck .ckbar .btn{flex:1;padding:10px 8px;font-size:13px}
 #ck .ckinfo p{margin:6px 0 12px;color:var(--ink2);font:600 13px/1.5 var(--font-ui)}
 #ck .ckrels{flex-wrap:wrap;margin-top:10px}
+#as .ascards{display:grid;gap:12px;margin-top:12px}
+#as .aschips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#as .asmsgs{display:flex;flex-direction:column;gap:10px;margin:14px 0 150px}
+#as .asm{position:relative;max-width:92%;padding:11px 14px;border-radius:16px;font:500 15px/1.5 var(--font-ui);word-break:break-word}
+#as .asm.u{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:5px}
+#as .asm.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px;padding-right:38px}
+#as .asspk{position:absolute;right:6px;top:6px;border:0;background:transparent;font-size:15px;cursor:pointer;opacity:.7}
+#as .asdots{display:flex;gap:5px;padding:14px 16px}
+#as .asdots i{width:7px;height:7px;border-radius:50%;background:var(--ink2);animation:asd 1s infinite ease-in-out}
+#as .asdots i:nth-child(2){animation-delay:.15s}#as .asdots i:nth-child(3){animation-delay:.3s}
+@keyframes asd{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+#as .asbar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:8px max(16px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+@media (min-width:1000px){#as .asbar{left:var(--snw,0px)}}
+#as .asrow{display:flex;gap:8px;align-items:center;max-width:760px;margin:0 auto}
+#as .asrow .fin{flex:1;min-width:0}
+#as .asic{min-width:46px;padding-inline:0;font-size:18px}
+#as .asic[aria-pressed="true"]{background:var(--bad);color:#fff;border-color:var(--bad)}
+#as .asrow2{display:flex;gap:8px;margin:6px auto 0;max-width:760px}
+#as .asmt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+#as .asmt small{display:block;color:var(--ink2);font:600 12px var(--font-ui)}
+#as .assm{padding:6px 12px;min-height:0;font-size:13px}
+#as .aschips button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:7px 13px;font:700 13px var(--font-ui);cursor:pointer}
+#as .aschips button:active{background:var(--accent);color:var(--accent-ink)}
+#as .asbar .status{text-align:center;min-height:16px;margin:0 0 4px}
 #ck .ckdock{position:sticky;bottom:10px;z-index:6;display:flex;gap:8px;align-items:center;margin-top:14px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 #ck .ckdock span{flex:1;font:800 13px var(--font-ui);color:var(--ink)}
 #ck .ckdock .btn{padding:11px 14px}#ck .ckdock .btn[disabled]{opacity:.45}
@@ -4734,7 +4758,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 10:17</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 10:40</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -4963,6 +4987,13 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div id="ckbody"></div>
   <div class="status" id="ckstatus"></div>
   <div class="fvmodal" id="ckmodal" hidden></div>
+</div>
+<div class="wrap" id="as" hidden style="--hero1:#6C4DE6;--hero2:#2D1B8A">
+  <section class="hero ohero">
+    <div class="hirow"><div class="oeyebrow">Sadece sana özel · Kişisel asistan</div><button class="tbtn" id="asback">‹ Ana sayfa</button></div>
+    <div class="obig"><span class="obl">Asistanım</span><span class="obs" id="assub"></span></div>
+  </section>
+  <div id="asbody"></div>
 </div>
 <div class="wrap" id="sl" hidden style="--hero1:#1F9D6B;--hero2:#0F5C40">
   <section class="hero ohero">
@@ -12560,6 +12591,290 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       var db2=ckDb(); if(db2)db2.doc((CK.col==="ckroz"?"ckroz/":"ck/")+d.id).delete().catch(function(){}); ckModalClose(); ckRender(); return;
     }
   });
+  /* ---------- Asistan (sadece sahip): Claude ile soru-cevap, sesli okuma, sabah raporu, toplantılar ----------
+     Anahtar sadece bu cihazın localStorage'ında durur (as_key); koda ya da Firestore'a yazılmaz. Toplantılar: "asst_top" (ortak db). */
+  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:""};
+  var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
+  function asOn(){return typeof finOwner==="function"&&finOwner()}
+  function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
+  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7}
+  function asDb(){return dbDiv("rotil")}
+  function asIso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+  function asToday(){return asIso(new Date())}
+  function asR2(n){return Math.round((+n||0)*100)/100}
+  function asWatch(){
+    var d=asDb(); if(!d||!asOn()||AS.unM)return;
+    AS.unM=d.collection("asst_top").onSnapshot(function(sn){AS.mt=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())}); asHomePaint(); if(!$("as").hidden)asMeetPaint()},function(){});
+  }
+  function asHomePaint(){
+    var el=$("hs-as"); if(!el)return;
+    var t=asToday(), n=AS.mt.filter(function(m){return m.d===t}).length, rep=asLs("as_rep")===t;
+    el.textContent=(!AS.key?"Anahtarını ekle, sonra sor, dinle, takip et":(rep?"Bugünün raporu okundu":"Günaydın raporun hazır, dinle")+(n?" · "+n+" toplantı":""));
+  }
+  /* --- veri araçları (hepsi bu bölümün verisi; diğer bölümler için veri_oku) --- */
+  function asOrd(id){for(var i=0;i<orders.length;i++){if(orders[i].id===id)return orders[i]} return null}
+  function asEmp(id){if(!id)return ""; for(var i=0;i<employees.length;i++){if(employees[i].id===id)return employees[i].name||employees[i].n||""} return ""}
+  function asEnsure(isos){
+    var mks={}; isos.forEach(function(i){mks[i.slice(0,7)]=1}); var jobs=[];
+    SECTIONS.forEach(function(x){Object.keys(mks).forEach(function(mk){jobs.push(fetchOne(x.id,mk))})});
+    return Promise.all(jobs);
+  }
+  function asProd(iso){
+    var mk=iso.slice(0,7), out=[];
+    return Promise.all(SECTIONS.map(function(x){
+      var get=db?db.doc(secCol(x.id)+"/"+mk).get().then(function(sn){return sn.exists?sn.data():{}}):Promise.resolve({});
+      return get.catch(function(){return {}}).then(function(data){
+        var ls=(data.lines||{})[iso]||[], tot=daySums(data.days,data.lines,data.rev)[iso]||{a:0,r:0}, by={};
+        ls.forEach(function(l){
+          var o=l.o?asOrd(l.o):null, nm=o?(oTi(o)||o.code||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"");
+          var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); e.adet+=(+l.q||0);
+        });
+        if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:x.name,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,25)});
+      });
+    })).then(function(){return out});
+  }
+  function asPlan(iso){
+    return asEnsure([iso]).then(function(){
+      var out=[];
+      SECTIONS.forEach(function(x){
+        var P=pmPlans[x.id+"|"+iso.slice(0,7)]||{}, items=(P.day&&P.day[iso])||[]; if(!items.length)return;
+        out.push({bolum:x.name,satirlar:items.map(function(pe){var o=asOrd(pe.oid); return {urun:o?(oTi(o)||o.code):pe.oid,musteri:(o&&o.cust)||"",adet:pe.q,makine:pe.mid?machineNameOf(pe.mid):"",eleman:asEmp(pe.eid),saat:(pe.a&&pe.b)?pe.a+"-"+pe.b:""}})});
+      });
+      return out;
+    });
+  }
+  function asOrders(onlyLate){
+    var l=orders.filter(function(o){return !o.shipped&&!isComplete(o)}).map(function(o){var n=daysTo(o.dd); return {urun:oTi(o)||o.code,musteri:o.cust||"",adet:o.qty,termin:o.dd||"",kalan_gun:n,tutar_TL:Math.round(orderTotal(o))}});
+    if(onlyLate)l=l.filter(function(x){return x.kalan_gun!==null&&x.kalan_gun<0});
+    l.sort(function(a,b){return (a.kalan_gun===null)-(b.kalan_gun===null)||a.kalan_gun-b.kalan_gun});
+    return {acik_siparis_sayisi:onlyLate?undefined:l.length,siparisler:l.slice(0,40)};
+  }
+  function asCiro(){
+    var td=asToday(), yd=isoAdd(td,-1), mk=td.slice(0,7), ym=yd.slice(0,7), dun=0, ay=0;
+    SECTIONS.forEach(function(x){
+      var a=pmDay[x.id+"|"+ym]||{}; if(a[yd])dun+=a[yd].r||0;
+      var b=pmDay[x.id+"|"+mk]||{}; Object.keys(b).forEach(function(i){if(i<td)ay+=b[i].r||0; else if(i===td)ay+=b[i].r||0});
+    });
+    var op=orders.filter(function(o){return !o.shipped&&!isComplete(o)}), tut=0; op.forEach(function(o){tut+=orderTotal(o)});
+    return {bolum:window.__DIVO.name,dun_ciro_TL:Math.round(dun),bu_ay_ciro_TL:Math.round(ay),acik_siparislerin_toplam_tutari_TL:Math.round(tut),acik_siparis:op.length};
+  }
+  function asFin(){
+    function sum(){
+      if(FV.st!=="open"||!FV.F)return null;
+      var T=fvCalc(), t0=isoToday(), t7=fvAddDays(t0,7), w={odenecek:0,tahsil_beklenen:0};
+      try{fvEvents().filter(function(e){return e.d&&e.d>=t0&&e.d<=t7}).forEach(function(e){if(e.amt<0)w.odenecek+=-e.amt; else w.tahsil_beklenen+=e.amt})}catch(e){}
+      return {toplam_borc_TL:Math.round(T.borc),toplam_alacak_TL:Math.round(T.alacak),hesaplar_TL:Math.round(T.hesap),portfoydeki_cek_TL:Math.round(T.cekIn),verilen_cek_TL:Math.round(T.cekOut),net_TL:Math.round(T.net),vadesi_gecen_borc_TL:Math.round(T.geciken),vadesi_gecen_borc_adedi:T.gecikenN,bu_hafta_odenecek_TL:Math.round(w.odenecek),bu_hafta_tahsil_beklenen_TL:Math.round(w.tahsil_beklenen)};
+    }
+    if(FV.st==="open")return Promise.resolve(sum());
+    try{fvBoot()}catch(e){}
+    return new Promise(function(res){var n=0, iv=setInterval(function(){n++; if(FV.st==="open"){clearInterval(iv); res(sum())} else if(n>16){clearInterval(iv); res({hata:"Finans kasası bu cihazda kilitli. Finans Merkezi'ni bir kez açıp kasayı aç."})}},300)});
+  }
+  function asMat(){
+    if(!(matsLoaded&&prLoaded))return Promise.resolve({hata:"Ürün ve stok verileri henüz yüklenmedi, biraz sonra tekrar dene."});
+    if(!needBy||Date.now()-needAt>120000)needRun();
+    return new Promise(function(res){
+      var n=0, iv=setInterval(function(){
+        n++;
+        if(!needBusyN&&needBy){
+          clearInterval(iv);
+          var eks=needRowsAll().filter(function(x){return x.def>0}).sort(function(a,b){return b.def-a.def}).slice(0,40).map(function(x){return {malzeme:x.name,birim:x.unit,stokta:asR2(x.stock),gereken:asR2(x.need),eksik:asR2(x.def)}});
+          var krit=allMats.filter(function(m){return +m.crit>0&&(+m.stock||0)<=+m.crit}).slice(0,25).map(function(m){return {malzeme:m.name,bolum:m._div,stok:m.stock,kritik:m.crit,birim:m.unit}});
+          res({bolum:window.__DIVO.name,siparislere_gore_eksik_malzemeler:eks,kritik_seviyenin_altindaki_stoklar:krit});
+        } else if(n>70){clearInterval(iv); res({hata:"Malzeme ihtiyacı hesaplanamadı, tekrar dene."})}
+      },300);
+    });
+  }
+  function asSlim(o){
+    var r={}; Object.keys(o||{}).forEach(function(k){var v=o[k]; if(typeof v==="string"&&v.length>400)r[k]="[uzun veri]"; else if(Array.isArray(v)&&JSON.stringify(v).length>1500)r[k]="[uzun liste: "+v.length+" kayıt]"; else r[k]=v}); return r;
+  }
+  function asRead(a){
+    var col=String(a.koleksiyon||""); if(!AS_COL[col])return Promise.resolve({hata:"Bu koleksiyona erişim yok. İzinli: "+Object.keys(AS_COL).join(", ")});
+    var d=dbDiv(a.bolum||window.__DIV); if(!d)return Promise.resolve({hata:"Veritabanına bağlanılamadı"});
+    var q=d.collection(col);
+    if(col==="usernotes"){var me=""; try{me=firebase.auth().currentUser.email.toLowerCase()}catch(e){} q=q.where("owner","==",me)}
+    if(a.alan&&a.deger!==undefined)q=q.where(String(a.alan),"==",a.deger);
+    return q.limit(Math.min(+a.limit||50,150)).get().then(function(sn){return {adet:sn.size,belgeler:sn.docs.map(function(x){return Object.assign({id:x.id},asSlim(x.data()))})}});
+  }
+  function asTopList(a){
+    var b=(a&&a.baslangic)||asToday(), e=(a&&a.bitis)||isoAdd(b,30);
+    return {toplantilar:AS.mt.filter(function(m){return m.d>=b&&m.d<=e}).sort(function(x,y){return (x.d+(x.h||""))<(y.d+(y.h||""))?-1:1}).map(function(m){return {id:m.id,tarih:m.d,saat:m.h||"",baslik:m.n,not:m.nt||""}})};
+  }
+  function asTopAdd(a){
+    var d=asDb(); if(!d)return Promise.reject(new Error("Bağlantı yok"));
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(a.tarih||"")||!a.baslik)return Promise.reject(new Error("tarih (YYYY-MM-DD) ve baslik gerekli"));
+    var by=""; try{by=whoAmI()}catch(e){}
+    return d.collection("asst_top").add({d:a.tarih,h:a.saat||"",n:String(a.baslik).slice(0,200),nt:String(a.not||"").slice(0,500),by:by,ts:Date.now()}).then(function(r){return {tamam:true,id:r.id}});
+  }
+  function asTopDel(a){var d=asDb(); if(!d||!a.id)return Promise.reject(new Error("id gerekli")); return d.doc("asst_top/"+a.id).delete().then(function(){return {tamam:true}})}
+  function asNotes(){return {notlar:notesAll.slice(0,30).map(function(n){return asSlim(n)})}}
+  var AS_TOOLS=[
+    {name:"uretim_gunu",description:"Verilen günde (YYYY-MM-DD) şu an açık olan bölümde, üretim bölümü bölümü yapılan adet, ciro ve ürün kalemlerini döndürür.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"}},required:["tarih"]}},
+    {name:"plan_gunu",description:"Verilen günün planını döndürür: hangi bölümde hangi makinede hangi ürün, kaç adet, hangi eleman.",input_schema:{type:"object",properties:{tarih:{type:"string"}},required:["tarih"]}},
+    {name:"siparisler",description:"Açık siparişleri (müşteri, adet, termin, kalan gün) döndürür. sadece_geciken true ise sadece termini geçenleri.",input_schema:{type:"object",properties:{sadece_geciken:{type:"boolean"}}}},
+    {name:"ciro",description:"Dünün cirosu, bu ayın cirosu ve açık siparişlerin toplam tutarı.",input_schema:{type:"object",properties:{}}},
+    {name:"finans",description:"Finans özeti (sadece sahip): borç, alacak, çekler, hesaplar, bu hafta ödenecek ve tahsil beklenen tutar.",input_schema:{type:"object",properties:{}}},
+    {name:"malzeme_ihtiyaci",description:"Açık siparişlere göre gereken ve eksik olan malzemeleri ve kritik seviyenin altındaki stokları döndürür.",input_schema:{type:"object",properties:{}}},
+    {name:"notlarim",description:"Kullanıcının kişisel notları.",input_schema:{type:"object",properties:{}}},
+    {name:"toplanti_listele",description:"Toplantıları listeler. baslangic/bitis YYYY-MM-DD (boşsa bugünden 30 gün).",input_schema:{type:"object",properties:{baslangic:{type:"string"},bitis:{type:"string"}}}},
+    {name:"toplanti_ekle",description:"Takvime toplantı ekler.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},saat:{type:"string",description:"HH:MM"},baslik:{type:"string"},not:{type:"string"}},required:["tarih","baslik"]}},
+    {name:"toplanti_sil",description:"Toplantıyı id ile siler. Önce kullanıcıya hangisini sildiğini söyle.",input_schema:{type:"object",properties:{id:{type:"string"}},required:["id"]}},
+    {name:"veri_oku",description:"Diğer her veriyi okumak için: bir Firestore koleksiyonundan belge okur. koleksiyon: "+Object.keys(AS_COL).join(", ")+". bolum: rotil, civata veya rozet (boşsa şu anki). alan+deger ile eşitlik filtresi.",input_schema:{type:"object",properties:{koleksiyon:{type:"string"},bolum:{type:"string"},alan:{type:"string"},deger:{},limit:{type:"number"}},required:["koleksiyon"]}}
+  ];
+  function asTool(n,a){
+    if(n==="uretim_gunu")return asEnsure([a.tarih]).then(function(){return asProd(a.tarih)}).then(function(p){return {tarih:a.tarih,bolum:window.__DIVO.name,uretim:p}});
+    if(n==="plan_gunu")return asPlan(a.tarih).then(function(p){return {tarih:a.tarih,bolum:window.__DIVO.name,plan:p}});
+    if(n==="siparisler")return Promise.resolve(asOrders(!!a.sadece_geciken));
+    if(n==="ciro")return asEnsure([asToday(),isoAdd(asToday(),-1)]).then(asCiro);
+    if(n==="finans")return asFin();
+    if(n==="malzeme_ihtiyaci")return asMat();
+    if(n==="notlarim")return Promise.resolve(asNotes());
+    if(n==="toplanti_listele")return Promise.resolve(asTopList(a));
+    if(n==="toplanti_ekle")return asTopAdd(a);
+    if(n==="toplanti_sil")return asTopDel(a);
+    if(n==="veri_oku")return asRead(a);
+    return Promise.reject(new Error("Bilinmeyen araç"));
+  }
+  function asTrunc(r){var s=JSON.stringify(r); return s.length>14000?s.slice(0,14000)+"…(kısaltıldı)":s}
+  function asSystem(){
+    var d=new Date(), me=""; try{me=whoAmI()}catch(e){}
+    return "Sen Yusuf Çelenk'in kişisel üretim ve iş asistanısın. Yusuf; Rotil (kürenin rotil), Cıvata ve Rozet bölümleri olan bir fabrikanın sahibi, 'Üretim Defteri' uygulamasını kullanıyor. "+
+      "Bugün "+asToday()+" "+GUN[(d.getDay()+6)%7]+", saat "+pad(d.getHours())+":"+pad(d.getMinutes())+". Şu an uygulamada açık bölüm: "+window.__DIVO.name+". "+
+      "Kuralların: Türkçe, samimi ve kısa konuş ('kanka' diyebilirsin). Cevapların sesli okunacak: markdown, tablo, madde işareti, emoji kullanma; rakamları ve paraları okunacak şekilde yaz (örn. '12 bin 400 lira'). "+
+      "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Üretim, plan, sipariş, ciro ve malzeme araçları şu an açık olan bölümün verisini verir; başka bölüm sorulursa veri_oku ile oku ya da kullanıcıdan o bölüme geçmesini iste. "+
+      "Sadece toplantı ekleme/silme gibi yazma yapabilirsin; başka kayıt değiştiremezsin. Silmeden önce kullanıcıya hangisini sildiğini söyle. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
+  }
+  function asCall(messages,tools,system,maxTok){
+    return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":AS.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:AS.model,max_tokens:maxTok||1500,system:system,tools:tools&&tools.length?tools:undefined,messages:messages})
+    }).then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok)throw new Error((j&&j.error&&j.error.message)||("HTTP "+r.status)); return j})});
+  }
+  function asTrim(){
+    if(AS.msgs.length<=40)return;
+    var i=AS.msgs.length-30; while(i<AS.msgs.length&&!(AS.msgs[i].role==="user"&&typeof AS.msgs[i].content==="string"))i++;
+    AS.msgs=i<AS.msgs.length?AS.msgs.slice(i):[];
+  }
+  function asRun(text){
+    asTrim(); AS.msgs.push({role:"user",content:text}); var loop=0;
+    function step(){
+      return asCall(AS.msgs,AS_TOOLS,asSystem()).then(function(j){
+        AS.msgs.push({role:"assistant",content:j.content});
+        var uses=(j.content||[]).filter(function(c){return c.type==="tool_use"});
+        if(j.stop_reason==="tool_use"&&uses.length&&loop++<7){
+          return Promise.all(uses.map(function(u){
+            asStatus("Bakıyorum…");
+            return asTool(u.name,u.input||{}).then(function(r){return {type:"tool_result",tool_use_id:u.id,content:asTrunc(r)}},function(e){return {type:"tool_result",tool_use_id:u.id,content:"Hata: "+((e&&e.message)||e),is_error:true}});
+          })).then(function(rs){AS.msgs.push({role:"user",content:rs}); return step()});
+        }
+        return (j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
+      });
+    }
+    return step();
+  }
+  /* --- konuşma / mikrofon --- */
+  function asPlain(t){return String(t||"").replace(/[*_#`>]/g,"").replace(/^\s*[-•]\s+/gm,"").replace(/\s+/g," ").trim()}
+  function asSay(t){
+    if(!AS.speak||!window.speechSynthesis)return;
+    try{speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(asPlain(t)); u.lang="tr-TR"; var vs=speechSynthesis.getVoices().filter(function(v){return /^tr/i.test(v.lang)}); if(vs[0])u.voice=vs[0]; speechSynthesis.speak(u)}catch(e){}
+  }
+  function asStopSay(){try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+  function asMic(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){asStatus("Bu tarayıcı sesle yazmayı desteklemiyor"); return}
+    if(AS.listening&&AS.rec){try{AS.rec.stop()}catch(e){} return}
+    asStopSay(); var r=new SR(); r.lang="tr-TR"; r.interimResults=false; r.maxAlternatives=1;
+    r.onresult=function(e){var t=e.results[0][0].transcript; AS.listening=false; asCtl(); asSend(t)};
+    r.onerror=function(){AS.listening=false; asCtl(); asStatus("Duyamadım, tekrar dene")};
+    r.onend=function(){AS.listening=false; asCtl()};
+    AS.rec=r; AS.listening=true; asCtl(); try{r.start()}catch(e){AS.listening=false; asCtl()}
+  }
+  /* --- arayüz --- */
+  function asStatus(t){AS.stat=t||""; var s=$("asstatus"); if(s)s.textContent=AS.stat}
+  function asFmt(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")}
+  function asUi(r,t){AS.ui.push({r:r,t:t}); asMsgsPaint()}
+  function asMsgsPaint(){
+    var b=$("asmsgs"); if(!b)return;
+    b.innerHTML=AS.ui.length?AS.ui.map(function(m){return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':''):'<div class="fvcard fvempty"><p>Merhaba kanka. Üretim, plan, sipariş, ciro, malzeme ve toplantılarını sorabilirsin. Yazabilir ya da mikrofona basıp konuşabilirsin.</p></div>';
+    window.scrollTo(0,document.body.scrollHeight);
+  }
+  function asCtl(){
+    var m=$("asmic"); if(m){m.setAttribute("aria-pressed",AS.listening); m.textContent=AS.listening?"⏹":"🎤"}
+    var s=$("asspkon"); if(s){s.setAttribute("aria-pressed",AS.speak); s.textContent=AS.speak?"🔊 Sesli":"🔇 Sessiz"}
+    var sd=$("assend"); if(sd)sd.disabled=AS.busy;
+  }
+  function asBuild(){
+    var b=$("asbody"); if(!b)return;
+    b.innerHTML='<div class="ascards"><div id="asmeet"></div><div id="assettw"></div></div>'+
+      '<div class="fvchips aschips">'+[["☀ Sabah raporu","rep"],["Dünkü üretim","Dün neler üretildi?"],["Bugünün planı","Bugünün planı ne?"],["Termini geçenler","Termini geçen siparişler hangileri?"],["Eksik malzeme","Siparişlere göre hangi malzemeler eksik?"],["Ciro","Dünkü ve bu ayki ciro ne?"],["Toplantılarım","Önümüzdeki toplantılarım neler?"]].map(function(c){return '<button type="button" data-asq="'+esc(c[1])+'">'+esc(c[0])+'</button>'}).join("")+'</div>'+
+      '<div id="asmsgs" class="asmsgs"></div>'+
+      '<div class="asbar"><div class="status" id="asstatus"></div><div class="asrow"><button type="button" class="btn ghost asic" id="asmic" data-asa="mic" aria-label="Konuş">🎤</button><input class="fin" id="asin" type="text" autocomplete="off" placeholder="Bir şey sor…" aria-label="Mesaj"><button type="button" class="btn" id="assend" data-asa="send">Gönder</button></div><div class="asrow2"><button type="button" class="btn ghost assm" id="asspkon" data-asa="spk"></button><button type="button" class="btn ghost assm" data-asa="sett">⚙ Ayarlar</button><button type="button" class="btn ghost assm" data-asa="clear">Temizle</button></div></div>';
+    AS.built=true; asSettPaint(); asMeetPaint(); asMsgsPaint(); asCtl();
+  }
+  function asSettPaint(){
+    var w=$("assettw"); if(!w)return;
+    if(!AS.sett&&AS.key){w.innerHTML=""; return}
+    w.innerHTML='<div class="fvcard"><h3>Ayarlar</h3><label class="fl" for="askey">Anthropic API anahtarı</label><input class="fin" id="askey" type="password" autocomplete="off" placeholder="'+(AS.key?"kayıtlı (••••"+esc(AS.key.slice(-4))+") — değiştirmek için yapıştır":"sk-ant-… yapıştır")+'">'+
+      '<small class="fvnote">Anahtar sadece bu cihazda saklanır, koda ya da veritabanına yazılmaz. Sorular ve veriler Anthropic\'e gönderilir.</small>'+
+      '<label class="fl" for="asmodel" style="margin-top:10px">Model</label><input class="fin" id="asmodel" type="text" autocomplete="off" value="'+esc(AS.model)+'">'+
+      '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
+      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
+  }
+  function asMeetPaint(){
+    var w=$("asmeet"); if(!w)return; var t=asToday(), up=AS.mt.filter(function(m){return m.d>=t}).sort(function(x,y){return (x.d+(x.h||""))<(y.d+(y.h||""))?-1:1}).slice(0,8);
+    w.innerHTML='<div class="fvcard"><h3>Toplantılarım</h3>'+(up.length?up.map(function(m){return '<div class="asmt"><span><b>'+esc(m.n)+'</b><small>'+esc(noteDateTxt(m.d)+(m.h?" · "+m.h:""))+(m.d===t?" · bugün":"")+'</small></span><button type="button" class="btn ghost assm" data-asa="mdel" data-id="'+esc(m.id)+'" aria-label="Sil">✕</button></div>'}).join(""):'<div class="fvnone">Yaklaşan toplantı yok. Asistana “yarın 14:00 toplantı ekle” de.</div>')+
+      '<div class="fvrow" style="margin-top:8px"><input class="fin" id="asmd" type="date" value="'+t+'" aria-label="Tarih"><input class="fin" id="asmh" type="time" aria-label="Saat"><input class="fin" id="asmn" type="text" placeholder="Toplantı adı" autocomplete="off"><button type="button" class="btn ghost" data-asa="madd">Ekle</button></div></div>';
+  }
+  function asSend(text){
+    text=String(text||"").trim(); if(!text||AS.busy)return;
+    if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
+    asStopSay(); asUi("u",text); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Düşünüyorum…");
+    asRun(text).then(function(a){AS.busy=false; asStatus(""); asCtl(); asUi("a",a||"Cevap alamadım."); asSay(a)}).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a","Hata: "+((e&&e.message)||e))});
+  }
+  function asReport(){
+    if(AS.busy)return;
+    if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
+    asStopSay(); asUi("u","☀ Sabah raporu"); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Rapor hazırlanıyor…");
+    var td=asToday(), yd=isoAdd(td,-1), data={bugun:td,dun:yd,bolum:window.__DIVO.name};
+    asEnsure([td,yd]).then(function(){return asProd(yd)}).then(function(p){data.dunku_uretim=p; return asPlan(td)}).then(function(p){
+      data.bugunku_plan=p; data.ciro=asCiro(); data.termini_gecen_siparisler=asOrders(true).siparisler.slice(0,10); data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
+    }).then(function(f){data.finans=f; return asMat()}).then(function(m){data.malzeme=m;
+      return asCall([{role:"user",content:"Aşağıdaki verilerle Yusuf'a sesli okunacak bir sabah raporu yaz. Sırayla: dünkü üretim (hangi ürünler, hangi bölümde, kaç adet) ve ciro, bugünün planı (makine ve ürün), toplantılar, termini geçen siparişler, finans (varsa borç/alacak/bu hafta ödenecek ve tahsil), siparişlere göre eksik malzemeler. Veride olmayanı uydurma, boş olanı kısaca 'yok' de. Markdown ve madde işareti kullanma, düz konuşma dili, en fazla yaklaşık 250 kelime.\n\n"+JSON.stringify(data)}],[],asSystem(),1200);
+    }).then(function(j){
+      var tx=(j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
+      AS.msgs.push({role:"user",content:"Sabah raporu iste"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:tx}]});
+      asLs("as_rep",td); AS.busy=false; asCtl(); asStatus(""); asUi("a",tx); asSay(tx); asHomePaint();
+    }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); asUi("a","Rapor hazırlanamadı: "+((e&&e.message)||e))});
+  }
+  function openAS(){
+    if(!asOn())return;
+    closeSheet(); NAV_WRAPS.forEach(function(i){var e=$(i); if(e)e.hidden=true}); $("as").hidden=false; window.scrollTo(0,0);
+    asLoad(); asWatch(); if(!AS.built)asBuild(); else {asSettPaint(); asMeetPaint(); asCtl(); asMsgsPaint()}
+    var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"+(AS.key?"":" · anahtar eklenmedi");
+  }
+  function asHome(){asStopSay(); $("as").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
+  $("asback").addEventListener("click",asHome);
+  $("as").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="asin"){e.preventDefault(); var v=e.target.value; e.target.value=""; asSend(v)}});
+  $("as").addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("[data-asa],[data-asq]"); if(!t||!$("as").contains(t))return;
+    if(t.dataset.asq){if(t.dataset.asq==="rep")asReport(); else asSend(t.dataset.asq); return}
+    var a=t.dataset.asa;
+    if(a==="send"){var i=$("asin"); if(i){var v=i.value; i.value=""; asSend(v)} return}
+    if(a==="mic"){asMic(); return}
+    if(a==="spk"){AS.speak=!AS.speak; asLs("as_speak",AS.speak?"1":"0"); if(!AS.speak)asStopSay(); asCtl(); return}
+    if(a==="clear"){AS.msgs=[]; AS.ui=[]; asStopSay(); asMsgsPaint(); return}
+    if(a==="sett"){AS.sett=!AS.sett; asSettPaint(); return}
+    if(a==="say"){var m=t.closest(".asm"); if(m){var was=AS.speak; AS.speak=true; asSay(m.textContent.replace("🔊","")); AS.speak=was} return}
+    if(a==="savekey"){
+      var k=($("askey").value||"").trim(), md=($("asmodel").value||"").trim(), hr=+($("ashour").value||7);
+      if(k){if(k.indexOf("sk-ant-")!==0){asStatus("Bu bir Anthropic anahtarına benzemiyor (sk-ant- ile başlamalı)"); return} asLs("as_key",k)}
+      if(md)asLs("as_model",md); asLs("as_hour",String(Math.max(0,Math.min(23,hr||7)))); asLoad(); AS.sett=false; asSettPaint(); asStatus("Kaydedildi ✓"); asHomePaint(); var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"; return;
+    }
+    if(a==="delkey"){asLs("as_key",null); asLoad(); AS.sett=true; asSettPaint(); asStatus("Anahtar silindi"); asHomePaint(); return}
+    if(a==="madd"){
+      var d1=$("asmd").value, h1=$("asmh").value, n1=($("asmn").value||"").trim(); if(!d1||!n1){asStatus("Tarih ve toplantı adı gir"); return}
+      asTopAdd({tarih:d1,saat:h1,baslik:n1}).then(function(){asStatus("Toplantı eklendi ✓")}).catch(function(){asStatus("Eklenemedi")}); return;
+    }
+    if(a==="mdel"){var d2=asDb(); if(d2)d2.doc("asst_top/"+t.dataset.id).delete().catch(function(){}); return}
+  });
+  asLoad();
   /* ---------- Puantaj (günlük eleman performansı: makine · ürün · saat · operasyon süresi · hedef) ---------- */
   // Satır kaynakları: (1) üretim girişindeki satırlar (eleman + makine + başlangıç/bitiş + adet) otomatik gelir,
   // (2) "puantaj" koleksiyonuna (ortak, günlük belge "YYYY-MM-DD") elle girilen satırlar. Elle satır, aynı bölüm+ürünün üretim satırının yerine geçer (çift sayılmaz).
@@ -19635,6 +19950,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   var homeView="main";
   var HC_ICONS={
+    as:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/>',
     prods:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/>',
     orders:'<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
     notes:'<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><path d="M15 3v6h6M8 13h8M8 17h5"/>',
@@ -19665,7 +19981,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   if(IS_RZ){HC_ICONS.testere='<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>'; HC_ICONS.polisaj='<path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>'; HC_ICONS.kaynak='<rect x="2" y="2" width="16" height="6" rx="2"/><path d="M10 16v-2a2 2 0 0 1 2-2h8a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="8" y="16" width="4" height="6" rx="1"/>'; HC_ICONS.disacma='<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>'}
   function hcIcon(k){return '<span class="hic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(HC_ICONS[k]||"")+'</svg></span>'}
   /* ---------- sol menü (geniş ekran, cam görünüm) + genel bakış ---------- */
-  var NAV_WRAPS=["home","prods","ords","app","plans","notifs","stock","tools","purch","po","gg","sl","pu","notes","staff","fin","fv","calc","cams","saha","ck"];
+  var NAV_WRAPS=["home","prods","ords","app","plans","notifs","stock","tools","purch","po","gg","sl","pu","notes","staff","fin","fv","calc","cams","saha","ck","as"];
   /* ---------- Takım malzemeleri (CNC · Transfer): stok, makineye takma, ömür, maliyet ---------- */
   // tools/{id}: {name,code,cat,price,life(adet),crit,codes[],note,th,ts}
   // toolmoves/{id}: {tid,t:"in"|"mount"|"end"|"use",q,p,mid,d,ref,why,u,note,ts}
@@ -21003,7 +21319,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       '<div class="sngrp">Genel</div>'+it("home","prod","Ana sayfa")+
       '<div class="sngrp">'+esc(window.__DIVO.name)+' bölümü</div>'+it("orders","orders","Siparişler")+it("prods","prods","Ürünlerim")+it("plans","plans","Planlar")+SECTIONS.map(function(x){return it("sec:"+x.id,x.id,x.name)}).join("")+
       '<div class="sngrp">Tüm bölümler (ortak)</div>'+it("stock","stock","Stok")+it("purch","purch","İhtiyaçlar")+it("po","po","Satın Alma")+it("gg","gg","Genel giderler")+it("sl","sl","Satış")+it("pu","pu","Puantaj")+it("tools","tools","Takımlar ve elmaslar")+it("staff","staff","Eleman, makine ve mesai")+it("notes","notes","Notlarım")+(finOwner()?it("cams","cam","Kameralar"):"")+
-      '<div class="sngrp">Sana özel</div>'+(finOwner()?(sfOn()?it("saha","saha","Saha satış"):"")+(ckOn()?it("ck","ck","Çelik kapıcılar"):"")+it("fv","fv","Finans Merkezi")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
+      '<div class="sngrp">Sana özel</div>'+(finOwner()?it("as","as","Asistanım")+(sfOn()?it("saha","saha","Saha satış"):"")+(ckOn()?it("ck","ck","Çelik kapıcılar"):"")+it("fv","fv","Finans Merkezi")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
       '<div class="snsp"></div><button type="button" class="snitem" data-nav="div"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>Bölüm değiştir</span></button><button type="button" class="snitem" data-nav="look"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Görünüm: '+({glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam"}[lookNow()]||"")+' ›</span></button>';
     nv.innerHTML=h; [].forEach.call(nv.querySelectorAll(".snitem"),function(b){var sp=b.querySelector("span"); if(sp)b.title=sp.textContent}); var fd=$("fbdiv"); if(fd)fd.textContent=window.__DIVO.name; paintSideActive();
   }
@@ -21014,7 +21330,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   function paintSideActive(){
     var nv=$("sidenav"), k="home"; if(!nv)return;
-    var map={ords:"orders",plans:"plans",notifs:"notifs",stock:"stock",tools:"tools",purch:"purch",po:"po",gg:"gg",sl:"sl",pu:"pu",notes:"notes",staff:"staff",fv:"fv",fin:"fin",calc:"calc",prods:"prods",cams:"cams",saha:"saha",ck:"ck"};
+    var map={ords:"orders",plans:"plans",notifs:"notifs",stock:"stock",tools:"tools",purch:"purch",po:"po",gg:"gg",sl:"sl",pu:"pu",notes:"notes",staff:"staff",fv:"fv",fin:"fin",calc:"calc",prods:"prods",cams:"cams",saha:"saha",ck:"ck",as:"as"};
     if(!$("app").hidden&&typeof sec!=="undefined"&&sec)k="sec:"+sec.id; else Object.keys(map).forEach(function(w){if($(w)&&!$(w).hidden)k=map[w]});
     [].forEach.call(nv.querySelectorAll(".snitem[data-nav]"),function(b){if(b.dataset.nav===k)b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current")});
     try{snPillMove()}catch(e){}
@@ -21028,7 +21344,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     NAV_WRAPS.forEach(function(i){var e=$(i); if(e)e.hidden=true});
     if(k==="home"){$("home").hidden=false; setHomeView("main"); paintSideActive(); return}
     if(k==="orders")openOrders(); else if(k==="plans")openPlansScreen(); else if(k==="notifs")openNotifs(); else if(k==="stock")openStock(); else if(k==="tools")openTools(); else if(k==="purch")openPurch(); else if(k==="po")openPO(); else if(k==="gg")openGG(); else if(k==="sl")openSL(); else if(k==="pu")openPU();
-    else if(k==="notes")openNotes(); else if(k==="staff")openStaff(); else if(k==="prods")openProds(); else if(k==="fv")openFV(); else if(k==="fin")openFin(); else if(k==="calc")openCalc(); else if(k==="cams")openCams(); else if(k==="saha")openSaha(); else if(k==="ck")openCK();
+    else if(k==="notes")openNotes(); else if(k==="staff")openStaff(); else if(k==="prods")openProds(); else if(k==="fv")openFV(); else if(k==="fin")openFin(); else if(k==="calc")openCalc(); else if(k==="cams")openCams(); else if(k==="saha")openSaha(); else if(k==="ck")openCK(); else if(k==="as")openAS();
     else if(k.indexOf("sec:")===0)enterSection(k.slice(4));
     paintSideActive();
   }
@@ -21368,6 +21684,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var calcC=finOwner()?'<button type="button" class="hcard ordc calcc" data-calc="1">'+hcIcon("calc")+'<div><div class="hk">Sadece sana özel · gelecek planı</div><div class="hn">İşçilik hesaplama</div><div class="hs">🧮 Adet başı maliyet senaryoları</div></div><span class="go">›</span></button>':"";
     var camC=!finOwner()?"":'<button type="button" class="hcard ordc camc" data-cams="1">'+hcIcon("cam")+'<div><div class="hk">Canlı görüntü</div><div class="hn">Kameralar</div><div class="hs">Fabrikadaki kameraları izle</div></div><span class="go">›</span></button>';
     var sahaC=!sfOn()?"":'<button type="button" class="hcard ordc sahac" data-saha="1">'+hcIcon("saha")+'<div><div class="hk">Sadece sana özel · tamirci ağı</div><div class="hn">Saha satış</div><div class="hs">Servisler, ziyaretler, rota, harita</div></div><span class="go">›</span></button>';
+    var asC=!asOn()?"":(function(){try{asLoad(); asWatch()}catch(e){} return '<button type="button" class="hcard ordc asc" data-as="1">'+hcIcon("as")+'<div><div class="hk">Sadece sana özel · sesli · sabah raporu</div><div class="hn">Asistanım</div><div class="hs" id="hs-as">Sor, dinle, takip et</div></div><span class="go">›</span></button>'})();
     var ckC=!ckOn()?"":'<button type="button" class="hcard ordc ckc" data-ck="1">'+hcIcon("ck")+'<div><div class="hk">Sadece sana özel · rozet müşterileri</div><div class="hn">Çelik kapıcılar</div><div class="hs" id="hs-ck">Dünyadaki çelik kapı üreticileri, iletişim ve takip</div></div><span class="go">›</span></button>';
     var toolC='<button type="button" class="hcard ordc toolc" data-tools="1">'+hcIcon("tools")+'<div><div class="hk">CNC · Transfer</div><div class="hn">Takımlar ve elmaslar</div><div class="hs" id="hs-tools">Takım ve elmas stoğu, ömür ve maliyet takibi</div></div><span class="go">›</span></button>';
     var prodsC='<button type="button" class="hcard ordc prodsc" data-prods="1">'+hcIcon("prods")+'<div><div class="hk">Ürün kartları · reçete</div><div class="hn">Ürünlerim</div><div class="hs">Ürün bilgisi, görsel ve reçete parçaları</div></div><span class="go">›</span></button>';
@@ -21383,7 +21700,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     }else{
       $("homeh1").textContent="Ana sayfa"; $("homep").textContent="Ne yapmak istiyorsun?";
       $("hcards").innerHTML='<div class="hsech"><b><span class="hdot"></span>'+esc(window.__DIVO.name)+' bölümü</b><small>Siparişler, ürünler ve üretim bu bölüme özel</small></div>'+ordersC+prodsC+prodC+
-        '<div class="hsech shared"><b>Tüm bölümler</b><small>Stok, satın alma, takım, not, ekip ve maaş her bölümde aynı</small></div>'+stockC+purchC+poC+ggC+slC+toolC+staffC+puC+notesC+fvC+finC+calcC+camC+sahaC+ckC;
+        '<div class="hsech shared"><b>Tüm bölümler</b><small>Stok, satın alma, takım, not, ekip ve maaş her bölümde aynı</small></div>'+stockC+purchC+poC+ggC+slC+toolC+staffC+puC+notesC+fvC+finC+calcC+camC+sahaC+ckC+asC;
     }
     paintOrdersHome();
     try{renderSideNav()}catch(e){}
@@ -21393,7 +21710,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   window.__finFix=function(){ if(homeView==="main"&&(!document.querySelector("[data-fin]")||!document.querySelector("[data-calc]"))&&finOwner())buildHome() };
   function setHomeView(v){
     homeView=v; buildHome(); window.scrollTo(0,0);
-    try{paintStockHome();paintPurchHome();paintPoHome();try{ggPaintHome()}catch(e){}try{ckPaintHome()}catch(e){}try{paintSlHome()}catch(e){}paintPuHome();paintNotesHome();paintStaffHome();paintMyName()}catch(e){}
+    try{paintStockHome();paintPurchHome();paintPoHome();try{ggPaintHome()}catch(e){}try{ckPaintHome()}catch(e){}try{asHomePaint()}catch(e){}try{paintSlHome()}catch(e){}paintPuHome();paintNotesHome();paintStaffHome();paintMyName()}catch(e){}
     refreshHome();
   }
   function refreshHome(){
@@ -21440,9 +21757,10 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     closeSheet(); $("app").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome();
   }
   $("hcards").addEventListener("click",function(e){
-    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-tools],[data-staff],[data-purch],[data-po],[data-gg],[data-sl],[data-pu],[data-notes],[data-prod],[data-fin],[data-fv],[data-calc],[data-cams],[data-saha],[data-ck],[data-homeback]"); if(!b)return;
+    var b=e.target.closest("[data-sec],[data-orders],[data-plans],[data-notifs],[data-stock],[data-tools],[data-staff],[data-purch],[data-po],[data-gg],[data-sl],[data-pu],[data-notes],[data-prod],[data-fin],[data-fv],[data-calc],[data-cams],[data-saha],[data-ck],[data-as],[data-homeback]"); if(!b)return;
     if(b.dataset.saha){openSaha();return}
     if(b.dataset.ck){openCK();return}
+    if(b.dataset.as){openAS();return}
     if(b.dataset.cams){openCams();return}
     if(b.dataset.tools){openTools();return}
     if(b.dataset.fv){openFV();return}
