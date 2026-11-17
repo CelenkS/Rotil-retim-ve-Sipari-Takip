@@ -4875,6 +4875,9 @@ html:root:root:root[data-ui="celsan"] #cslaunch .cslnone{text-align:center;color
 @keyframes csRise{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
 html:root:root:root[data-ui="celsan"] .wrap:not([hidden]){animation:csIn .55s var(--cs-ease) both}
 html:root:root:root[data-ui="celsan"] .wrap:not([hidden])>*{animation:csRise .6s var(--cs-ease) both}
+/* asistan: giriş animasyonu bitince transform kalmasın, yoksa alttaki sabit çubuk sayfanın içine gömülür */
+html:root:root:root[data-ui="celsan"] #as:not([hidden]),html:root:root:root[data-ui="celsan"] #as:not([hidden])>*{animation-fill-mode:backwards!important}
+@media (max-width:1023px){html:root:root:root[data-ui="celsan"] #as .asbar{bottom:calc(env(safe-area-inset-bottom,0px) + 86px);left:12px;right:12px;border:1px solid var(--cs-bd,var(--line));border-radius:24px;padding:8px 12px 8px;box-shadow:var(--cs-sh,none)}html:root:root:root[data-ui="celsan"] #as .asmsgs{margin-bottom:300px}}
 html:root:root:root[data-ui="celsan"] .wrap:not([hidden])>:nth-child(2){animation-delay:.05s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden])>:nth-child(3){animation-delay:.1s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden])>:nth-child(4){animation-delay:.15s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden])>:nth-child(5){animation-delay:.2s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden])>:nth-child(n+6){animation-delay:.25s}
 html:root:root:root[data-ui="celsan"] .wrap:not([hidden]) :is(.ocards,.items,.needlist,#stklist,#prlist,#notelist,#purchlist)>*{animation:csRise .55s var(--cs-ease) both}
 html:root:root:root[data-ui="celsan"] .wrap:not([hidden]) :is(.ocards,.items,.needlist,#stklist,#prlist,#notelist,#purchlist)>:nth-child(2){animation-delay:.04s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden]) :is(.ocards,.items,.needlist,#stklist,#prlist,#notelist,#purchlist)>:nth-child(3){animation-delay:.08s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden]) :is(.ocards,.items,.needlist,#stklist,#prlist,#notelist,#purchlist)>:nth-child(4){animation-delay:.12s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden]) :is(.ocards,.items,.needlist,#stklist,#prlist,#notelist,#purchlist)>:nth-child(5){animation-delay:.16s}html:root:root:root[data-ui="celsan"] .wrap:not([hidden]) :is(.ocards,.items,.needlist,#stklist,#prlist,#notelist,#purchlist)>:nth-child(n+6){animation-delay:.2s}
@@ -5397,7 +5400,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 23:55</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 00:01</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13985,7 +13988,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   function asSay(t,force){
     if(!AS.speak&&!force)return;
     var txt=asSpeech(asPlain(t).replace(/₺/g," lira").replace(/\bTL\b/g," lira")); if(!txt)return;
-    if(!AS.xkey){asSayBrowser(txt); return}
+    if(!AS.xkey){if(force)asStatus("Telefonun kendi sesi çalıyor, çünkü ElevenLabs anahtarı bu cihazda kayıtlı değil"); asSayBrowser(txt); return}
     asStopSay(); var my=++AS.spkN, ch=asChunks(txt), ps=[];
     function get(i){
       if(ps[i])return ps[i];
@@ -13999,7 +14002,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       get(i).then(function(b){
         if(my!==AS.spkN)return;
         var a=AS.audio||(AS.audio=new Audio()); a.onended=function(){if(my!==AS.spkN)return; if(i+1<ch.length)play(i+1); else asAfterSay()}; a.src=URL.createObjectURL(b);
-        var pr=a.play(); if(pr&&pr.catch)pr.catch(function(){asStatus("Ses otomatik başlamadı, mesajdaki 🔊 tuşuna dokun")});
+        var pr=a.play(); if(pr&&pr.then)pr.then(function(){if(force)asStatus("ElevenLabs sesi çalıyor ✓")}); if(pr&&pr.catch)pr.catch(function(e){asStatus("Ses otomatik başlamadı ("+((e&&e.name)||"hata")+"), tekrar 🔊 Sesi dene'ye bas")});
         if(i+1<ch.length)get(i+1).catch(function(){});
       }).catch(function(e){if(my!==AS.spkN)return; asStatus("ElevenLabs sesi çalınamadı ("+((e&&e.message)||"hata")+"), tarayıcı sesine geçtim"); asSayBrowser(ch.slice(i).join(" "))});
     }
@@ -14034,7 +14037,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     try{r.start(); arm(FIRST)}catch(e){AS.listening=false; AS.rec=null; asCtl()}
   }
   /* --- arayüz --- */
-  function asStatus(t){AS.stat=t||""; var s=$("asstatus"); if(s)s.textContent=AS.stat}
+  function asStatus(t){AS.stat=t||""; var s=$("asstatus"); if(s)s.textContent=AS.stat; var v=$("asvres"); if(v&&t)v.textContent=t}
   function asFmt(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")}
   function asUi(r,t){AS.ui.push({r:r,t:t}); asMsgsPaint()}
   function asCfHtml(){
@@ -14125,7 +14128,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       '<label class="fl" for="asmodel" style="margin-top:10px">Güçlü model (sabah raporu ve "Güçlü" modu)</label><input class="fin" id="asmodel" type="text" autocomplete="off" value="'+esc(AS.model)+'">'+
       '<label class="fl" for="asfast" style="margin-top:10px">Hızlı model (günlük sorular, ucuz)</label><input class="fin" id="asfast" type="text" autocomplete="off" value="'+esc(AS.fast)+'">'+
       '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
-      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
+      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div><div class="status nocap" id="asvres" style="margin-top:10px;white-space:normal;font-weight:600"></div>'+((AS.key||AS.xkey||AS.xvoice)?'<label class="fl" style="margin-top:14px">Başka cihaza taşı (kopyala, orada yapıştır)</label><div class="fvrow">'+(AS.key?'<button type="button" class="btn ghost" data-asa="cp" data-w="key">📋 Anthropic anahtarı</button>':'')+(AS.xkey?'<button type="button" class="btn ghost" data-asa="cp" data-w="xkey">📋 Ses anahtarı</button>':'')+(AS.xvoice?'<button type="button" class="btn ghost" data-asa="cp" data-w="xvoice">📋 Ses kimliği</button>':'')+'</div>':'')+'</div>';
   }
   function asHedPaint(){
     var w=$("ashed"); if(!w)return; var names=asDivNames(), ids=Object.keys(names), act=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.ashi;
@@ -14377,7 +14380,12 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":AS.xkey}}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status); return r.json()}).then(function(j){
         AS.xvl=(j.voices||[]).map(function(v){return {id:v.voice_id,name:v.name+(v.labels&&v.labels.accent?" · "+v.labels.accent:"")}}).slice(0,80); asStatus(AS.xvl.length+" ses bulundu"); asSettPaint();
       }).catch(function(){asStatus("Liste alınamadı (anahtarın 'voices' okuma izni olmayabilir). Ses kimliğini elle de yazabilirsin.")}); return}
-    if(a==="testvoice"){asPrime(); asSay("Merhaba patron, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
+    if(a==="cp"){
+      var w=t.getAttribute("data-w"), tx=w==="key"?AS.key:w==="xkey"?AS.xkey:AS.xvoice, nm=w==="key"?"Anthropic anahtarı":w==="xkey"?"Ses anahtarı":"Ses kimliği"; if(!tx){asStatus("Kopyalanacak bir şey yok"); return}
+      var okm=nm+" kopyalandı ✓ Şimdi diğer cihazda ilgili kutuya yapıştır";
+      var fb=function(){var x=document.createElement("textarea"); x.value=tx; x.setAttribute("readonly",""); x.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px"; document.body.appendChild(x); x.focus(); x.select(); x.setSelectionRange(0,tx.length); var ok=false; try{ok=document.execCommand("copy")}catch(e){} x.remove(); asStatus(ok?okm:"Kopyalanamadı, tarayıcı izin vermedi")};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(tx).then(function(){asStatus(okm)},fb); else fb(); return}
+    if(a==="testvoice"){asPrime(); asStatus(AS.xkey?"Deneniyor… (ElevenLabs, ses kimliği: "+(AS.xvoice||"boş")+")":"Deneniyor… (ElevenLabs anahtarı bu cihazda kayıtlı değil, telefon sesi çalacak)"); asSay("Merhaba patron, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
     if(a==="delxkey"){asLs("as_xkey",null); asLoad(); asStopSay(); asSettPaint(); asStatus("Ses anahtarı silindi, tarayıcı sesi kullanılacak"); return}
     if(a==="delkey"){asLs("as_key",null); asLoad(); AS.sett=true; asSettPaint(); asStatus("Anahtar silindi"); asHomePaint(); return}
     if(a==="madd"){
