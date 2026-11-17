@@ -14,7 +14,7 @@
 <meta name="application-name" content="Çelsan Group ERP">
 <title>Çelsan Group ERP</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-<script>try{var _l=localStorage.getItem("ud_look");if(_l==="cdark"||_l==="clight"){var _q=document.documentElement;_q.setAttribute("data-theme","celsan");_q.setAttribute("data-ui","celsan");if(_l==="clight")_q.setAttribute("data-gmode","light")}else if(_l==="glass"||_l==="glasslight"||_l==="glassfrost"||_l==="emerald"||_l==="mdark"||_l==="mlight"){var _r=document.documentElement;_r.setAttribute("data-theme","glass");if(_l==="glasslight"||_l==="glassfrost"||_l==="mlight")_r.setAttribute("data-gmode","light");if(_l==="glassfrost")_r.setAttribute("data-gstyle","frost");if(_l==="emerald"||_l==="mdark")_r.setAttribute("data-gstyle","emerald");if(_l==="mdark"||_l==="mlight")_r.setAttribute("data-ui","modern")}}catch(e){}</script>
+<script>try{var _l=localStorage.getItem("ud_look");if(_l==="cdark"||_l==="clight"||_l==="cwarm"){var _q=document.documentElement;_q.setAttribute("data-theme","celsan");_q.setAttribute("data-ui","celsan");if(_l!=="cdark")_q.setAttribute("data-gmode","light");if(_l==="cwarm")_q.setAttribute("data-csc","warm")}else if(_l==="glass"||_l==="glasslight"||_l==="glassfrost"||_l==="emerald"||_l==="mdark"||_l==="mlight"){var _r=document.documentElement;_r.setAttribute("data-theme","glass");if(_l==="glasslight"||_l==="glassfrost"||_l==="mlight")_r.setAttribute("data-gmode","light");if(_l==="glassfrost")_r.setAttribute("data-gstyle","frost");if(_l==="emerald"||_l==="mdark")_r.setAttribute("data-gstyle","emerald");if(_l==="mdark"||_l==="mlight")_r.setAttribute("data-ui","modern")}}catch(e){}</script>
 <style>
 :root{
   --bg:#F3F7F5; --bg2:#DDEFEA; --surface:#FFFFFF; --ink:#16303A; --ink2:#5E7680; --line:#E1EAE8;
@@ -4750,15 +4750,15 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
 /* ================= ÇELSAN MODU — data-ui="celsan" (ayrı kabuk) ================= */
 html:root:root:root[data-ui="celsan"]{color-scheme:dark;
  --cs-body:#060912;--cs-body2:#0A1020;--bg:rgba(255,255,255,.045);--bg2:#0A1020;--surface:#0F1528;--surface2:#151C34;--ink:#EBF0FF;--ink2:#93A0C2;--line:rgba(255,255,255,.1);
- --accent:#5B8CFF;--accent-ink:#fff;--soft:rgba(91,140,255,.14);--weekend:rgba(255,255,255,.025);--today:rgba(255,190,92,.16);--sel:rgba(91,140,255,.22);--week:rgba(255,255,255,.04);
+ --accent:#5B8CFF;--accent-ink:#fff;--soft:rgba(var(--cs-rgb),.14);--weekend:rgba(255,255,255,.025);--today:rgba(255,190,92,.16);--sel:rgba(var(--cs-rgb),.22);--week:rgba(255,255,255,.04);
  --money:#FFBE5C;--shadow:0 12px 40px rgba(0,0,0,.45);--good:#46E8AA;--bad:#FF7A8C;--warn:#FFBE5C;--goodh:#46E8AA;--badh:#FF7A8C;--warnh:#FFD166;
  --font-ui:"Plus Jakarta Sans","Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;--font-head:"Plus Jakarta Sans","Inter",system-ui,sans-serif;--font-num:"Plus Jakarta Sans","Inter",system-ui,sans-serif;
- --cs-a:#5B8CFF;--cs-b:#2DD4F0;--cs-c:#A58BFF;--cs-grad:linear-gradient(135deg,#5B8CFF 0%,#2DD4F0 100%);--cs-grad2:linear-gradient(135deg,#7C5CFF 0%,#5B8CFF 100%);
+ --cs-rgb:91,140,255;--cs-glow:60,120,255;--cs-rgb2:130,170,255;--cs-rgb3:45,212,240;--cs-o1:#2F5BFF;--cs-o2:#0EB5D6;--cs-o3:#7C5CFF;--cs-a:#5B8CFF;--cs-b:#2DD4F0;--cs-c:#A58BFF;--cs-grad:linear-gradient(135deg,#5B8CFF 0%,#2DD4F0 100%);--cs-grad2:linear-gradient(135deg,#7C5CFF 0%,#5B8CFF 100%);
  --cs-glass:linear-gradient(155deg,rgba(255,255,255,.09),rgba(255,255,255,.035));--cs-glassf:rgba(255,255,255,.05);--cs-bd:rgba(255,255,255,.12);--cs-bdt:rgba(255,255,255,.22);
  --cs-blur:blur(26px) saturate(1.6);--cs-sh:0 18px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1);--cs-sheet:rgba(14,20,38,.96);--cs-r:26px;--cs-ease:cubic-bezier(.2,.85,.25,1);--cs-spring:cubic-bezier(.34,1.45,.5,1);
  --hero1:#2F5BFF;--hero2:#0A9DBB}
 html:root:root:root[data-ui="celsan"][data-gmode="light"]{color-scheme:light;
- --cs-body:#E7EDF8;--cs-body2:#EEF2FA;--bg:rgba(30,60,130,.05);--bg2:#EEF2FA;--surface:#FFFFFF;--surface2:#F3F6FC;--ink:#0E1A33;--ink2:#5B6A8C;--line:rgba(30,60,130,.12);
+ --cs-lo1:#8FB2FF;--cs-lo2:#FFC2DC;--cs-lo3:#B9A8FF;--cs-hero:linear-gradient(135deg,#2F6BFF 0%,#4B8BFF 55%,#18B6DC 100%);--cs-hero-ink:#1C4FD6;--cs-body:#E7EDF8;--cs-body2:#EEF2FA;--bg:rgba(30,60,130,.05);--bg2:#EEF2FA;--surface:#FFFFFF;--surface2:#F3F6FC;--ink:#0E1A33;--ink2:#5B6A8C;--line:rgba(30,60,130,.12);
  --accent:#2F6BFF;--soft:rgba(47,107,255,.1);--weekend:rgba(30,60,130,.03);--today:rgba(255,170,40,.2);--sel:rgba(47,107,255,.14);--week:rgba(30,60,130,.04);
  --money:#C9700A;--shadow:0 12px 40px rgba(30,60,130,.14);--good:#0E9F6E;--bad:#E0364F;--warn:#C9700A;
  --cs-a:#2F6BFF;--cs-b:#0EB5D6;--cs-c:#7C5CFF;--cs-grad:linear-gradient(135deg,#2F6BFF 0%,#0EB5D6 100%);--cs-grad2:linear-gradient(135deg,#6D4DF0 0%,#2F6BFF 100%);
@@ -4770,14 +4770,14 @@ html:root:root:root[data-ui="celsan"] body{background:var(--cs-body)!important;b
 html:root:root:root[data-ui="celsan"] body::before,html:root:root:root[data-ui="celsan"] body::after{display:none!important}
 html:root:root:root[data-ui="celsan"] #csbg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(120% 90% at 50% 0%,var(--cs-body2),var(--cs-body))}
 html:root:root:root[data-ui="celsan"] #csbg i{position:absolute;border-radius:50%;filter:blur(70px);will-change:transform}
-html:root:root:root[data-ui="celsan"] #csbg .o1{width:62vmax;height:62vmax;left:-18vmax;top:-26vmax;background:radial-gradient(circle,#2F5BFF,transparent 64%);opacity:.5;animation:csD1 28s ease-in-out infinite alternate}
-html:root:root:root[data-ui="celsan"] #csbg .o2{width:56vmax;height:56vmax;right:-20vmax;bottom:-24vmax;background:radial-gradient(circle,#0EB5D6,transparent 64%);opacity:.34;animation:csD2 32s ease-in-out infinite alternate}
-html:root:root:root[data-ui="celsan"] #csbg .o3{width:42vmax;height:42vmax;right:6vmax;top:-10vmax;background:radial-gradient(circle,#7C5CFF,transparent 64%);opacity:.4;animation:csD3 36s ease-in-out infinite alternate}
+html:root:root:root[data-ui="celsan"] #csbg .o1{width:62vmax;height:62vmax;left:-18vmax;top:-26vmax;background:radial-gradient(circle,var(--cs-o1),transparent 64%);opacity:.5;animation:csD1 28s ease-in-out infinite alternate}
+html:root:root:root[data-ui="celsan"] #csbg .o2{width:56vmax;height:56vmax;right:-20vmax;bottom:-24vmax;background:radial-gradient(circle,var(--cs-o2),transparent 64%);opacity:.34;animation:csD2 32s ease-in-out infinite alternate}
+html:root:root:root[data-ui="celsan"] #csbg .o3{width:42vmax;height:42vmax;right:6vmax;top:-10vmax;background:radial-gradient(circle,var(--cs-o3),transparent 64%);opacity:.4;animation:csD3 36s ease-in-out infinite alternate}
 html:root:root:root[data-ui="celsan"] #csbg .gr{inset:0;border-radius:0;filter:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg{background:linear-gradient(160deg,#EEF3FC,#E3EAF7)}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .o1{background:radial-gradient(circle,#8FB2FF,transparent 64%);opacity:.75}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .o2{background:radial-gradient(circle,#FFC2DC,transparent 64%);opacity:.7}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .o3{background:radial-gradient(circle,#B9A8FF,transparent 64%);opacity:.6}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg{background:linear-gradient(160deg,var(--cs-body2),var(--cs-body))}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .o1{background:radial-gradient(circle,var(--cs-lo1),transparent 64%);opacity:.75}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .o2{background:radial-gradient(circle,var(--cs-lo2),transparent 64%);opacity:.7}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .o3{background:radial-gradient(circle,var(--cs-lo3),transparent 64%);opacity:.6}
 html:root:root:root[data-ui="celsan"][data-gmode="light"] #csbg .gr{opacity:.05;mix-blend-mode:multiply}
 @keyframes csD1{to{transform:translate3d(10vmax,8vmax,0) scale(1.12)}}
 @keyframes csD2{to{transform:translate3d(-9vmax,-7vmax,0) scale(1.1)}}
@@ -4787,7 +4787,7 @@ html:root:root:root[data-ui="celsan"] #csbg{display:block}
 html:root:root:root[data-ui="celsan"] #cstop{display:flex}html:root:root:root[data-ui="celsan"] #csdock{display:grid}
 html:root:root:root[data-ui="celsan"] #frostbar{display:none!important}
 html:root:root:root[data-ui="celsan"] h1,html:root:root:root[data-ui="celsan"] h2,html:root:root:root[data-ui="celsan"] h3,html:root:root:root[data-ui="celsan"] h4{font-family:var(--font-head);letter-spacing:-.02em;text-shadow:none}
-html:root:root:root[data-ui="celsan"] ::selection{background:rgba(91,140,255,.35)}
+html:root:root:root[data-ui="celsan"] ::selection{background:rgba(var(--cs-rgb),.35)}
 html:root:root:root[data-ui="celsan"] *{-webkit-tap-highlight-color:transparent}
 html:root:root:root[data-ui="celsan"] ::-webkit-scrollbar{width:10px;height:10px}html:root:root:root[data-ui="celsan"] ::-webkit-scrollbar-thumb{background:rgba(140,160,210,.28);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
 html:root:root:root[data-ui="celsan"].cs-lock body{overflow:hidden}
@@ -4804,7 +4804,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-ib,html:root:root:root[data-ui
 html:root:root:root[data-ui="celsan"] #cstop .cst-ib:active,html:root:root:root[data-ui="celsan"] #cstop .bellbtn:active{transform:scale(.9)}
 html:root:root:root[data-ui="celsan"] #cstop .cst-ib svg{width:20px;height:20px}
 html:root:root:root[data-ui="celsan"] #cstop .bellbtn svg{width:20px;height:20px}
-html:root:root:root[data-ui="celsan"] #cstop .bellbtn .nfbadge{background:var(--cs-grad);color:#fff;border:2px solid var(--cs-body);box-shadow:0 0 12px rgba(91,140,255,.7)}
+html:root:root:root[data-ui="celsan"] #cstop .bellbtn .nfbadge{background:var(--cs-grad);color:#fff;border:2px solid var(--cs-body);box-shadow:0 0 12px rgba(var(--cs-rgb),.7)}
 html:root:root:root[data-ui="celsan"] #cstop .cst-r{position:relative;display:flex;flex:none}
 html:root:root:root[data-ui="celsan"] #cstop .cst-div{display:flex;align-items:center;gap:7px;height:40px;padding:0 10px 0 11px;border-radius:14px;border:1px solid var(--cs-bd);background:var(--cs-glassf);color:var(--ink);font:700 13px var(--font-ui);flex:none;max-width:112px}
 html:root:root:root[data-ui="celsan"] #cstop .cst-div i{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 10px currentColor}
@@ -4817,14 +4817,14 @@ html:root:root:root[data-ui="celsan"] #cstop .nfpop[hidden]{display:none!importa
 /* ---- alt dock (telefon) ---- */
 html:root:root:root[data-ui="celsan"] #csdock{position:fixed;z-index:60;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);height:68px;grid-template-columns:repeat(5,1fr);align-items:center;padding:0 6px;border-radius:28px;background:var(--cs-glass);border:1px solid var(--cs-bd);box-shadow:0 20px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur)}
 html:root:root:root[data-ui="celsan"][data-gmode="light"] #csdock{box-shadow:0 18px 44px rgba(40,70,140,.22),inset 0 1px 0 #fff}
-html:root:root:root[data-ui="celsan"] #csdock .csind{position:absolute;left:0;top:9px;height:50px;border-radius:20px;background:linear-gradient(160deg,rgba(91,140,255,.34),rgba(45,212,240,.14));box-shadow:inset 0 0 0 1px rgba(120,160,255,.35),0 6px 20px rgba(60,110,255,.25);transition:transform .5s var(--cs-spring),width .4s var(--cs-ease),opacity .2s;pointer-events:none}
+html:root:root:root[data-ui="celsan"] #csdock .csind{position:absolute;left:0;top:9px;height:50px;border-radius:20px;background:linear-gradient(160deg,rgba(var(--cs-rgb),.34),rgba(var(--cs-rgb3),.14));box-shadow:inset 0 0 0 1px rgba(var(--cs-rgb2),.35),0 6px 20px rgba(var(--cs-glow),.25);transition:transform .5s var(--cs-spring),width .4s var(--cs-ease),opacity .2s;pointer-events:none}
 html:root:root:root[data-ui="celsan"] #csdock .csdb{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:100%;border:0;background:none;color:var(--ink2);font:700 10.5px var(--font-ui);padding:0;transition:color .25s}
 html:root:root:root[data-ui="celsan"] #csdock .csdb svg{width:23px;height:23px;transition:transform .45s var(--cs-spring)}
 html:root:root:root[data-ui="celsan"] #csdock .csdb[aria-current="page"]{color:var(--ink)}
 html:root:root:root[data-ui="celsan"] #csdock .csdb[aria-current="page"] svg{transform:translateY(-1px) scale(1.12)}
 html:root:root:root[data-ui="celsan"] #csdock .csdb:active svg{transform:scale(.86)}
 html:root:root:root[data-ui="celsan"] #csdock .csfab{color:#fff}
-html:root:root:root[data-ui="celsan"] #csdock .csfab .csdi{display:grid;place-items:center;width:56px;height:56px;margin-top:-30px;border-radius:50%;background:var(--cs-grad);box-shadow:0 12px 28px rgba(60,120,255,.55),inset 0 1px 0 rgba(255,255,255,.4),0 0 0 6px color-mix(in srgb,var(--cs-body) 70%,transparent);transition:transform .4s var(--cs-spring)}
+html:root:root:root[data-ui="celsan"] #csdock .csfab .csdi{display:grid;place-items:center;width:56px;height:56px;margin-top:-30px;border-radius:50%;background:var(--cs-grad);box-shadow:0 12px 28px rgba(var(--cs-glow),.55),inset 0 1px 0 rgba(255,255,255,.4),0 0 0 6px color-mix(in srgb,var(--cs-body) 70%,transparent);transition:transform .4s var(--cs-spring)}
 html:root:root:root[data-ui="celsan"] #csdock .csfab:active .csdi{transform:scale(.9) rotate(8deg)}
 html:root:root:root[data-ui="celsan"] #csdock .csfab span:last-child{margin-top:2px;color:var(--ink2)}
 html:root:root:root[data-ui="celsan"] #csdock .csfab svg{width:24px;height:24px}
@@ -4850,7 +4850,7 @@ html:root:root:root[data-ui="celsan"] #cslaunch .cslx svg{width:22px;height:22px
 html:root:root:root[data-ui="celsan"] #cslaunch .cslseg{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 html:root:root:root[data-ui="celsan"] #cslaunch .cslseg button{flex:none;display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:99px;border:1px solid var(--cs-bd);background:var(--cs-glassf);color:var(--ink);font:700 13.5px var(--font-ui);transition:all .25s var(--cs-ease)}
 html:root:root:root[data-ui="celsan"] #cslaunch .cslseg button i{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--d1),var(--d2))}
-html:root:root:root[data-ui="celsan"] #cslaunch .cslseg button[aria-pressed="true"]{background:var(--cs-grad);color:#fff;border-color:transparent;box-shadow:0 8px 22px rgba(60,120,255,.4)}
+html:root:root:root[data-ui="celsan"] #cslaunch .cslseg button[aria-pressed="true"]{background:var(--cs-grad);color:#fff;border-color:transparent;box-shadow:0 8px 22px rgba(var(--cs-glow),.4)}
 html:root:root:root[data-ui="celsan"] #cslaunch .cslseg button[aria-pressed="true"] i{background:#fff}
 html:root:root:root[data-ui="celsan"] #cslaunch .cslg h4{margin:6px 4px 10px;font:800 11px var(--font-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
 html:root:root:root[data-ui="celsan"] #cslaunch .cslgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -4894,7 +4894,7 @@ html:root:root:root[data-ui="celsan"] #home .dvseg button{flex:1;display:flex;al
 html:root:root:root[data-ui="celsan"] #home .dvseg button i{display:none}
 html:root:root:root[data-ui="celsan"] #home .dvseg button .dvic{display:grid;width:20px;height:20px}
 html:root:root:root[data-ui="celsan"] #home .dvseg button .dvic svg{width:20px;height:20px}
-html:root:root:root[data-ui="celsan"] #home .dvseg button[aria-pressed="true"]{background:var(--cs-grad);color:#fff;box-shadow:0 8px 22px rgba(60,120,255,.4),inset 0 1px 0 rgba(255,255,255,.35)}
+html:root:root:root[data-ui="celsan"] #home .dvseg button[aria-pressed="true"]{background:var(--cs-grad);color:#fff;box-shadow:0 8px 22px rgba(var(--cs-glow),.4),inset 0 1px 0 rgba(255,255,255,.35)}
 html:root:root:root[data-ui="celsan"] #home .homewho{border-radius:22px;background:var(--cs-glassf);border:1px solid var(--cs-bd)}
 html:root:root:root[data-ui="celsan"] #home>.btn.ghost#homesetbtn{width:100%;border-radius:18px;background:var(--cs-glassf);border:1px solid var(--cs-bd);color:var(--ink2);height:48px}
 html:root:root:root[data-ui="celsan"] #home .logoutrow button{background:var(--cs-glassf);border:1px solid var(--cs-bd);border-radius:14px;color:var(--ink2)}
@@ -4903,13 +4903,13 @@ html:root:root:root[data-ui="celsan"] #home.wrap{padding-bottom:12px}
 html:root:root:root[data-ui="celsan"] #cz{display:block}
 html:root:root:root[data-ui="celsan"] #cz .czgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;grid-template-areas:"hero hero" "late ring" "quick quick" "ship ship" "bars bars" "up up"}
 html:root:root:root[data-ui="celsan"] #cz .czc{position:relative;overflow:hidden;border-radius:var(--cs-r);padding:18px;background:var(--cs-glass);border:1px solid var(--cs-bd);box-shadow:var(--cs-sh);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur);animation:csRise .7s var(--cs-ease) both;animation-delay:calc(var(--i,0)*70ms);min-width:0}
-html:root:root:root[data-ui="celsan"] #cz .czc::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(120% 90% at 100% 0%,rgba(91,140,255,.13),transparent 60%)}
-html:root:root:root[data-ui="celsan"] #cz .czhero{grid-area:hero;background:linear-gradient(150deg,rgba(91,140,255,.34) 0%,rgba(91,140,255,.1) 45%,rgba(255,255,255,.035) 100%);border-color:rgba(130,170,255,.3)}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] #cz .czhero{background:linear-gradient(150deg,rgba(255,255,255,.92),rgba(220,232,255,.7))}
+html:root:root:root[data-ui="celsan"] #cz .czc::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(120% 90% at 100% 0%,rgba(var(--cs-rgb),.13),transparent 60%)}
+html:root:root:root[data-ui="celsan"] #cz .czhero{grid-area:hero;background:linear-gradient(150deg,rgba(var(--cs-rgb),.34) 0%,rgba(var(--cs-rgb),.1) 45%,rgba(255,255,255,.035) 100%);border-color:rgba(var(--cs-rgb2),.3)}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] #cz .czhero{background:linear-gradient(150deg,rgba(255,255,255,.92),rgba(var(--cs-rgb),.16))}
 html:root:root:root[data-ui="celsan"] #cz .czhero{display:flex;flex-direction:column}
 html:root:root:root[data-ui="celsan"] #cz .czhero .czsp{flex:1;min-height:104px}
 html:root:root:root[data-ui="celsan"] #cz .czze{position:absolute;left:0;right:0;top:34%;text-align:center;font:600 12.5px var(--font-ui);color:var(--ink2)}
-html:root:root:root[data-ui="celsan"] #cz .czhero::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,240,.3),transparent 68%);pointer-events:none}
+html:root:root:root[data-ui="celsan"] #cz .czhero::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(var(--cs-rgb3),.3),transparent 68%);pointer-events:none}
 html:root:root:root[data-ui="celsan"] #cz .czlate{grid-area:late}html:root:root:root[data-ui="celsan"] #cz .czring{grid-area:ring}html:root:root:root[data-ui="celsan"] #cz .czq{grid-area:quick;padding:14px}html:root:root:root[data-ui="celsan"] #cz .czship{grid-area:ship}html:root:root:root[data-ui="celsan"] #cz .czbars{grid-area:bars}html:root:root:root[data-ui="celsan"] #cz .czup{grid-area:up}
 html:root:root:root[data-ui="celsan"] #cz .czh{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative;z-index:1}
 html:root:root:root[data-ui="celsan"] #cz .czlab{font:700 12px var(--font-ui);letter-spacing:.02em;color:var(--ink2)}
@@ -4922,8 +4922,8 @@ html:root:root:root[data-ui="celsan"] #cz .czsub{position:relative;z-index:1;fon
 html:root:root:root[data-ui="celsan"] #cz .czsp{position:relative;min-height:104px;margin:14px -18px 0}
 html:root:root:root[data-ui="celsan"] #cz .czsp svg{display:block;width:100%;height:100%;overflow:visible}
 html:root:root:root[data-ui="celsan"] #cz .czsp .csa{opacity:0;animation:csFade .9s .5s ease forwards}
-html:root:root:root[data-ui="celsan"] #cz .czsp .csl{stroke-dasharray:1;stroke-dashoffset:1;animation:csDraw 1.5s .25s var(--cs-ease) forwards;filter:drop-shadow(0 6px 10px rgba(80,130,255,.55))}
-html:root:root:root[data-ui="celsan"] #cz .czsp .csdot{position:absolute;right:calc(18px - 6px);width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(91,140,255,.35),0 0 18px var(--cs-a);opacity:0;animation:csFade .4s 1.4s ease forwards}
+html:root:root:root[data-ui="celsan"] #cz .czsp .csl{stroke-dasharray:1;stroke-dashoffset:1;animation:csDraw 1.5s .25s var(--cs-ease) forwards;filter:drop-shadow(0 6px 10px rgba(var(--cs-glow),.55))}
+html:root:root:root[data-ui="celsan"] #cz .czsp .csdot{position:absolute;right:calc(18px - 6px);width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(var(--cs-rgb),.35),0 0 18px var(--cs-a);opacity:0;animation:csFade .4s 1.4s ease forwards}
 @keyframes csDraw{to{stroke-dashoffset:0}}
 html:root:root:root[data-ui="celsan"] #cz .czmo{position:relative;display:flex;justify-content:space-between;margin:6px 0 0;font:700 11px var(--font-ui);color:var(--ink2);padding:0 2px}
 html:root:root:root[data-ui="celsan"] #cz .czmo .on{color:var(--ink)}
@@ -4939,7 +4939,7 @@ html:root:root:root[data-ui="celsan"] #cz .czrg{position:relative;z-index:1;disp
 html:root:root:root[data-ui="celsan"] #cz .czrg svg{width:100%;max-width:120px;display:block;transform:rotate(-90deg)}
 html:root:root:root[data-ui="celsan"] #cz .czrg circle{fill:none;stroke-width:8;stroke-linecap:round}
 html:root:root:root[data-ui="celsan"] #cz .czrg .rt{stroke:var(--line)}
-html:root:root:root[data-ui="celsan"] #cz .czrg .rv{stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p));animation:csRing 1.4s .2s var(--cs-ease) both;filter:drop-shadow(0 0 8px rgba(80,150,255,.6))}
+html:root:root:root[data-ui="celsan"] #cz .czrg .rv{stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p));animation:csRing 1.4s .2s var(--cs-ease) both;filter:drop-shadow(0 0 8px rgba(var(--cs-glow),.6))}
 @keyframes csRing{from{stroke-dashoffset:100}}
 html:root:root:root[data-ui="celsan"] #cz .czrg .rc{position:absolute;display:flex;flex-direction:column;align-items:center;line-height:1.05}
 html:root:root:root[data-ui="celsan"] #cz .czrg .rc b{font:800 28px var(--font-num);letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -4974,7 +4974,7 @@ html:root:root:root[data-ui="celsan"] #dash{display:flex;flex-direction:column;g
 html:root:root:root[data-ui="celsan"] #dash .dtiles,html:root:root:root[data-ui="celsan"] #dash .dtop{display:none}
 html:root:root:root[data-ui="celsan"] #dash .dbox,html:root:root:root[data-ui="celsan"] #dash .dsec{border-radius:var(--cs-r);background:var(--cs-glass);border:1px solid var(--cs-bd);box-shadow:var(--cs-sh);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur);padding:18px}
 html:root:root:root[data-ui="celsan"] #dash .dbox::after{display:none}
-html:root:root:root[data-ui="celsan"] #dash .dtot,html:root:root:root[data-ui="celsan"] #dash .dt.hi{background:linear-gradient(150deg,rgba(91,140,255,.34),rgba(255,255,255,.04))!important;border:1px solid rgba(130,170,255,.3)!important;box-shadow:none!important;color:var(--ink)!important}
+html:root:root:root[data-ui="celsan"] #dash .dtot,html:root:root:root[data-ui="celsan"] #dash .dt.hi{background:linear-gradient(150deg,rgba(var(--cs-rgb),.34),rgba(255,255,255,.04))!important;border:1px solid rgba(var(--cs-rgb2),.3)!important;box-shadow:none!important;color:var(--ink)!important}
 html:root:root:root[data-ui="celsan"] #dash h3{font:800 16px var(--font-head)}
 html:root:root:root[data-ui="celsan"] .dli:hover{background:var(--soft)}
 html:root:root:root[data-ui="celsan"] .dgrid3{display:grid;grid-template-columns:1fr;gap:14px}
@@ -4995,22 +4995,27 @@ html:root:root:root[data-ui="celsan"] .hsech{padding:6px 4px 0}html:root:root:ro
 /* ---- genel bileşenler ---- */
 html:root:root:root[data-ui="celsan"] :is(.card,.fcard,.needcard,.ostatcard,.osumcard,.tot-box,.needbox,.rowsx,.oprog,.gcrows,.sumrow,.snl,.nfpop,.ohero,.stfsum>div,.fstats div,#app section.card){background:var(--cs-glass);border:1px solid var(--cs-bd);box-shadow:var(--cs-sh);border-radius:var(--cs-r);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur);color:var(--ink)}
 html:root:root:root[data-ui="celsan"] :is(.ent,.line,.pc,.ocard,.orow,.nitem,.item,.plrow){background:var(--cs-glassf);border:1px solid var(--cs-bd);border-radius:20px}
-html:root:root:root[data-ui="celsan"] :is(.hero,.ohero,.emhero){background:linear-gradient(150deg,rgba(91,140,255,.3),rgba(45,212,240,.08) 70%)!important;border:1px solid rgba(130,170,255,.28);border-radius:30px;box-shadow:var(--cs-sh);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur);color:var(--ink)}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero){background:linear-gradient(135deg,#2F6BFF 0%,#4B8BFF 55%,#18B6DC 100%)!important;border-color:rgba(255,255,255,.55);color:#fff;box-shadow:0 20px 48px rgba(47,107,255,.34),inset 0 1px 0 rgba(255,255,255,.5)}
+html:root:root:root[data-ui="celsan"] :is(.hero,.ohero,.emhero){background:linear-gradient(150deg,rgba(var(--cs-rgb),.3),rgba(var(--cs-rgb3),.08) 70%)!important;border:1px solid rgba(var(--cs-rgb2),.28);border-radius:30px;box-shadow:var(--cs-sh);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur);color:var(--ink)}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero){background:var(--cs-hero)!important;border-color:rgba(255,255,255,.55);color:#fff;box-shadow:0 20px 48px rgba(var(--cs-glow),.34),inset 0 1px 0 rgba(255,255,255,.5)}
 html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) :is(.oeyebrow,.hi,.plabel){color:rgba(255,255,255,.82)!important}
-html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) button[aria-pressed="true"]{background:#fff!important;color:#1C4FD6!important;box-shadow:0 6px 16px rgba(10,40,120,.25)}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) button[aria-pressed="true"]{background:#fff!important;color:var(--cs-hero-ink)!important;box-shadow:0 6px 16px rgba(10,40,120,.25)}
 html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) .tbtn,html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) .pbar,html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) .otabs{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) :is(.tot-box,.needbox,.oprog,.ostatcard,.osumcard,.stfsum>div,.fstats div,.snl,.card,.gcrows,.sumrow,.pbar,.otabs,.pvk){background:rgba(255,255,255,.2)!important;border:1px solid rgba(255,255,255,.38)!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) :is(.tot-box,.needbox,.oprog,.ostatcard,.osumcard,.stfsum>div,.fstats div,.snl,.gcrows,.sumrow,.pvk) *{color:#fff!important}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) :is(.plrow,.avgline,.needtop){background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;color:#fff}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) :is(.plrow,.avgline,.needtop) *{color:inherit}
+html:root:root:root[data-ui="celsan"][data-gmode="light"] :is(.hero,.ohero,.emhero) :is(.avgline) b{color:#fff}
 html:root:root:root[data-ui="celsan"] #pu .pvk.avg{background:var(--cs-glassf)!important;color:var(--ink)}
-html:root:root:root[data-ui="celsan"] :is(.ohero,.hero) button[aria-pressed="true"]{background:var(--cs-grad);color:#fff;box-shadow:0 6px 18px rgba(60,120,255,.4)}
-html:root:root:root[data-ui="celsan"] .hero::before,html:root:root:root[data-ui="celsan"] .hero::after{background:radial-gradient(circle,rgba(45,212,240,.22),transparent 70%)}
+html:root:root:root[data-ui="celsan"] :is(.ohero,.hero) button[aria-pressed="true"]{background:var(--cs-grad);color:#fff;box-shadow:0 6px 18px rgba(var(--cs-glow),.4)}
+html:root:root:root[data-ui="celsan"] .hero::before,html:root:root:root[data-ui="celsan"] .hero::after{background:radial-gradient(circle,rgba(var(--cs-rgb3),.22),transparent 70%)}
 html:root:root:root[data-ui="celsan"] .hero .hi,html:root:root:root[data-ui="celsan"] .hero .plabel,html:root:root:root[data-ui="celsan"] .ohero .oeyebrow{color:var(--ink2)}
 html:root:root:root[data-ui="celsan"] .tbtn{background:var(--cs-glassf);border:1px solid var(--cs-bd);color:var(--ink);border-radius:14px}
 html:root:root:root[data-ui="celsan"] .tbtn.hl{background:var(--cs-grad);color:#fff;border-color:transparent}
 html:root:root:root[data-ui="celsan"] .btn{border-radius:16px;font-weight:800}
-html:root:root:root[data-ui="celsan"] .btn:not(.ghost):not(.bad){background:var(--cs-grad);color:#fff;border:0;box-shadow:0 10px 26px rgba(60,120,255,.4),inset 0 1px 0 rgba(255,255,255,.35)}
+html:root:root:root[data-ui="celsan"] .btn:not(.ghost):not(.bad){background:var(--cs-grad);color:#fff;border:0;box-shadow:0 10px 26px rgba(var(--cs-glow),.4),inset 0 1px 0 rgba(255,255,255,.35)}
 html:root:root:root[data-ui="celsan"] .btn.ghost{background:var(--cs-glassf);border:1px solid var(--cs-bd);color:var(--ink)}
 html:root:root:root[data-ui="celsan"] :is(.pbar,.otabs,.dvtog,.stffilt,.ddnav,.dtgtabs){background:var(--cs-glassf);border:1px solid var(--cs-bd);border-radius:18px}
-html:root:root:root[data-ui="celsan"] :is(.pbar,.otabs,.dvtog,.stffilt,.dtgtabs) button[aria-pressed="true"],html:root:root:root[data-ui="celsan"] .dtgtabs button.on{background:var(--cs-grad)!important;color:#fff!important;box-shadow:0 6px 18px rgba(60,120,255,.4)}
+html:root:root:root[data-ui="celsan"] :is(.pbar,.otabs,.dvtog,.stffilt,.dtgtabs) button[aria-pressed="true"],html:root:root:root[data-ui="celsan"] .dtgtabs button.on{background:var(--cs-grad)!important;color:#fff!important;box-shadow:0 6px 18px rgba(var(--cs-glow),.4)}
 html:root:root:root[data-ui="celsan"] :is(.tpill,.chip,.dchip){background:var(--cs-glassf);border:1px solid var(--cs-bd);color:var(--ink);border-radius:99px}
 html:root:root:root[data-ui="celsan"] :is(.tpill,.chip)[aria-pressed="true"]{background:var(--cs-grad);color:#fff;border-color:transparent}
 html:root:root:root[data-ui="celsan"] :is(input,select,textarea).fin,html:root:root:root[data-ui="celsan"] :is(.search,.fin,input[type=text],input[type=number],input[type=search],input[type=date],input[type=tel],input[type=email],input[type=password],select,textarea){background:var(--cs-glassf);border:1px solid var(--cs-bd);border-radius:16px;color:var(--ink);font-family:var(--font-ui)}
@@ -5022,7 +5027,7 @@ html:root:root:root[data-ui="celsan"] .sheetbg,html:root:root:root[data-ui="cels
 html:root:root:root[data-ui="celsan"] table{color:var(--ink)}html:root:root:root[data-ui="celsan"] th{color:var(--ink2)}html:root:root:root[data-ui="celsan"] td,html:root:root:root[data-ui="celsan"] th{border-color:var(--line)}
 html:root:root:root[data-ui="celsan"] #loginGate,html:root:root:root[data-ui="celsan"] #divGate{background:var(--cs-body)}
 html:root:root:root[data-ui="celsan"] :is(.sheet:has(.pcpage),.pcpage,.pctabs,#as .asbar,.pcsh){background:var(--cs-sheet)}
-html:root:root:root[data-ui="celsan"] .ph{background:linear-gradient(145deg,rgba(91,140,255,.38),rgba(45,212,240,.18))!important;color:var(--ink)!important;border:1px solid var(--cs-bd)}
+html:root:root:root[data-ui="celsan"] .ph{background:linear-gradient(145deg,rgba(var(--cs-rgb),.38),rgba(var(--cs-rgb3),.18))!important;color:var(--ink)!important;border:1px solid var(--cs-bd)}
 html:root:root:root[data-ui="celsan"] :is(.nli,.needrow,.ns,.stkk,.stkrow){border-color:var(--cs-bd)}
 html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[data-ui="celsan"] #divGate .dvcard{background:var(--cs-glass);border:1px solid var(--cs-bd);box-shadow:var(--cs-sh);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur)}
 
@@ -5039,16 +5044,16 @@ html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[dat
   html:root:root:root[data-ui="celsan"] #cstop .cst-search span:nth-child(2){flex:1}
   html:root:root:root[data-ui="celsan"] #cstop .cst-search kbd{font:700 11px var(--font-ui);padding:5px 8px;border-radius:9px;background:var(--line);color:var(--ink2)}
   html:root:root:root[data-ui="celsan"] #cstop .cst-div{max-width:150px;font-size:14px}
-  html:root:root:root[data-ui="celsan"] #cstop .cst-av{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;border:0;background:var(--cs-grad2);color:#fff;font:800 16px var(--font-head);flex:none;box-shadow:0 8px 20px rgba(100,80,240,.45);transition:transform .3s var(--cs-spring)}
+  html:root:root:root[data-ui="celsan"] #cstop .cst-av{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;border:0;background:var(--cs-grad2);color:#fff;font:800 16px var(--font-head);flex:none;box-shadow:0 8px 20px rgba(var(--cs-glow),.45);transition:transform .3s var(--cs-spring)}
   html:root:root:root[data-ui="celsan"] #cstop .cst-av:hover{transform:scale(1.08) rotate(-4deg)}
   html:root:root:root[data-ui="celsan"] #sidenav{display:flex;position:fixed;z-index:61;left:18px;top:20px;bottom:20px;width:76px;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;border-radius:30px;background:var(--cs-glass);border:1px solid var(--cs-bd);box-shadow:var(--cs-sh);-webkit-backdrop-filter:var(--cs-blur);backdrop-filter:var(--cs-blur);overflow:visible}
-  html:root:root:root[data-ui="celsan"] #sidenav .csmark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;margin:2px 0 10px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px var(--cs-bd),0 8px 22px rgba(60,110,255,.3);flex:none}
+  html:root:root:root[data-ui="celsan"] #sidenav .csmark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;margin:2px 0 10px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px var(--cs-bd),0 8px 22px rgba(var(--cs-glow),.3);flex:none}
   html:root:root:root[data-ui="celsan"] #sidenav .csmark img{width:38px;height:38px;object-fit:contain}
   html:root:root:root[data-ui="celsan"] #sidenav .snitem{position:relative;width:52px;height:52px;padding:0;border-radius:18px;justify-content:center;background:none;color:var(--ink2);flex:none;transition:transform .35s var(--cs-spring),background .25s,color .2s}
   html:root:root:root[data-ui="celsan"] #sidenav .snitem .csi{display:grid;place-items:center}
   html:root:root:root[data-ui="celsan"] #sidenav .snitem svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8}
   html:root:root:root[data-ui="celsan"] #sidenav .snitem:hover{background:var(--soft);color:var(--ink);transform:translateY(-1px) scale(1.06)}
-  html:root:root:root[data-ui="celsan"] #sidenav .snitem[aria-current="page"]{background:linear-gradient(150deg,rgba(91,140,255,.45),rgba(45,212,240,.18));color:#fff;box-shadow:inset 0 0 0 1px rgba(130,170,255,.5),0 8px 22px rgba(60,110,255,.35)}
+  html:root:root:root[data-ui="celsan"] #sidenav .snitem[aria-current="page"]{background:linear-gradient(150deg,rgba(var(--cs-rgb),.45),rgba(var(--cs-rgb3),.18));color:#fff;box-shadow:inset 0 0 0 1px rgba(var(--cs-rgb2),.5),0 8px 22px rgba(var(--cs-glow),.35)}
   html:root:root:root[data-ui="celsan"][data-gmode="light"] #sidenav .snitem[aria-current="page"]{color:#fff;background:var(--cs-grad)}
   html:root:root:root[data-ui="celsan"] #sidenav .snitem[aria-current="page"]::before{content:"";position:absolute;left:-12px;top:14px;bottom:14px;width:4px;border-radius:4px;background:var(--cs-grad);box-shadow:0 0 14px var(--cs-a)}
   html:root:root:root[data-ui="celsan"] #sidenav .snitem .csl{position:absolute;left:calc(100% + 16px);top:50%;transform:translate(-6px,-50%);opacity:0;pointer-events:none;white-space:nowrap;padding:8px 13px;border-radius:12px;background:var(--cs-sheet);border:1px solid var(--cs-bd);box-shadow:var(--cs-sh);color:var(--ink);font:700 13px var(--font-ui);transition:opacity .18s,transform .25s var(--cs-ease);z-index:5}
@@ -5085,6 +5090,19 @@ html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[dat
 }
 @media (max-width:374px){html:root:root:root[data-ui="celsan"] #cstop .cst-div span{display:none}html:root:root:root[data-ui="celsan"] #cstop .cst-t small{display:none}}
 @media (prefers-reduced-motion:reduce){html:root:root:root[data-ui="celsan"] *,html:root:root:root[data-ui="celsan"] *::before,html:root:root:root[data-ui="celsan"] *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
+
+/* ---- Çelsan · Açık (sıcak / şeftali) ---- */
+html:root:root:root[data-ui="celsan"][data-gmode="light"][data-csc="warm"]{--cs-rgb:242,106,61;--cs-glow:240,100,60;--cs-rgb2:255,170,120;--cs-rgb3:255,176,77;
+ --cs-body:#F7EBE2;--cs-body2:#FBF1EA;--cs-lo1:#FFB48A;--cs-lo2:#FF9DB8;--cs-lo3:#FFD58A;
+ --ink:#2A1710;--ink2:#8B6A5B;--line:rgba(120,60,30,.14);--accent:#E8552E;--soft:rgba(240,100,60,.12);--sel:rgba(240,100,60,.16);--week:rgba(120,60,30,.05);--weekend:rgba(120,60,30,.035);
+ --money:#C2410C;--good:#0E9F6E;--bad:#D6304A;--warn:#C2680A;
+ --cs-a:#F26A3D;--cs-b:#FFAA4D;--cs-c:#E04A8A;--cs-grad:linear-gradient(135deg,#FF6B3D 0%,#FFA94D 100%);--cs-grad2:linear-gradient(135deg,#E04A8A 0%,#FF7A4D 100%);
+ --cs-hero:linear-gradient(135deg,#F2603A 0%,#F7805A 52%,#FFB04D 100%);--cs-hero-ink:#D23F1B;
+ --cs-sh:0 18px 48px rgba(150,70,30,.16),inset 0 1px 0 rgba(255,255,255,.9);--cs-sheet:rgba(255,250,246,.97);--hero1:#F2603A;--hero2:#FFB04D}
+html:root:root:root[data-ui="celsan"][data-gmode="light"][data-csc="warm"] #cz .czhero::after{background:radial-gradient(circle,rgba(255,176,77,.4),transparent 68%)}
+html:root:root:root[data-ui="celsan"][data-gmode="light"][data-csc="warm"] #csdock .csind{background:linear-gradient(160deg,rgba(255,120,70,.3),rgba(255,176,77,.16));box-shadow:inset 0 0 0 1px rgba(240,120,70,.4),0 6px 20px rgba(240,100,60,.22)}
+html:root:root:root[data-ui="celsan"][data-gmode="light"][data-csc="warm"] #cz .czrg .rt{stroke:rgba(120,60,30,.12)}
+html:root:root:root[data-ui="celsan"][data-gmode="light"][data-csc="warm"] #csdock .csfab .csdi{box-shadow:0 12px 28px rgba(240,100,60,.5),inset 0 1px 0 rgba(255,255,255,.5),0 0 0 6px color-mix(in srgb,var(--cs-body) 70%,transparent)}
 
 </style>
 </head>
@@ -5143,7 +5161,7 @@ html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[dat
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 14:09</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 15:11</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -14453,13 +14471,13 @@ html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[dat
     setTimeout(function(){["mtotal","mrev"].forEach(watch)},0);
   })();
   /*/MFX*/
-  var LOOKS=["cdark","clight","std","glass","glasslight","glassfrost","emerald","mdark","mlight"], LOOKN={std:"Klasik",glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam",emerald:"Zümrüt",mdark:"Yeni · Koyu",cdark:"Çelsan · Koyu",clight:"Çelsan · Açık",mlight:"Yeni · Aydınlık"};
-  var LOOKD={std:"Sade açık tema",glass:"Koyu mor cam",glasslight:"Aydınlık cam",glassfrost:"Buzlu, sıcak cam",emerald:"Koyu yeşil · akıcı geçişler",mdark:"Yeni tasarım (deneme) · koyu",cdark:"Yepyeni kabuk · yüzen menü · bento ana sayfa",clight:"Yepyeni kabuk · buzlu cam · aydınlık",mlight:"Yeni tasarım (deneme) · aydınlık"};
-  function lookNow(){var r=document.documentElement; if(r.getAttribute("data-ui")==="celsan")return r.getAttribute("data-gmode")==="light"?"clight":"cdark"; if(r.getAttribute("data-ui")==="modern")return r.getAttribute("data-gmode")==="light"?"mlight":"mdark"; if(r.getAttribute("data-theme")!=="glass")return "std"; if(r.getAttribute("data-gstyle")==="emerald")return "emerald"; if(r.getAttribute("data-gmode")!=="light")return "glass"; return r.getAttribute("data-gstyle")==="frost"?"glassfrost":"glasslight"}
+  var LOOKS=["cdark","clight","cwarm","std","glass","glasslight","glassfrost","emerald","mdark","mlight"], LOOKN={std:"Klasik",glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam",emerald:"Zümrüt",mdark:"Yeni · Koyu",cdark:"Çelsan · Koyu",clight:"Çelsan · Açık",cwarm:"Çelsan · Şeftali",mlight:"Yeni · Aydınlık"};
+  var LOOKD={std:"Sade açık tema",glass:"Koyu mor cam",glasslight:"Aydınlık cam",glassfrost:"Buzlu, sıcak cam",emerald:"Koyu yeşil · akıcı geçişler",mdark:"Yeni tasarım (deneme) · koyu",cdark:"Yepyeni kabuk · yüzen menü · bento ana sayfa",clight:"Yepyeni kabuk · buz mavisi · aydınlık",cwarm:"Yepyeni kabuk · sıcak şeftali · aydınlık",mlight:"Yeni tasarım (deneme) · aydınlık"};
+  function lookNow(){var r=document.documentElement; if(r.getAttribute("data-ui")==="celsan")return r.getAttribute("data-gmode")==="light"?(r.getAttribute("data-csc")==="warm"?"cwarm":"clight"):"cdark"; if(r.getAttribute("data-ui")==="modern")return r.getAttribute("data-gmode")==="light"?"mlight":"mdark"; if(r.getAttribute("data-theme")!=="glass")return "std"; if(r.getAttribute("data-gstyle")==="emerald")return "emerald"; if(r.getAttribute("data-gmode")!=="light")return "glass"; return r.getAttribute("data-gstyle")==="frost"?"glassfrost":"glasslight"}
   function lookSet(m){
     var r=document.documentElement;
-    r.removeAttribute("data-gstyle"); r.removeAttribute("data-ui");
-    if(m==="cdark"||m==="clight"){r.setAttribute("data-theme","celsan"); r.setAttribute("data-ui","celsan"); if(m==="clight")r.setAttribute("data-gmode","light"); else r.removeAttribute("data-gmode")}
+    r.removeAttribute("data-gstyle"); r.removeAttribute("data-ui"); r.removeAttribute("data-csc");
+    if(m==="cdark"||m==="clight"||m==="cwarm"){r.setAttribute("data-theme","celsan"); r.setAttribute("data-ui","celsan"); if(m!=="cdark")r.setAttribute("data-gmode","light"); else r.removeAttribute("data-gmode"); if(m==="cwarm")r.setAttribute("data-csc","warm")}
     else if(m==="std"){r.removeAttribute("data-theme"); r.removeAttribute("data-gmode")}
     else{r.setAttribute("data-theme","glass"); if(m==="glass"||m==="emerald"||m==="mdark")r.removeAttribute("data-gmode"); else r.setAttribute("data-gmode","light"); if(m==="glassfrost")r.setAttribute("data-gstyle","frost"); if(m==="emerald"||m==="mdark")r.setAttribute("data-gstyle","emerald"); if(m==="mdark"||m==="mlight")r.setAttribute("data-ui","modern")}
     try{localStorage.setItem("ud_look",m)}catch(e){}
@@ -14467,7 +14485,7 @@ html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[dat
     try{renderSideNav()}catch(e){}
     try{lookPickPaint()}catch(e){}
     try{if(!csOn()){csMoveBell(false); document.documentElement.removeAttribute("data-cs-page"); document.documentElement.classList.remove("cs-lock"); var _l2=$("cslaunch"); if(_l2)_l2.hidden=true}csHtmlLast=""; buildHome(); paintSideActive()}catch(e){}
-    try{var tc=document.querySelector('meta[name="theme-color"]'); if(tc)tc.setAttribute("content",m==="cdark"?"#060912":m==="clight"?"#E6ECF8":(m==="emerald"||m==="mdark")?"#0A0F0D":m==="glass"?"#07070F":m==="mlight"?"#F4F6F4":"#0F8B8D")}catch(e){}
+    try{var tc=document.querySelector('meta[name="theme-color"]'); if(tc)tc.setAttribute("content",m==="cdark"?"#060912":m==="clight"?"#E6ECF8":m==="cwarm"?"#F7EBE2":(m==="emerald"||m==="mdark")?"#0A0F0D":m==="glass"?"#07070F":m==="mlight"?"#F4F6F4":"#0F8B8D")}catch(e){}
   }
   function lookLabel(){return "🎨 Görünüm: "+LOOKN[lookNow()]+" · tüm modları gör"}
   var LOOKV={
@@ -14479,6 +14497,7 @@ html:root:root:root[data-ui="celsan"] #loginGate .lgcard,html:root:root:root[dat
     mdark:{bg:"#0A0F0D",sb:"#0F1613",sbi:"#2A3A32",sba:"#7FE3B0",hr:"#0F1613",c:"#0F1613",cb:"1px solid rgba(255,255,255,.1)"},
     cdark:{bg:"#060912",sb:"#151D38",sbi:"#2E3B66",sba:"#5B8CFF",hr:"linear-gradient(135deg,#2F5BFF,#0A9DBB)",c:"#111A36",cb:"1px solid rgba(255,255,255,.12)"},
     clight:{bg:"#E3EAF8",sb:"#FFFFFF",sbi:"#C5D1EE",sba:"#2F6BFF",hr:"linear-gradient(135deg,#7FA6FF,#2F6BFF)",c:"#FFFFFF",cb:"1px solid #D3DCF1"},
+    cwarm:{bg:"#F7EBE2",sb:"#FFFFFF",sbi:"#F0D5C6",sba:"#F2603A",hr:"linear-gradient(135deg,#F2603A,#FFB04D)",c:"#FFFFFF",cb:"1px solid #F0DACC"},
     mlight:{bg:"#F4F6F4",sb:"#FFFFFF",sbi:"#D2DAD5",sba:"#0E8F68",hr:"#FFFFFF",c:"#FFFFFF",cb:"1px solid #DDE4DF"}
   };
   function lookPrevHtml(k){
