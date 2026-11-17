@@ -5291,6 +5291,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as{color:#fff;background:var(-
 html:root:root:root[data-ui="celsan"] #cstop .cst-as[hidden]{display:none}
 html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-shadow:0 0 0 2px rgba(255,255,255,.55),0 8px 20px rgba(var(--cs-glow),.35)}
 @media (max-width:640px){html:root:root:root[data-ui="celsan"] #cstop .cst-sbtn{display:none}}
+#as .asrow{align-items:flex-end}
+#as .asrow textarea.fin{height:auto;min-height:46px;max-height:200px;resize:none;padding:12px 14px;line-height:1.4;overflow-y:auto}
 /* ---- Asistan sohbet geçmişi ---- */
 @media (min-width:1000px){html:root:root:root[data-ui="celsan"] :is(#as,#mts):not([hidden]){display:flex!important;flex-direction:column;grid-template-columns:none!important;max-width:none}html:root:root:root[data-ui="celsan"] :is(#as,#mts)>.hero{position:static!important;width:100%!important;max-width:none!important}}
 #as .asw{display:block}
@@ -5379,7 +5381,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 23:17</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 23:25</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13391,8 +13393,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       return get.catch(function(){return {}}).then(function(data){
         var ls=(data.lines||{})[iso]||[], tot=daySums(data.days,data.lines,data.rev)[iso]||{a:0,r:0}, by={};
         ls.forEach(function(l){
-          var o=l.o?asOrd(l.o):null, nm=o?(oTi(o)||o.code||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"");
-          var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); e.adet+=(+l.q||0);
+          var o=l.o?asOrd(l.o):null, nm=o?(oTi(o)||o.code||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"")+"|"+(l.sd||"");
+          var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",kategori:(o&&ORDER_CATS[o.cat])||"",adet:0,makine:l.m||""}); if(l.sd==="k")e.kisim="kanallı"; else if(l.sd==="o")e.kisim="ön"; e.adet+=(+l.q||0);
         });
         if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:x.name,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,80)});
       });
@@ -13411,8 +13413,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       (PU_SECIDS[div]||[]).forEach(function(sid){
         var data=md[sid]||{}, ls=(data.lines||{})[iso]||[], tot=daySums(data.days,data.lines,data.rev)[iso]||{a:0,r:0}, by={};
         ls.forEach(function(l){
-          var o=l.o?om[l.o]:null, nm=o?(o.code||o.name||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"");
-          var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); e.adet+=(+l.q||0);
+          var o=l.o?om[l.o]:null, nm=o?(o.code||o.name||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"")+"|"+(l.sd||"");
+          var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); if(l.sd==="k")e.kisim="kanallı"; else if(l.sd==="o")e.kisim="ön"; e.adet+=(+l.q||0);
         });
         if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:(PU_NAMES[div]||{})[sid]||sid,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,80)});
       });
@@ -13486,7 +13488,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   }
   /* --- günlük performans: makine · eleman · ürün · yapılan · olması gereken (Puantaj ile aynı hesap) --- */
   function asWaitFor(f,ms){return new Promise(function(res){var n=0, iv=setInterval(function(){n++; if(f()||n*150>=ms){clearInterval(iv); res()}},150)})}
-  function asPerfDiv(div,iso,md,t,man,names){
+  function asPerfDiv(div,iso,md,t,man,names,om){
+    om=om||{};
     var rows=[], emps={}, ov={};
     employees.forEach(function(e){emps[e.id]=e.name||e.n||""});
     var manRows=[]; Object.keys(man||{}).forEach(function(eid){(man[eid]||[]).forEach(function(r){if((r.div||"rotil")!==div)return; if(r.ov)ov[r.ov]=1; manRows.push(Object.assign({},r,{emp:eid}))})});
@@ -13496,7 +13499,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       ls.forEach(function(l,i){
         if(!l||!(l.q>0))return;
         var code=l.c||"", key=div+"|"+sid+"|"+fold(code);
-        auto.push({sec:sid,mac:l.m||"",code:code,nm:code?"":(l.cj?("Bileşen "+(l.n||l.cj)):(l.n||"Ürün")),a:l.a||"",b:l.b||"",q:l.q,emp:l.e||"",key:key,dk:0});
+        auto.push({sec:sid,oid:l.o||"",sd:l.sd||"",mac:l.m||"",code:code,nm:code?"":(l.cj?("Bileşen "+(l.n||l.cj)):(l.n||"Ürün")),a:l.a||"",b:l.b||"",q:l.q,emp:l.e||"",key:key,dk:0});
       });
     });
     manRows.forEach(function(r){r.sec=r.sec||""; rows.push(r)});
@@ -13507,6 +13510,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       var q=(r.q===""||r.q==null||isNaN(+r.q))?null:+r.q, tgt=(net>0&&dk>0)?net/dk:0;
       var en=r.emp?(emps[r.emp]||"Bilinmeyen eleman"):"Eleman atanmamış";
       var o={makine:r.mac?machineNameOf(r.mac):"",eleman:en,urun:(r.code?cvTi(r.code,div):r.nm)||"Ürün",bolum:(PU_NAMES[div]||{})[r.sec]||r.sec,yapilan:q};
+      var oo=r.oid?om[r.oid]:null; if(oo&&oo.cust)o.musteri=oo.cust; if(r.sd==="k")o.kisim="kanallı"; else if(r.sd==="o")o.kisim="ön";
       if(n){o.calisma=r.a+"-"+r.b; o.net_dk=Math.round(net)}
       if(dk>0)o.adet_basina_dk=Math.round(dk*10)/10;
       if(tgt>0){o.olmasi_gereken=Math.round(tgt); o.yuzde=q===null?null:Math.round(q/tgt*100)}
@@ -13525,8 +13529,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     return asWaitFor(function(){return employees.length&&machinesList.length},3500).then(function(){return manP}).then(function(man){
       return Promise.all(ids.map(function(div){
         var d=dbDiv(div); if(!d){res[names[div]||div]="bağlanılamadı"; return Promise.resolve()}
-        return Promise.all([asMonthsOf(div,iso),d.doc("ayarlar/islemsure").get().then(function(sn){return (sn.exists&&sn.data().t)||{}}).catch(function(){return {}})]).then(function(r){
-          var o=asPerfDiv(div,iso,r[0],r[1],man,names); res[names[div]||div]=o.kayit_sayisi?o:"o gün üretim kaydı yok";
+        return Promise.all([asMonthsOf(div,iso),d.doc("ayarlar/islemsure").get().then(function(sn){return (sn.exists&&sn.data().t)||{}}).catch(function(){return {}}),d.collection("orders").get().then(function(sn){var m={}; sn.docs.forEach(function(x){m[x.id]=x.data()}); return m}).catch(function(){return {}})]).then(function(r){
+          var o=asPerfDiv(div,iso,r[0],r[1],man,names,r[2]); res[names[div]||div]=o.kayit_sayisi?o:"o gün üretim kaydı yok";
         }).catch(function(){res[names[div]||div]="okunamadı"});
       }));
     }).then(function(){return res});
@@ -13811,11 +13815,19 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       "Patron özellikle bir bölüm sormadıysa Rotil, Cıvata ve Rozet'in HEPSİNİ anlat (üretim, plan, sipariş, ciro hepsinde üç bölüm birlikte gelir); belirli bir bölüm sorarsa sadece onu anlat. Malzeme ihtiyacı hesabı sadece şu an açık olan bölüm için çıkar, kritik stoklar ise tüm bölümler için gelir; bunu belirt. "+
       "Fabrika verisini asla tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Diğer veriler için veri_oku kullanılabilir. "+
       "Patron günlük, genel konularda da soru sorabilir (bilgi, tavsiye, hesaplama, yazı yazma, çeviri, haber, hava, fiyat, araştırma, kişisel işler). Bunlara fabrika araçlarını kullanmadan, bilgili ve samimi bir asistan gibi cevap ver; güncel ya da gerçek dünyaya dair bilgi gerekiyorsa web_search aracıyla ara. Genel sohbette gerektiğinde biraz daha ayrıntılı olabilirsin ama gereksiz uzatma. Önceki mesajlarda konuşulanları hatırla ve ona göre devam et. "+
-      "Günlük anlatımda (dün/bugün ne yapıldı) performans_gunu aracını kullan: her bölümde hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saati ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç; ürünlerin HEPSİNİN ismini söyle, atlama. Ciroyu her bölüm için ayrı ayrı söyle ve tanımlıysa günlük, haftalık, aylık hedefle kıyasla (yüzde). Hedefleri hedef_belirle ile ayarlayabilirsin. "+
+      "Günlük anlatımda (dün/bugün ne yapıldı) performans_gunu aracını kullan: her bölümde hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saati ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç; ürünlerin HEPSİNİN ismini söyle, atlama. Adetleri söylerken HER kalem için müşterinin adını, işlenen ürünü ve hangi bölümde/işlemde yapıldığını (CNC Gövde, CNC Aşık, Montaj vb.) söyle; gövde ise ön mü kanallı mı olduğunu (kisim alanı varsa) belirt. Cirolari ASLA tek toplama çevirme: her bölümün ve işlemin cirosunu ayrı ayrı söyle (örn. 'Rotil CNC Aşık 12.400 ₺, Montaj 8.200 ₺, Gövde 15.000 ₺'), en sonda istenirse toplamı ekle. Ciroyu her bölüm için ayrı ayrı söyle ve tanımlıysa günlük, haftalık, aylık hedefle kıyasla (yüzde). Hedefleri hedef_belirle ile ayarlayabilirsin. "+
       "Patron birini aramak isterse (örn. 'Akın Dövme'yi ara'): önce rehber ile bul; birden fazla eşleşirse hangisi olduğunu sor; tek eşleşmede telefon_ac çağır ve 'Arama kartını koydum, 📞 Ara tuşuna dokun' de. Telefonu kendin arayamazsın, tek dokunuş patronda. Numarası yoksa söyle. "+
       "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. "+
       "YAZMA: sadece patronun notlarına (not_ekle, not_guncelle, not_sil) ve toplantılara (toplanti_ekle, toplanti_sil) yazabilirsin; üretim, sipariş, stok, plan gibi başka hiçbir kaydı değiştiremezsin, istenirse bunun henüz açık olmadığını söyle. "+
       "Yazma araçlarını çağırınca kayıt HEMEN YAZILMAZ, ekranda onay kartı çıkar ve sesli onay beklenir. Aracın döndürdüğü 'yapilacak' özetini patrona kısaca söyle ve sonunda 'Onaylıyor musun patron?' diye sor; yazdım deme, onay gelince sistem kendisi yazar. Düzenleme ve silmede önce notlarim/toplanti_listele ile doğru id'yi bul. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
+  }
+  function asErrTxt(e){
+    var m=String((e&&e.message)||e||"");
+    if(/credit balance/i.test(m))return "Anthropic hesabındaki API krediniz bitmiş, bu yüzden cevap veremiyorum. console.anthropic.com adresinde Plans & Billing bölümünden kredi yükleyince hemen çalışır. (Claude uygulamasının abonelik hakkı API'den ayrıdır, API için ayrıca kredi gerekir.)";
+    if(/invalid x-api-key|authentication|api key/i.test(m))return "API anahtarı geçersiz görünüyor. Ayarlar bölümünden yeni anahtarı yapıştır.";
+    if(/rate.?limit|429/i.test(m))return "Çok hızlı istek gitti, bir dakika bekleyip tekrar dene.";
+    if(/overloaded|529|503|timeout|network|failed to fetch/i.test(m))return "Anthropic şu an yoğun ya da bağlantı koptu, biraz sonra tekrar dene.";
+    return "Hata: "+m;
   }
   function asTools(){return AS.noWeb?AS_TOOLS:AS_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}])}
   function asJoin(parts){var o=""; parts.forEach(function(x){if(!x)return; if(o&&!/\s$/.test(o)&&!/^[\s.,;:!?)]/.test(x)&&/[.!?:]$/.test(o))o+=" "; o+=x}); return o.trim()}
@@ -14041,7 +14053,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     b.innerHTML='<div class="asw"><aside class="aslist nocap" id="aslist"></aside><div class="asback" data-asa="listx"></div><div class="asmain">'+'<div class="ascards"><div id="assettw"></div><details class="asmore"><summary>Ciro hedefleri ve toplantılar</summary><div class="ascards"><div id="ashed"></div><div id="asmeet"></div></div></details></div>'+
       '<div class="fvchips aschips">'+[["☀ Sabah raporu","rep"],["Dünkü üretim","Dün neler üretildi?"],["Bugünün planı","Bugünün planı ne?"],["Termini geçenler","Termini geçen siparişler hangileri?"],["Eksik malzeme","Siparişlere göre hangi malzemeler eksik?"],["Ciro","Dünkü ve bu ayki ciro ne?"],["Toplantılarım","Önümüzdeki toplantılarım neler?"]].map(function(c){return '<button type="button" data-asq="'+esc(c[1])+'">'+esc(c[0])+'</button>'}).join("")+'</div>'+
       '<div id="asmsgs" class="asmsgs"></div>'+
-      '<div class="asbar"><div class="status" id="asstatus"></div><div class="asrow"><button type="button" class="btn ghost asic" id="asmic" data-asa="mic" aria-label="Konuş">🎤</button><input class="fin" id="asin" type="text" autocomplete="off" placeholder="Bir şey sor…" aria-label="Mesaj"><button type="button" class="btn" id="assend" data-asa="send">Gönder</button></div><div class="asrow2"><button type="button" class="btn ghost assm" id="asspkon" data-asa="spk"></button><button type="button" class="btn ghost assm" data-asa="sett">⚙ Ayarlar</button><button type="button" class="btn ghost assm" data-asa="new">+ Yeni sohbet</button><button type="button" class="btn ghost assm" id="assvbtn" data-asa="svnow">💾 Kaydet</button><button type="button" class="btn ghost assm aslbtn" data-asa="list">☰ Sohbetler</button></div></div></div></div>';
+      '<div class="asbar"><div class="status" id="asstatus"></div><div class="asrow"><button type="button" class="btn ghost asic" id="asmic" data-asa="mic" aria-label="Konuş">🎤</button><textarea class="fin" id="asin" rows="1" autocomplete="off" placeholder="Bir şey sor… (Shift+Enter: yeni satır)" aria-label="Mesaj"></textarea><button type="button" class="btn" id="assend" data-asa="send">Gönder</button></div><div class="asrow2"><button type="button" class="btn ghost assm" id="asspkon" data-asa="spk"></button><button type="button" class="btn ghost assm" data-asa="sett">⚙ Ayarlar</button><button type="button" class="btn ghost assm" data-asa="new">+ Yeni sohbet</button><button type="button" class="btn ghost assm" id="assvbtn" data-asa="svnow">💾 Kaydet</button><button type="button" class="btn ghost assm aslbtn" data-asa="list">☰ Sohbetler</button></div></div></div></div>';
     AS.built=true; asSettPaint(); asHedPaint(); asMeetPaint(); asMsgsPaint(); asCtl(); asListPaint();
   }
   function asSettPaint(){
@@ -14216,7 +14228,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       AS.busy=false; asStatus(""); asCtl(); a=a||"Cevap alamadım.";
       if(AS.pend.length&&!/onayl/i.test(a))a=a+" Onaylıyor musun patron?";
       asUi("a",a); asAutosave(); asListPaint(); if(AS.pend.length)AS.cfListen=true; asSay(a); if(AS.pend.length&&!AS.speak)AS.cfListen=false;
-    }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a","Hata: "+((e&&e.message)||e))});
+    }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a",asErrTxt(e))});
   }
   function asReport(){
     if(AS.busy)return;
@@ -14232,7 +14244,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       var tx=(j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
       AS.msgs.push({role:"user",content:"Sabah raporu iste"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:tx}]});
       asLs("as_rep",td); AS.busy=false; asCtl(); asStatus(""); asUi("a",tx); asAutosave(); asListPaint(); asSay(tx); asHomePaint();
-    }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); asUi("a","Rapor hazırlanamadı: "+((e&&e.message)||e))});
+    }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); asUi("a",/credit|api.?key|rate|overload/i.test(String((e&&e.message)||e))?asErrTxt(e):"Rapor hazırlanamadı: "+((e&&e.message)||e))});
   }
   function openAS(){
     if(!asOn())return;
@@ -14242,12 +14254,14 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   }
   function asHome(){asLeave(function(){asStopSay(); $("as").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()})}
   $("asback").addEventListener("click",asHome);
-  $("as").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="asin"){e.preventDefault(); var v=e.target.value; e.target.value=""; asSend(v)}});
+  function asGrow(el){if(!el)return; el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,200)+"px"}
+  $("as").addEventListener("input",function(e){if(e.target.id==="asin")asGrow(e.target)});
+  $("as").addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing&&e.target.id==="asin"){e.preventDefault(); var v=e.target.value; e.target.value=""; asGrow(e.target); asSend(v)}});
   $("as").addEventListener("click",function(e){
     var t=e.target.closest&&e.target.closest("[data-asa],[data-asq]"); if(!t||!$("as").contains(t))return;
     if(t.dataset.asq){if(t.dataset.asq==="rep")asReport(); else asSend(t.dataset.asq); return}
     var a=t.dataset.asa;
-    if(a==="send"){var i=$("asin"); if(i){var v=i.value; i.value=""; asSend(v)} return}
+    if(a==="send"){var i=$("asin"); if(i){var v=i.value; i.value=""; asGrow(i); asSend(v)} return}
     if(a==="mic"){asMic(); return}
     if(a==="hedsave"){
       var v=JSON.parse(JSON.stringify(AS.hed||{}));
