@@ -5401,7 +5401,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 00:08</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 00:12</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13384,6 +13384,23 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
   function asStorOk(){try{localStorage.setItem("as_t","1"); var r=localStorage.getItem("as_t")==="1"; localStorage.removeItem("as_t"); return r}catch(e){return false}}
+  function asImport(){
+    try{
+      var h=location.hash||""; if(h.indexOf("#tasi=")!==0)return;
+      var j=JSON.parse(atob(h.slice(6).replace(/-/g,"+").replace(/_/g,"/"))), r=[], bad=false;
+      var put=function(key,val,nm){ if(!val)return; asLs(key,val); if(asLs(key)===val)r.push(nm+" ✓"); else {r.push(nm+" ✗"); bad=true} };
+      if(/^sk-ant-/.test(j.k||""))put("as_key",j.k,"Anthropic anahtarı");
+      if(/^sk_/.test(j.x||""))put("as_xkey",j.x,"ElevenLabs anahtarı");
+      if(/^[A-Za-z0-9]{18,24}$/.test(j.v||""))put("as_xvoice",j.v,"Ses kimliği");
+      try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+      asLoad();
+      var d=document.createElement("div"); d.className="nocap";
+      d.style.cssText="position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:99999;padding:16px 18px;border-radius:18px;font:700 16px/1.4 system-ui,sans-serif;color:#fff;background:"+(bad||!r.length?"#c0392b":"#1e8e4e")+";box-shadow:0 10px 30px rgba(0,0,0,.35)";
+      d.textContent=(bad?"KAYDEDİLEMEDİ, bu tarayıcı bilgi saklamıyor (gizli sekme?). ":"")+(r.length?"Taşındı: "+r.join(", ")+". Asistan → Ayarlar → 🔊 Sesi dene.":"Linkte geçerli bir anahtar yok.")+"  (kapatmak için dokun)";
+      d.onclick=function(){d.remove()}; document.body.appendChild(d); setTimeout(function(){try{d.remove()}catch(e){}},30000);
+    }catch(e){}
+  }
+  setTimeout(asImport,400);
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
   function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-5-5"; if(AS.model==="claude-sonnet-4-5"){AS.model="claude-sonnet-5-5"; asLs("as_model","claude-sonnet-5-5")} AS.fast=asLs("as_fast")||"claude-haiku-5-5"; AS.bvoice=asLs("as_bvoice")||""; AS.rate=+(asLs("as_rate")||1)||1; AS.mode=asLs("as_mode")==="strong"?"strong":"fast"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"; if(!/^[A-Za-z0-9]{18,24}$/.test(AS.xvoice))AS.xvoice="DYkrAHD8iwork3YSUBbs"; AS.noWeb=asLs("as_noweb")==="1"}
   function asDb(){return dbDiv("rotil")}
@@ -14130,7 +14147,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       '<label class="fl" for="asmodel" style="margin-top:10px">Güçlü model (sabah raporu ve "Güçlü" modu)</label><input class="fin" id="asmodel" type="text" autocomplete="off" value="'+esc(AS.model)+'">'+
       '<label class="fl" for="asfast" style="margin-top:10px">Hızlı model (günlük sorular, ucuz)</label><input class="fin" id="asfast" type="text" autocomplete="off" value="'+esc(AS.fast)+'">'+
       '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
-      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.key?'<button type="button" class="btn ghost" data-asa="sett">✕ Kapat</button>':'')+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div><div class="status nocap" id="asvres" style="margin-top:10px;white-space:normal;font-weight:600">'+(asStorOk()?'':'⚠ Bu tarayıcı bilgi saklamıyor (gizli sekme?). Anahtarlar kaydolmaz. Chrome\'da normal sekmede aç.')+'</div>'+((AS.key||AS.xkey||AS.xvoice)?'<label class="fl" style="margin-top:14px">Başka cihaza taşı (kopyala, orada yapıştır)</label><div class="fvrow">'+(AS.key?'<button type="button" class="btn ghost" data-asa="cp" data-w="key">📋 Anthropic anahtarı</button>':'')+(AS.xkey?'<button type="button" class="btn ghost" data-asa="cp" data-w="xkey">📋 Ses anahtarı</button>':'')+(AS.xvoice?'<button type="button" class="btn ghost" data-asa="cp" data-w="xvoice">📋 Ses kimliği</button>':'')+'</div>':'')+'</div>';
+      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.key?'<button type="button" class="btn ghost" data-asa="sett">✕ Kapat</button>':'')+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div><div class="status nocap" id="asvres" style="margin-top:10px;white-space:normal;font-weight:600">'+(asStorOk()?'':'⚠ Bu tarayıcı bilgi saklamıyor (gizli sekme?). Anahtarlar kaydolmaz. Chrome\'da normal sekmede aç.')+'</div>'+((AS.key||AS.xkey||AS.xvoice)?'<label class="fl" style="margin-top:14px">Başka cihaza taşı (kopyala, orada yapıştır)</label><div class="fvrow">'+(AS.key?'<button type="button" class="btn ghost" data-asa="cp" data-w="key">📋 Anthropic anahtarı</button>':'')+(AS.xkey?'<button type="button" class="btn ghost" data-asa="cp" data-w="xkey">📋 Ses anahtarı</button>':'')+(AS.xvoice?'<button type="button" class="btn ghost" data-asa="cp" data-w="xvoice">📋 Ses kimliği</button>':'')+((AS.key||AS.xkey)?'<button type="button" class="btn" data-asa="cp" data-w="link">📱 Telefona taşıma linki</button>':'')+'</div>':'')+'</div>';
   }
   function asHedPaint(){
     var w=$("ashed"); if(!w)return; var names=asDivNames(), ids=Object.keys(names), act=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.ashi;
@@ -14391,8 +14408,9 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
         AS.xvl=(j.voices||[]).map(function(v){return {id:v.voice_id,name:v.name+(v.labels&&v.labels.accent?" · "+v.labels.accent:"")}}).slice(0,80); asStatus(AS.xvl.length+" ses bulundu"); asSettPaint();
       }).catch(function(){asStatus("Liste alınamadı (anahtarın 'voices' okuma izni olmayabilir). Ses kimliğini elle de yazabilirsin.")}); return}
     if(a==="cp"){
-      var w=t.getAttribute("data-w"), tx=w==="key"?AS.key:w==="xkey"?AS.xkey:AS.xvoice, nm=w==="key"?"Anthropic anahtarı":w==="xkey"?"Ses anahtarı":"Ses kimliği"; if(!tx){asStatus("Kopyalanacak bir şey yok"); return}
-      var okm=nm+" kopyalandı ✓ Şimdi diğer cihazda ilgili kutuya yapıştır";
+      var w=t.getAttribute("data-w"), tx=w==="key"?AS.key:w==="xkey"?AS.xkey:AS.xvoice, nm=w==="key"?"Anthropic anahtarı":w==="xkey"?"Ses anahtarı":"Ses kimliği";
+      if(w==="link"){tx=location.origin+location.pathname+"#tasi="+btoa(JSON.stringify({k:AS.key||"",x:AS.xkey||"",v:AS.xvoice||""})).replace(/\+/g,"-").replace(/\//g,"_"); nm="Taşıma linki"} if(!tx){asStatus("Kopyalanacak bir şey yok"); return}
+      var okm=nm+" kopyalandı ✓ "+(w==="link"?"Kendine WhatsApp'tan at, telefonda Chrome'da aç.":"Şimdi diğer cihazda ilgili kutuya yapıştır");
       var fb=function(){var x=document.createElement("textarea"); x.value=tx; x.setAttribute("readonly",""); x.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px"; document.body.appendChild(x); x.focus(); x.select(); x.setSelectionRange(0,tx.length); var ok=false; try{ok=document.execCommand("copy")}catch(e){} x.remove(); asStatus(ok?okm:"Kopyalanamadı, tarayıcı izin vermedi")};
       if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(tx).then(function(){asStatus(okm)},fb); else fb(); return}
     if(a==="testvoice"){asPrime(); asStatus(AS.xkey?"Deneniyor… (ElevenLabs, ses kimliği: "+(AS.xvoice||"boş")+")":"Deneniyor… (ElevenLabs anahtarı bu cihazda kayıtlı değil, telefon sesi çalacak)"); asSay("Merhaba patron, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
