@@ -5252,10 +5252,76 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
 #mts .mtform h3{margin:0 0 6px;font:800 16px var(--font-head);color:var(--ink)}
 #mts .mtform .fl{display:block;margin:12px 0 4px}
 #mts .mtform textarea.fin{height:auto;min-height:110px;padding:12px;line-height:1.5;resize:vertical}
+#mts .mcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:10px}
+#mts .mcw{text-align:center;font:800 11px var(--font-ui);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);padding:4px 0}
+#mts .mce{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:54px;padding:6px 6px 5px;border-radius:14px;border:1px solid var(--cs-bd,var(--line));background:var(--cs-glassf,var(--surface));color:var(--ink);font:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:transform .2s,border-color .2s}
+#mts .mce.off{background:none;border:0;cursor:default}
+#mts .mce.we .mcn{color:var(--ink2)}
+#mts .mce:active{transform:scale(.96)}
+#mts .mcn{font:800 13px var(--font-ui);font-variant-numeric:tabular-nums}
+#mts .mce.today .mcn{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink)}
+#mts .mce.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+#mts .mce.has{background:var(--cs-glass,var(--surface))}
+#mts .mcb{position:absolute;top:5px;right:6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font:800 10.5px/18px var(--font-ui);text-align:center}
+#mts .mcl{display:none;width:100%;margin-top:2px}
+#mts .mcl i{display:block;font:600 11px/1.35 var(--font-ui);font-style:normal;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px;margin-top:2px;border-radius:6px;background:var(--soft)}
+#mts .mcl i.mcm{background:none;font-weight:800}
+#mts .mcd{display:flex;gap:3px;margin-top:auto}
+#mts .mcd u{width:6px;height:6px;border-radius:50%;background:var(--accent);text-decoration:none}
+#mts .mcsum{margin:8px 2px 4px;font:700 12px var(--font-ui);color:var(--ink2);text-align:right}
+#mts .mtq{margin-top:12px;padding:14px;border-radius:20px;border:1px dashed var(--accent);background:var(--cs-glassf,var(--surface))}
+#mts .mtqh{margin-bottom:8px;font:800 13px var(--font-ui);color:var(--ink)}
+#mts .mtchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+#mts .mtchips span{font:800 11px var(--font-ui);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);margin-right:2px}
+#mts .mtchips button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:6px 11px;font:700 12.5px var(--font-ui);cursor:pointer}
+#mts .mtchips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+#mts .mtq .frow{margin-top:10px}
+#mts .mtday.sel{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--soft)}
+@media (min-width:900px){#mts .mce{min-height:104px;padding:8px}#mts .mcl{display:block}#mts .mcd{display:none}#mts .mcn{font-size:14px}}
 #mts .mtrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #mts .mtrow>div:first-child{grid-column:1/-1}
 #mts .mtrow .fin{min-width:0;width:100%}
 @media (min-width:900px){#mts{max-width:820px}}
+
+#as .asmore{border:1px solid var(--line);border-radius:16px;padding:0 14px;background:var(--surface)}
+#as .asmore>summary{cursor:pointer;padding:12px 0;font:800 13.5px var(--font-ui);color:var(--ink2);list-style:none}
+#as .asmore[open]>summary{border-bottom:1px dashed var(--line);margin-bottom:6px}
+#as .asmore .ascards{margin:0 0 14px}
+html:root:root:root[data-ui="celsan"] #cstop .cst-as{color:#fff;background:var(--cs-grad);border-color:transparent;box-shadow:0 8px 20px rgba(var(--cs-glow),.35)}
+html:root:root:root[data-ui="celsan"] #cstop .cst-as[hidden]{display:none}
+html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-shadow:0 0 0 2px rgba(255,255,255,.55),0 8px 20px rgba(var(--cs-glow),.35)}
+@media (max-width:640px){html:root:root:root[data-ui="celsan"] #cstop .cst-sbtn{display:none}}
+/* ---- Asistan sohbet geçmişi ---- */
+@media (min-width:1000px){html:root:root:root[data-ui="celsan"] :is(#as,#mts):not([hidden]){display:flex!important;flex-direction:column;grid-template-columns:none!important;max-width:none}html:root:root:root[data-ui="celsan"] :is(#as,#mts)>.hero{position:static!important;width:100%!important;max-width:none!important}}
+#as .asw{display:block}
+#as .aslist{position:fixed;top:0;bottom:0;left:0;width:min(84vw,320px);z-index:60;transform:translateX(-102%);transition:transform .28s ease;background:var(--cs-sheet,var(--surface));border-right:1px solid var(--line);box-shadow:var(--shadow);padding:calc(14px + env(safe-area-inset-top)) 12px 14px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+#as .aslist{visibility:hidden}
+#as .aslist.open{transform:none;visibility:visible}
+#as .asrow2{flex-wrap:wrap;justify-content:center}
+#as .asrow2 .assm{padding:6px 10px}
+@media (min-width:1000px){#as .aslist{visibility:visible}}
+#as .asback{display:none}
+#as .aslist.open+.asback{display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.45)}
+#as .aslh{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+#as .aslh b{font:800 15px var(--font-head);color:var(--ink)}
+#as .aslnew{width:100%;margin-bottom:6px}
+#as .aslc{display:flex;align-items:stretch;gap:4px;border-radius:14px;border:1px solid transparent}
+#as .aslc.on{background:var(--soft);border-color:var(--line)}
+#as .aslo{flex:1;min-width:0;text-align:left;background:none;border:0;padding:9px 10px;border-radius:14px;color:var(--ink);font:inherit;cursor:pointer}
+#as .aslo b{display:block;font:700 13.5px var(--font-ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#as .aslo small{display:block;margin-top:2px;font:600 11.5px var(--font-ui);color:var(--ink2)}
+#as .asld{flex:none;min-width:34px;background:none;border:0;color:var(--ink2);font:700 14px var(--font-ui);cursor:pointer;border-radius:12px}
+#as .asld.arm{color:#fff;background:var(--bad);padding:0 10px}
+#as .aslnone{padding:12px 6px;color:var(--ink2);font:600 12.5px/1.5 var(--font-ui)}
+#as .assave small{display:block;margin:4px 0 8px;color:var(--ink2);font:600 12.5px var(--font-ui)}
+#as .assave .fvrow{display:flex;gap:8px;flex-wrap:wrap}
+@media (min-width:1000px){
+  #as .asw{display:grid;grid-template-columns:270px minmax(0,1fr);gap:18px;align-items:start}
+  #as .aslist{position:sticky;top:12px;transform:none;width:auto;height:calc(100vh - 24px);z-index:1;border:1px solid var(--cs-bd,var(--line));border-radius:22px;box-shadow:var(--cs-sh,none);background:var(--cs-glass,var(--surface))}
+  #as .aslist .aslh .assm{display:none}
+  #as .aslbtn{display:none}
+  #as .asbar{left:calc(var(--snw,0px) + 288px)}
+}
 </style>
 </head>
 <body>
@@ -5313,7 +5379,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 23:07</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 23:17</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13292,18 +13358,18 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
   });
   /* ---------- Asistan (sadece sahip): Claude ile soru-cevap, sesli okuma, sabah raporu, toplantılar ----------
      Anahtar sadece bu cihazın localStorage'ında durur (as_key); koda ya da Firestore'a yazılmaz. Toplantılar: "asst_top" (ortak db). */
-  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0,pend:[],cfListen:false,hed:{},ct:null,ctAt:0};
+  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,chats:[],cur:{id:""},listOpen:false,sp:null,delArm:"",noWeb:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0,pend:[],cfListen:false,hed:{},ct:null,ctAt:0};
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
-  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"; if(!/^[A-Za-z0-9]{18,24}$/.test(AS.xvoice))AS.xvoice="DYkrAHD8iwork3YSUBbs"}
+  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"; if(!/^[A-Za-z0-9]{18,24}$/.test(AS.xvoice))AS.xvoice="DYkrAHD8iwork3YSUBbs"; AS.noWeb=asLs("as_noweb")==="1"}
   function asDb(){return dbDiv("rotil")}
   function asIso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
   function asToday(){return asIso(new Date())}
   function asR2(n){return Math.round((+n||0)*100)/100}
   function asWatch(){
     var d=asDb(); if(!d||!asOn()||AS.unM)return;
-    AS.unM=d.collection("asst_top").onSnapshot(function(sn){AS.mt=[]; sn.docs.forEach(function(x){if(x.id==="hedef"){AS.hed=(x.data()||{}).v||{}} else AS.mt.push(Object.assign({id:x.id},x.data()))}); asHomePaint(); try{if(!$("mts").hidden&&!MT.edit)mtPaint()}catch(e){} if(!$("as").hidden){asMeetPaint(); asHedPaint()}},function(){});
+    AS.unM=d.collection("asst_top").onSnapshot(function(sn){AS.mt=[]; AS.chats=[]; sn.docs.forEach(function(x){if(x.id==="hedef"){AS.hed=(x.data()||{}).v||{}} else{var o=Object.assign({id:x.id},x.data()); if(o.ch)AS.chats.push(o); else AS.mt.push(o)}}); AS.chats.sort(function(a,b){return (b.ts||0)-(a.ts||0)}); try{asListPaint()}catch(e){} asHomePaint(); try{if(!$("mts").hidden&&!MT.edit)mtPaint()}catch(e){} if(!$("as").hidden){asMeetPaint(); asHedPaint()}},function(){});
   }
   function asHomePaint(){
     var el=$("hs-as"); if(!el)return;
@@ -13743,13 +13809,16 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
       "Kuralların: Türkçe, samimi ve kısa konuş. Ona her zaman 'patron' diye hitap et ('kanka' deme). Cevapların sesli okunacak: markdown, tablo, madde işareti, emoji kullanma. "+
       "SAYILARI VE PARALARI HER ZAMAN RAKAMLA YAZ, ASLA YAZIYLA YAZMA; binlik ayracı nokta olsun: '5.656.905 ₺', '12.400 adet', '3 makine'. 'on iki bin dört yüz lira' gibi yazı kullanma. "+
       "Patron özellikle bir bölüm sormadıysa Rotil, Cıvata ve Rozet'in HEPSİNİ anlat (üretim, plan, sipariş, ciro hepsinde üç bölüm birlikte gelir); belirli bir bölüm sorarsa sadece onu anlat. Malzeme ihtiyacı hesabı sadece şu an açık olan bölüm için çıkar, kritik stoklar ise tüm bölümler için gelir; bunu belirt. "+
-      "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Diğer veriler için veri_oku kullanılabilir. "+
+      "Fabrika verisini asla tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Diğer veriler için veri_oku kullanılabilir. "+
+      "Patron günlük, genel konularda da soru sorabilir (bilgi, tavsiye, hesaplama, yazı yazma, çeviri, haber, hava, fiyat, araştırma, kişisel işler). Bunlara fabrika araçlarını kullanmadan, bilgili ve samimi bir asistan gibi cevap ver; güncel ya da gerçek dünyaya dair bilgi gerekiyorsa web_search aracıyla ara. Genel sohbette gerektiğinde biraz daha ayrıntılı olabilirsin ama gereksiz uzatma. Önceki mesajlarda konuşulanları hatırla ve ona göre devam et. "+
       "Günlük anlatımda (dün/bugün ne yapıldı) performans_gunu aracını kullan: her bölümde hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saati ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç; ürünlerin HEPSİNİN ismini söyle, atlama. Ciroyu her bölüm için ayrı ayrı söyle ve tanımlıysa günlük, haftalık, aylık hedefle kıyasla (yüzde). Hedefleri hedef_belirle ile ayarlayabilirsin. "+
       "Patron birini aramak isterse (örn. 'Akın Dövme'yi ara'): önce rehber ile bul; birden fazla eşleşirse hangisi olduğunu sor; tek eşleşmede telefon_ac çağır ve 'Arama kartını koydum, 📞 Ara tuşuna dokun' de. Telefonu kendin arayamazsın, tek dokunuş patronda. Numarası yoksa söyle. "+
       "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. "+
       "YAZMA: sadece patronun notlarına (not_ekle, not_guncelle, not_sil) ve toplantılara (toplanti_ekle, toplanti_sil) yazabilirsin; üretim, sipariş, stok, plan gibi başka hiçbir kaydı değiştiremezsin, istenirse bunun henüz açık olmadığını söyle. "+
       "Yazma araçlarını çağırınca kayıt HEMEN YAZILMAZ, ekranda onay kartı çıkar ve sesli onay beklenir. Aracın döndürdüğü 'yapilacak' özetini patrona kısaca söyle ve sonunda 'Onaylıyor musun patron?' diye sor; yazdım deme, onay gelince sistem kendisi yazar. Düzenleme ve silmede önce notlarim/toplanti_listele ile doğru id'yi bul. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
   }
+  function asTools(){return AS.noWeb?AS_TOOLS:AS_TOOLS.concat([{type:"web_search_20250305",name:"web_search",max_uses:5}])}
+  function asJoin(parts){var o=""; parts.forEach(function(x){if(!x)return; if(o&&!/\s$/.test(o)&&!/^[\s.,;:!?)]/.test(x)&&/[.!?:]$/.test(o))o+=" "; o+=x}); return o.trim()}
   function asCall(messages,tools,system,maxTok){
     return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":AS.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
       body:JSON.stringify({model:AS.model,max_tokens:maxTok||1500,system:system,tools:tools&&tools.length?tools:undefined,messages:messages})
@@ -13763,16 +13832,20 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
   function asRun(text){
     asTrim(); AS.msgs.push({role:"user",content:text}); var loop=0;
     function step(){
-      return asCall(AS.msgs,AS_TOOLS,asSystem()).then(function(j){
+      return asCall(AS.msgs,asTools(),asSystem(),2500).catch(function(e){
+        if(!AS.noWeb&&/web.?search|not (enabled|supported|available)|tool/i.test((e&&e.message)||"")){AS.noWeb=true; asLs("as_noweb","1"); return asCall(AS.msgs,AS_TOOLS,asSystem(),2500)}
+        throw e;
+      }).then(function(j){
         AS.msgs.push({role:"assistant",content:j.content});
         var uses=(j.content||[]).filter(function(c){return c.type==="tool_use"});
+        if(j.stop_reason==="pause_turn"&&loop++<7)return step();
         if(j.stop_reason==="tool_use"&&uses.length&&loop++<7){
           return Promise.all(uses.map(function(u){
             asStatus("Bakıyorum…");
             return asTool(u.name,u.input||{}).then(function(r){return {type:"tool_result",tool_use_id:u.id,content:asTrunc(r)}},function(e){return {type:"tool_result",tool_use_id:u.id,content:"Hata: "+((e&&e.message)||e),is_error:true}});
           })).then(function(rs){AS.msgs.push({role:"user",content:rs}); return step()});
         }
-        return (j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
+        return asJoin((j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}));
       });
     }
     return step();
@@ -13914,7 +13987,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     var b=$("asmsgs"); if(!b)return;
     b.innerHTML=AS.ui.length?AS.ui.map(function(m){
       if(m.r==="call")return '<div class="asm nocap a ascall"><b>'+esc(m.t)+'</b>'+(m.tel||[]).slice(0,3).map(function(p){return '<a class="btn" href="tel:'+esc(p)+'">📞 Ara <small>'+esc(p)+'</small></a>'}).join("")+(m.tel&&m.tel.length?'':'<small>Telefon numarası kayıtlı değil</small>')+'</div>';
-      return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':'')+asCfHtml():'<div class="fvcard fvempty"><p>Merhaba patron. Üç bölümün üretim, plan, sipariş, ciro, malzeme, notlarını ve toplantılarını sorabilirsin; notlarına ve takvimine yazdırabilirsin. Yazabilir ya da mikrofona basıp konuşabilirsin.</p></div>';
+      return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':'')+asCfHtml()+asSpHtml():'<div class="fvcard fvempty"><p>Merhaba patron. Üç bölümün üretim, plan, sipariş, ciro, malzeme, notlarını ve toplantılarını sorabilirsin; notlarına ve takvimine yazdırabilirsin. Günlük, genel şeyler de sorabilirsin — internetten de bakarım. Yazabilir ya da mikrofona basıp konuşabilirsin. Sohbetin sonunda kaydetmek isteyip istemediğini sorarım.</p></div>';
     window.scrollTo(0,document.body.scrollHeight);
   }
   function asCtl(){
@@ -13922,13 +13995,54 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     var s=$("asspkon"); if(s){s.setAttribute("aria-pressed",AS.speak); s.textContent=AS.speak?"🔊 Sesli":"🔇 Sessiz"}
     var sd=$("assend"); if(sd)sd.disabled=AS.busy;
   }
+
+  /* ---------- Sohbet geçmişi: kayıt öncesi sorar, solda listelenir, istenince silinir. Veri: "asst_top" içinde ch:1 işaretli belgeler ---------- */
+  function asHasChat(){return AS.ui.some(function(m){return m.r==="u"})&&AS.ui.some(function(m){return m.r==="a"})}
+  function asChatMs(){return AS.ui.filter(function(m){return m.r==="u"||m.r==="a"}).slice(-150).map(function(m){return {r:m.r,t:String(m.t||"").slice(0,8000)}})}
+  function asChatTitle(){var f=AS.ui.filter(function(m){return m.r==="u"})[0]; var t=String(f?f.t:"Sohbet").replace(/\s+/g," ").trim(); return t.length>50?t.slice(0,49)+"…":t}
+  function asChatSave(then){
+    var d=asDb(); if(!d){asStatus("Bağlantı yok — kaydedilemedi"); return}
+    var id=AS.cur.id||("chat_"+Date.now()), body={ch:1,title:AS.cur.id&&AS.cur.title?AS.cur.title:asChatTitle(),ms:asChatMs(),ts:Date.now()};
+    AS.cur.id=id; AS.cur.title=body.title;
+    var pr=d.doc("asst_top/"+id).set(body); AS.sp=null;
+    Promise.resolve(pr).then(function(){asStatus("Sohbet kaydedildi ✓")}).catch(function(){asStatus("Kaydedilemedi")});
+    asListPaint(); asMsgsPaint(); asCtl(); if(then)then();
+  }
+  function asAutosave(){if(AS.cur.id&&asHasChat()){var d=asDb(); if(d)d.doc("asst_top/"+AS.cur.id).set({ch:1,title:AS.cur.title||asChatTitle(),ms:asChatMs(),ts:Date.now()}).catch(function(){})}}
+  function asNew(){asStopSay(); AS.msgs=[]; AS.ui=[]; AS.pend=[]; AS.cfListen=false; AS.cur={id:""}; AS.sp=null; AS.listOpen=false; asMsgsPaint(); asListPaint(); asCtl()}
+  function asLeave(then){
+    if(AS.busy)return;
+    if(asHasChat()&&!AS.cur.id){AS.sp={then:then}; asMsgsPaint(); return}
+    then();
+  }
+  function asOpenChat(id){
+    var c=AS.chats.filter(function(x){return x.id===id})[0]; if(!c)return;
+    asStopSay(); AS.cur={id:id,title:c.title}; AS.ui=(c.ms||[]).map(function(m){return {r:m.r,t:m.t}}); AS.pend=[]; AS.sp=null; AS.listOpen=false;
+    AS.msgs=[]; (c.ms||[]).forEach(function(m){ if(m.r==="u")AS.msgs.push({role:"user",content:m.t}); else if(AS.msgs.length)AS.msgs.push({role:"assistant",content:[{type:"text",text:m.t}]}) });
+    asMsgsPaint(); asListPaint(); asCtl();
+  }
+  function asSpHtml(){
+    if(!AS.sp||AS.busy)return "";
+    return '<div class="asm nocap a ascf assave"><b>Bu sohbeti kaydedeyim mi?</b><small>Kaydedersen soldaki listede kalır, istediğin zaman silebilirsin.</small><div class="fvrow"><button type="button" class="btn" data-asa="svyes">Kaydet</button><button type="button" class="btn ghost" data-asa="svno">Kaydetme</button><button type="button" class="btn ghost" data-asa="svcancel">Vazgeç</button></div></div>';
+  }
+  function asListPaint(){
+    var w=$("aslist"); if(!w)return;
+    w.classList.toggle("open",!!AS.listOpen);
+    w.innerHTML='<div class="aslh"><b>Sohbetlerim</b><button type="button" class="btn ghost assm" data-asa="listx" aria-label="Kapat">✕</button></div>'+
+      '<button type="button" class="btn aslnew" data-asa="new">+ Yeni sohbet</button>'+
+      (AS.chats.length?AS.chats.map(function(c){
+        var arm=AS.delArm===c.id;
+        return '<div class="aslc'+(AS.cur.id===c.id?' on':'')+'"><button type="button" class="aslo" data-asa="chopen" data-id="'+esc(c.id)+'"><b>'+esc(c.title||"Sohbet")+'</b><small>'+esc(noteTsTxt(c.ts))+' · '+((c.ms||[]).length)+' mesaj</small></button><button type="button" class="asld'+(arm?' arm':'')+'" data-asa="chdel" data-id="'+esc(c.id)+'" aria-label="Sohbeti sil">'+(arm?'Sil?':'✕')+'</button></div>'
+      }).join(""):'<div class="aslnone">Henüz kayıtlı sohbet yok. Bir sohbetin sonunda kaydetmek isteyip istemediğini sorarım.</div>');
+    var sv=$("assvbtn"); if(sv)sv.hidden=!(asHasChat()&&!AS.cur.id);
+  }
   function asBuild(){
     var b=$("asbody"); if(!b)return;
-    b.innerHTML='<div class="ascards"><div id="ashed"></div><div id="asmeet"></div><div id="assettw"></div></div>'+
+    b.innerHTML='<div class="asw"><aside class="aslist nocap" id="aslist"></aside><div class="asback" data-asa="listx"></div><div class="asmain">'+'<div class="ascards"><div id="assettw"></div><details class="asmore"><summary>Ciro hedefleri ve toplantılar</summary><div class="ascards"><div id="ashed"></div><div id="asmeet"></div></div></details></div>'+
       '<div class="fvchips aschips">'+[["☀ Sabah raporu","rep"],["Dünkü üretim","Dün neler üretildi?"],["Bugünün planı","Bugünün planı ne?"],["Termini geçenler","Termini geçen siparişler hangileri?"],["Eksik malzeme","Siparişlere göre hangi malzemeler eksik?"],["Ciro","Dünkü ve bu ayki ciro ne?"],["Toplantılarım","Önümüzdeki toplantılarım neler?"]].map(function(c){return '<button type="button" data-asq="'+esc(c[1])+'">'+esc(c[0])+'</button>'}).join("")+'</div>'+
       '<div id="asmsgs" class="asmsgs"></div>'+
-      '<div class="asbar"><div class="status" id="asstatus"></div><div class="asrow"><button type="button" class="btn ghost asic" id="asmic" data-asa="mic" aria-label="Konuş">🎤</button><input class="fin" id="asin" type="text" autocomplete="off" placeholder="Bir şey sor…" aria-label="Mesaj"><button type="button" class="btn" id="assend" data-asa="send">Gönder</button></div><div class="asrow2"><button type="button" class="btn ghost assm" id="asspkon" data-asa="spk"></button><button type="button" class="btn ghost assm" data-asa="sett">⚙ Ayarlar</button><button type="button" class="btn ghost assm" data-asa="clear">Temizle</button></div></div>';
-    AS.built=true; asSettPaint(); asHedPaint(); asMeetPaint(); asMsgsPaint(); asCtl();
+      '<div class="asbar"><div class="status" id="asstatus"></div><div class="asrow"><button type="button" class="btn ghost asic" id="asmic" data-asa="mic" aria-label="Konuş">🎤</button><input class="fin" id="asin" type="text" autocomplete="off" placeholder="Bir şey sor…" aria-label="Mesaj"><button type="button" class="btn" id="assend" data-asa="send">Gönder</button></div><div class="asrow2"><button type="button" class="btn ghost assm" id="asspkon" data-asa="spk"></button><button type="button" class="btn ghost assm" data-asa="sett">⚙ Ayarlar</button><button type="button" class="btn ghost assm" data-asa="new">+ Yeni sohbet</button><button type="button" class="btn ghost assm" id="assvbtn" data-asa="svnow">💾 Kaydet</button><button type="button" class="btn ghost assm aslbtn" data-asa="list">☰ Sohbetler</button></div></div></div></div>';
+    AS.built=true; asSettPaint(); asHedPaint(); asMeetPaint(); asMsgsPaint(); asCtl(); asListPaint();
   }
   function asSettPaint(){
     var w=$("assettw"); if(!w)return;
@@ -13953,7 +14067,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
       '<div class="fvrow" style="margin-top:8px"><input class="fin" id="asmd" type="date" value="'+t+'" aria-label="Tarih"><input class="fin" id="asmh" type="time" aria-label="Saat"><input class="fin" id="asmn" type="text" placeholder="Toplantı adı" autocomplete="off"><button type="button" class="btn ghost" data-asa="madd">Ekle</button></div></div>';
   }
   /* ---------- Toplantılarım (sadece sahip): toplantı notları + yapılanlar, günlük / saatlik / haftalık görünüm. Veri: "asst_top" (asistanla ortak) ---------- */
-  var MT={view:"gun",day:"",edit:null,q:""};
+  var MT={view:"ay",day:"",edit:null,q:"",qh:""};
   function mtSorted(list){return list.slice().sort(function(a,b){return ((a.d||"")+(a.h||"99:99"))<((b.d||"")+(b.h||"99:99"))?-1:1})}
   function mtOfDay(iso){return mtSorted(AS.mt.filter(function(m){return m.d===iso}))}
   function mtTime(m){return m.h?(m.h+(m.e?"–"+m.e:"")):"Saatsiz"}
@@ -13971,6 +14085,8 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     return '<div class="mtform"><h3>'+(MT.edit==="new"?"Yeni toplantı":"Toplantıyı düzenle")+'</h3>'+
       '<label class="fl" for="mtn">Toplantı adı</label><input class="fin" id="mtn" autocomplete="off" placeholder="ör. Kale Kilit ile fiyat görüşmesi" value="'+esc(m.n||"")+'">'+
       '<div class="mtrow"><div><label class="fl" for="mtd">Tarih</label><input class="fin" id="mtd" type="date" value="'+esc(m.d||MT.day)+'"></div><div><label class="fl" for="mth">Başlangıç</label><input class="fin" id="mth" type="time" value="'+esc(m.h||"")+'"></div><div><label class="fl" for="mte">Bitiş</label><input class="fin" id="mte" type="time" value="'+esc(m.e||"")+'"></div></div>'+
+      '<div class="mtchips"><span>Saat</span>'+["08:00","09:00","10:00","11:00","13:00","14:00","15:00","16:00","17:00"].map(function(x){return '<button type="button" data-mtch="h:'+x+'">'+x+'</button>'}).join("")+'</div>'+
+      '<div class="mtchips"><span>Süre</span>'+[["30","30 dk"],["60","1 saat"],["90","1,5 saat"],["120","2 saat"],["180","3 saat"]].map(function(x){return '<button type="button" data-mtch="d:'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>'+
       '<label class="fl" for="mtp">Katılımcılar</label><input class="fin" id="mtp" autocomplete="off" placeholder="kimlerle?" value="'+esc(m.pp||"")+'">'+
       '<label class="fl" for="mtnt">Gündem / notlar</label><textarea class="fin" id="mtnt" rows="5" placeholder="Konuşulacaklar, aklındakiler…">'+esc(m.nt||"")+'</textarea>'+
       '<label class="fl" for="mtac">Toplantıda neler yaptık · kararlar</label><textarea class="fin" id="mtac" rows="7" placeholder="Neler konuşuldu, ne karar verildi, kim ne yapacak…">'+esc(m.ac||"")+'</textarea>'+
@@ -13983,15 +14099,33 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     $("mtsub").textContent=td?("Bugün "+td+" toplantı"):"Bugün toplantı yok";
     if(MT.edit){w.innerHTML=mtForm(); return}
     var mon=isoWeekMonday(MT.day), h='';
-    h+='<div class="otabs" role="group" aria-label="Görünüm">'+[["gun","Günlük"],["saat","Saatlik"],["hafta","Haftalık"]].map(function(x){return '<button type="button" data-mtv="'+x[0]+'" aria-pressed="'+(MT.view===x[0])+'">'+x[1]+'</button>'}).join("")+'</div>';
-    var isW=MT.view==="hafta", lbl=isW?isoWeekLabel(mon):(MT.day===t?"Bugün · ":"")+isoDayLabel(MT.day), curp=isW?(mon===isoWeekMonday(t)):(MT.day===t);
+    h+='<div class="otabs" role="group" aria-label="Görünüm">'+[["ay","Takvim"],["gun","Günlük"],["saat","Saatlik"],["hafta","Haftalık"]].map(function(x){return '<button type="button" data-mtv="'+x[0]+'" aria-pressed="'+(MT.view===x[0])+'">'+x[1]+'</button>'}).join("")+'</div>';
+    var isW=MT.view==="hafta", isM=MT.view==="ay", lbl=isM?(AY[+MT.day.slice(5,7)-1]+" "+MT.day.slice(0,4)):isW?isoWeekLabel(mon):(MT.day===t?"Bugün · ":"")+isoDayLabel(MT.day), curp=isM?(MT.day.slice(0,7)===t.slice(0,7)):isW?(mon===isoWeekMonday(t)):(MT.day===t);
     h+='<div class="mnav" style="margin:12px 0 4px"><button type="button" data-mtnav="-1" aria-label="Önceki">‹</button><h1 style="font-size:15px">'+esc(lbl)+'</h1><button type="button" data-mtnav="1" aria-label="Sonraki">›</button></div>';
-    if(!curp)h+='<button type="button" class="tbtn" data-mtnav="0" style="margin:2px auto 6px;display:block">'+(isW?"Bu haftaya dön":"Bugüne dön")+'</button>';
+    if(!curp)h+='<button type="button" class="tbtn" data-mtnav="0" style="margin:2px auto 6px;display:block">'+(isM?"Bu aya dön":isW?"Bu haftaya dön":"Bugüne dön")+'</button>';
     h+='<input class="search" id="mtq" type="search" autocomplete="off" spellcheck="false" placeholder="Toplantı, not veya karar ara…" value="'+esc(MT.q)+'" style="margin:10px 0">';
     var q=fold(MT.q.trim());
     if(q){
       var hit=mtSorted(AS.mt.filter(function(m){return fold((m.n||"")+" "+(m.pp||"")+" "+(m.nt||"")+" "+(m.ac||"")).indexOf(q)>-1})).reverse();
       h+='<div class="mtday"><b>Arama sonucu</b><small>'+hit.length+' toplantı</small></div>'+(hit.length?hit.slice(0,40).map(function(m){return '<div class="mtdl">'+esc(noteDateTxt(m.d))+'</div>'+mtCard(m,false)}).join(""):'<div class="mtnone">Eşleşen toplantı yok.</div>');
+    }else if(MT.view==="ay"){
+      var y0=+MT.day.slice(0,4), m0=+MT.day.slice(5,7), first=y0+"-"+pad(m0)+"-01", lead=(new Date(y0,m0-1,1).getDay()+6)%7, dn=new Date(y0,m0,0).getDate(), cells="", by={};
+      AS.mt.forEach(function(m){if(m.d&&m.d.slice(0,7)===first.slice(0,7)){(by[m.d]=by[m.d]||[]).push(m)}});
+      Object.keys(by).forEach(function(k){by[k]=mtSorted(by[k])});
+      ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].forEach(function(x){cells+='<div class="mcw">'+x+'</div>'});
+      for(var i=0;i<lead;i++)cells+='<div class="mce off"></div>';
+      var tot=0;
+      for(var dd=1;dd<=dn;dd++){
+        var iso=y0+"-"+pad(m0)+"-"+pad(dd), L0=by[iso]||[], wd=(lead+dd-1)%7; tot+=L0.length;
+        cells+='<button type="button" class="mce'+(iso===t?' today':'')+(iso===MT.day?' sel':'')+(wd>=5?' we':'')+(L0.length?' has':'')+'" data-mtpick="'+iso+'"><span class="mcn">'+dd+'</span>'+
+          (L0.length?'<span class="mcb">'+L0.length+'</span><span class="mcl">'+L0.slice(0,3).map(function(m){return '<i>'+(m.h?esc(m.h)+' ':'')+esc(mtSnip(m.n,22))+'</i>'}).join("")+(L0.length>3?'<i class="mcm">+'+(L0.length-3)+' daha</i>':'')+'</span><span class="mcd">'+L0.slice(0,4).map(function(){return '<u></u>'}).join("")+'</span>':'')+'</button>';
+      }
+      h+='<div class="mcal">'+cells+'</div><div class="mcsum">'+(tot?tot+' toplantı bu ay':'Bu ay toplantı yok')+'</div>';
+      var Ls=mtOfDay(MT.day);
+      h+='<div class="mtq"><div class="mtqh">⚡ '+esc(isoDayLabel(MT.day))+' için hızlı toplantı ekle</div><input class="fin" id="mtqn" autocomplete="off" placeholder="Toplantı adı yaz…" aria-label="Toplantı adı">'+
+        '<div class="mtchips"><span>Saat</span><button type="button" data-mtq="" aria-pressed="'+(!MT.qh)+'">Saatsiz</button>'+["08:00","09:00","10:00","11:00","13:00","14:00","15:00","16:00","17:00"].map(function(x){return '<button type="button" data-mtq="'+x+'" aria-pressed="'+(MT.qh===x)+'">'+x+'</button>'}).join("")+'</div>'+
+        '<div class="frow"><button type="button" class="btn" data-mta="qadd">Ekle</button><button type="button" class="btn ghost" data-mtnew="'+(MT.qh||"")+'">Ayrıntılı ekle…</button></div></div>'+
+        '<div class="mtday sel"><b>'+(MT.day===t?"Bugün · ":"")+esc(isoDayLabel(MT.day))+'</b><small>'+(Ls.length?Ls.length+' toplantı':'toplantı yok')+'</small></div>'+(Ls.length?Ls.map(function(m){return mtCard(m,true)}).join(""):'<div class="mtnone">Bu gün için toplantı yok.</div>');
     }else if(MT.view==="gun"){
       var L=mtOfDay(MT.day);
       h+=L.length?L.map(function(m){return mtCard(m,true)}).join(""):'<div class="mtnone big">Bu gün için toplantı yok.</div>';
@@ -14011,8 +14145,8 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
       }).join("");
     }
     h+='<button type="button" class="btn" data-mtnew="" style="width:100%;margin-top:14px">+ Toplantı ekle</button>';
-    var act=document.activeElement&&document.activeElement.id==="mtq";
-    w.innerHTML=h; if(act){var qi=$("mtq"); if(qi){qi.focus(); try{qi.setSelectionRange(qi.value.length,qi.value.length)}catch(e){}}}
+    var act=document.activeElement&&document.activeElement.id==="mtq", qv=$("mtqn")?$("mtqn").value:"", qact=document.activeElement&&document.activeElement.id==="mtqn";
+    w.innerHTML=h; if(qv&&$("mtqn")){$("mtqn").value=qv; if(qact)$("mtqn").focus()} if(act){var qi=$("mtq"); if(qi){qi.focus(); try{qi.setSelectionRange(qi.value.length,qi.value.length)}catch(e){}}}
   }
   function openMts(){
     if(!asOn())return;
@@ -14035,11 +14169,20 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
   $("mtback").addEventListener("click",mtHome);
   $("mts").addEventListener("input",function(e){if(e.target.id==="mtq"){MT.q=e.target.value; mtPaint()}});
   $("mts").addEventListener("click",function(e){
-    var b=e.target.closest("[data-mtv],[data-mtnav],[data-mtday],[data-mtedit],[data-mtnew],[data-mta]"); if(!b)return;
+    var b=e.target.closest("[data-mtv],[data-mtnav],[data-mtday],[data-mtedit],[data-mtnew],[data-mta],[data-mtpick],[data-mtq],[data-mtch]"); if(!b)return;
+    if(b.dataset.mtq!==undefined){MT.qh=b.dataset.mtq; mtPaint(); return}
+    if(b.dataset.mtch){
+      var hv=$("mth"), ev=$("mte"), ch=b.dataset.mtch.split(":");
+      if(ch[0]==="h"){hv.value=ch[1]+":"+ch[2]; if(ev&&!ev.value){var e0=+ch[1]*60+ +ch[2]+60; ev.value=pad(Math.floor(e0/60)%24)+":"+pad(e0%60)}}
+      else{var st=(hv.value||"09:00").split(":"), em=(+st[0])*60+(+st[1])+(+ch[1]); if(!hv.value)hv.value="09:00"; ev.value=pad(Math.floor(em/60)%24)+":"+pad(em%60)}
+      return}
+    if(b.dataset.mtpick){MT.day=b.dataset.mtpick; mtPaint(); return}
     if(b.dataset.mtv){MT.view=b.dataset.mtv; mtPaint(); return}
     if(b.dataset.mtnav!==undefined){
       var s=+b.dataset.mtnav, t=asToday();
-      if(s===0)MT.day=t; else MT.day=isoAdd(MT.day,s*(MT.view==="hafta"?7:1));
+      if(s===0)MT.day=t;
+      else if(MT.view==="ay"){var yy=+MT.day.slice(0,4), mm=+MT.day.slice(5,7)-1+s, dd2=+MT.day.slice(8,10), nd=new Date(yy,mm+1,0).getDate(), nx=new Date(yy,mm,Math.min(dd2,nd)); MT.day=isoFmt(nx)}
+      else MT.day=isoAdd(MT.day,s*(MT.view==="hafta"?7:1));
       mtPaint(); return}
     if(b.dataset.mtday){MT.day=b.dataset.mtday; MT.view="gun"; mtPaint(); window.scrollTo(0,0); return}
     if(b.dataset.mtedit){MT.edit=b.dataset.mtedit; mtPaint(); window.scrollTo(0,0); return}
@@ -14047,6 +14190,12 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     var a=b.dataset.mta;
     if(a==="cancel"){MT.edit=null; mtPaint(); return}
     if(a==="save"){mtSave(); return}
+    if(a==="qadd"){
+      var qn=($("mtqn")||{}).value||""; qn=qn.trim(); if(!qn){$("mtstatus").textContent="Toplantı adını yaz"; return}
+      var dq=asDb(); if(!dq){$("mtstatus").textContent="Bağlantı yok — kaydedilemedi"; return}
+      var by2=""; try{by2=whoAmI()}catch(e){}
+      dq.collection("asst_top").add({n:qn.slice(0,200),d:MT.day,h:MT.qh||"",e:"",pp:"",nt:"",ac:"",by:by2,ts:Date.now()}).catch(function(){$("mtstatus").textContent="Kaydedilemedi"});
+      $("mtqn").value=""; $("mtstatus").textContent="Eklendi ✓ — notlarını eklemek için toplantıya dokun"; setTimeout(function(){if(/^Eklendi/.test($("mtstatus").textContent))$("mtstatus").textContent=""},3500); return}
     if(a==="del"){
       if(b.dataset.sure!=="1"){b.dataset.sure="1"; b.textContent="Emin misin? Tekrar dokun"; return}
       var d=asDb(); if(d&&MT.edit&&MT.edit!=="new")d.doc("asst_top/"+MT.edit).delete().catch(function(){}); MT.edit=null; mtPaint();
@@ -14066,7 +14215,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     asRun(text).then(function(a){
       AS.busy=false; asStatus(""); asCtl(); a=a||"Cevap alamadım.";
       if(AS.pend.length&&!/onayl/i.test(a))a=a+" Onaylıyor musun patron?";
-      asUi("a",a); if(AS.pend.length)AS.cfListen=true; asSay(a); if(AS.pend.length&&!AS.speak)AS.cfListen=false;
+      asUi("a",a); asAutosave(); asListPaint(); if(AS.pend.length)AS.cfListen=true; asSay(a); if(AS.pend.length&&!AS.speak)AS.cfListen=false;
     }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a","Hata: "+((e&&e.message)||e))});
   }
   function asReport(){
@@ -14082,7 +14231,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     }).then(function(j){
       var tx=(j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
       AS.msgs.push({role:"user",content:"Sabah raporu iste"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:tx}]});
-      asLs("as_rep",td); AS.busy=false; asCtl(); asStatus(""); asUi("a",tx); asSay(tx); asHomePaint();
+      asLs("as_rep",td); AS.busy=false; asCtl(); asStatus(""); asUi("a",tx); asAutosave(); asListPaint(); asSay(tx); asHomePaint();
     }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); asUi("a","Rapor hazırlanamadı: "+((e&&e.message)||e))});
   }
   function openAS(){
@@ -14091,7 +14240,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     asLoad(); asWatch(); if(!AS.built)asBuild(); else {asSettPaint(); asHedPaint(); asMeetPaint(); asCtl(); asMsgsPaint()}
     var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"+(AS.key?"":" · anahtar eklenmedi");
   }
-  function asHome(){asStopSay(); $("as").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
+  function asHome(){asLeave(function(){asStopSay(); $("as").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()})}
   $("asback").addEventListener("click",asHome);
   $("as").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="asin"){e.preventDefault(); var v=e.target.value; e.target.value=""; asSend(v)}});
   $("as").addEventListener("click",function(e){
@@ -14108,7 +14257,19 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     if(a==="cfok"){if(AS.pend.length)asConfirm(true); return}
     if(a==="cfno"){if(AS.pend.length)asConfirm(false); return}
     if(a==="spk"){AS.speak=!AS.speak; asLs("as_speak",AS.speak?"1":"0"); if(!AS.speak)asStopSay(); asCtl(); return}
-    if(a==="clear"){AS.msgs=[]; AS.ui=[]; AS.pend=[]; AS.cfListen=false; asStopSay(); asMsgsPaint(); return}
+    if(a==="new"){asLeave(asNew); return}
+    if(a==="svnow"){asChatSave(); return}
+    if(a==="svyes"){var th=AS.sp&&AS.sp.then; asChatSave(th); return}
+    if(a==="svno"){var th2=AS.sp&&AS.sp.then; AS.sp=null; asMsgsPaint(); if(th2)th2(); return}
+    if(a==="svcancel"){AS.sp=null; asMsgsPaint(); return}
+    if(a==="list"){AS.listOpen=!AS.listOpen; asListPaint(); return}
+    if(a==="listx"){AS.listOpen=false; asListPaint(); return}
+    if(a==="chopen"){var oid=t.dataset.id; if(oid===AS.cur.id){AS.listOpen=false; asListPaint(); return} asLeave(function(){asOpenChat(oid)}); return}
+    if(a==="chdel"){
+      var did=t.dataset.id;
+      if(AS.delArm!==did){AS.delArm=did; asListPaint(); setTimeout(function(){if(AS.delArm===did){AS.delArm=""; asListPaint()}},4000); return}
+      AS.delArm=""; var dd=asDb(); if(dd)dd.doc("asst_top/"+did).delete().catch(function(){});
+      AS.chats=AS.chats.filter(function(x){return x.id!==did}); if(AS.cur.id===did){AS.cur={id:""}; asMsgsPaint()} asListPaint(); asStatus("Sohbet silindi"); return}
     if(a==="sett"){AS.sett=!AS.sett; asSettPaint(); return}
     if(a==="say"){var m=t.closest(".asm"); if(m){asPrime(); asSay(m.textContent.replace("🔊",""),true)} return}
     if(a==="savekey"){
@@ -23135,7 +23296,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     e.innerHTML='<span class="cst-mark cgl"><img alt="" src="'+csLogo()+'"></span><div class="cst-t"><small class="nocap" id="cstsub">Çelsan Group ERP</small><b class="nocap" id="cstitle">Ana sayfa</b></div>'+
       '<button type="button" class="cst-search" data-cs="open" aria-label="Ara"><span class="cst-si">'+csSvg("search")+'</span><span class="nocap">Ara veya git…</span><kbd>Ctrl K</kbd></button>'+
       '<button type="button" class="cst-div" data-nav="div" aria-label="Bölüm değiştir"><i id="cstdot"></i><span class="nocap" id="cstdiv"></span>'+csSvg("chev",2.2)+'</button>'+
-      '<button type="button" class="cst-ib cst-sbtn" data-cs="open" aria-label="Ara">'+csSvg("search")+'</button><div class="cst-r" id="cstr"></div><button type="button" class="cst-av" id="cstav" data-nav="look" aria-label="Görünüm"><span id="cstavl">Ç</span></button>';
+      '<button type="button" class="cst-ib cst-sbtn" data-cs="open" aria-label="Ara">'+csSvg("search")+'</button><button type="button" class="cst-ib cst-as" id="cstas" data-nav="as" aria-label="Asistan" title="Asistanım" hidden>'+csSvg("as",1.8)+'</button><div class="cst-r" id="cstr"></div><button type="button" class="cst-av" id="cstav" data-nav="look" aria-label="Görünüm"><span id="cstavl">Ç</span></button>';
     b.appendChild(e);
     e=d.createElement("nav"); e.id="csdock"; e.setAttribute("aria-label","Alt menü");
     function db(k,ic,l,c){return '<button type="button" class="csdb'+(c?' '+c:'')+'" data-nav="'+k+'" data-k="'+k+'"><span class="csdi">'+csSvg(ic,1.9)+'</span><span class="nocap">'+l+'</span></button>'}
@@ -23210,6 +23371,7 @@ html:root:root:root[data-ui="celsan"] #cz .czq{padding:16px 18px}
     if(!csOn())return; csEnsure(); csMoveBell(true);
     var was=csPrevK; csPrevK=k;
     var t=$("cstitle"); if(t)t.textContent=csTitleOf(k)||"Çelsan";
+    var ab=$("cstas"); if(ab){var on=false; try{on=asOn()}catch(e){} ab.hidden=!on; if(k==="as")ab.setAttribute("aria-current","page"); else ab.removeAttribute("aria-current")}
     var dv=$("cstdiv"); if(dv)dv.textContent=window.__DIVO.name;
     var dt=$("cstdot"); if(dt)dt.style.background="linear-gradient(135deg,"+window.__DIVO.c1+","+window.__DIVO.c2+")";
     var av=$("cstavl"); if(av){var n=""; try{n=myNameStored()}catch(e){} av.textContent=(n||"Ç").trim().charAt(0).toLocaleUpperCase("tr")}
