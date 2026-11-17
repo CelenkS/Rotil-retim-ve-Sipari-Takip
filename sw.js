@@ -14,8 +14,8 @@
 // yayın yapıldığında bazen eski ekran görünmeye devam ediyordu. no-store bu
 // tarayıcı önbelleğini atlayıp her seferinde gerçekten sunucudan (GitHub
 // Pages'ten) taze bir kopya ister.
-var CACHE = "montaj-defteri-shell-v4";
-var SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
+var CACHE = "montaj-defteri-shell-v5";
+var SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(SHELL); }));
