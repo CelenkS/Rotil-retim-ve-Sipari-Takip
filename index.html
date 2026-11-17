@@ -4715,6 +4715,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
 .cgplate{display:flex;align-items:center;justify-content:center;margin:-6px -6px 14px;padding:22px 12px 18px;border-radius:18px;background:radial-gradient(120% 90% at 50% 0%,#12315C 0%,#0A1428 55%,#060A14 100%);box-shadow:inset 0 0 0 1px rgba(120,170,255,.16),0 10px 28px rgba(6,12,30,.35)}
 .cgplate img{display:block;width:100%;max-width:150px;height:auto;filter:drop-shadow(0 0 18px rgba(30,140,255,.45))}
 #loginGate .lgeyebrow{text-align:center;margin-bottom:2px}
+.catth{display:block;flex:none;object-fit:cover;border-radius:11px;border:2px solid var(--line);background:#fff;box-shadow:0 2px 8px rgba(20,30,50,.18)}
+.nr2 .nh .nn2 .catth{border-radius:12px;margin-right:2px}
+.cats button .catth,.chiprow button .catth{border-radius:8px;margin-right:6px;display:inline-block;vertical-align:middle}
 .cgbrand{display:flex;align-items:center;gap:9px}
 .cgbrand img{width:30px;height:30px;border-radius:9px;display:block;box-shadow:0 3px 10px rgba(6,12,30,.35)}
 html:root:root:root:root:root:root:root .cgl{padding:0!important;overflow:hidden;background:#070B14!important;border:0!important;color:transparent!important;font-size:0!important;box-shadow:0 6px 18px rgba(6,12,30,.45)!important}
@@ -4801,7 +4804,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 12:35</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 12:45</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -6239,7 +6242,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
         cb.innerHTML='<div class="needcatsplit">'+bycat.map(function(g,i){
           if(!g.req)return "";
           var cpc=Math.round(g.done/g.req*100), op=needSecCat===i;
-          var h='<button type="button" class="ncrow click" data-nsc="'+i+'"><span class="nn3"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(ORDER_CATS[i])+'<span class="nchev">'+(op?'▾':'▸')+'</span></span><span class="nv3">'+nf.format(g.done)+' / '+nf.format(g.req)+' · %'+cpc+'</span><div class="nbar3"><i style="width:'+Math.min(100,cpc)+'%"></i></div></button>';
+          var h='<button type="button" class="ncrow click" data-nsc="'+i+'"><span class="nn3">'+(catThumb(i,24)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(ORDER_CATS[i])+'<span class="nchev">'+(op?'▾':'▸')+'</span></span><span class="nv3">'+nf.format(g.done)+' / '+nf.format(g.req)+' · %'+cpc+'</span><div class="nbar3"><i style="width:'+Math.min(100,cpc)+'%"></i></div></button>';
           if(op){
             var si1=stageIdx(sec.id), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]}).map(function(o){return {o:o,dn:doneOf(o.id,sec.id).q}}).sort(function(a,b){return (b.dn-a.dn)||((a.o.code||"").localeCompare(b.o.code||"","tr"))});
             var started=lst.filter(function(x){return x.dn>0}), notst=lst.filter(function(x){return x.dn<=0});
@@ -6995,7 +6998,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
       html+='<div class="shead"><div><h2 id="sh-title">'+(orderFormId?"Siparişi düzenle":"Yeni sipariş")+'</h2><small>Ürünü seç ya da kodunu yaz — ürünün bilgileri otomatik gelsin</small></div></div>'+
         '<div class="form oform2">'+
         '<div class="ofs"><h3 class="ofh"><i>1</i>Ürün</h3>'+
-        (IS_CV?'':'<div><span class="fl">Kategori</span><div class="cats">'+ORDER_CATS.map(function(c,i){return '<button type="button" class="d'+i+'" data-ocat="'+i+'" aria-pressed="'+(ordCat===i)+'"><span class="dot"></span>'+c+'</button>'}).join("")+'</div></div>')+
+        (IS_CV?'':'<div><span class="fl">Kategori</span><div class="cats">'+ORDER_CATS.map(function(c,i){return '<button type="button" class="d'+i+'" data-ocat="'+i+'" aria-pressed="'+(ordCat===i)+'">'+(catThumb(i,26)||'<span class="dot"></span>')+c+'</button>'}).join("")+'</div></div>')+
         ('<div id="oppick"><span class="fl">Ürünlerimden seç</span><input class="fin" id="opsq" type="search" autocomplete="off" placeholder="Kod, ad veya müşteri ara…"><div class="oplist" id="oplist"></div></div>')+
         '<div><label class="fl" for="ocode">Ürün kodu <small class="ofhint">Ürünlerimdeki kodu yazınca bilgiler otomatik gelir</small></label><input class="fin" id="ocode" list="dlk" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ör. ft.cls.201" value="'+esc(of.code||"")+'"><datalist id="dlk">'+uk.map(function(n){return '<option value="'+esc(n)+'">'}).join("")+'</datalist></div>'+'<div class="opinfo" id="opinfo" hidden></div>'+
         '</div>'+
@@ -7072,7 +7075,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
       html+='<input class="search" id="plsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu ara…" value="'+esc(planSearch)+'" aria-label="Ürün ara" style="margin-top:10px">';
       html+='<div class="fchips" id="plcatf">'+
         '<button type="button" data-plcat="" aria-pressed="'+(planFCat===null)+'">Tümü</button>'+
-        ORDER_CATS.map(function(c,i){return '<button type="button" class="d'+i+'" data-plcat="'+i+'" aria-pressed="'+(planFCat===i)+'"><span class="dot"></span>'+c+'</button>'}).join("")+
+        ORDER_CATS.map(function(c,i){return '<button type="button" class="d'+i+'" data-plcat="'+i+'" aria-pressed="'+(planFCat===i)+'">'+(catThumb(i,26)||'<span class="dot"></span>')+c+'</button>'}).join("")+
       '</div>';
       if(machinesInSec(sec.id).some(function(m){return (m.caps||[]).length}))html+='<div class="plcapf"><span>Makine filtresi · hangi ürünü yapabilen makineler</span>'+MAC_CAPS.map(function(c){return '<button type="button" data-plcap="'+c.id+'" style="--cc:'+c.c+'" aria-pressed="'+(planFCap===c.id)+'">'+esc(c.n)+'</button>'}).join("")+'</div>';
       if(plCustList.length)html+='<select class="fin" id="plcustf" style="margin-top:8px;height:44px;font-size:14px"><option value="">Tüm müşteriler</option>'+plCustList.map(function(n){return '<option value="'+esc(n)+'"'+(planFCust===n?" selected":"")+'>'+esc(n)+'</option>'}).join("")+'</select>';
@@ -8706,6 +8709,19 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
     var dn=Math.min(dd.q,nd); if(stClosed(o,si))nd=dn;
     return {nd:nd,dn:dn,reqR:nd*pr,doneR:dn*pr};
   }
+  /* Kategori fotoğrafı: o kategorideki en çok sipariş edilen ürünün görseli (yoksa ürün kartındaki görsel) */
+  var catImgC={k:-1,m:{}};
+  function catImgUrl(i){
+    if(catImgC.k!==orders.length)catImgC={k:orders.length,m:{}};
+    if(catImgC.m[i])return catImgC.m[i];
+    var cnt={}, th={};
+    orders.forEach(function(o){if(o.cat!==i)return; var c=o.code||""; cnt[c]=(cnt[c]||0)+1; if(o.th&&!th[c])th[c]=o.th});
+    var best="", bn=0; Object.keys(th).forEach(function(c){if(cnt[c]>bn){bn=cnt[c]; best=th[c]}});
+    if(!best&&typeof products!=="undefined"){for(var j=0;j<products.length;j++){var p=products[j]; if((p.cat||0)===i&&p.th){best=p.th; break}}}
+    if(best)catImgC.m[i]=best;
+    return best;
+  }
+  function catThumb(i,sz){var u=catImgUrl(i); return u?'<img class="catth" alt="" src="'+u+'" style="width:'+sz+'px;height:'+sz+'px;border-color:var(--p'+i+')">':""}
   function opSkip(o,secId,op){if(!(IS_RT&&secId==="cncg"&&op))return false; var tr=isTr(o.code); return op==="t"?!tr:tr}
   function stageNeed(secId,cust,op){
     var si=stageIdx(secId), req=0, done=0, reqR=0, doneR=0;
@@ -9109,7 +9125,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
           return bycat.map(function(g,i){
             if(!g.req)return '';
             var cpc=Math.round(g.done/g.req*100), copen=needCatOpen===keyPref+i;
-            var h='<button type="button" class="needcatrow click nr2 sm" data-ncat="'+i+'" data-nstage="'+sg.sec+'"'+(op?' data-nop="'+op+'"':'')+' style="--c:var(--p'+i+')"><span class="nh"><span class="nn2"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(ORDER_CATS[i])+'</span><span class="npc">%'+cpc+'</span><span class="nchev">'+(copen?'▾':'▸')+'</span></span><div class="nbar sm"><i style="width:'+Math.min(100,cpc)+'%;background:var(--p'+i+')"></i></div><div class="nst"><div class="ns"><small>Adet</small><b>'+nf.format(g.done)+'</b><em>/ '+nf.format(g.req)+'</em></div>'+(g.reqR>0?'<div class="ns"><small>Ciro</small><b>'+money(g.doneR)+' ₺</b><em>/ '+money(g.reqR)+' ₺</em></div>':'')+'</div></button>';
+            var h='<button type="button" class="needcatrow click nr2 sm" data-ncat="'+i+'" data-nstage="'+sg.sec+'"'+(op?' data-nop="'+op+'"':'')+' style="--c:var(--p'+i+')"><span class="nh"><span class="nn2">'+(catThumb(i,40)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(ORDER_CATS[i])+'</span><span class="npc">%'+cpc+'</span><span class="nchev">'+(copen?'▾':'▸')+'</span></span><div class="nbar sm"><i style="width:'+Math.min(100,cpc)+'%;background:var(--p'+i+')"></i></div><div class="nst"><div class="ns"><small>Adet</small><b>'+nf.format(g.done)+'</b><em>/ '+nf.format(g.req)+'</em></div>'+(g.reqR>0?'<div class="ns"><small>Ciro</small><b>'+money(g.doneR)+' ₺</b><em>/ '+money(g.reqR)+' ₺</em></div>':'')+'</div></button>';
             if(copen){
               var si1=stageIdx(sg.sec), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]&&!opSkip(o,sg.sec,op)&&(!cust||custBaseName(o.cust)===cust)}).map(function(o){
                 var c=snCalc(o,sg.sec,si1,op); return {o:o,nd:c.nd,dn:c.dn};
@@ -9290,7 +9306,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
     var osel=$("osort"); if(osel&&osel.value!==ordSort)osel.value=ordSort;
     var cf=$("ocatf");
     if(cf)cf.innerHTML='<button type="button" data-ocf="all" aria-pressed="'+(ordCatF===null)+'">Tümü <small>'+byCat.length+'</small></button>'+
-      ORDER_CATS.map(function(c,i){return (catCnt[i]||ordCatF===i)?'<button type="button" data-ocf="'+i+'" aria-pressed="'+(ordCatF===i)+'"><span class="dot" style="background:var(--p'+i+')"></span>'+esc(c)+' <small>'+catCnt[i]+'</small></button>':''}).join("");
+      ORDER_CATS.map(function(c,i){return (catCnt[i]||ordCatF===i)?'<button type="button" data-ocf="'+i+'" aria-pressed="'+(ordCatF===i)+'">'+(catThumb(i,24)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(c)+' <small>'+catCnt[i]+'</small></button>':''}).join("");
     var uf=$("ocustf");
     if(uf)uf.innerHTML=custOrd.length>1||ordCustF!==null?'<select id="ocustsel" class="'+(ordCustF!==null?'on':'')+'" aria-label="Müşteri filtresi"><option value="all"'+(ordCustF===null?' selected':'')+'>Tüm müşteriler ('+byCust.length+')</option>'+
       custOrd.map(function(k){return '<option value="'+esc(k)+'"'+(ordCustF===k?' selected':'')+'>'+esc(custName[k])+' ('+custCnt[k]+')</option>'}).join("")+'</select>':"";
