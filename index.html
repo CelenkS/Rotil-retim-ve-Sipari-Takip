@@ -3308,6 +3308,10 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 #as .asm{position:relative;max-width:92%;padding:11px 14px;border-radius:16px;font:500 15px/1.5 var(--font-ui);word-break:break-word}
 #as .asm.u{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:5px}
 #as .asm.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px;padding-right:38px}
+#as .asm.ascf{max-width:100%;width:100%;border:2px solid var(--accent);padding-right:14px}
+#as .ashhd,#as .ashr{display:grid;grid-template-columns:72px 1fr 1fr 1fr;gap:6px;align-items:center;margin:6px 0}#as .ashhd span{font:700 11px var(--font-ui);color:var(--ink2);text-align:center}#as .ashr b{font:800 13px var(--font-ui)}#as .ashr .fin{padding:8px 6px;font-size:13px;min-width:0;text-align:right}
+#as .ascf ul{margin:6px 0 10px;padding-left:18px}#as .ascf li{margin:3px 0}
+#as .ascf small{display:block;margin-top:8px;color:var(--ink2);font:600 12px var(--font-ui)}
 #as .asspk{position:absolute;right:6px;top:6px;border:0;background:transparent;font-size:15px;cursor:pointer;opacity:.7}
 #as .asdots{display:flex;gap:5px;padding:14px 16px}
 #as .asdots i{width:7px;height:7px;border-radius:50%;background:var(--ink2);animation:asd 1s infinite ease-in-out}
@@ -4759,7 +4763,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:11</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:34</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12594,7 +12598,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   });
   /* ---------- Asistan (sadece sahip): Claude ile soru-cevap, sesli okuma, sabah raporu, toplantılar ----------
      Anahtar sadece bu cihazın localStorage'ında durur (as_key); koda ya da Firestore'a yazılmaz. Toplantılar: "asst_top" (ortak db). */
-  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0};
+  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0,pend:[],cfListen:false,hed:{}};
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
@@ -12605,7 +12609,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function asR2(n){return Math.round((+n||0)*100)/100}
   function asWatch(){
     var d=asDb(); if(!d||!asOn()||AS.unM)return;
-    AS.unM=d.collection("asst_top").onSnapshot(function(sn){AS.mt=sn.docs.map(function(x){return Object.assign({id:x.id},x.data())}); asHomePaint(); if(!$("as").hidden)asMeetPaint()},function(){});
+    AS.unM=d.collection("asst_top").onSnapshot(function(sn){AS.mt=[]; sn.docs.forEach(function(x){if(x.id==="hedef"){AS.hed=(x.data()||{}).v||{}} else AS.mt.push(Object.assign({id:x.id},x.data()))}); asHomePaint(); if(!$("as").hidden){asMeetPaint(); asHedPaint()}},function(){});
   }
   function asHomePaint(){
     var el=$("hs-as"); if(!el)return;
@@ -12630,7 +12634,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           var o=l.o?asOrd(l.o):null, nm=o?(oTi(o)||o.code||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"");
           var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); e.adet+=(+l.q||0);
         });
-        if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:x.name,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,25)});
+        if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:x.name,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,80)});
       });
     })).then(function(){return out});
   }
@@ -12650,7 +12654,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           var o=l.o?om[l.o]:null, nm=o?(o.code||o.name||"Ürün"):(l.cj?("Bileşen "+(l.n||l.cj)):"Ürün"), k=nm+"|"+(o&&o.cust||"")+"|"+(l.m||"");
           var e=by[k]||(by[k]={urun:nm,musteri:(o&&o.cust)||"",adet:0,makine:l.m||""}); e.adet+=(+l.q||0);
         });
-        if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:(PU_NAMES[div]||{})[sid]||sid,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,20)});
+        if(tot.a||tot.r||Object.keys(by).length)out.push({bolum:(PU_NAMES[div]||{})[sid]||sid,toplam_adet:Math.round(tot.a),ciro_TL:Math.round(tot.r),kalemler:Object.keys(by).map(function(k){return by[k]}).slice(0,80)});
       });
       return out;
     });
@@ -12661,21 +12665,75 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       return (div===window.__DIV?asEnsure([iso]).then(function(){return asProd(iso)}):asProdDiv(div,iso)).catch(function(){return []}).then(function(p){res[names[div]||div]=p.length?p:"üretim girişi yok"});
     })).then(function(){return res});
   }
+  function asHedOf(div){var h=AS.hed[div]||{}; return {g:+h.g||0,h:+h.h||0,a:+h.a||0}}
+  function asPct(v,t){return t>0?Math.round(v/t*100):null}
   function asCiroAll(){
-    var names=asDivNames(), td=asToday(), yd=isoAdd(td,-1), res={}, tg=0, tm=0;
+    var names=asDivNames(), td=asToday(), yd=isoAdd(td,-1), ws=isoWeekMonday(td), pws=isoAdd(ws,-7), pwe=isoAdd(ws,-1), tm=td.slice(0,7), res={}, T={d:0,w:0,p:0,m:0,hg:0,hh:0,ha:0,hs:0}, mks={};
+    [td,yd,ws,pws].forEach(function(i){mks[i.slice(0,7)]=i});
+    var mdays=new Date(+td.slice(0,4),+td.slice(5,7),0).getDate();
     return Promise.all(Object.keys(names).map(function(div){
-      var mks=[td]; if(yd.slice(0,7)!==td.slice(0,7))mks.push(yd);
-      return Promise.all(mks.map(function(i){return asMonthsOf(div,i)})).then(function(arr){
-        var dun=0, ay=0;
-        (PU_SECIDS[div]||[]).forEach(function(sid){
-          arr.forEach(function(md,ix){
-            var data=md[sid]||{}, ds=daySums(data.days,data.lines,data.rev), mk=mks[ix].slice(0,7);
-            Object.keys(ds).forEach(function(i){if(i===yd)dun+=ds[i].r||0; if(mk===td.slice(0,7)&&i<=td&&ix===0)ay+=ds[i].r||0});
-          });
-        });
-        res[names[div]||div]={dun_ciro_TL:Math.round(dun),bu_ay_ciro_TL:Math.round(ay)}; tg+=dun; tm+=ay;
+      return Promise.all(Object.keys(mks).map(function(mk){return asMonthsOf(div,mks[mk])})).then(function(arr){
+        var rev={};
+        arr.forEach(function(md){(PU_SECIDS[div]||[]).forEach(function(sid){var data=md[sid]||{}, ds=daySums(data.days,data.lines,data.rev); Object.keys(ds).forEach(function(i){rev[i]=(rev[i]||0)+(ds[i].r||0)})})});
+        var dun=rev[yd]||0, hf=0, gh=0, ay=0;
+        Object.keys(rev).forEach(function(i){if(i>=ws&&i<=td)hf+=rev[i]; if(i>=pws&&i<=pwe)gh+=rev[i]; if(i.slice(0,7)===tm&&i<=td)ay+=rev[i]});
+        var H=asHedOf(div), o={dun_ciro_TL:Math.round(dun),bu_hafta_ciro_TL:Math.round(hf),gecen_hafta_ciro_TL:Math.round(gh),bu_ay_ciro_TL:Math.round(ay)};
+        if(H.g||H.h||H.a){o.hedefler_TL={gunluk:H.g,haftalik:H.h,aylik:H.a}; o.dun_hedef_yuzde=asPct(dun,H.g); o.bu_hafta_hedef_yuzde=asPct(hf,H.h); o.gecen_hafta_hedef_yuzde=asPct(gh,H.h); o.bu_ay_hedef_yuzde=asPct(ay,H.a)} else o.hedef="tanımlı değil";
+        res[names[div]||div]=o; T.d+=dun; T.w+=hf; T.p+=gh; T.m+=ay; T.hg+=H.g; T.hh+=H.h; T.ha+=H.a;
       }).catch(function(){res[names[div]||div]={hata:"okunamadı"}});
-    })).then(function(){res.TOPLAM={dun_ciro_TL:Math.round(tg),bu_ay_ciro_TL:Math.round(tm)}; return res});
+    })).then(function(){
+      var tt={dun_ciro_TL:Math.round(T.d),bu_hafta_ciro_TL:Math.round(T.w),gecen_hafta_ciro_TL:Math.round(T.p),bu_ay_ciro_TL:Math.round(T.m)};
+      if(T.hg||T.hh||T.ha){tt.hedefler_TL={gunluk:T.hg,haftalik:T.hh,aylik:T.ha}; tt.dun_hedef_yuzde=asPct(T.d,T.hg); tt.bu_hafta_hedef_yuzde=asPct(T.w,T.hh); tt.bu_ay_hedef_yuzde=asPct(T.m,T.ha)}
+      res.TOPLAM=tt; res.takvim={bugun:td,dun:yd,bu_hafta_pazartesi:ws,ayin_gecen_gunu:+td.slice(8),ayin_toplam_gunu:mdays,not:"hafta: pazartesiden bugüne kadar, ay: ayın 1'inden bugüne kadar"};
+      return res;
+    });
+  }
+  /* --- günlük performans: makine · eleman · ürün · yapılan · olması gereken (Puantaj ile aynı hesap) --- */
+  function asWaitFor(f,ms){return new Promise(function(res){var n=0, iv=setInterval(function(){n++; if(f()||n*150>=ms){clearInterval(iv); res()}},150)})}
+  function asPerfDiv(div,iso,md,t,man,names){
+    var rows=[], emps={}, ov={};
+    employees.forEach(function(e){emps[e.id]=e.name||e.n||""});
+    var manRows=[]; Object.keys(man||{}).forEach(function(eid){(man[eid]||[]).forEach(function(r){if((r.div||"rotil")!==div)return; if(r.ov)ov[r.ov]=1; manRows.push(Object.assign({},r,{emp:eid}))})});
+    var auto=[];
+    (PU_SECIDS[div]||[]).forEach(function(sid){
+      var ls=((md[sid]||{}).lines||{})[iso]||[];
+      ls.forEach(function(l,i){
+        if(!l||!(l.q>0))return;
+        var code=l.c||"", key=div+"|"+sid+"|"+fold(code);
+        auto.push({sec:sid,mac:l.m||"",code:code,nm:code?"":(l.cj?("Bileşen "+(l.n||l.cj)):(l.n||"Ürün")),a:l.a||"",b:l.b||"",q:l.q,emp:l.e||"",key:key,dk:0});
+      });
+    });
+    manRows.forEach(function(r){r.sec=r.sec||""; rows.push(r)});
+    auto.forEach(function(r){if(!ov[r.key])rows.push(r)});
+    var outRows=[], byE={};
+    rows.forEach(function(r){
+      var n=(r.a&&r.b)?wkNet(r.a,r.b):null, net=n?n.net:0, tt=t[opKey(r.code)]||{}, dk=+r.dk>0?+r.dk:((tt._f&&tt._f[r.sec])?0:(+tt[r.sec]>0?+tt[r.sec]:0));
+      var q=(r.q===""||r.q==null||isNaN(+r.q))?null:+r.q, tgt=(net>0&&dk>0)?net/dk:0;
+      var en=r.emp?(emps[r.emp]||"Bilinmeyen eleman"):"Eleman atanmamış";
+      var o={makine:r.mac?machineNameOf(r.mac):"",eleman:en,urun:(r.code?cvTi(r.code,div):r.nm)||"Ürün",bolum:(PU_NAMES[div]||{})[r.sec]||r.sec,yapilan:q};
+      if(n){o.calisma=r.a+"-"+r.b; o.net_dk=Math.round(net)}
+      if(dk>0)o.adet_basina_dk=Math.round(dk*10)/10;
+      if(tgt>0){o.olmasi_gereken=Math.round(tgt); o.yuzde=q===null?null:Math.round(q/tgt*100)}
+      else o.not=!n?"başlangıç/bitiş saati girilmemiş":"operasyon süresi tanımlı değil";
+      outRows.push(o);
+      var e=byE[en]||(byE[en]={eleman:en,yapilan:0,olmasi_gereken:0,hedefli_yapilan:0}); e.yapilan+=q||0; if(tgt>0){e.olmasi_gereken+=tgt; e.hedefli_yapilan+=q||0}
+    });
+    outRows.sort(function(a,b){return String(a.makine).localeCompare(String(b.makine),"tr")||String(a.eleman).localeCompare(String(b.eleman),"tr")});
+    var ozet=Object.keys(byE).map(function(k){var e=byE[k]; return {eleman:e.eleman,yapilan:Math.round(e.yapilan),olmasi_gereken:Math.round(e.olmasi_gereken),yuzde:e.olmasi_gereken>0?Math.round(e.hedefli_yapilan/e.olmasi_gereken*100):null}});
+    return {kayitlar:outRows.slice(0,90),eleman_ozeti:ozet,kayit_sayisi:outRows.length};
+  }
+  function asPerf(iso,only){
+    var names=asDivNames(), ids=only&&names[only]?[only]:Object.keys(names), res={};
+    try{watchEmployees(); watchMachinesList()}catch(e){}
+    var rd=asDb(), manP=rd?rd.doc("puantaj/"+iso).get().then(function(sn){return sn.exists?((sn.data()||{}).e||{}):{}}).catch(function(){return {}}):Promise.resolve({});
+    return asWaitFor(function(){return employees.length&&machinesList.length},3500).then(function(){return manP}).then(function(man){
+      return Promise.all(ids.map(function(div){
+        var d=dbDiv(div); if(!d){res[names[div]||div]="bağlanılamadı"; return Promise.resolve()}
+        return Promise.all([asMonthsOf(div,iso),d.doc("ayarlar/islemsure").get().then(function(sn){return (sn.exists&&sn.data().t)||{}}).catch(function(){return {}})]).then(function(r){
+          var o=asPerfDiv(div,iso,r[0],r[1],man,names); res[names[div]||div]=o.kayit_sayisi?o:"o gün üretim kaydı yok";
+        }).catch(function(){res[names[div]||div]="okunamadı"});
+      }));
+    }).then(function(){return res});
   }
   function asPlan(iso){
     return asEnsure([iso]).then(function(){
@@ -12686,6 +12744,41 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       });
       return out;
     });
+  }
+  function asPlanDiv(div,iso){
+    var d=dbDiv(div); if(!d)return Promise.resolve([]);
+    return Promise.all([d.collection("orders").get().then(function(sn){var m={}; sn.docs.forEach(function(x){m[x.id]=x.data()}); return m}).catch(function(){return {}}),
+      d.collection("machines").get().then(function(sn){var m={}; sn.docs.forEach(function(x){m[x.id]=x.data()}); return m}).catch(function(){return {}}),
+      d.collection("employees").get().then(function(sn){var m={}; sn.docs.forEach(function(x){m[x.id]=x.data()}); return m}).catch(function(){return {}}),
+      asMonthsOf(div,iso)]).then(function(r){
+      var om=r[0], mm=r[1], em=r[2], md=r[3], out=[];
+      (PU_SECIDS[div]||[]).forEach(function(sid){
+        var P=normPlans((md[sid]||{}).plans), items=(P.day&&P.day[iso])||[]; if(!items.length)return;
+        out.push({bolum:(PU_NAMES[div]||{})[sid]||sid,satirlar:items.map(function(pe){var o=om[pe.oid], m=pe.mid?mm[pe.mid]:null, e=pe.eid?em[pe.eid]:null; return {urun:o?(o.code||o.name||pe.oid):pe.oid,musteri:(o&&o.cust)||"",adet:pe.q,makine:m?(m.name||m.n||pe.mid):"",eleman:e?(e.name||e.n||""):"",saat:(pe.a&&pe.b)?pe.a+"-"+pe.b:""}})});
+      });
+      return out;
+    });
+  }
+  function asPlanAll(iso){
+    var names=asDivNames(), ids=Object.keys(names), res={};
+    return Promise.all(ids.map(function(div){
+      return (div===window.__DIV?asPlan(iso):asPlanDiv(div,iso)).catch(function(){return []}).then(function(p){res[names[div]||div]=p.length?p:"plan girilmemiş"});
+    })).then(function(){return res});
+  }
+  function asOrdersDiv(div,onlyLate){
+    var d=dbDiv(div); if(!d)return Promise.resolve({siparisler:[]});
+    return d.collection("orders").get().then(function(sn){
+      var l=sn.docs.map(function(x){return x.data()}).filter(function(o){return !o.shipped}).map(function(o){var n=daysTo(o.dd); return {urun:o.code||o.name||"Ürün",musteri:o.cust||"",adet:o.qty,termin:o.dd||"",kalan_gun:n,tutar_TL:Math.round((+o.qty||0)*(+o.up||0))}});
+      if(onlyLate)l=l.filter(function(x){return x.kalan_gun!==null&&x.kalan_gun<0});
+      l.sort(function(a,b){return (a.kalan_gun===null)-(b.kalan_gun===null)||a.kalan_gun-b.kalan_gun});
+      return {acik_siparis_sayisi:onlyLate?undefined:l.length,siparisler:l.slice(0,25),not:"Sevk edilmemiş siparişler (üretimi bitmiş olanlar ayrıca ayıklanmadı)"};
+    }).catch(function(){return {hata:"okunamadı"}});
+  }
+  function asOrdersAll(onlyLate){
+    var names=asDivNames(), res={};
+    return Promise.all(Object.keys(names).map(function(div){
+      return (div===window.__DIV?Promise.resolve(asOrders(onlyLate)):asOrdersDiv(div,onlyLate)).then(function(o){res[names[div]||div]=o});
+    })).then(function(){return res});
   }
   function asOrders(onlyLate){
     var l=orders.filter(function(o){return !o.shipped&&!isComplete(o)}).map(function(o){var n=daysTo(o.dd); return {urun:oTi(o)||o.code,musteri:o.cust||"",adet:o.qty,termin:o.dd||"",kalan_gun:n,tutar_TL:Math.round(orderTotal(o))}});
@@ -12774,44 +12867,153 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       },300);
     });
   }
-  function asNotes(){return {notlar:notesAll.slice(0,30).map(function(n){return asSlim(n)})}}
+  function asNotes(){return {notlar:notesAll.slice(0,40).map(function(n){return asSlim(n)})}}
+  function asNoteById(id){return notesAll.filter(function(x){return x.id===id})[0]||null}
+  function asDT(d,h){return d?(noteDateTxt(d)+(h?" · "+h:"")):""}
+  var AS_WRITE={toplanti_ekle:1,toplanti_sil:1,not_ekle:1,not_guncelle:1,not_sil:1,hedef_belirle:1};
+  function asTL(n){return (Math.round(+n||0)).toLocaleString("tr-TR")+" ₺"}
+  function asDivIds(b){var names=asDivNames(), k=fold(b||""); if(!k||k==="hepsi"||k==="tumu"||k==="hepsi")return Object.keys(names); return Object.keys(names).filter(function(i){return i===k||fold(names[i])===k})}
+  function asPrep(n,a){
+    if(n==="toplanti_ekle"){
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(a.tarih||"")||!a.baslik)return {err:"tarih (YYYY-MM-DD) ve baslik gerekli"};
+      return {name:n,args:a,sum:"Toplantı eklenecek: "+String(a.baslik).slice(0,120)+" · "+asDT(a.tarih,a.saat)};
+    }
+    if(n==="toplanti_sil"){
+      var m=AS.mt.filter(function(x){return x.id===a.id})[0]; if(!m)return {err:"Bu id'de toplantı yok. Önce toplanti_listele ile bak."};
+      return {name:n,args:a,sum:"Toplantı silinecek: "+m.n+" · "+asDT(m.d,m.h)};
+    }
+    if(n==="not_ekle"){
+      if(!(a.baslik||a.metin||(a.maddeler&&a.maddeler.length)))return {err:"baslik, metin ya da maddeler gerekli"};
+      if(a.tarih&&!/^\d{4}-\d{2}-\d{2}$/.test(a.tarih))return {err:"tarih YYYY-MM-DD olmalı"};
+      return {name:n,args:a,sum:"Not eklenecek: "+(a.baslik?"“"+String(a.baslik).slice(0,100)+"”":"")+(a.metin?" — "+String(a.metin).slice(0,160):"")+(a.maddeler&&a.maddeler.length?" ("+a.maddeler.length+" madde)":"")+(a.tarih?" · hatırlatma "+asDT(a.tarih,a.saat):"")};
+    }
+    if(n==="not_guncelle"){
+      var o=asNoteById(a.id); if(!o)return {err:"Bu id'de not yok. Önce notlarim ile bak."};
+      if(a.tarih&&!/^\d{4}-\d{2}-\d{2}$/.test(a.tarih))return {err:"tarih YYYY-MM-DD olmalı"};
+      var ch=[]; if(a.baslik!==undefined)ch.push("başlık: “"+a.baslik+"”"); if(a.metin!==undefined)ch.push("metin: "+String(a.metin).slice(0,140)); if(a.maddeler)ch.push(a.maddeler.length+" madde"); if(a.tarih!==undefined)ch.push("hatırlatma: "+(a.tarih?asDT(a.tarih,a.saat):"kaldırılsın")); if(a.tamamlandi!==undefined)ch.push(a.tamamlandi?"tamamlandı olarak işaretlensin":"tamamlanmadı olarak işaretlensin"); if(a.sabit!==undefined)ch.push(a.sabit?"sabitlensin":"sabitlenmesin");
+      if(!ch.length)return {err:"değişecek alan yok"};
+      return {name:n,args:a,sum:"Not güncellenecek: “"+(o.title||String(o.text||"").slice(0,40)||"başlıksız")+"” → "+ch.join("; ")};
+    }
+    if(n==="hedef_belirle"){
+      var ids=asDivIds(a.bolum); if(!ids.length)return {err:"Bölüm bulunamadı (rotil, civata, rozet ya da hepsi)"};
+      var parts=[]; if(a.gunluk!==undefined)parts.push("günlük "+asTL(a.gunluk)); if(a.haftalik!==undefined)parts.push("haftalık "+asTL(a.haftalik)); if(a.aylik!==undefined)parts.push("aylık "+asTL(a.aylik));
+      if(!parts.length)return {err:"gunluk, haftalik ya da aylik gerekli"};
+      var nm=asDivNames(); return {name:n,args:a,sum:"Ciro hedefi: "+ids.map(function(i){return nm[i]}).join(", ")+" → "+parts.join(", ")};
+    }
+    if(n==="not_sil"){
+      var o2=asNoteById(a.id); if(!o2)return {err:"Bu id'de not yok. Önce notlarim ile bak."};
+      return {name:n,args:a,sum:"Not silinecek: “"+(o2.title||String(o2.text||"").slice(0,60)||"başlıksız")+"”"};
+    }
+    return {err:"Bilinmeyen yazma aracı"};
+  }
+  function asNoteWrite(n,a){
+    var me=""; try{me=myEmail()}catch(e){} if(!db||!me)return Promise.reject(new Error("Bağlantı yok"));
+    var items=function(l){return (l||[]).map(function(t){return {t:String(t).slice(0,200),d:false}})};
+    if(n==="not_ekle"){
+      var data={title:String(a.baslik||"").slice(0,200),text:String(a.metin||"").slice(0,4000),items:items(a.maddeler),imgs:[],ths:[],due:a.tarih||"",time:a.tarih?(a.saat||""):"",color:"",pin:!!a.sabit,done:false,doneAt:0,ts:Date.now(),owner:me,cr:Date.now()};
+      return db.collection("usernotes").add(data).then(function(r){return {tamam:true,id:r.id}});
+    }
+    var o=asNoteById(a.id); if(!o)return Promise.reject(new Error("Not bulunamadı"));
+    if(n==="not_sil"){
+      var gone=(o.imgs||[]).map(function(i){return db.doc("noteimg/"+i).delete().catch(function(){})});
+      return Promise.all(gone).then(function(){return db.doc("usernotes/"+a.id).delete()}).then(function(){return {tamam:true}});
+    }
+    var u={ts:Date.now()};
+    if(a.baslik!==undefined)u.title=String(a.baslik).slice(0,200);
+    if(a.metin!==undefined)u.text=String(a.metin).slice(0,4000);
+    if(a.maddeler)u.items=items(a.maddeler);
+    if(a.tarih!==undefined){u.due=a.tarih||""; u.time=a.tarih?(a.saat||""):""} else if(a.saat!==undefined&&o.due)u.time=a.saat;
+    if(a.tamamlandi!==undefined){u.done=!!a.tamamlandi; u.doneAt=a.tamamlandi?(o.doneAt||Date.now()):0}
+    if(a.sabit!==undefined)u.pin=!!a.sabit;
+    return db.doc("usernotes/"+a.id).update(u).then(function(){return {tamam:true}});
+  }
+  function asExec(p){
+    if(p.name==="toplanti_ekle")return asTopAdd(p.args);
+    if(p.name==="toplanti_sil")return asTopDel(p.args);
+    if(p.name==="hedef_belirle"){
+      var d=asDb(); if(!d)return Promise.reject(new Error("Bağlantı yok"));
+      var v=JSON.parse(JSON.stringify(AS.hed||{})), a=p.args; asDivIds(a.bolum).forEach(function(i){var h=v[i]||(v[i]={}); if(a.gunluk!==undefined)h.g=Math.max(0,+a.gunluk||0); if(a.haftalik!==undefined)h.h=Math.max(0,+a.haftalik||0); if(a.aylik!==undefined)h.a=Math.max(0,+a.aylik||0)});
+      return asHedSave(v);
+    }
+    return asNoteWrite(p.name,p.args);
+  }
+  function asWord(t){return String(t||"").toLocaleLowerCase("tr").replace(/[^a-zçğıöşü0-9 ]/g," ").split(/\s+/).filter(Boolean)}
+  var AS_YES={evet:1,okey:1,okay:1,ok:1,tamam:1,onaylıyorum:1,onayla:1,onaylarım:1,onay:1,olur:1,yaz:1,kaydet:1,aynen:1,tabi:1,tabii:1,yap:1,ekle:1,sil:1,doğru:1,peki:1,he:1};
+  var AS_NO={hayır:1,hayir:1,iptal:1,vazgeç:1,vazgeçtim:1,olmasın:1,yapma:1,dur:1,istemiyorum:1,değil:1,yanlış:1,hayda:1};
+  function asConfirmWord(t){
+    var w=asWord(t); if(!w.length)return "";
+    var no=w.some(function(x){return AS_NO[x]}), yes=w.some(function(x){return AS_YES[x]});
+    if(no)return w.length<=3?"no":"nomore";
+    if(yes&&w.length<=6)return "yes";
+    return "";
+  }
+  function asHedSave(v){
+    var d=asDb(); if(!d)return Promise.reject(new Error("Bağlantı yok")); var by=""; try{by=whoAmI()}catch(e){}
+    return d.doc("asst_top/hedef").set({v:v,by:by,ts:Date.now()}).then(function(){AS.hed=v; return {tamam:true}});
+  }
+  function asConfirm(ok){
+    var ps=AS.pend; AS.pend=[]; AS.cfListen=false; asStopSay();
+    if(!ok){asUi("a","Tamam patron, iptal ettim."); asSay("Tamam patron, iptal ettim."); AS.msgs.push({role:"user",content:"(Yazma işlemi iptal edildi)"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:"Tamam patron, iptal ettim."}]}); return Promise.resolve()}
+    AS.busy=true; asCtl(); asStatus("Yazıyorum…"); asMsgsPaint();
+    return Promise.all(ps.map(function(p){return asExec(p).then(function(){return {ok:true,p:p}},function(e){return {ok:false,p:p,e:e}})})).then(function(rs){
+      AS.busy=false; asCtl(); asStatus("");
+      var good=rs.filter(function(r){return r.ok}), bad=rs.filter(function(r){return !r.ok});
+      var tx=(good.length?"Tamam patron, yazdım ✓ "+good.map(function(r){return r.p.sum}).join("; "):"")+(bad.length?(good.length?" ":"")+"Şunlar yazılamadı: "+bad.map(function(r){return r.p.sum+" ("+((r.e&&r.e.message)||"hata")+")"}).join("; "):"");
+      asUi("a",tx); asSay(good.length&&!bad.length?"Tamam patron, yazdım.":(good.length?"Bir kısmını yazdım, bir kısmı yazılamadı.":"Yazamadım patron, bir sorun çıktı."));
+      AS.msgs.push({role:"user",content:"(Onay verildi. "+(good.length?"Yazıldı: "+good.map(function(r){return r.p.sum}).join("; ")+". ":"")+(bad.length?"Yazılamadı: "+bad.map(function(r){return r.p.sum}).join("; ")+".":"")+")"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:"Tamam patron."}]});
+    });
+  }
   var AS_TOOLS=[
     {name:"uretim_gunu",description:"Verilen günde (YYYY-MM-DD) üretim bölümü bölümü yapılan adet, ciro ve ürün kalemlerini döndürür. bolum: rotil, civata, rozet veya hepsi (varsayılan hepsi).",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},bolum:{type:"string"}},required:["tarih"]}},
-    {name:"plan_gunu",description:"Verilen günün planını döndürür: hangi bölümde hangi makinede hangi ürün, kaç adet, hangi eleman.",input_schema:{type:"object",properties:{tarih:{type:"string"}},required:["tarih"]}},
-    {name:"siparisler",description:"Açık siparişleri (müşteri, adet, termin, kalan gün) döndürür. sadece_geciken true ise sadece termini geçenleri.",input_schema:{type:"object",properties:{sadece_geciken:{type:"boolean"}}}},
-    {name:"ciro",description:"Tüm bölümler (Rotil, Cıvata, Rozet) için dünün cirosu ve bu ayın cirosu, ayrıca şu an açık olan bölümün açık siparişlerinin toplam tutarı.",input_schema:{type:"object",properties:{}}},
+    {name:"performans_gunu",description:"Verilen günde HER BÖLÜMDE hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saatine ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç. Ayrıca eleman bazlı özet. bolum: rotil, civata, rozet veya hepsi.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},bolum:{type:"string"}},required:["tarih"]}},
+    {name:"plan_gunu",description:"Verilen günün planını üç bölüm (Rotil, Cıvata, Rozet) için döndürür: hangi bölümde hangi makinede hangi ürün, kaç adet, hangi eleman.",input_schema:{type:"object",properties:{tarih:{type:"string"}},required:["tarih"]}},
+    {name:"siparisler",description:"Üç bölümün açık siparişlerini (müşteri, adet, termin, kalan gün, tutar) döndürür. sadece_geciken true ise sadece termini geçenleri.",input_schema:{type:"object",properties:{sadece_geciken:{type:"boolean"}}}},
+    {name:"ciro",description:"Her bölüm (Rotil, Cıvata, Rozet) ve toplam için dünün, bu haftanın, geçen haftanın ve bu ayın cirosu; günlük/haftalık/aylık hedefler ve hedef yüzdeleri; ayrıca açık siparişlerin toplam tutarı.",input_schema:{type:"object",properties:{}}},
     {name:"finans",description:"Finans özeti (sadece sahip): borç, alacak, çekler, hesaplar, bu hafta ödenecek ve tahsil beklenen tutar.",input_schema:{type:"object",properties:{}}},
-    {name:"malzeme_ihtiyaci",description:"Açık siparişlere göre gereken ve eksik olan malzemeleri ve kritik seviyenin altındaki stokları döndürür.",input_schema:{type:"object",properties:{}}},
+    {name:"malzeme_ihtiyaci",description:"Siparişlere göre eksik malzemeler (şu an açık olan bölüm için hesaplanır) ve tüm bölümlerde kritik seviyenin altındaki stoklar.",input_schema:{type:"object",properties:{}}},
     {name:"maas_gider",description:"Sahibe özel 'Maaş ve giderler': verilen ayın (ay: YYYY-MM, boşsa bu ay) toplam net maaş ve sigorta, kira/elektrik/yemek/mazot/kart/genel giderler ve maaşların bölüm bölüm dağılımı. detay true ise kişi kişi maaş da döner; sadece kullanıcı açıkça isterse kullan.",input_schema:{type:"object",properties:{ay:{type:"string"},detay:{type:"boolean"}}}},
-    {name:"notlarim",description:"Kullanıcının kişisel notları.",input_schema:{type:"object",properties:{}}},
+    {name:"notlarim",description:"Kullanıcının kişisel notlarını (id, başlık, metin, maddeler, hatırlatma tarihi, tamamlandı mı) döndürür.",input_schema:{type:"object",properties:{}}},
+    {name:"not_ekle",description:"Kullanıcının notlarına yeni not ekler. YAZMA işlemidir: hemen yazılmaz, kullanıcıya onay sorulur. maddeler: kontrol listesi maddeleri.",input_schema:{type:"object",properties:{baslik:{type:"string"},metin:{type:"string"},maddeler:{type:"array",items:{type:"string"}},tarih:{type:"string",description:"hatırlatma günü YYYY-MM-DD"},saat:{type:"string",description:"HH:MM"},sabit:{type:"boolean"}}}},
+    {name:"not_guncelle",description:"Var olan notu id ile günceller (sadece verdiğin alanlar değişir). tamamlandi true/false notu tamamlar. YAZMA işlemidir: onay sorulur. Önce notlarim ile id'yi bul.",input_schema:{type:"object",properties:{id:{type:"string"},baslik:{type:"string"},metin:{type:"string"},maddeler:{type:"array",items:{type:"string"}},tarih:{type:"string",description:"boş string hatırlatmayı kaldırır"},saat:{type:"string"},tamamlandi:{type:"boolean"},sabit:{type:"boolean"}},required:["id"]}},
+    {name:"not_sil",description:"Notu id ile siler. YAZMA işlemidir: onay sorulur. Önce notlarim ile id'yi bul.",input_schema:{type:"object",properties:{id:{type:"string"}},required:["id"]}},
+    {name:"hedef_belirle",description:"Bölümlerin ciro hedefini belirler (TL). bolum: rotil, civata, rozet veya hepsi. gunluk, haftalik, aylik: sadece verilenler değişir. YAZMA işlemidir: onay sorulur.",input_schema:{type:"object",properties:{bolum:{type:"string"},gunluk:{type:"number"},haftalik:{type:"number"},aylik:{type:"number"}},required:["bolum"]}},
     {name:"toplanti_listele",description:"Toplantıları listeler. baslangic/bitis YYYY-MM-DD (boşsa bugünden 30 gün).",input_schema:{type:"object",properties:{baslangic:{type:"string"},bitis:{type:"string"}}}},
-    {name:"toplanti_ekle",description:"Takvime toplantı ekler.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},saat:{type:"string",description:"HH:MM"},baslik:{type:"string"},not:{type:"string"}},required:["tarih","baslik"]}},
-    {name:"toplanti_sil",description:"Toplantıyı id ile siler. Önce kullanıcıya hangisini sildiğini söyle.",input_schema:{type:"object",properties:{id:{type:"string"}},required:["id"]}},
+    {name:"toplanti_ekle",description:"Takvime toplantı ekler. YAZMA işlemidir: onay sorulur.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},saat:{type:"string",description:"HH:MM"},baslik:{type:"string"},not:{type:"string"}},required:["tarih","baslik"]}},
+    {name:"toplanti_sil",description:"Toplantıyı id ile siler. YAZMA işlemidir: onay sorulur.",input_schema:{type:"object",properties:{id:{type:"string"}},required:["id"]}},
     {name:"veri_oku",description:"Diğer her veriyi okumak için: bir Firestore koleksiyonundan belge okur. koleksiyon: "+Object.keys(AS_COL).join(", ")+". bolum: rotil, civata veya rozet (boşsa şu anki). alan+deger ile eşitlik filtresi.",input_schema:{type:"object",properties:{koleksiyon:{type:"string"},bolum:{type:"string"},alan:{type:"string"},deger:{},limit:{type:"number"}},required:["koleksiyon"]}}
   ];
   function asTool(n,a){
     if(n==="uretim_gunu")return asProdAll(a.tarih,a.bolum&&a.bolum!=="hepsi"?a.bolum:null).then(function(p){return {tarih:a.tarih,uretim:p}});
-    if(n==="plan_gunu")return asPlan(a.tarih).then(function(p){return {tarih:a.tarih,bolum:window.__DIVO.name,plan:p}});
-    if(n==="siparisler")return Promise.resolve(asOrders(!!a.sadece_geciken));
+    if(n==="performans_gunu")return asPerf(a.tarih,a.bolum&&a.bolum!=="hepsi"?a.bolum:null).then(function(p){return {tarih:a.tarih,bolumler:p}});
+    if(n==="plan_gunu")return asPlanAll(a.tarih).then(function(p){return {tarih:a.tarih,bolumler:p}});
+    if(n==="siparisler")return asOrdersAll(!!a.sadece_geciken).then(function(o){return {bolumler:o}});
     if(n==="ciro")return Promise.all([asCiroAll(),asEnsure([asToday(),isoAdd(asToday(),-1)]).then(asCiro)]).then(function(r){return {bolumler:r[0],acik_bolum:window.__DIVO.name,acik_siparis_tutari_TL:r[1].acik_siparislerin_toplam_tutari_TL,acik_siparis_adedi:r[1].acik_siparis}});
     if(n==="finans")return asFin();
     if(n==="malzeme_ihtiyaci")return asMat();
     if(n==="maas_gider")return asMaas(a);
     if(n==="notlarim")return Promise.resolve(asNotes());
     if(n==="toplanti_listele")return Promise.resolve(asTopList(a));
-    if(n==="toplanti_ekle")return asTopAdd(a);
-    if(n==="toplanti_sil")return asTopDel(a);
+    if(AS_WRITE[n]){
+      var p=asPrep(n,a); if(p.err)return Promise.reject(new Error(p.err));
+      var sg=JSON.stringify([p.name,p.args]); if(!AS.pend.some(function(x){return JSON.stringify([x.name,x.args])===sg}))AS.pend.push(p);
+      return Promise.resolve({yazilmadi:true,durum:"ONAY BEKLENİYOR. Henüz hiçbir şey yazılmadı. Ekranda yazılı onay kartı var.",yapilacak:p.sum});
+    }
     if(n==="veri_oku")return asRead(a);
     return Promise.reject(new Error("Bilinmeyen araç"));
   }
   function asTrunc(r){var s=JSON.stringify(r); return s.length>14000?s.slice(0,14000)+"…(kısaltıldı)":s}
   function asSystem(){
     var d=new Date(), me=""; try{me=whoAmI()}catch(e){}
-    return "Sen Yusuf Çelenk'in kişisel üretim ve iş asistanısın. Yusuf; Rotil (kürenin rotil), Cıvata ve Rozet bölümleri olan bir fabrikanın sahibi, 'Üretim Defteri' uygulamasını kullanıyor. "+
+    return "Sen Yusuf Çelenk'in kişisel üretim ve iş asistanısın. Yusuf; Rotil, Cıvata ve Rozet bölümleri olan bir fabrikanın sahibi, 'Üretim Defteri' uygulamasını kullanıyor. "+
       "Bugün "+asToday()+" "+GUN[(d.getDay()+6)%7]+", saat "+pad(d.getHours())+":"+pad(d.getMinutes())+". Şu an uygulamada açık bölüm: "+window.__DIVO.name+". "+
-      "Kuralların: Türkçe, samimi ve kısa konuş ('kanka' diyebilirsin). Cevapların sesli okunacak: markdown, tablo, madde işareti, emoji kullanma; rakamları ve paraları okunacak şekilde yaz (örn. '12 bin 400 lira'). "+
-      "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Üretim ve ciro araçları üç bölümü (Rotil, Cıvata, Rozet) birden verir. Plan, sipariş ve malzeme araçları şu an açık olan bölümün verisini verir; başka bölüm sorulursa veri_oku ile oku ya da kullanıcıdan o bölüme geçmesini iste. "+
-      "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. Sadece toplantı ekleme/silme gibi yazma yapabilirsin; başka kayıt değiştiremezsin. Silmeden önce kullanıcıya hangisini sildiğini söyle. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
+      "Kuralların: Türkçe, samimi ve kısa konuş. Ona her zaman 'patron' diye hitap et ('kanka' deme). Cevapların sesli okunacak: markdown, tablo, madde işareti, emoji kullanma. "+
+      "SAYILARI VE PARALARI HER ZAMAN RAKAMLA YAZ, ASLA YAZIYLA YAZMA; binlik ayracı nokta olsun: '5.656.905 ₺', '12.400 adet', '3 makine'. 'on iki bin dört yüz lira' gibi yazı kullanma. "+
+      "Patron özellikle bir bölüm sormadıysa Rotil, Cıvata ve Rozet'in HEPSİNİ anlat (üretim, plan, sipariş, ciro hepsinde üç bölüm birlikte gelir); belirli bir bölüm sorarsa sadece onu anlat. Malzeme ihtiyacı hesabı sadece şu an açık olan bölüm için çıkar, kritik stoklar ise tüm bölümler için gelir; bunu belirt. "+
+      "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Diğer veriler için veri_oku kullanılabilir. "+
+      "Günlük anlatımda (dün/bugün ne yapıldı) performans_gunu aracını kullan: her bölümde hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saati ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç; ürünlerin HEPSİNİN ismini söyle, atlama. Ciroyu her bölüm için ayrı ayrı söyle ve tanımlıysa günlük, haftalık, aylık hedefle kıyasla (yüzde). Hedefleri hedef_belirle ile ayarlayabilirsin. "+
+      "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. "+
+      "YAZMA: sadece patronun notlarına (not_ekle, not_guncelle, not_sil) ve toplantılara (toplanti_ekle, toplanti_sil) yazabilirsin; üretim, sipariş, stok, plan gibi başka hiçbir kaydı değiştiremezsin, istenirse bunun henüz açık olmadığını söyle. "+
+      "Yazma araçlarını çağırınca kayıt HEMEN YAZILMAZ, ekranda onay kartı çıkar ve sesli onay beklenir. Aracın döndürdüğü 'yapilacak' özetini patrona kısaca söyle ve sonunda 'Onaylıyor musun patron?' diye sor; yazdım deme, onay gelince sistem kendisi yazar. Düzenleme ve silmede önce notlarim/toplanti_listele ile doğru id'yi bul. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
   }
   function asCall(messages,tools,system,maxTok){
     return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":AS.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
@@ -12844,44 +13046,82 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function asPlain(t){return String(t||"").replace(/[*_#`>]/g,"").replace(/^\s*[-•]\s+/gm,"").replace(/\s+/g," ").trim()}
   function asPrime(){
     /* iOS/Safari: ses, kullanıcı dokunuşu sırasında "uyandırılmazsa" sonradan çalmaz */
-    try{if(!AS.audio){AS.audio=new Audio(); AS.audio.setAttribute("playsinline","")} AS.audio.src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="; var pr=AS.audio.play(); if(pr&&pr.catch)pr.catch(function(){})}catch(e){}
+    try{if(!AS.audio){AS.audio=new Audio(); AS.audio.setAttribute("playsinline","")} AS.audio.onended=null; AS.audio.src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="; var pr=AS.audio.play(); if(pr&&pr.catch)pr.catch(function(){})}catch(e){}
   }
   function asSayBrowser(t){
     if(!window.speechSynthesis)return;
-    try{speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(asPlain(t)); u.lang="tr-TR"; var vs=speechSynthesis.getVoices().filter(function(v){return /^tr/i.test(v.lang)}); if(vs[0])u.voice=vs[0]; speechSynthesis.speak(u)}catch(e){}
+    try{speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(asPlain(t)); u.lang="tr-TR"; u.onend=function(){asAfterSay()}; var vs=speechSynthesis.getVoices().filter(function(v){return /^tr/i.test(v.lang)}); if(vs[0])u.voice=vs[0]; speechSynthesis.speak(u)}catch(e){}
+  }
+  function asChunks(t){
+    var out=[], cur="";
+    t.replace(/([.!?])\s+/g,"$1\u0001").split("\u0001").forEach(function(x){
+      while(x.length>2400){if(cur){out.push(cur); cur=""} out.push(x.slice(0,2400)); x=x.slice(2400)}
+      if(cur&&(cur+" "+x).length>2400){out.push(cur); cur=x} else cur=cur?cur+" "+x:x;
+    });
+    if(cur)out.push(cur); return out.slice(0,4);
   }
   function asSay(t,force){
     if(!AS.speak&&!force)return;
-    var txt=asPlain(t); if(!txt)return;
+    var txt=asPlain(t).replace(/₺/g," lira").replace(/\bTL\b/g," lira"); if(!txt)return;
     if(!AS.xkey){asSayBrowser(txt); return}
-    asStopSay(); var my=++AS.spkN;
-    fetch("https://api.elevenlabs.io/v1/text-to-speech/"+encodeURIComponent(AS.xvoice)+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":AS.xkey,"content-type":"application/json",accept:"audio/mpeg"},body:JSON.stringify({text:txt.slice(0,2800),model_id:AS.xmodel,language_code:"tr"})})
-      .then(function(r){
-        if(!r.ok)return r.json().catch(function(){return {}}).then(function(j){var d=j&&j.detail, m=(d&&(d.message||d.status))||(typeof d==="string"?d:""); throw new Error("HTTP "+r.status+(m?" · "+String(m).slice(0,140):""))});
-        return r.blob();
-      })
-      .then(function(b){
+    asStopSay(); var my=++AS.spkN, ch=asChunks(txt), ps=[];
+    function get(i){
+      if(ps[i])return ps[i];
+      return ps[i]=fetch("https://api.elevenlabs.io/v1/text-to-speech/"+encodeURIComponent(AS.xvoice)+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":AS.xkey,"content-type":"application/json",accept:"audio/mpeg"},body:JSON.stringify({text:ch[i],model_id:AS.xmodel,language_code:"tr"})})
+        .then(function(r){
+          if(!r.ok)return r.json().catch(function(){return {}}).then(function(j){var d=j&&j.detail, m=(d&&(d.message||d.status))||(typeof d==="string"?d:""); throw new Error("HTTP "+r.status+(m?" · "+String(m).slice(0,140):""))});
+          return r.blob();
+        });
+    }
+    function play(i){
+      get(i).then(function(b){
         if(my!==AS.spkN)return;
-        var a=AS.audio||(AS.audio=new Audio()); a.src=URL.createObjectURL(b); var pr=a.play(); if(pr&&pr.catch)pr.catch(function(){asStatus("Ses otomatik başlamadı, mesajdaki 🔊 tuşuna dokun")});
-      }).catch(function(e){if(my!==AS.spkN)return; asStatus("ElevenLabs sesi çalınamadı ("+((e&&e.message)||"hata")+"), tarayıcı sesine geçtim"); asSayBrowser(txt)});
+        var a=AS.audio||(AS.audio=new Audio()); a.onended=function(){if(my!==AS.spkN)return; if(i+1<ch.length)play(i+1); else asAfterSay()}; a.src=URL.createObjectURL(b);
+        var pr=a.play(); if(pr&&pr.catch)pr.catch(function(){asStatus("Ses otomatik başlamadı, mesajdaki 🔊 tuşuna dokun")});
+        if(i+1<ch.length)get(i+1).catch(function(){});
+      }).catch(function(e){if(my!==AS.spkN)return; asStatus("ElevenLabs sesi çalınamadı ("+((e&&e.message)||"hata")+"), tarayıcı sesine geçtim"); asSayBrowser(ch.slice(i).join(" "))});
+    }
+    play(0);
   }
+  function asAfterSay(){ if(AS.cfListen&&AS.pend.length&&!AS.busy&&!AS.listening){AS.cfListen=false; asMic()} }
   function asStopSay(){AS.spkN++; try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){} try{if(AS.audio){AS.audio.pause()}}catch(e){}}
   function asMic(){
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){asStatus("Bu tarayıcı sesle yazmayı desteklemiyor"); return}
-    if(AS.listening&&AS.rec){try{AS.rec.stop()}catch(e){} return}
-    asStopSay(); asPrime(); var r=new SR(); r.lang="tr-TR"; r.interimResults=false; r.maxAlternatives=1;
-    r.onresult=function(e){var t=e.results[0][0].transcript; AS.listening=false; asCtl(); asSend(t)};
-    r.onerror=function(){AS.listening=false; asCtl(); asStatus("Duyamadım, tekrar dene")};
-    r.onend=function(){AS.listening=false; asCtl()};
-    AS.rec=r; AS.listening=true; asCtl(); try{r.start()}catch(e){AS.listening=false; asCtl()}
+    if(AS.listening&&AS.rec){AS.rec._fin&&AS.rec._fin(); return}
+    asStopSay(); asPrime();
+    /* Sürekli dinleme: nefes/duraklamada kesmez; SON konuşmadan 3,5 sn sessizlik olunca (ya da ⏹'a basınca) gönderir */
+    var r=new SR(), fin="", tmp="", timer=null, sent=false, SIL=3500, FIRST=9000;
+    r.lang="tr-TR"; r.continuous=true; r.interimResults=true; r.maxAlternatives=1;
+    function done(){
+      if(sent)return; sent=true; clearTimeout(timer); AS.listening=false; AS.rec=null; asCtl();
+      var t=(fin+" "+tmp).replace(/\s+/g," ").trim(), i=$("asin"); if(i)i.value="";
+      try{r.stop()}catch(e){}
+      if(t)asSend(t); else asStatus("Duyamadım, tekrar dene");
+    }
+    function arm(ms){clearTimeout(timer); timer=setTimeout(done,ms)}
+    r._fin=done;
+    r.onresult=function(e){
+      fin=""; tmp="";
+      for(var i=0;i<e.results.length;i++){var x=e.results[i]; if(x.isFinal)fin+=x[0].transcript+" "; else tmp+=x[0].transcript}
+      var inp=$("asin"); if(inp)inp.value=(fin+" "+tmp).trim();
+      asStatus("Dinliyorum… (bitirince ⏹'a bas ya da bekle)"); arm(SIL);
+    };
+    r.onerror=function(ev){ if(ev&&(ev.error==="not-allowed"||ev.error==="service-not-allowed")){sent=true; AS.listening=false; AS.rec=null; asCtl(); asStatus("Mikrofon izni verilmedi"); return} };
+    r.onend=function(){done()};
+    AS.rec=r; AS.listening=true; asCtl(); asStatus("Dinliyorum…");
+    try{r.start(); arm(FIRST)}catch(e){AS.listening=false; AS.rec=null; asCtl()}
   }
   /* --- arayüz --- */
   function asStatus(t){AS.stat=t||""; var s=$("asstatus"); if(s)s.textContent=AS.stat}
   function asFmt(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")}
   function asUi(r,t){AS.ui.push({r:r,t:t}); asMsgsPaint()}
+  function asCfHtml(){
+    if(!AS.pend.length||AS.busy)return "";
+    return '<div class="asm nocap a ascf"><b>Onay bekliyor</b><ul>'+AS.pend.map(function(p){return '<li>'+esc(p.sum)+'</li>'}).join("")+'</ul><div class="fvrow"><button type="button" class="btn" data-asa="cfok">✓ Onayla</button><button type="button" class="btn ghost" data-asa="cfno">İptal</button></div><small>Ya da sesle “okey” / “iptal” de.</small></div>';
+  }
   function asMsgsPaint(){
     var b=$("asmsgs"); if(!b)return;
-    b.innerHTML=AS.ui.length?AS.ui.map(function(m){return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':''):'<div class="fvcard fvempty"><p>Merhaba kanka. Üretim, plan, sipariş, ciro, malzeme ve toplantılarını sorabilirsin. Yazabilir ya da mikrofona basıp konuşabilirsin.</p></div>';
+    b.innerHTML=AS.ui.length?AS.ui.map(function(m){return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':'')+asCfHtml():'<div class="fvcard fvempty"><p>Merhaba patron. Üç bölümün üretim, plan, sipariş, ciro, malzeme, notlarını ve toplantılarını sorabilirsin; notlarına ve takvimine yazdırabilirsin. Yazabilir ya da mikrofona basıp konuşabilirsin.</p></div>';
     window.scrollTo(0,document.body.scrollHeight);
   }
   function asCtl(){
@@ -12891,11 +13131,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   function asBuild(){
     var b=$("asbody"); if(!b)return;
-    b.innerHTML='<div class="ascards"><div id="asmeet"></div><div id="assettw"></div></div>'+
+    b.innerHTML='<div class="ascards"><div id="ashed"></div><div id="asmeet"></div><div id="assettw"></div></div>'+
       '<div class="fvchips aschips">'+[["☀ Sabah raporu","rep"],["Dünkü üretim","Dün neler üretildi?"],["Bugünün planı","Bugünün planı ne?"],["Termini geçenler","Termini geçen siparişler hangileri?"],["Eksik malzeme","Siparişlere göre hangi malzemeler eksik?"],["Ciro","Dünkü ve bu ayki ciro ne?"],["Toplantılarım","Önümüzdeki toplantılarım neler?"]].map(function(c){return '<button type="button" data-asq="'+esc(c[1])+'">'+esc(c[0])+'</button>'}).join("")+'</div>'+
       '<div id="asmsgs" class="asmsgs"></div>'+
       '<div class="asbar"><div class="status" id="asstatus"></div><div class="asrow"><button type="button" class="btn ghost asic" id="asmic" data-asa="mic" aria-label="Konuş">🎤</button><input class="fin" id="asin" type="text" autocomplete="off" placeholder="Bir şey sor…" aria-label="Mesaj"><button type="button" class="btn" id="assend" data-asa="send">Gönder</button></div><div class="asrow2"><button type="button" class="btn ghost assm" id="asspkon" data-asa="spk"></button><button type="button" class="btn ghost assm" data-asa="sett">⚙ Ayarlar</button><button type="button" class="btn ghost assm" data-asa="clear">Temizle</button></div></div>';
-    AS.built=true; asSettPaint(); asMeetPaint(); asMsgsPaint(); asCtl();
+    AS.built=true; asSettPaint(); asHedPaint(); asMeetPaint(); asMsgsPaint(); asCtl();
   }
   function asSettPaint(){
     var w=$("assettw"); if(!w)return;
@@ -12908,26 +13148,44 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
       '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
   }
+  function asHedPaint(){
+    var w=$("ashed"); if(!w)return; var names=asDivNames(), ids=Object.keys(names), act=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.ashi;
+    if(act)return;
+    w.innerHTML='<div class="fvcard nocap"><h3>Ciro hedefleri</h3><div class="ashhd"><span></span><span>Günlük ₺</span><span>Haftalık ₺</span><span>Aylık ₺</span></div>'+ids.map(function(i){var h=asHedOf(i); return '<div class="ashr"><b>'+esc(names[i])+'</b>'+[["g",h.g],["h",h.h],["a",h.a]].map(function(c){return '<input class="fin" inputmode="numeric" autocomplete="off" data-ashi="'+i+'.'+c[0]+'" value="'+(c[1]?esc(c[1].toLocaleString("tr-TR")):"")+'" placeholder="—" aria-label="'+esc(names[i]+" "+c[0])+'">'}).join("")+'</div>'}).join("")+
+      '<div class="fvrow" style="margin-top:8px"><button type="button" class="btn ghost" data-asa="hedsave">Hedefleri kaydet</button></div><small class="fvnote">Sabah raporunda her bölümün cirosu bu hedeflerle kıyaslanır. Asistana “Rozet günlük hedefi 200.000 ₺ olsun” da diyebilirsin.</small></div>';
+  }
   function asMeetPaint(){
     var w=$("asmeet"); if(!w)return; var t=asToday(), up=AS.mt.filter(function(m){return m.d>=t}).sort(function(x,y){return (x.d+(x.h||""))<(y.d+(y.h||""))?-1:1}).slice(0,8);
-    w.innerHTML='<div class="fvcard"><h3>Toplantılarım</h3>'+(up.length?up.map(function(m){return '<div class="asmt"><span><b>'+esc(m.n)+'</b><small>'+esc(noteDateTxt(m.d)+(m.h?" · "+m.h:""))+(m.d===t?" · bugün":"")+'</small></span><button type="button" class="btn ghost assm" data-asa="mdel" data-id="'+esc(m.id)+'" aria-label="Sil">✕</button></div>'}).join(""):'<div class="fvnone">Yaklaşan toplantı yok. Asistana “yarın 14:00 toplantı ekle” de.</div>')+
+    w.innerHTML='<div class="fvcard nocap"><h3>Toplantılarım</h3>'+(up.length?up.map(function(m){return '<div class="asmt"><span><b>'+esc(m.n)+'</b><small>'+esc(noteDateTxt(m.d)+(m.h?" · "+m.h:""))+(m.d===t?" · bugün":"")+'</small></span><button type="button" class="btn ghost assm" data-asa="mdel" data-id="'+esc(m.id)+'" aria-label="Sil">✕</button></div>'}).join(""):'<div class="fvnone">Yaklaşan toplantı yok. Asistana “yarın 14:00 toplantı ekle” de.</div>')+
       '<div class="fvrow" style="margin-top:8px"><input class="fin" id="asmd" type="date" value="'+t+'" aria-label="Tarih"><input class="fin" id="asmh" type="time" aria-label="Saat"><input class="fin" id="asmn" type="text" placeholder="Toplantı adı" autocomplete="off"><button type="button" class="btn ghost" data-asa="madd">Ekle</button></div></div>';
   }
   function asSend(text){
     text=String(text||"").trim(); if(!text||AS.busy)return;
     if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
-    asStopSay(); asPrime(); asUi("u",text); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Düşünüyorum…");
-    asRun(text).then(function(a){AS.busy=false; asStatus(""); asCtl(); asUi("a",a||"Cevap alamadım."); asSay(a)}).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a","Hata: "+((e&&e.message)||e))});
+    asStopSay(); asPrime();
+    if(AS.pend.length){
+      var cw=asConfirmWord(text);
+      if(cw==="yes"){asUi("u",text); asConfirm(true); return}
+      if(cw==="no"){asUi("u",text); asConfirm(false); return}
+      AS.pend=[]; AS.cfListen=false; AS.msgs.push({role:"user",content:"(Bekleyen yazma işlemi iptal edildi)"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:"Tamam, iptal."}]});
+    }
+    asUi("u",text); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Düşünüyorum…");
+    asRun(text).then(function(a){
+      AS.busy=false; asStatus(""); asCtl(); a=a||"Cevap alamadım.";
+      if(AS.pend.length&&!/onayl/i.test(a))a=a+" Onaylıyor musun patron?";
+      asUi("a",a); if(AS.pend.length)AS.cfListen=true; asSay(a); if(AS.pend.length&&!AS.speak)AS.cfListen=false;
+    }).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a","Hata: "+((e&&e.message)||e))});
   }
   function asReport(){
     if(AS.busy)return;
     if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
     asStopSay(); asPrime(); asUi("u","☀ Sabah raporu"); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Rapor hazırlanıyor…");
     var td=asToday(), yd=isoAdd(td,-1), data={bugun:td,dun:yd,bolum:window.__DIVO.name};
-    asEnsure([td,yd]).then(function(){return asProdAll(yd)}).then(function(p){data.dunku_uretim_tum_bolumler=p; return asCiroAll()}).then(function(c){data.ciro_tum_bolumler=c; data.acik_bolum_siparis_ciro=asCiro(); return asPlan(td)}).then(function(p){
-      data.bugunku_plan=p; data.termini_gecen_siparisler=asOrders(true).siparisler.slice(0,10); data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
+    asEnsure([td,yd]).then(function(){return asProdAll(yd)}).then(function(p){data.dunku_uretim_tum_bolumler=p; return asPerf(yd)}).then(function(pf){data.dunku_makine_eleman_performansi=pf; return asCiroAll()}).then(function(c){data.ciro_tum_bolumler=c; data.acik_bolum_siparis_ciro=asCiro(); return asPlanAll(td)}).then(function(p){
+      data.bugunku_plan_tum_bolumler=p; data.bugun_ve_gecikmis_acik_notlar=notesAll.filter(function(n){return !n.done&&n.due&&n.due<=td}).slice(0,15).map(function(n){return {baslik:n.title||String(n.text||"").slice(0,60),tarih:n.due,saat:n.time||""}}); return asOrdersAll(true)}).then(function(o){
+      data.termini_gecen_siparisler_tum_bolumler=o; data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
     }).then(function(f){data.finans=f; return asMaas({}).then(function(mm){data.maas_ve_giderler_bu_ay=mm; return asMat()})}).then(function(m){data.malzeme=m;
-      return asCall([{role:"user",content:"Aşağıdaki verilerle Yusuf'a sesli okunacak bir sabah raporu yaz. Sırayla: dünkü üretim (hangi ürünler, hangi bölümde, kaç adet) ve ciro, bugünün planı (makine ve ürün), toplantılar, termini geçen siparişler, finans (varsa borç/alacak/bu hafta ödenecek ve tahsil), bu ayki maaş ve gider toplamı, siparişlere göre eksik malzemeler. Veride olmayanı uydurma, boş olanı kısaca 'yok' de. Markdown ve madde işareti kullanma, düz konuşma dili, en fazla yaklaşık 250 kelime.\n\n"+JSON.stringify(data)}],[],asSystem(),1200);
+      return asCall([{role:"user",content:"Aşağıdaki verilerle patrona sesli okunacak bir sabah raporu yaz; ona 'patron' diye hitap et. Üç bölümü (Rotil, Cıvata, Rozet) de anlat. Sayıları ve paraları rakamla yaz (örn. 5.656.905 ₺, 12.400 adet), yazıyla yazma. Sırayla: 1) her bölümün cirosu (dün, bu hafta, bu ay) ve tanımlıysa günlük/haftalık/aylık hedefe göre yüzdesi, toplam ciro; 2) dünkü üretim: her bölümde hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde kaç adet yapması gerekirdi ve yüzde kaç (ürünlerin HEPSİNİN ismini söyle, hiçbirini atlama; hedefi hesaplanamayanı kısaca belirt), bugünün planı (makine ve ürün), bugün/gecikmiş notlar, toplantılar, termini geçen siparişler, finans (varsa borç/alacak/bu hafta ödenecek ve tahsil), bu ayki maaş ve gider toplamı, siparişlere göre eksik malzemeler. Veride olmayanı uydurma, boş olanı kısaca 'yok' de. Markdown ve madde işareti kullanma, düz konuşma dili, uzun olabilir ama gereksiz tekrar yapma, yaklaşık 700 kelimeyi geçme.\n\n"+JSON.stringify(data)}],[],asSystem(),3000);
     }).then(function(j){
       var tx=(j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
       AS.msgs.push({role:"user",content:"Sabah raporu iste"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:tx}]});
@@ -12937,7 +13195,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function openAS(){
     if(!asOn())return;
     closeSheet(); NAV_WRAPS.forEach(function(i){var e=$(i); if(e)e.hidden=true}); $("as").hidden=false; window.scrollTo(0,0);
-    asLoad(); asWatch(); if(!AS.built)asBuild(); else {asSettPaint(); asMeetPaint(); asCtl(); asMsgsPaint()}
+    asLoad(); asWatch(); if(!AS.built)asBuild(); else {asSettPaint(); asHedPaint(); asMeetPaint(); asCtl(); asMsgsPaint()}
     var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"+(AS.key?"":" · anahtar eklenmedi");
   }
   function asHome(){asStopSay(); $("as").hidden=true; $("home").hidden=false; window.scrollTo(0,0); refreshHome()}
@@ -12949,8 +13207,15 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var a=t.dataset.asa;
     if(a==="send"){var i=$("asin"); if(i){var v=i.value; i.value=""; asSend(v)} return}
     if(a==="mic"){asMic(); return}
+    if(a==="hedsave"){
+      var v=JSON.parse(JSON.stringify(AS.hed||{}));
+      [].forEach.call($("ashed").querySelectorAll("[data-ashi]"),function(inp){var p=inp.dataset.ashi.split("."), n=parseInt(String(inp.value).replace(/[^\d]/g,""),10)||0, h=v[p[0]]||(v[p[0]]={}); h[p[1]]=n});
+      asStatus("Kaydediliyor…"); asHedSave(v).then(function(){asStatus("Hedefler kaydedildi ✓"); asHedPaint()}).catch(function(){asStatus("Kaydedilemedi")}); return;
+    }
+    if(a==="cfok"){if(AS.pend.length)asConfirm(true); return}
+    if(a==="cfno"){if(AS.pend.length)asConfirm(false); return}
     if(a==="spk"){AS.speak=!AS.speak; asLs("as_speak",AS.speak?"1":"0"); if(!AS.speak)asStopSay(); asCtl(); return}
-    if(a==="clear"){AS.msgs=[]; AS.ui=[]; asStopSay(); asMsgsPaint(); return}
+    if(a==="clear"){AS.msgs=[]; AS.ui=[]; AS.pend=[]; AS.cfListen=false; asStopSay(); asMsgsPaint(); return}
     if(a==="sett"){AS.sett=!AS.sett; asSettPaint(); return}
     if(a==="say"){var m=t.closest(".asm"); if(m){asPrime(); asSay(m.textContent.replace("🔊",""),true)} return}
     if(a==="savekey"){
@@ -12964,7 +13229,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       if(xv&&/^[A-Za-z0-9]{18,24}$/.test(xv))asLs("as_xvoice",xv); else if(xv){asStatus("Ses kimliği 20 harf/rakamlık kısa bir yazı olmalı (ör. DYkrAHD8iwork3YSUBbs)"); return}
       if(md)asLs("as_model",md); asLs("as_hour",String(Math.max(0,Math.min(23,hr||7)))); asLoad(); AS.sett=false; asSettPaint(); asStatus("Kaydedildi ✓"); asHomePaint(); var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"; return;
     }
-    if(a==="testvoice"){asPrime(); asSay("Merhaba kanka, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
+    if(a==="testvoice"){asPrime(); asSay("Merhaba patron, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
     if(a==="delxkey"){asLs("as_xkey",null); asLoad(); asStopSay(); asSettPaint(); asStatus("Ses anahtarı silindi, tarayıcı sesi kullanılacak"); return}
     if(a==="delkey"){asLs("as_key",null); asLoad(); AS.sett=true; asSettPaint(); asStatus("Anahtar silindi"); asHomePaint(); return}
     if(a==="madd"){
