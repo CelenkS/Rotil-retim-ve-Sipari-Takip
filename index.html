@@ -3323,6 +3323,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 #as .asmt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
 #as .asmt small{display:block;color:var(--ink2);font:600 12px var(--font-ui)}
 #as .assm{padding:6px 12px;min-height:0;font-size:13px}
+#as .asmask{-webkit-text-security:disc;text-security:disc}
 #as .aschips button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:7px 13px;font:700 13px var(--font-ui);cursor:pointer}
 #as .aschips button:active{background:var(--accent);color:var(--accent-ink)}
 #as .asbar .status{text-align:center;min-height:16px;margin:0 0 4px}
@@ -4758,7 +4759,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 10:54</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12597,7 +12598,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
-  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"}
+  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"; if(!/^[A-Za-z0-9]{18,24}$/.test(AS.xvoice))AS.xvoice="DYkrAHD8iwork3YSUBbs"}
   function asDb(){return dbDiv("rotil")}
   function asIso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
   function asToday(){return asIso(new Date())}
@@ -12706,6 +12707,30 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     return d.collection("asst_top").add({d:a.tarih,h:a.saat||"",n:String(a.baslik).slice(0,200),nt:String(a.not||"").slice(0,500),by:by,ts:Date.now()}).then(function(r){return {tamam:true,id:r.id}});
   }
   function asTopDel(a){var d=asDb(); if(!d||!a.id)return Promise.reject(new Error("id gerekli")); return d.doc("asst_top/"+a.id).delete().then(function(){return {tamam:true}})}
+  function asMaas(a){
+    a=a||{}; var mk=/^\d{4}-\d{2}$/.test(a.ay||"")?a.ay:finNowKey();
+    try{watchEmployees(); watchFin()}catch(e){}
+    return new Promise(function(res){
+      var n=0, iv=setInterval(function(){
+        n++;
+        if((employees.length&&Object.keys(finDocs).length)||n>14){
+          clearInterval(iv);
+          if(!Object.keys(finDocs).length){res({hata:"Maaş ve gider verisi okunamadı (bağlantı ya da yetki)."}); return}
+          var t=finTotals(mk), g=(finDocs[mk]||{}).gider||{}, by={}, kisi=[];
+          employees.forEach(function(e){
+            var m=finMaasOf(e.id,mk); if(!(m.n||m.s))return;
+            var d=msDeptKey(e), x=by[d]||(by[d]={bolum:d,kisi:0,net_maas_TL:0,sigorta_TL:0,toplam_TL:0}); x.kisi++; x.net_maas_TL+=m.n; x.sigorta_TL+=m.s; x.toplam_TL+=m.n+m.s;
+            if(a.detay)kisi.push({ad:e.name||e.n||"",bolum:d,net_maas_TL:m.n,sigorta_TL:m.s});
+          });
+          var r={ay:mk,not:"Maaş girilmemiş ayda son girilen değer geçerli sayılır.",toplam_net_maas_TL:Math.round(t.n),toplam_sigorta_TL:Math.round(t.s),giderler_TL:{},diger_giderler_toplam_TL:Math.round(t.man),genel_toplam_TL:Math.round(t.total),bolum_bolum:Object.keys(by).map(function(k){var x=by[k]; x.net_maas_TL=Math.round(x.net_maas_TL); x.sigorta_TL=Math.round(x.sigorta_TL); x.toplam_TL=Math.round(x.toplam_TL); return x}).sort(function(p,q){return q.toplam_TL-p.toplam_TL})};
+          FIN_ITEMS.forEach(function(it){r.giderler_TL[it[1]]=Math.round(+g[it[0]]||0)});
+          if(t.mn||t.ms){r.elle_girilen_ek_maas_TL=Math.round(t.mn); r.elle_girilen_ek_sigorta_TL=Math.round(t.ms)}
+          if(a.detay)r.kisiler=kisi;
+          res(r);
+        }
+      },300);
+    });
+  }
   function asNotes(){return {notlar:notesAll.slice(0,30).map(function(n){return asSlim(n)})}}
   var AS_TOOLS=[
     {name:"uretim_gunu",description:"Verilen günde (YYYY-MM-DD) şu an açık olan bölümde, üretim bölümü bölümü yapılan adet, ciro ve ürün kalemlerini döndürür.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"}},required:["tarih"]}},
@@ -12714,6 +12739,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     {name:"ciro",description:"Dünün cirosu, bu ayın cirosu ve açık siparişlerin toplam tutarı.",input_schema:{type:"object",properties:{}}},
     {name:"finans",description:"Finans özeti (sadece sahip): borç, alacak, çekler, hesaplar, bu hafta ödenecek ve tahsil beklenen tutar.",input_schema:{type:"object",properties:{}}},
     {name:"malzeme_ihtiyaci",description:"Açık siparişlere göre gereken ve eksik olan malzemeleri ve kritik seviyenin altındaki stokları döndürür.",input_schema:{type:"object",properties:{}}},
+    {name:"maas_gider",description:"Sahibe özel 'Maaş ve giderler': verilen ayın (ay: YYYY-MM, boşsa bu ay) toplam net maaş ve sigorta, kira/elektrik/yemek/mazot/kart/genel giderler ve maaşların bölüm bölüm dağılımı. detay true ise kişi kişi maaş da döner; sadece kullanıcı açıkça isterse kullan.",input_schema:{type:"object",properties:{ay:{type:"string"},detay:{type:"boolean"}}}},
     {name:"notlarim",description:"Kullanıcının kişisel notları.",input_schema:{type:"object",properties:{}}},
     {name:"toplanti_listele",description:"Toplantıları listeler. baslangic/bitis YYYY-MM-DD (boşsa bugünden 30 gün).",input_schema:{type:"object",properties:{baslangic:{type:"string"},bitis:{type:"string"}}}},
     {name:"toplanti_ekle",description:"Takvime toplantı ekler.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},saat:{type:"string",description:"HH:MM"},baslik:{type:"string"},not:{type:"string"}},required:["tarih","baslik"]}},
@@ -12727,6 +12753,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(n==="ciro")return asEnsure([asToday(),isoAdd(asToday(),-1)]).then(asCiro);
     if(n==="finans")return asFin();
     if(n==="malzeme_ihtiyaci")return asMat();
+    if(n==="maas_gider")return asMaas(a);
     if(n==="notlarim")return Promise.resolve(asNotes());
     if(n==="toplanti_listele")return Promise.resolve(asTopList(a));
     if(n==="toplanti_ekle")return asTopAdd(a);
@@ -12741,7 +12768,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       "Bugün "+asToday()+" "+GUN[(d.getDay()+6)%7]+", saat "+pad(d.getHours())+":"+pad(d.getMinutes())+". Şu an uygulamada açık bölüm: "+window.__DIVO.name+". "+
       "Kuralların: Türkçe, samimi ve kısa konuş ('kanka' diyebilirsin). Cevapların sesli okunacak: markdown, tablo, madde işareti, emoji kullanma; rakamları ve paraları okunacak şekilde yaz (örn. '12 bin 400 lira'). "+
       "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Üretim, plan, sipariş, ciro ve malzeme araçları şu an açık olan bölümün verisini verir; başka bölüm sorulursa veri_oku ile oku ya da kullanıcıdan o bölüme geçmesini iste. "+
-      "Sadece toplantı ekleme/silme gibi yazma yapabilirsin; başka kayıt değiştiremezsin. Silmeden önce kullanıcıya hangisini sildiğini söyle. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
+      "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. Sadece toplantı ekleme/silme gibi yazma yapabilirsin; başka kayıt değiştiremezsin. Silmeden önce kullanıcıya hangisini sildiğini söyle. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
   }
   function asCall(messages,tools,system,maxTok){
     return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":AS.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
@@ -12786,7 +12813,10 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(!AS.xkey){asSayBrowser(txt); return}
     asStopSay(); var my=++AS.spkN;
     fetch("https://api.elevenlabs.io/v1/text-to-speech/"+encodeURIComponent(AS.xvoice)+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":AS.xkey,"content-type":"application/json",accept:"audio/mpeg"},body:JSON.stringify({text:txt.slice(0,2800),model_id:AS.xmodel,language_code:"tr"})})
-      .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status); return r.blob()})
+      .then(function(r){
+        if(!r.ok)return r.json().catch(function(){return {}}).then(function(j){var d=j&&j.detail, m=(d&&(d.message||d.status))||(typeof d==="string"?d:""); throw new Error("HTTP "+r.status+(m?" · "+String(m).slice(0,140):""))});
+        return r.blob();
+      })
       .then(function(b){
         if(my!==AS.spkN)return;
         var a=AS.audio||(AS.audio=new Audio()); a.src=URL.createObjectURL(b); var pr=a.play(); if(pr&&pr.catch)pr.catch(function(){asStatus("Ses otomatik başlamadı, mesajdaki 🔊 tuşuna dokun")});
@@ -12827,13 +12857,13 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function asSettPaint(){
     var w=$("assettw"); if(!w)return;
     if(!AS.sett&&AS.key){w.innerHTML=""; return}
-    w.innerHTML='<div class="fvcard"><h3>Ayarlar</h3><label class="fl" for="askey">Anthropic API anahtarı</label><input class="fin" id="askey" type="password" autocomplete="off" placeholder="'+(AS.key?"kayıtlı (••••"+esc(AS.key.slice(-4))+") — değiştirmek için yapıştır":"sk-ant-… yapıştır")+'">'+
+    w.innerHTML='<div class="fvcard"><h3>Ayarlar</h3><label class="fl" for="askey">Anthropic API anahtarı</label><input class="fin asmask" id="askey" name="as-k-1" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="'+(AS.key?"kayıtlı (••••"+esc(AS.key.slice(-4))+") — değiştirmek için yapıştır":"sk-ant-… yapıştır")+'">'+
       '<small class="fvnote">Anahtar sadece bu cihazda saklanır, koda ya da veritabanına yazılmaz. Sorular ve veriler Anthropic\'e gönderilir.</small>'+
-      '<label class="fl" for="asxkey" style="margin-top:10px">ElevenLabs anahtarı (gerçekçi ses, isteğe bağlı)</label><input class="fin" id="asxkey" type="password" autocomplete="off" placeholder="'+(AS.xkey?"kayıtlı (••••"+esc(AS.xkey.slice(-4))+") — değiştirmek için yapıştır":"sk_… yapıştır")+'">'+
-      '<label class="fl" for="asxvoice" style="margin-top:10px">ElevenLabs ses kimliği</label><input class="fin" id="asxvoice" type="text" autocomplete="off" value="'+esc(AS.xvoice)+'">'+
+      '<label class="fl" for="asxkey" style="margin-top:10px">ElevenLabs anahtarı (gerçekçi ses, isteğe bağlı)</label><input class="fin asmask" id="asxkey" name="as-k-2" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="'+(AS.xkey?"kayıtlı (••••"+esc(AS.xkey.slice(-4))+") — değiştirmek için yapıştır":"sk_… yapıştır")+'">'+
+      '<label class="fl" for="asxvoice" style="margin-top:10px">ElevenLabs ses kimliği</label><input class="fin" id="asxvoice" name="as-k-3" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore value="'+esc(AS.xvoice)+'">'+
       '<label class="fl" for="asmodel" style="margin-top:10px">Model</label><input class="fin" id="asmodel" type="text" autocomplete="off" value="'+esc(AS.model)+'">'+
       '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
-      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+(AS.xkey?'<button type="button" class="btn ghost" data-asa="testvoice">Sesi dene</button><button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
+      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+'<button type="button" class="btn ghost" data-asa="testvoice">🔊 Sesi dene</button>'+(AS.xkey?'<button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
   }
   function asMeetPaint(){
     var w=$("asmeet"); if(!w)return; var t=asToday(), up=AS.mt.filter(function(m){return m.d>=t}).sort(function(x,y){return (x.d+(x.h||""))<(y.d+(y.h||""))?-1:1}).slice(0,8);
@@ -12853,8 +12883,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var td=asToday(), yd=isoAdd(td,-1), data={bugun:td,dun:yd,bolum:window.__DIVO.name};
     asEnsure([td,yd]).then(function(){return asProd(yd)}).then(function(p){data.dunku_uretim=p; return asPlan(td)}).then(function(p){
       data.bugunku_plan=p; data.ciro=asCiro(); data.termini_gecen_siparisler=asOrders(true).siparisler.slice(0,10); data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
-    }).then(function(f){data.finans=f; return asMat()}).then(function(m){data.malzeme=m;
-      return asCall([{role:"user",content:"Aşağıdaki verilerle Yusuf'a sesli okunacak bir sabah raporu yaz. Sırayla: dünkü üretim (hangi ürünler, hangi bölümde, kaç adet) ve ciro, bugünün planı (makine ve ürün), toplantılar, termini geçen siparişler, finans (varsa borç/alacak/bu hafta ödenecek ve tahsil), siparişlere göre eksik malzemeler. Veride olmayanı uydurma, boş olanı kısaca 'yok' de. Markdown ve madde işareti kullanma, düz konuşma dili, en fazla yaklaşık 250 kelime.\n\n"+JSON.stringify(data)}],[],asSystem(),1200);
+    }).then(function(f){data.finans=f; return asMaas({}).then(function(mm){data.maas_ve_giderler_bu_ay=mm; return asMat()})}).then(function(m){data.malzeme=m;
+      return asCall([{role:"user",content:"Aşağıdaki verilerle Yusuf'a sesli okunacak bir sabah raporu yaz. Sırayla: dünkü üretim (hangi ürünler, hangi bölümde, kaç adet) ve ciro, bugünün planı (makine ve ürün), toplantılar, termini geçen siparişler, finans (varsa borç/alacak/bu hafta ödenecek ve tahsil), bu ayki maaş ve gider toplamı, siparişlere göre eksik malzemeler. Veride olmayanı uydurma, boş olanı kısaca 'yok' de. Markdown ve madde işareti kullanma, düz konuşma dili, en fazla yaklaşık 250 kelime.\n\n"+JSON.stringify(data)}],[],asSystem(),1200);
     }).then(function(j){
       var tx=(j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text}).join("\n").trim();
       AS.msgs.push({role:"user",content:"Sabah raporu iste"}); AS.msgs.push({role:"assistant",content:[{type:"text",text:tx}]});
@@ -12882,10 +12912,13 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(a==="say"){var m=t.closest(".asm"); if(m){asPrime(); asSay(m.textContent.replace("🔊",""),true)} return}
     if(a==="savekey"){
       var k=($("askey").value||"").trim(), md=($("asmodel").value||"").trim(), hr=+($("ashour").value||7);
+      /* Yanlış yere ya da satırın tamamı yapıştırılsa bile anahtarları ayıkla (sk-ant-… Anthropic, sk_… ElevenLabs) */
+      var raw=($("askey").value||"")+" "+($("asxkey").value||""), ma=raw.match(/sk-ant-[A-Za-z0-9_\-]{20,}/), mx=raw.match(/sk_[A-Za-z0-9]{20,}/);
+      if(ma)k=ma[0]; else if(/^sk_/.test(k))k="";
       if(k){if(k.indexOf("sk-ant-")!==0){asStatus("Bu bir Anthropic anahtarına benzemiyor (sk-ant- ile başlamalı)"); return} asLs("as_key",k)}
-      var xk=($("asxkey").value||"").trim(), xv=($("asxvoice").value||"").trim();
+      var xk=mx?mx[0]:(($("asxkey").value||"").trim()), xv=($("asxvoice").value||"").trim(); if(!mx&&/^sk-ant-/.test(xk))xk="";
       if(xk){if(xk.indexOf("sk_")!==0){asStatus("ElevenLabs anahtarı sk_ ile başlamalı"); return} asLs("as_xkey",xk)}
-      if(xv)asLs("as_xvoice",xv);
+      if(xv&&/^[A-Za-z0-9]{18,24}$/.test(xv))asLs("as_xvoice",xv); else if(xv){asStatus("Ses kimliği 20 harf/rakamlık kısa bir yazı olmalı (ör. DYkrAHD8iwork3YSUBbs)"); return}
       if(md)asLs("as_model",md); asLs("as_hour",String(Math.max(0,Math.min(23,hr||7)))); asLoad(); AS.sett=false; asSettPaint(); asStatus("Kaydedildi ✓"); asHomePaint(); var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"; return;
     }
     if(a==="testvoice"){asPrime(); asSay("Merhaba kanka, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
