@@ -3310,6 +3310,7 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 #as .asm.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px;padding-right:38px}
 #as .asm.ascf{max-width:100%;width:100%;border:2px solid var(--accent);padding-right:14px}
 #as .ashhd,#as .ashr{display:grid;grid-template-columns:72px 1fr 1fr 1fr;gap:6px;align-items:center;margin:6px 0}#as .ashhd span{font:700 11px var(--font-ui);color:var(--ink2);text-align:center}#as .ashr b{font:800 13px var(--font-ui)}#as .ashr .fin{padding:8px 6px;font-size:13px;min-width:0;text-align:right}
+#as .asm.ascall{width:100%;max-width:100%;display:flex;flex-direction:column;gap:8px;border:2px solid var(--accent);padding-right:14px}#as .ascall .btn{text-decoration:none;text-align:center;display:block}#as .ascall .btn small{opacity:.85;font-weight:600;margin-left:6px}
 #as .ascf ul{margin:6px 0 10px;padding-left:18px}#as .ascf li{margin:3px 0}
 #as .ascf small{display:block;margin-top:8px;color:var(--ink2);font:600 12px var(--font-ui)}
 #as .asspk{position:absolute;right:6px;top:6px;border:0;background:transparent;font-size:15px;cursor:pointer;opacity:.7}
@@ -3726,6 +3727,7 @@ html.ud-lock,html.ud-lock body{overflow:hidden;overscroll-behavior:none}
 /* ---------- Elemanlar: yeni kart + puantaj ---------- */
 .stpum{margin-top:12px}
 .stpum .grow{flex:1}
+.purord{all:unset;cursor:pointer;color:var(--accent);border-bottom:1.5px dotted currentColor;font:inherit}.purord i{font-style:normal;opacity:.7}.purord:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .stpuld{font:700 12px var(--font-ui);color:var(--ink2)}
 .stpum .pudate{margin-bottom:8px}.stpum .pukpi{margin:0 0 4px;grid-template-columns:repeat(4,1fr)}.stpum .pukpi>div{padding:7px 10px 7px 14px}.stpum .pukpi>div b{font-size:20px}
 .stpusel{width:auto;min-width:170px;height:40px;padding:0 12px;font:700 13px var(--font-ui)}
@@ -4763,7 +4765,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:34</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 11:45</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12598,7 +12600,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   });
   /* ---------- Asistan (sadece sahip): Claude ile soru-cevap, sesli okuma, sabah raporu, toplantılar ----------
      Anahtar sadece bu cihazın localStorage'ında durur (as_key); koda ya da Firestore'a yazılmaz. Toplantılar: "asst_top" (ortak db). */
-  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0,pend:[],cfListen:false,hed:{}};
+  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0,pend:[],cfListen:false,hed:{},ct:null,ctAt:0};
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
@@ -12664,6 +12666,42 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     return Promise.all(ids.map(function(div){
       return (div===window.__DIV?asEnsure([iso]).then(function(){return asProd(iso)}):asProdDiv(div,iso)).catch(function(){return []}).then(function(p){res[names[div]||div]=p.length?p:"üretim girişi yok"});
     })).then(function(){return res});
+  }
+  /* --- rehber: tedarikçi + müşteri telefonları, arama kartı (tel:) --- */
+  function asPhones(v){
+    var m=String(v||"").match(/\+?\d[\d\s().\-]{7,}\d/g)||[], out=[];
+    m.forEach(function(x){
+      var d=x.replace(/[^\d+]/g,""), t="";
+      if(d[0]==="+")t=d; else if(/^0090/.test(d))t="+"+d.slice(2); else if(/^90\d{10}$/.test(d))t="+"+d; else if(/^0\d{10}$/.test(d))t="+90"+d.slice(1); else if(/^\d{10}$/.test(d))t="+90"+d; else t=d;
+      if(t.replace(/\D/g,"").length>=7&&out.indexOf(t)<0)out.push(t);
+    });
+    return out;
+  }
+  function asContacts(){
+    if(AS.ct&&Date.now()-AS.ctAt<60000)return Promise.resolve(AS.ct);
+    var names=asDivNames(), jobs=[];
+    Object.keys(names).forEach(function(div){
+      var d=dbDiv(div); if(!d)return;
+      jobs.push(d.collection("suppliers").get().then(function(sn){return sn.docs.map(function(x){var v=x.data(); return {ad:v.name||"",kisi:v.contact||"",telefon:v.phone||"",e_posta:v.email||"",tur:"tedarikçi",bolum:names[div]||div}})}).catch(function(){return []}));
+    });
+    var rd=dbDiv("rotil"); if(rd)jobs.push(rd.collection("slcustomers").get().then(function(sn){return sn.docs.map(function(x){var v=x.data(); return {ad:v.name||"",kisi:v.contact||"",telefon:v.phone||"",e_posta:v.email||"",tur:"müşteri",bolum:""}})}).catch(function(){return []}));
+    return Promise.all(jobs).then(function(a){var all=[].concat.apply([],a).filter(function(x){return x.ad}); AS.ct=all; AS.ctAt=Date.now(); return all});
+  }
+  function asRehber(a){
+    var q=fold(a.ara||"").split(/\s+/).filter(Boolean); if(!q.length)return Promise.resolve({hata:"ara: aranacak isim gerekli"});
+    return asContacts().then(function(all){
+      var r=all.filter(function(c){var h=fold(c.ad+" "+c.kisi); return q.every(function(t){return h.indexOf(t)>=0})});
+      return {adet:r.length,sonuclar:r.slice(0,8).map(function(c){var p=asPhones(c.telefon); return {ad:c.ad,kisi:c.kisi,tur:c.tur,bolum:c.bolum,telefonlar:p.length?p:undefined,telefon_yok:p.length?undefined:true}}),not:r.length?undefined:"Eşleşme yok. Rehberde "+all.length+" kayıt var."};
+    });
+  }
+  function asCallOpen(a){
+    return asContacts().then(function(all){
+      var tel=asPhones(a.telefon)[0]; if(!tel)return Promise.reject(new Error("geçerli telefon yok"));
+      var dg=tel.replace(/\D/g,"").slice(-10), hit=all.filter(function(c){return asPhones(c.telefon).some(function(p){return p.replace(/\D/g,"").slice(-10)===dg})})[0];
+      if(!hit)return Promise.reject(new Error("bu numara rehberde yok, önce rehber aracıyla ara"));
+      AS.ui.push({r:"call",t:hit.ad+(hit.kisi?" · "+hit.kisi:""),tel:asPhones(hit.telefon)}); asMsgsPaint();
+      return {tamam:true,aranacak:hit.ad,durum:"Ekranda arama kartı var; patron 📞 Ara tuşuna tek dokunuşla arar. Sen arayamazsın, bunu söyle."};
+    });
   }
   function asHedOf(div){var h=AS.hed[div]||{}; return {g:+h.g||0,h:+h.h||0,a:+h.a||0}}
   function asPct(v,t){return t>0?Math.round(v/t*100):null}
@@ -12965,6 +13003,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   var AS_TOOLS=[
     {name:"uretim_gunu",description:"Verilen günde (YYYY-MM-DD) üretim bölümü bölümü yapılan adet, ciro ve ürün kalemlerini döndürür. bolum: rotil, civata, rozet veya hepsi (varsayılan hepsi).",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},bolum:{type:"string"}},required:["tarih"]}},
+    {name:"rehber",description:"Tedarikçi ve müşteri rehberinde isimle arar (firma ya da kişi adı), telefonlarını döndürür. Biri aranacaksa önce bunu kullan.",input_schema:{type:"object",properties:{ara:{type:"string",description:"firma veya kişi adının bir kısmı"}},required:["ara"]}},
+    {name:"telefon_ac",description:"Patron birini aramak istediğinde rehber sonucundaki numarayla ekrana 📞 Ara kartı koyar; patron tek dokunuşla telefondan arar. Birden fazla eşleşme varsa önce hangisi olduğunu sor.",input_schema:{type:"object",properties:{telefon:{type:"string"}},required:["telefon"]}},
     {name:"performans_gunu",description:"Verilen günde HER BÖLÜMDE hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saatine ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç. Ayrıca eleman bazlı özet. bolum: rotil, civata, rozet veya hepsi.",input_schema:{type:"object",properties:{tarih:{type:"string",description:"YYYY-MM-DD"},bolum:{type:"string"}},required:["tarih"]}},
     {name:"plan_gunu",description:"Verilen günün planını üç bölüm (Rotil, Cıvata, Rozet) için döndürür: hangi bölümde hangi makinede hangi ürün, kaç adet, hangi eleman.",input_schema:{type:"object",properties:{tarih:{type:"string"}},required:["tarih"]}},
     {name:"siparisler",description:"Üç bölümün açık siparişlerini (müşteri, adet, termin, kalan gün, tutar) döndürür. sadece_geciken true ise sadece termini geçenleri.",input_schema:{type:"object",properties:{sadece_geciken:{type:"boolean"}}}},
@@ -12984,6 +13024,8 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   ];
   function asTool(n,a){
     if(n==="uretim_gunu")return asProdAll(a.tarih,a.bolum&&a.bolum!=="hepsi"?a.bolum:null).then(function(p){return {tarih:a.tarih,uretim:p}});
+    if(n==="rehber")return asRehber(a);
+    if(n==="telefon_ac")return asCallOpen(a);
     if(n==="performans_gunu")return asPerf(a.tarih,a.bolum&&a.bolum!=="hepsi"?a.bolum:null).then(function(p){return {tarih:a.tarih,bolumler:p}});
     if(n==="plan_gunu")return asPlanAll(a.tarih).then(function(p){return {tarih:a.tarih,bolumler:p}});
     if(n==="siparisler")return asOrdersAll(!!a.sadece_geciken).then(function(o){return {bolumler:o}});
@@ -13011,6 +13053,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
       "Patron özellikle bir bölüm sormadıysa Rotil, Cıvata ve Rozet'in HEPSİNİ anlat (üretim, plan, sipariş, ciro hepsinde üç bölüm birlikte gelir); belirli bir bölüm sorarsa sadece onu anlat. Malzeme ihtiyacı hesabı sadece şu an açık olan bölüm için çıkar, kritik stoklar ise tüm bölümler için gelir; bunu belirt. "+
       "Veriyi tahmin etme, araçları kullan; bulamazsan bulamadığını söyle. Diğer veriler için veri_oku kullanılabilir. "+
       "Günlük anlatımda (dün/bugün ne yapıldı) performans_gunu aracını kullan: her bölümde hangi makinede hangi eleman hangi ürünü kaç adet yaptı, normalde (çalışma saati ve operasyon süresine göre) kaç adet yapması gerekirdi ve yüzde kaç; ürünlerin HEPSİNİN ismini söyle, atlama. Ciroyu her bölüm için ayrı ayrı söyle ve tanımlıysa günlük, haftalık, aylık hedefle kıyasla (yüzde). Hedefleri hedef_belirle ile ayarlayabilirsin. "+
+      "Patron birini aramak isterse (örn. 'Akın Dövme'yi ara'): önce rehber ile bul; birden fazla eşleşirse hangisi olduğunu sor; tek eşleşmede telefon_ac çağır ve 'Arama kartını koydum, 📞 Ara tuşuna dokun' de. Telefonu kendin arayamazsın, tek dokunuş patronda. Numarası yoksa söyle. "+
       "Maaş ve gider soruları için maas_gider aracını kullan (expenses koleksiyonu maaş değildir). Kişi kişi maaşı sadece açıkça istenirse göster. "+
       "YAZMA: sadece patronun notlarına (not_ekle, not_guncelle, not_sil) ve toplantılara (toplanti_ekle, toplanti_sil) yazabilirsin; üretim, sipariş, stok, plan gibi başka hiçbir kaydı değiştiremezsin, istenirse bunun henüz açık olmadığını söyle. "+
       "Yazma araçlarını çağırınca kayıt HEMEN YAZILMAZ, ekranda onay kartı çıkar ve sesli onay beklenir. Aracın döndürdüğü 'yapilacak' özetini patrona kısaca söyle ve sonunda 'Onaylıyor musun patron?' diye sor; yazdım deme, onay gelince sistem kendisi yazar. Düzenleme ve silmede önce notlarim/toplanti_listele ile doğru id'yi bul. Tarihleri 'yarın', 'cuma' gibi söylerse YYYY-MM-DD'ye sen çevir.";
@@ -13121,7 +13164,9 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   function asMsgsPaint(){
     var b=$("asmsgs"); if(!b)return;
-    b.innerHTML=AS.ui.length?AS.ui.map(function(m){return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':'')+asCfHtml():'<div class="fvcard fvempty"><p>Merhaba patron. Üç bölümün üretim, plan, sipariş, ciro, malzeme, notlarını ve toplantılarını sorabilirsin; notlarına ve takvimine yazdırabilirsin. Yazabilir ya da mikrofona basıp konuşabilirsin.</p></div>';
+    b.innerHTML=AS.ui.length?AS.ui.map(function(m){
+      if(m.r==="call")return '<div class="asm nocap a ascall"><b>'+esc(m.t)+'</b>'+(m.tel||[]).slice(0,3).map(function(p){return '<a class="btn" href="tel:'+esc(p)+'">📞 Ara <small>'+esc(p)+'</small></a>'}).join("")+(m.tel&&m.tel.length?'':'<small>Telefon numarası kayıtlı değil</small>')+'</div>';
+      return '<div class="asm nocap '+m.r+'">'+asFmt(m.t)+(m.r==="a"?'<button type="button" class="asspk" data-asa="say" aria-label="Sesli oku">🔊</button>':'')+'</div>'}).join("")+(AS.busy?'<div class="asm a asdots"><i></i><i></i><i></i></div>':'')+asCfHtml():'<div class="fvcard fvempty"><p>Merhaba patron. Üç bölümün üretim, plan, sipariş, ciro, malzeme, notlarını ve toplantılarını sorabilirsin; notlarına ve takvimine yazdırabilirsin. Yazabilir ya da mikrofona basıp konuşabilirsin.</p></div>';
     window.scrollTo(0,document.body.scrollHeight);
   }
   function asCtl(){
@@ -13309,7 +13354,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
           (ln[iso]||[]).forEach(function(l,i){
             if(!l||!l.e||!(l.q>0)||!l.c)return;
             var a=x[l.e]||(x[l.e]={}), b=a[iso]||(a[iso]=[]);
-            b.push({auto:true,id:"a:"+div+":"+sid+":"+iso+":"+i,emp:l.e,iso:iso,div:div,sec:sid,mac:l.m||"",code:l.c,a:l.a||"",b:l.b||"",q:l.q,dk:0,key:div+"|"+sid+"|"+fold(l.c)});
+            b.push({auto:true,id:"a:"+div+":"+sid+":"+iso+":"+i,emp:l.e,iso:iso,div:div,sec:sid,o:l.o||"",mac:l.m||"",code:l.c,a:l.a||"",b:l.b||"",q:l.q,dk:0,key:div+"|"+sid+"|"+fold(l.c)});
           });
         });
       });
@@ -13386,6 +13431,27 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(!th&&!chips&&!op)return '';
     return '<div class="pupr">'+(th?'<img class="puth" alt="" src="'+th+'">':'')+'<div class="pupx">'+(op||'')+(chips?'<div class="puparts">'+chips+'</div>':'')+'</div></div>';
   }
+  /* Puantaj satırında ürün adına dokununca ilgili siparişin detayına git (başka bölümse o bölüme geçip açar) */
+  function puGoOrder(code,oid,div,boot){
+    div=div||window.__DIV;
+    if(div!==window.__DIV){
+      try{sessionStorage.setItem("ud_goto",JSON.stringify({c:code,o:oid}))}catch(e){}
+      if(typeof window.divSwitchTo==="function")window.divSwitchTo(div); return;
+    }
+    try{watchOrders()}catch(e){}
+    var n=0, lim=boot?70:25, iv=setInterval(function(){
+      n++; if(!orders.length&&n<lim)return;
+      clearInterval(iv);
+      var o=oid?orders.filter(function(x){return x.id===oid})[0]:null;
+      if(o){openOrderDetail(o.id); return}
+      if(!jumpToOrderFor(code)){var st=$("pustatus"); if(st)st.textContent="Bu ürüne ait sipariş bulunamadı";}
+    },200);
+  }
+  document.addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest(".purord"); if(!t)return;
+    e.preventDefault(); e.stopPropagation(); puGoOrder(t.dataset.puord,t.dataset.puoid,t.dataset.puodiv);
+  },true);
+  (function(){var g=null; try{g=JSON.parse(sessionStorage.getItem("ud_goto")||"null"); sessionStorage.removeItem("ud_goto")}catch(e){} if(g&&g.c)setTimeout(function(){puGoOrder(g.c,g.o,window.__DIV,true)},1200)})();
   function puRowHtml(r){
     var c=puCalc(r), mac=r.mac?machineNameOf(r.mac):"", dvTag=(r.div&&r.div!==window.__DIV)?' · '+esc(divInfo(r.div).name):'';
     var info=[];
@@ -13393,7 +13459,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     var why="";
     if(c.st==="saat")why='saat girilmemiş'; else if(c.st==="sure")why='operasyon süresi yok'; else if(c.st==="adet")why='adet girilmemiş';
     return '<div class="pur '+(c.c||"n")+'" data-purow="'+esc(r.id)+'" data-puemp="'+esc(r.emp)+'" role="button" tabindex="0">'+
-      '<div class="pur1"><span class="pus">'+esc(puSecName(r.div,r.sec))+dvTag+'</span><b>'+esc(cvTi(r.code,r.div||window.__DIV)||"—")+'</b>'+(r.auto?'<span class="pua">üretimden</span>':'')+(r.ov?'<span class="pua man">üretimle eşleşti</span>':'')+puPill(c.c,c.pct)+'</div>'+
+      '<div class="pur1"><span class="pus">'+esc(puSecName(r.div,r.sec))+dvTag+'</span><b>'+(r.code?'<button type="button" class="purord" data-puord="'+esc(r.code)+'" data-puoid="'+esc(r.o||"")+'" data-puodiv="'+esc(r.div||window.__DIV)+'" aria-label="Siparişe git">'+esc(cvTi(r.code,r.div||window.__DIV)||r.code)+' <i>›</i></button>':esc(cvTi(r.code,r.div||window.__DIV)||"—"))+'</b>'+(r.auto?'<span class="pua">üretimden</span>':'')+(r.ov?'<span class="pua man">üretimle eşleşti</span>':'')+puPill(c.c,c.pct)+'</div>'+
       puProdBlock(r,c)+
       '<div class="pur2">'+(mac?'⚙ '+esc(mac)+' · ':'')+(info.join(" · ")||'<span class="puwarn">saat yok</span>')+'</div>'+
       '<div class="pur3">'+(c.dk>0?'':'<span class="puwarn">operasyon süresi yok</span>')+
