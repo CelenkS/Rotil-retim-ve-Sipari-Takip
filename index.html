@@ -4758,7 +4758,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 10:40</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 10:54</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12593,11 +12593,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   });
   /* ---------- Asistan (sadece sahip): Claude ile soru-cevap, sesli okuma, sabah raporu, toplantılar ----------
      Anahtar sadece bu cihazın localStorage'ında durur (as_key); koda ya da Firestore'a yazılmaz. Toplantılar: "asst_top" (ortak db). */
-  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:""};
+  var AS={msgs:[],ui:[],busy:false,speak:true,listening:false,rec:null,key:"",model:"claude-sonnet-4-5",hour:7,sett:false,mt:[],unM:null,built:false,stat:"",xkey:"",xvoice:"DYkrAHD8iwork3YSUBbs",xmodel:"eleven_multilingual_v2",audio:null,spkN:0};
   var AS_COL={orders:1,products:1,materials:1,matmoves:1,machines:1,employees:1,purorders:1,plists:1,suppliers:1,purchases:1,expenses:1,mesai:1,activity:1,puantaj:1,cstock:1,salesorders:1,slcustomers:1,tools:1,toolmoves:1,usernotes:1,asst_top:1,ck:1,ckaday:1,ckroz:1,fin_ay:1};
   function asOn(){return typeof finOwner==="function"&&finOwner()}
   function asLs(k,v){try{if(v===undefined)return localStorage.getItem(k); if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,v)}catch(e){} return null}
-  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7}
+  function asLoad(){AS.key=asLs("as_key")||""; AS.model=asLs("as_model")||"claude-sonnet-4-5"; AS.speak=asLs("as_speak")!=="0"; AS.hour=+(asLs("as_hour")||7)||7; AS.xkey=asLs("as_xkey")||""; AS.xvoice=asLs("as_xvoice")||"DYkrAHD8iwork3YSUBbs"}
   function asDb(){return dbDiv("rotil")}
   function asIso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
   function asToday(){return asIso(new Date())}
@@ -12772,15 +12772,31 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   }
   /* --- konuşma / mikrofon --- */
   function asPlain(t){return String(t||"").replace(/[*_#`>]/g,"").replace(/^\s*[-•]\s+/gm,"").replace(/\s+/g," ").trim()}
-  function asSay(t){
-    if(!AS.speak||!window.speechSynthesis)return;
+  function asPrime(){
+    /* iOS/Safari: ses, kullanıcı dokunuşu sırasında "uyandırılmazsa" sonradan çalmaz */
+    try{if(!AS.audio){AS.audio=new Audio(); AS.audio.setAttribute("playsinline","")} AS.audio.src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="; var pr=AS.audio.play(); if(pr&&pr.catch)pr.catch(function(){})}catch(e){}
+  }
+  function asSayBrowser(t){
+    if(!window.speechSynthesis)return;
     try{speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(asPlain(t)); u.lang="tr-TR"; var vs=speechSynthesis.getVoices().filter(function(v){return /^tr/i.test(v.lang)}); if(vs[0])u.voice=vs[0]; speechSynthesis.speak(u)}catch(e){}
   }
-  function asStopSay(){try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}}
+  function asSay(t,force){
+    if(!AS.speak&&!force)return;
+    var txt=asPlain(t); if(!txt)return;
+    if(!AS.xkey){asSayBrowser(txt); return}
+    asStopSay(); var my=++AS.spkN;
+    fetch("https://api.elevenlabs.io/v1/text-to-speech/"+encodeURIComponent(AS.xvoice)+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":AS.xkey,"content-type":"application/json",accept:"audio/mpeg"},body:JSON.stringify({text:txt.slice(0,2800),model_id:AS.xmodel,language_code:"tr"})})
+      .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status); return r.blob()})
+      .then(function(b){
+        if(my!==AS.spkN)return;
+        var a=AS.audio||(AS.audio=new Audio()); a.src=URL.createObjectURL(b); var pr=a.play(); if(pr&&pr.catch)pr.catch(function(){asStatus("Ses otomatik başlamadı, mesajdaki 🔊 tuşuna dokun")});
+      }).catch(function(e){if(my!==AS.spkN)return; asStatus("ElevenLabs sesi çalınamadı ("+((e&&e.message)||"hata")+"), tarayıcı sesine geçtim"); asSayBrowser(txt)});
+  }
+  function asStopSay(){AS.spkN++; try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){} try{if(AS.audio){AS.audio.pause()}}catch(e){}}
   function asMic(){
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){asStatus("Bu tarayıcı sesle yazmayı desteklemiyor"); return}
     if(AS.listening&&AS.rec){try{AS.rec.stop()}catch(e){} return}
-    asStopSay(); var r=new SR(); r.lang="tr-TR"; r.interimResults=false; r.maxAlternatives=1;
+    asStopSay(); asPrime(); var r=new SR(); r.lang="tr-TR"; r.interimResults=false; r.maxAlternatives=1;
     r.onresult=function(e){var t=e.results[0][0].transcript; AS.listening=false; asCtl(); asSend(t)};
     r.onerror=function(){AS.listening=false; asCtl(); asStatus("Duyamadım, tekrar dene")};
     r.onend=function(){AS.listening=false; asCtl()};
@@ -12813,9 +12829,11 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(!AS.sett&&AS.key){w.innerHTML=""; return}
     w.innerHTML='<div class="fvcard"><h3>Ayarlar</h3><label class="fl" for="askey">Anthropic API anahtarı</label><input class="fin" id="askey" type="password" autocomplete="off" placeholder="'+(AS.key?"kayıtlı (••••"+esc(AS.key.slice(-4))+") — değiştirmek için yapıştır":"sk-ant-… yapıştır")+'">'+
       '<small class="fvnote">Anahtar sadece bu cihazda saklanır, koda ya da veritabanına yazılmaz. Sorular ve veriler Anthropic\'e gönderilir.</small>'+
+      '<label class="fl" for="asxkey" style="margin-top:10px">ElevenLabs anahtarı (gerçekçi ses, isteğe bağlı)</label><input class="fin" id="asxkey" type="password" autocomplete="off" placeholder="'+(AS.xkey?"kayıtlı (••••"+esc(AS.xkey.slice(-4))+") — değiştirmek için yapıştır":"sk_… yapıştır")+'">'+
+      '<label class="fl" for="asxvoice" style="margin-top:10px">ElevenLabs ses kimliği</label><input class="fin" id="asxvoice" type="text" autocomplete="off" value="'+esc(AS.xvoice)+'">'+
       '<label class="fl" for="asmodel" style="margin-top:10px">Model</label><input class="fin" id="asmodel" type="text" autocomplete="off" value="'+esc(AS.model)+'">'+
       '<label class="fl" for="ashour" style="margin-top:10px">Sabah rapor saati</label><input class="fin" id="ashour" type="number" min="0" max="23" value="'+AS.hour+'">'+
-      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
+      '<div class="fvrow" style="margin-top:12px"><button type="button" class="btn" data-asa="savekey">Kaydet</button>'+(AS.xkey?'<button type="button" class="btn ghost" data-asa="testvoice">Sesi dene</button><button type="button" class="btn ghost danger" data-asa="delxkey">Ses anahtarını sil</button>':'')+(AS.key?'<button type="button" class="btn ghost danger" data-asa="delkey">Anahtarı sil</button>':'')+'</div></div>';
   }
   function asMeetPaint(){
     var w=$("asmeet"); if(!w)return; var t=asToday(), up=AS.mt.filter(function(m){return m.d>=t}).sort(function(x,y){return (x.d+(x.h||""))<(y.d+(y.h||""))?-1:1}).slice(0,8);
@@ -12825,13 +12843,13 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
   function asSend(text){
     text=String(text||"").trim(); if(!text||AS.busy)return;
     if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
-    asStopSay(); asUi("u",text); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Düşünüyorum…");
+    asStopSay(); asPrime(); asUi("u",text); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Düşünüyorum…");
     asRun(text).then(function(a){AS.busy=false; asStatus(""); asCtl(); asUi("a",a||"Cevap alamadım."); asSay(a)}).catch(function(e){AS.busy=false; asCtl(); asStatus(""); AS.msgs.pop(); asUi("a","Hata: "+((e&&e.message)||e))});
   }
   function asReport(){
     if(AS.busy)return;
     if(!AS.key){AS.sett=true; asSettPaint(); asStatus("Önce API anahtarını ekle"); return}
-    asStopSay(); asUi("u","☀ Sabah raporu"); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Rapor hazırlanıyor…");
+    asStopSay(); asPrime(); asUi("u","☀ Sabah raporu"); AS.busy=true; asCtl(); asMsgsPaint(); asStatus("Rapor hazırlanıyor…");
     var td=asToday(), yd=isoAdd(td,-1), data={bugun:td,dun:yd,bolum:window.__DIVO.name};
     asEnsure([td,yd]).then(function(){return asProd(yd)}).then(function(p){data.dunku_uretim=p; return asPlan(td)}).then(function(p){
       data.bugunku_plan=p; data.ciro=asCiro(); data.termini_gecen_siparisler=asOrders(true).siparisler.slice(0,10); data.bugunku_toplantilar=asTopList({baslangic:td,bitis:td}).toplantilar; data.yarinki_toplantilar=asTopList({baslangic:isoAdd(td,1),bitis:isoAdd(td,1)}).toplantilar; return asFin();
@@ -12861,12 +12879,17 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
     if(a==="spk"){AS.speak=!AS.speak; asLs("as_speak",AS.speak?"1":"0"); if(!AS.speak)asStopSay(); asCtl(); return}
     if(a==="clear"){AS.msgs=[]; AS.ui=[]; asStopSay(); asMsgsPaint(); return}
     if(a==="sett"){AS.sett=!AS.sett; asSettPaint(); return}
-    if(a==="say"){var m=t.closest(".asm"); if(m){var was=AS.speak; AS.speak=true; asSay(m.textContent.replace("🔊","")); AS.speak=was} return}
+    if(a==="say"){var m=t.closest(".asm"); if(m){asPrime(); asSay(m.textContent.replace("🔊",""),true)} return}
     if(a==="savekey"){
       var k=($("askey").value||"").trim(), md=($("asmodel").value||"").trim(), hr=+($("ashour").value||7);
       if(k){if(k.indexOf("sk-ant-")!==0){asStatus("Bu bir Anthropic anahtarına benzemiyor (sk-ant- ile başlamalı)"); return} asLs("as_key",k)}
+      var xk=($("asxkey").value||"").trim(), xv=($("asxvoice").value||"").trim();
+      if(xk){if(xk.indexOf("sk_")!==0){asStatus("ElevenLabs anahtarı sk_ ile başlamalı"); return} asLs("as_xkey",xk)}
+      if(xv)asLs("as_xvoice",xv);
       if(md)asLs("as_model",md); asLs("as_hour",String(Math.max(0,Math.min(23,hr||7)))); asLoad(); AS.sett=false; asSettPaint(); asStatus("Kaydedildi ✓"); asHomePaint(); var sb=$("assub"); if(sb)sb.textContent=window.__DIVO.name+" bölümü"; return;
     }
+    if(a==="testvoice"){asPrime(); asSay("Merhaba kanka, ben hazırım. Sabah raporunu bu sesle okuyacağım.",true); return}
+    if(a==="delxkey"){asLs("as_xkey",null); asLoad(); asStopSay(); asSettPaint(); asStatus("Ses anahtarı silindi, tarayıcı sesi kullanılacak"); return}
     if(a==="delkey"){asLs("as_key",null); asLoad(); AS.sett=true; asSettPaint(); asStatus("Anahtar silindi"); asHomePaint(); return}
     if(a==="madd"){
       var d1=$("asmd").value, h1=$("asmh").value, n1=($("asmn").value||"").trim(); if(!d1||!n1){asStatus("Tarih ve toplantı adı gir"); return}
