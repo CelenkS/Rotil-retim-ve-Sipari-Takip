@@ -4715,7 +4715,7 @@ html:root[data-theme="glass"][data-ui="modern"][data-ui="modern"][data-ui="moder
 .cgplate{display:flex;align-items:center;justify-content:center;margin:-6px -6px 14px;padding:22px 12px 18px;border-radius:18px;background:radial-gradient(120% 90% at 50% 0%,#12315C 0%,#0A1428 55%,#060A14 100%);box-shadow:inset 0 0 0 1px rgba(120,170,255,.16),0 10px 28px rgba(6,12,30,.35)}
 .cgplate img{display:block;width:100%;max-width:150px;height:auto;filter:drop-shadow(0 0 18px rgba(30,140,255,.45))}
 #loginGate .lgeyebrow{text-align:center;margin-bottom:2px}
-.catth{display:block;flex:none;object-fit:cover;border-radius:11px;border:2px solid var(--line);background:#fff;box-shadow:0 2px 8px rgba(20,30,50,.18)}
+.catth{display:block;flex:none;object-fit:contain;padding:3px;border-radius:11px;border:2px solid var(--line);background:#fff;box-shadow:0 2px 8px rgba(20,30,50,.18)}
 .nr2 .nh .nn2 .catth{border-radius:12px;margin-right:2px}
 .cats button .catth,.chiprow button .catth{border-radius:8px;margin-right:6px;display:inline-block;vertical-align:middle}
 .cgbrand{display:flex;align-items:center;gap:9px}
@@ -4804,7 +4804,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 12:45</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 17.11 12:47</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -6242,7 +6242,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
         cb.innerHTML='<div class="needcatsplit">'+bycat.map(function(g,i){
           if(!g.req)return "";
           var cpc=Math.round(g.done/g.req*100), op=needSecCat===i;
-          var h='<button type="button" class="ncrow click" data-nsc="'+i+'"><span class="nn3">'+(catThumb(i,24)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(ORDER_CATS[i])+'<span class="nchev">'+(op?'▾':'▸')+'</span></span><span class="nv3">'+nf.format(g.done)+' / '+nf.format(g.req)+' · %'+cpc+'</span><div class="nbar3"><i style="width:'+Math.min(100,cpc)+'%"></i></div></button>';
+          var h='<button type="button" class="ncrow click" data-nsc="'+i+'"><span class="nn3">'+(catThumb(i,34)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(ORDER_CATS[i])+'<span class="nchev">'+(op?'▾':'▸')+'</span></span><span class="nv3">'+nf.format(g.done)+' / '+nf.format(g.req)+' · %'+cpc+'</span><div class="nbar3"><i style="width:'+Math.min(100,cpc)+'%"></i></div></button>';
           if(op){
             var si1=stageIdx(sec.id), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]}).map(function(o){return {o:o,dn:doneOf(o.id,sec.id).q}}).sort(function(a,b){return (b.dn-a.dn)||((a.o.code||"").localeCompare(b.o.code||"","tr"))});
             var started=lst.filter(function(x){return x.dn>0}), notst=lst.filter(function(x){return x.dn<=0});
@@ -8721,7 +8721,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
     if(best)catImgC.m[i]=best;
     return best;
   }
-  function catThumb(i,sz){var u=catImgUrl(i); return u?'<img class="catth" alt="" src="'+u+'" style="width:'+sz+'px;height:'+sz+'px;border-color:var(--p'+i+')">':""}
+  function catThumb(i,sz){var u=catImgUrl(i); return u?'<img class="catth" alt="" src="'+u+'" style="width:'+Math.round(sz*1.7)+'px;height:'+sz+'px;border-color:var(--p'+i+')">':""}
   function opSkip(o,secId,op){if(!(IS_RT&&secId==="cncg"&&op))return false; var tr=isTr(o.code); return op==="t"?!tr:tr}
   function stageNeed(secId,cust,op){
     var si=stageIdx(secId), req=0, done=0, reqR=0, doneR=0;
@@ -9125,7 +9125,7 @@ html:root:root:root:root:root:root:root #divGate .dvlogo.cgl{width:92px;height:9
           return bycat.map(function(g,i){
             if(!g.req)return '';
             var cpc=Math.round(g.done/g.req*100), copen=needCatOpen===keyPref+i;
-            var h='<button type="button" class="needcatrow click nr2 sm" data-ncat="'+i+'" data-nstage="'+sg.sec+'"'+(op?' data-nop="'+op+'"':'')+' style="--c:var(--p'+i+')"><span class="nh"><span class="nn2">'+(catThumb(i,40)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(ORDER_CATS[i])+'</span><span class="npc">%'+cpc+'</span><span class="nchev">'+(copen?'▾':'▸')+'</span></span><div class="nbar sm"><i style="width:'+Math.min(100,cpc)+'%;background:var(--p'+i+')"></i></div><div class="nst"><div class="ns"><small>Adet</small><b>'+nf.format(g.done)+'</b><em>/ '+nf.format(g.req)+'</em></div>'+(g.reqR>0?'<div class="ns"><small>Ciro</small><b>'+money(g.doneR)+' ₺</b><em>/ '+money(g.reqR)+' ₺</em></div>':'')+'</div></button>';
+            var h='<button type="button" class="needcatrow click nr2 sm" data-ncat="'+i+'" data-nstage="'+sg.sec+'"'+(op?' data-nop="'+op+'"':'')+' style="--c:var(--p'+i+')"><span class="nh"><span class="nn2">'+(catThumb(i,60)||'<span class="dot" style="background:var(--p'+i+')"></span>')+esc(ORDER_CATS[i])+'</span><span class="npc">%'+cpc+'</span><span class="nchev">'+(copen?'▾':'▸')+'</span></span><div class="nbar sm"><i style="width:'+Math.min(100,cpc)+'%;background:var(--p'+i+')"></i></div><div class="nst"><div class="ns"><small>Adet</small><b>'+nf.format(g.done)+'</b><em>/ '+nf.format(g.req)+'</em></div>'+(g.reqR>0?'<div class="ns"><small>Ciro</small><b>'+money(g.doneR)+' ₺</b><em>/ '+money(g.reqR)+' ₺</em></div>':'')+'</div></button>';
             if(copen){
               var si1=stageIdx(sg.sec), lst=orders.filter(function(o){return o.cat===i&&(o.st||[])[si1]&&!opSkip(o,sg.sec,op)&&(!cust||custBaseName(o.cust)===cust)}).map(function(o){
                 var c=snCalc(o,sg.sec,si1,op); return {o:o,nd:c.nd,dn:c.dn};
