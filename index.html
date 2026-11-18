@@ -413,6 +413,7 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .needcatrow .nv2{font:700 13px var(--font-ui);text-align:right}
 .nbar.sm{grid-column:1/3;height:5px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:1px}
 .nbar.sm i{display:block;height:100%;border-radius:99px}
+.needcatrow .nbar i{background:var(--c)}
 #pvlist{display:flex;flex-direction:column;gap:16px}
 .pvcard .items{margin-top:10px;display:flex;flex-direction:column;gap:10px}
 .planbtn{display:block;width:100%;text-align:left;border:1px solid rgba(255,255,255,.35)}
@@ -5401,7 +5402,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 00:12</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 08:19</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -9756,7 +9757,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
           srows+='<div class="needsplit">'+RT_OPS.concat([["t","Transfer · ön + kanal birlikte"]]).map(function(po){
             var pn=stageNeed(sg.sec,cust||null,po[0]); if(!pn.req)return '';
             var ppc=Math.round(pn.done/pn.req*100), oopen=needOpOpen===sg.sec+"|"+po[0];
-            var oh='<button type="button" class="needcatrow click nr2 sm" data-nopr="'+po[0]+'" data-nstage="'+sg.sec+'" style="--c:'+so.h1+'"><span class="nh"><span class="nn2"><span class="dot" style="background:'+so.h1+'"></span>'+esc(po[1])+'</span><span class="npc">%'+ppc+'</span><span class="nchev">'+(oopen?'▾':'▸')+'</span></span><div class="nbar sm"><i style="width:'+Math.min(100,ppc)+'%"></i></div><div class="nst"><div class="ns"><small>Adet</small><b>'+nf.format(pn.done)+'</b><em>/ '+nf.format(pn.req)+' · kalan '+nf.format(pn.rem)+'</em></div>'+(pn.reqR>0?'<div class="ns"><small>Ciro</small><b>'+money(pn.doneR)+' ₺</b><em>/ '+money(pn.reqR)+' ₺ · kalan '+money(pn.reqR-pn.doneR)+' ₺</em></div>':'')+'</div></button>';
+            var oh='<button type="button" class="needcatrow click nr2 sm" data-nopr="'+po[0]+'" data-nstage="'+sg.sec+'" style="--c:'+so.h1+'"><span class="nh"><span class="nn2"><span class="dot" style="background:'+so.h1+'"></span>'+esc(po[1])+'</span><span class="npc">%'+ppc+'</span><span class="nchev">'+(oopen?'▾':'▸')+'</span></span><div class="nbar sm"><i style="width:'+Math.min(100,ppc)+'%;background:'+so.h1+'"></i></div><div class="nst"><div class="ns"><small>Adet</small><b>'+nf.format(pn.done)+'</b><em>/ '+nf.format(pn.req)+' · kalan '+nf.format(pn.rem)+'</em></div>'+(pn.reqR>0?'<div class="ns"><small>Ciro</small><b>'+money(pn.doneR)+' ₺</b><em>/ '+money(pn.reqR)+' ₺ · kalan '+money(pn.reqR-pn.doneR)+' ₺</em></div>':'')+'</div></button>';
             if(oopen)oh+='<div class="needsplit">'+catRowsHtml(po[0],sg.sec+"|"+po[0]+"|")+'</div>';
             return oh;
           }).join("")+'</div>';
