@@ -1007,9 +1007,27 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .otot div{background:var(--soft);border-radius:14px;padding:10px 12px}
 .otot small{display:block;font:700 11px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
 .otot b{font:800 17px var(--font-ui)}
-.tdrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tdrow{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.tdrow:has([data-tdmove]) span{flex:1 1 100%;overflow-wrap:anywhere}
+.tdrow:has([data-tdmove]) .btn{padding:0 12px}
 .tdrow span{flex:1;min-width:0;font:600 14px var(--font-ui)}
 .tdrow .btn{flex:none;width:auto;min-height:44px;padding:0 16px}
+#tbulk{position:fixed;inset:0;z-index:100000;background:var(--surface,#fff);background-image:linear-gradient(var(--cs-sheet,transparent),var(--cs-sheet,transparent));color:var(--ink);display:flex;flex-direction:column}
+#tbulk[hidden]{display:none!important}
+#tbulk .tbbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:max(calc(env(safe-area-inset-top,0px) + 12px),22px) 16px 10px;border-bottom:1px solid var(--line)}
+#tbulk .tbbar b{font:800 16px var(--font-head)}
+#tbulk .tbbody{flex:1;overflow:auto;padding:14px 16px 60px;max-width:760px;width:100%;margin:0 auto}
+#tbulk .tbc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+#tbulk .tbc p{margin:6px 0 12px;font:500 13.5px/1.5 var(--font-ui);color:var(--ink2)}
+#tbulk .tbrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#tbulk .tbn{font:500 12px/1.4 var(--font-ui);color:var(--ink2);margin-top:8px;display:block}
+#tbulk .tbt>div{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;padding:7px 0;border-top:1px solid var(--line);font:600 14px var(--font-ui)}
+#tbulk .tbt>.tbh{border-top:0;font:700 11px var(--font-ui);color:var(--ink2);text-transform:uppercase}
+#tbulk .tbd{margin-top:8px}#tbulk .tbd summary{cursor:pointer;font:600 13px var(--font-ui)}
+#tbulk .tbl{max-height:220px;overflow:auto;font:500 12px/1.6 var(--font-ui);color:var(--ink2);margin-top:6px}
+#tbulk .tbp{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:12px}#tbulk .tbp i{display:block;height:100%;background:var(--accent,#2F8F83);border-radius:99px;transition:width .2s}
+#tbulk .tbs{font:600 13px var(--font-ui);margin-top:8px;overflow-wrap:anywhere}
+#tbulk .tbdone{border-color:#1e8e4e}
 #tdview{position:fixed;inset:0;z-index:200;background:#111;display:flex;flex-direction:column}
 #tdview[hidden]{display:none!important}
 #tdview .tdbar{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;padding:max(calc(env(safe-area-inset-top,0px) + 14px),34px) 12px 10px}
@@ -5402,7 +5420,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 08:19</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 12:55</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5754,7 +5772,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   <div class="otabs" role="group" aria-label="Ürünler ve bileşenler" style="margin-top:12px"><button type="button" id="prTabP" aria-pressed="true">Ürünler</button><button type="button" id="prTabR" aria-pressed="false">Reçeteliler</button><button type="button" id="prTabC" aria-pressed="false">Bileşenler</button><button type="button" id="prTabH" aria-pressed="false" hidden>Hammaddeler</button><button type="button" id="prTabF" aria-pressed="false" hidden>Fiyat Listeleri</button></div>
   <div class="osearch" style="margin-top:10px"><button class="btn" id="prnew" style="flex:1">+ Yeni ürün / maliyet</button><button class="btn ghost" id="primp" style="flex:1">📥 Siparişlerden getir</button><button class="btn" id="prcnew" style="flex:1" hidden>+ Yeni bileşen</button></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn ghost" id="prgram" style="flex:1;min-width:150px">⚖ Gramaj hesapla</button><button class="btn ghost" id="prekb" style="flex:1;min-width:150px">⚙ Aşık gramajlarını hesapla</button></div>
-  <details class="prset"><summary class="tpill">⚙ Ayarlar ve araçlar</summary><div class="prsetb"><button class="tpill" id="prdata" style="margin-top:0">📦 Excel verisini içe aktar</button><button class="tpill" id="prdovfix" style="margin-top:0">🧹 Çift dövmeleri temizle</button><button class="tpill" id="prdup" style="margin-top:0">🧽 Tekrarlanan ürünleri sil</button><button class="tpill" id="prbulk" style="margin-top:0">🧱 Toplu hammadde fiyatı</button><button class="tpill" id="prdov" style="margin-top:0">🔨 Dövme fiyatlarını aktar (Excel)</button><button class="tpill" id="prcmk" style="margin-top:0;display:none">🧩 Üretilen parçaları bileşen yap</button><button class="tpill" id="prcode" style="margin-top:0;display:none">🔤 Ürün kodunu ürün adı yap</button><button class="tpill" id="prrule" style="margin-top:0;display:none">🎨 Boya / kaplama kuralını uygula</button><button class="tpill" id="prcir" style="margin-top:0;display:none">💰 Ciro kuralını açık siparişlere uygula</button><button class="tpill" id="prrep" style="margin-top:0;display:none">🔁 Parçayı toplu değiştir (çekirdek vb.)</button></div></details><input type="file" id="prdataf" accept=".json,application/json" hidden><input type="file" id="prdovf" accept=".xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+  <details class="prset"><summary class="tpill">⚙ Ayarlar ve araçlar</summary><div class="prsetb"><button class="tpill" id="prdata" style="margin-top:0">📦 Excel verisini içe aktar</button><button class="tpill" id="prtdbulk" style="margin-top:0">📐 Toplu teknik resim yükle</button><button class="tpill" id="prdovfix" style="margin-top:0">🧹 Çift dövmeleri temizle</button><button class="tpill" id="prdup" style="margin-top:0">🧽 Tekrarlanan ürünleri sil</button><button class="tpill" id="prbulk" style="margin-top:0">🧱 Toplu hammadde fiyatı</button><button class="tpill" id="prdov" style="margin-top:0">🔨 Dövme fiyatlarını aktar (Excel)</button><button class="tpill" id="prcmk" style="margin-top:0;display:none">🧩 Üretilen parçaları bileşen yap</button><button class="tpill" id="prcode" style="margin-top:0;display:none">🔤 Ürün kodunu ürün adı yap</button><button class="tpill" id="prrule" style="margin-top:0;display:none">🎨 Boya / kaplama kuralını uygula</button><button class="tpill" id="prcir" style="margin-top:0;display:none">💰 Ciro kuralını açık siparişlere uygula</button><button class="tpill" id="prrep" style="margin-top:0;display:none">🔁 Parçayı toplu değiştir (çekirdek vb.)</button></div></details><input type="file" id="prdataf" accept=".json,application/json" hidden><input type="file" id="prdovf" accept=".xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
   <div id="prsum" class="stfsum" hidden></div>
   <input class="search" id="prsearch" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Ürün kodu, ad veya müşteri ara…" aria-label="Ara" style="margin-top:8px">
   <div id="prfilt" class="stffilt"></div>
@@ -5763,6 +5781,10 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
 </div>
 <div class="ov" id="ov" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title" id="sheet"></div>
+</div>
+<div id="tbulk" hidden role="dialog" aria-modal="true" aria-label="Toplu teknik resim yükle" class="nocap">
+  <div class="tbbar"><b>📐 Toplu teknik resim yükle</b><button type="button" id="tbclose" class="btn ghost">Kapat</button></div>
+  <div class="tbbody" id="tbbody"></div>
 </div>
 <div id="tdview" hidden role="dialog" aria-modal="true" aria-label="Teknik resim">
   <div class="tdbar"><b id="tdtitle"></b><div class="tdbtns"><button type="button" data-tda="prev" aria-label="Önceki">‹</button><button type="button" data-tda="next" aria-label="Sonraki">›</button><button type="button" data-tda="zout" aria-label="Uzaklaştır">−</button><button type="button" data-tda="zin" aria-label="Yakınlaştır">+</button><button type="button" data-tda="close" class="tdx">Kapat</button></div></div>
@@ -6136,7 +6158,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   // sonraki adım. Performans (yeşil/kırmızı) hesaplaması bu süreler üzerinden yapılacak.
   var stdTime=[];
   var fImgTh="", fImgFull=null, fImgDirty=false, pendingNewCode="", catImgCache={};
-  var techCode="", techBack="list", techIdx={}, techIdxA={}, techMeta={}, techCache={}, techDelArm=-1, tdV=null, TD_MAX=6, TD_ROT=window.__DIV==="rotil", TD_PDF_MAX=6291456, TD_CH=700000;   // Teknik resim: ürün koduna bağlı. tech/{kodAnahtarı}={code,ids:[]}, resimler techimg/{id}={d}. Sadece "📐 Teknik resim"e basınca okunur.
+  var techCode="", techBack="list", techIdx={}, techIdxA={}, techIdxB={}, techMeta={}, techCache={}, techDelArm=-1, tdV=null, TD_MAX=6, TD_ROT=window.__DIV==="rotil", TD_PDF_MAX=6291456, TD_CH=700000;   // Teknik resim: ürün koduna bağlı. tech/{kodAnahtarı}={code,ids:[]}, resimler techimg/{id}={d}. Sadece "📐 Teknik resim"e basınca okunur.
   function setCats(a){COLS.length=0;a.forEach(function(c){COLS.push(c)})}
   function zero(){var o=[];for(var i=0;i<COLS.length;i++)o.push(0);return o}
   function fit(a){var o=[];for(var i=0;i<COLS.length;i++)o.push((a&&a[i])||0);return o}
@@ -6494,11 +6516,11 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     if(!db){techIdx[k]=[]; renderSheet(); return}
     db.doc("tech/"+k).get().then(function(sn){techApply(k,sn.exists?sn.data():{})}).catch(function(){techApply(k,{})}).then(function(){if(sheetMode==="tech"&&techKey(techCode)===k)renderSheet()});
   }
-  /* Rotil'de teknik resim ikiye ayrılır: Gövde (tech.ids) ve Aşık (tech.aids). Dosya PDF olabilir (id "pdf_" ile başlar, ad/parça sayısı tech.meta'da). */
-  function techApply(k,d){d=d||{}; techIdx[k]=(d.ids||[]).slice(); techIdxA[k]=(d.aids||[]).slice(); techMeta[k]=d.meta||{}}
-  function techGroups(){return TD_ROT?[["ids","Gövde teknik resim"],["aids","Aşık teknik resim"]]:[["ids","Teknik resim"]]}
-  function techArr(k,g){return (g==="aids"?techIdxA[k]:techIdx[k])||[]}
-  function techAll(k){return techArr(k,"ids").concat(TD_ROT?techArr(k,"aids"):[])}
+  /* Rotil'de teknik resim üçe ayrılır: Gövde (tech.ids), Aşık (tech.aids) ve Bitmiş ürün (tech.bids). Dosya PDF olabilir (id "pdf_" ile başlar, ad/parça sayısı tech.meta'da). */
+  function techApply(k,d){d=d||{}; techIdx[k]=(d.ids||[]).slice(); techIdxA[k]=(d.aids||[]).slice(); techIdxB[k]=(d.bids||[]).slice(); techMeta[k]=d.meta||{}}
+  function techGroups(){return TD_ROT?[["ids","Gövde teknik resim"],["aids","Aşık teknik resim"],["bids","Bitmiş ürün teknik resim"]]:[["ids","Teknik resim"]]}
+  function techArr(k,g){return (g==="aids"?techIdxA[k]:g==="bids"?techIdxB[k]:techIdx[k])||[]}
+  function techAll(k){return techArr(k,"ids").concat(TD_ROT?techArr(k,"aids").concat(techArr(k,"bids")):[])}
   function techIsPdf(id){return String(id).indexOf("pdf_")===0}
   function techNames(k){var m=techMeta[k]||{}, o={}; Object.keys(m).forEach(function(i){o[i]=m[i].name}); return o}
   function techGLabel(g){return (techGroups().filter(function(x){return x[0]===g})[0]||[0,"Teknik resim"])[1]}
@@ -6506,6 +6528,123 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     if(!db)return cb(false);
     db.doc("tech/"+k).get().then(function(sn){var d=sn.exists?sn.data():{}; d.code=techCode||d.code||""; fn(d); return db.doc("tech/"+k).set(d).then(function(){techApply(k,d); cb(true)})}).catch(function(){cb(false)});
   }
+
+  /* ---- Toplu teknik resim yükleme: klasör seç → dosya adını ürün koduyla eşleştir → Gövde/Aşık/Bitmiş ürün bölümüne yükle ---- */
+  var TB={files:[],busy:false,stop:false,done:null,def:"bids",q:0};
+  function tbSort(c){return fold(c).split(/[^a-z0-9]+/).filter(Boolean).sort().join("-")}
+  function tbGroupOf(path,def){var p=fold(String(path||"").replace(/\\/g,"/")); if(/(^|\/)asik(\/|$)/.test(p))return "aids"; if(/(^|\/)govde(\/|$)/.test(p))return "ids"; if(/bitmis/.test(p))return "bids"; return def}
+  function tbGName(g){return g==="ids"?"Gövde":g==="aids"?"Aşık":"Bitmiş ürün"}
+  function tbCands(){
+    var m={}, sm={}, add=function(code){ if(!code)return; var k=techKey(code); if(k==="x")return; if(!m[k])m[k]={code:String(code),k:k} };
+    (products||[]).forEach(function(p){add(p.code)});
+    try{(orders||[]).forEach(function(o){add(o.code)})}catch(e){}
+    Object.keys(m).forEach(function(k){var sk=tbSort(m[k].code); (sm[sk]=sm[sk]||[]).push(m[k])});
+    return {m:m,sm:sm,n:Object.keys(m).length};
+  }
+  function tbMatch(C,name){
+    var base=String(name).replace(/\.[^.]+$/,""), k=techKey(base);
+    if(C.m[k])return C.m[k];
+    var h=C.sm[tbSort(base)]; if(h&&h.length===1)return h[0];
+    return null;
+  }
+  function tbPick(list,def){
+    var C=tbCands(); TB.files=[]; TB.done=null; TB.cn=C.n;
+    [].slice.call(list||[]).forEach(function(f){
+      var name=f.name||"", path=f.webkitRelativePath||name;
+      if(/^desktop\.ini$/i.test(name)||/^thumbs\.db$/i.test(name))return;
+      var pdf=f.type==="application/pdf"||/\.pdf$/i.test(name), img=/^image\//.test(f.type)||/\.(jpe?g|png|webp)$/i.test(name);
+      var e={f:f,name:name,g:tbGroupOf(path,def),state:"ok",cand:null};
+      if(!pdf&&!img)e.state="type"; else if(pdf&&f.size>TD_PDF_MAX)e.state="big";
+      else{e.cand=tbMatch(C,name); if(!e.cand)e.state="nomatch"}
+      TB.files.push(e);
+    });
+    tbPaint();
+  }
+  function tbOpen(){
+    if(!TD_ROT){alert("Bu araç sadece Rotil bölümünde çalışır."); return}
+    $("tbulk").hidden=false; TB.files=[]; TB.done=null; TB.busy=false;
+    try{watchProducts()}catch(e){}
+    tbPaint();
+  }
+  function tbPaint(){
+    var b=$("tbbody"); if(!b)return;
+    var h="";
+    if(!prLoaded&&!TB.files.length){h+='<div class="tbc">Ürün listesi yükleniyor… biraz bekle, sonra dosyaları seç.</div>'; setTimeout(function(){if(!$("tbulk").hidden)tbPaint()},1500)}
+    h+='<div class="tbc"><b>Nasıl çalışır?</b><p>"TEKNİK RESİMLER" klasörünü seç (içinde <i>Gövde</i>, <i>AŞIK</i>, <i>Bitmiş ürün</i> klasörleri olsun). Dosya adı ürün koduyla eşleşirse o ürünün ilgili bölümüne eklenir. Eşleşmeyenler atlanır, kaydedilmeden önce raporu görürsün. Aynı dosyayı ikinci kez yüklemez, yarım kalırsa tekrar seçip devam edebilirsin.</p>'+
+      '<div class="tbrow"><label class="btn" for="tbdir" style="cursor:pointer">📁 Klasör seç</label><input id="tbdir" type="file" webkitdirectory directory multiple style="display:none"></div>'+
+      '<div class="tbrow" style="margin-top:8px"><label class="btn ghost" for="tbfiles" style="cursor:pointer">📄 Tek tek dosya seç</label><input id="tbfiles" type="file" multiple accept="application/pdf,image/*" style="display:none"><select id="tbdef" class="fin" style="flex:1;min-width:150px"><option value="bids"'+(TB.def==="bids"?" selected":"")+'>Bölüm: Bitmiş ürün</option><option value="ids"'+(TB.def==="ids"?" selected":"")+'>Bölüm: Gövde</option><option value="aids"'+(TB.def==="aids"?" selected":"")+'>Bölüm: Aşık</option></select></div>'+
+      '<small class="tbn">Tek tek seçimde bölümü yandaki kutudan seçersin (klasör seçince klasör adından anlaşılır).</small></div>';
+    if(TB.files.length){
+      var G={ids:{n:0,ok:0},aids:{n:0,ok:0},bids:{n:0,ok:0}}, bad={type:[],big:[],nomatch:[]};
+      TB.files.forEach(function(e){G[e.g].n++; if(e.state==="ok")G[e.g].ok++; else bad[e.state].push(e)});
+      var okN=TB.files.filter(function(e){return e.state==="ok"}).length;
+      h+='<div class="tbc"><b>Rapor</b> <small>('+(TB.cn||0)+' ürün kodu ile karşılaştırıldı)</small><div class="tbt"><div class="tbh"><span></span><span>Dosya</span><span>Eşleşen</span></div>'+
+        ["ids","aids","bids"].map(function(g){return '<div><span>'+tbGName(g)+'</span><span>'+G[g].n+'</span><span><b>'+G[g].ok+'</b></span></div>'}).join("")+'</div>'+
+        (bad.nomatch.length?'<details class="tbd"><summary>Eşleşmeyen '+bad.nomatch.length+' dosya (atlanacak)</summary><div class="tbl">'+bad.nomatch.slice(0,400).map(function(e){return esc(tbGName(e.g)+" · "+e.name)}).join("<br>")+(bad.nomatch.length>400?"<br>…":"")+'</div></details>':'')+
+        (bad.big.length?'<details class="tbd"><summary>6 MB\'tan büyük '+bad.big.length+' PDF (atlanacak)</summary><div class="tbl">'+bad.big.map(function(e){return esc(e.name)}).join("<br>")+'</div></details>':'')+
+        (bad.type.length?'<div class="tbn">'+bad.type.length+' dosya PDF/resim değil, atlanacak.</div>':'')+
+        (TB.busy?'<div class="tbp"><i id="tbbar" style="width:0%"></i></div><div class="tbs" id="tbst">Başlıyor…</div><button type="button" class="btn ghost" id="tbstop" style="margin-top:8px">⏹ Durdur</button>':
+          (okN?'<button type="button" class="btn" id="tbgo" style="margin-top:12px;width:100%">⬆ '+okN+' dosyayı yükle</button>':'<div class="tbn">Yüklenecek eşleşen dosya yok.</div>'))+'</div>';
+    }
+    if(TB.done){var d=TB.done; h+='<div class="tbc tbdone"><b>'+(d.stopped?"Durduruldu":"Bitti ✓")+'</b><div class="tbs">Yüklenen: <b>'+d.up+'</b> · Zaten vardı: '+d.dup+' · Bölüm dolu (en fazla '+TD_MAX+'): '+d.full+' · Hata: '+d.err+'</div>'+(d.errs.length?'<div class="tbl">'+d.errs.slice(0,30).map(esc).join("<br>")+'</div>':'')+'<div class="tbn">Ürün kartı → Teknik resim bölümünden kontrol edebilirsin.</div></div>'}
+    b.innerHTML=h;
+  }
+  function tbSt(done,total,txt){var s=$("tbst"), p=$("tbbar"); if(s)s.textContent=txt||(done+" / "+total+" dosya"); if(p)p.style.width=Math.round(done/Math.max(1,total)*100)+"%"}
+  function tbReadPdf(f,id,cb){
+    var rd=new FileReader();
+    rd.onload=function(){
+      var d=String(rd.result).replace(/^data:[^;,]*/,"data:application/pdf"), parts=[];
+      for(var o=0;o<d.length;o+=TD_CH)parts.push(d.slice(o,o+TD_CH));
+      Promise.all(parts.map(function(pc,j){var ob={d:pc}; if(j===0){ob.n=parts.length; ob.t="pdf"} return db.doc("techimg/"+(j?id+"_"+j:id)).set(ob)})).then(function(){cb(null,parts.length)}).catch(function(e){cb(e||"hata")});
+    };
+    rd.onerror=function(){cb("okunamadı")};
+    rd.readAsDataURL(f);
+  }
+  function tbRun(){
+    if(TB.busy||!db)return;
+    var items=TB.files.filter(function(e){return e.state==="ok"}); if(!items.length)return;
+    var byK={}, keys=[]; items.forEach(function(e){var k=e.cand.k; if(!byK[k]){byK[k]=[]; keys.push(k)} byK[k].push(e)});
+    var R={up:0,dup:0,full:0,err:0,errs:[],stopped:false}, fin=0, total=items.length, ki=0, uq=0;
+    TB.busy=true; TB.stop=false; TB.done=null; tbPaint(); tbSt(0,total,"Başlıyor…");
+    function doKey(k,cb){
+      db.doc("tech/"+k).get().then(function(sn){
+        var d=sn.exists?sn.data():{}, changed=false; d.meta=d.meta||{};
+        var its=byK[k], j=0;
+        (function nx(){
+          if(j>=its.length||TB.stop){
+            if(!changed)return cb();
+            if(!d.code)d.code=its[0].cand.code;
+            db.doc("tech/"+k).set(d).then(function(){techApply(k,d); cb()}).catch(function(e){R.err+=its.length; R.errs.push(its[0].cand.code+": kayıt yazılamadı"); cb()});
+            return;
+          }
+          var e=its[j++], g=e.g, arr=(d[g]||[]).slice(), nm=fold(e.name);
+          var has=arr.some(function(id){return d.meta[id]&&fold(d.meta[id].name)===nm});
+          if(has){R.dup++; fin++; tbSt(fin,total); return nx()}
+          if(arr.length>=TD_MAX){R.full++; fin++; tbSt(fin,total); return nx()}
+          var pdf=e.f.type==="application/pdf"||/\.pdf$/i.test(e.name), id=(pdf?"pdf_":"")+uid()+(uq++);
+          var ok=function(meta){arr.push(id); d[g]=arr; d.meta[id]=meta; changed=true; R.up++; fin++; tbSt(fin,total,fin+" / "+total+" · "+e.name); nx()};
+          var bad=function(m){R.err++; R.errs.push(e.name+": "+m); fin++; tbSt(fin,total); nx()};
+          if(pdf)tbReadPdf(e.f,id,function(er,n){if(er)return bad("PDF kaydedilemedi"); ok({name:e.name,n:n,sz:e.f.size})});
+          else resizeTech(e.f,function(dd){ if(!dd)return bad("resim okunamadı/çok büyük"); db.doc("techimg/"+id).set({d:dd}).then(function(){ok({name:e.name,n:1})}).catch(function(){bad("resim kaydedilemedi")}) });
+        })();
+      }).catch(function(){R.err+=byK[k].length; R.errs.push(byK[k][0].cand.code+": okunamadı"); fin+=byK[k].length; cb()});
+    }
+    var active=0, W=3;
+    function pump(){
+      if(TB.stop||ki>=keys.length){ if(active===0)finish(); return}
+      while(active<W&&ki<keys.length&&!TB.stop){ (function(k){active++; doKey(k,function(){active--; pump()})})(keys[ki++]) }
+    }
+    function finish(){R.stopped=TB.stop; TB.busy=false; TB.done=R; TB.files=[]; tbPaint()}
+    pump();
+  }
+  document.addEventListener("click",function(e){
+    var t=e.target.closest&&e.target.closest("#prtdbulk,#tbclose,#tbgo,#tbstop"); if(!t)return;
+    if(t.id==="prtdbulk")tbOpen(); else if(t.id==="tbclose"){if(TB.busy&&!confirm("Yükleme sürüyor, durdurup kapatılsın mı?"))return; TB.stop=true; $("tbulk").hidden=true} else if(t.id==="tbgo")tbRun(); else if(t.id==="tbstop")TB.stop=true;
+  });
+  document.addEventListener("change",function(e){
+    if(e.target.id==="tbdef"){TB.def=e.target.value; return}
+    if(e.target.id==="tbdir"||e.target.id==="tbfiles"){var l=[].slice.call(e.target.files||[]); e.target.value=""; if(!l.length)return; tbPick(l,TB.def)}
+  });
   function techHtml(){
     var k=techKey(techCode), h='<div class="shead"><div><h2 id="sh-title">Teknik resim</h2><small>'+esc(techCode)+'</small></div><button class="btn" id="techback">Geri</button></div>';
     if(techIdx[k]===undefined)return h+'<div class="empty">Yükleniyor…</div>';
@@ -6515,7 +6654,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       h+=(gs.length>1?'<div class="tdgh">'+g[1]+' <i>'+ids.length+'/'+TD_MAX+'</i></div>':'');
       h+=ids.length?ids.map(function(id,i){
         var pdf=techIsPdf(id), arm=(techDelArm===g[0]+i);
-        return '<div class="tdrow"><span>'+(pdf?'📄 '+esc((meta[id]&&meta[id].name)||"PDF"):'📐 Teknik resim '+(i+1))+'</span><button type="button" class="btn" data-tdview="'+i+'" data-g="'+g[0]+'">Gör</button>'+(gs.length>1?'<button type="button" class="btn ghost" data-tdmove="'+i+'" data-g="'+g[0]+'">'+(g[0]==="ids"?"→ Aşık":"→ Gövde")+'</button>':'')+'<button type="button" class="btn ghost" data-tddel="'+i+'" data-g="'+g[0]+'"'+(arm?' style="color:#c0392b;border-color:#c0392b"':'')+'>'+(arm?'Emin misin?':'Sil')+'</button></div>';
+        return '<div class="tdrow"><span>'+(pdf?'📄 '+esc((meta[id]&&meta[id].name)||"PDF"):'📐 Teknik resim '+(i+1))+'</span><button type="button" class="btn" data-tdview="'+i+'" data-g="'+g[0]+'">Gör</button>'+(gs.length>1?gs.filter(function(o){return o[0]!==g[0]}).map(function(o){return '<button type="button" class="btn ghost" data-tdmove="'+i+'" data-g="'+g[0]+'" data-tg="'+o[0]+'">→ '+(o[0]==="ids"?"Gövde":o[0]==="aids"?"Aşık":"Bitmiş")+'</button>'}).join(""):'')+'<button type="button" class="btn ghost" data-tddel="'+i+'" data-g="'+g[0]+'"'+(arm?' style="color:#c0392b;border-color:#c0392b"':'')+'>'+(arm?'Emin misin?':'Sil')+'</button></div>';
       }).join(""):'<div class="empty">'+(gs.length>1?g[1]+' eklenmemiş.':'Bu ürün için henüz teknik resim yok.')+'</div>';
       if(ids.length<TD_MAX)h+='<label class="btn ghost" for="tdf-'+g[0]+'" style="width:100%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-top:8px">+ '+(gs.length>1?g[1]+' ekle (resim / PDF)':'Teknik resim ekle (resim / PDF)')+'</label><input id="tdf-'+g[0]+'" data-tdg="'+g[0]+'" type="file" accept="image/*,application/pdf" multiple style="display:none">';
     });
@@ -8267,7 +8406,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       if(t.id==="techback"){sheetMode=techBack; techDelArm=-1; renderSheet(); return}
       if(t.dataset.tdview!==undefined){var g0=t.dataset.g||"ids"; tdShow(techArr(tk0,g0).slice(),+t.dataset.tdview,"",techGLabel(g0),techNames(tk0)); return}
       if(t.dataset.tdmove!==undefined){
-        var g1=t.dataset.g||"ids", i1=+t.dataset.tdmove, tg=g1==="ids"?"aids":"ids", full=false;
+        var g1=t.dataset.g||"ids", i1=+t.dataset.tdmove, tg=t.dataset.tg||(g1==="ids"?"aids":"ids"), full=false;
         techWrite(tk0,function(d){var a=(d[g1]||[]).slice(), b=(d[tg]||[]).slice(); if(b.length>=TD_MAX){full=true; return} var id=a.splice(i1,1)[0]; if(id)b.push(id); d[g1]=a; d[tg]=b},function(ok){
           if(sheetMode==="tech")renderSheet(); var o=$("tdstatus"); if(o)o.textContent=!ok?"Taşınamadı, bağlantını kontrol edip tekrar dene":(full?"Hedef bölüm dolu (en fazla "+TD_MAX+")":"Taşındı ✓");
         }); return;
@@ -8951,7 +9090,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       })(0);
       return;
     }
-    if(e.target.id==="tdf-ids"||e.target.id==="tdf-aids"){
+    if(e.target.id&&e.target.id.indexOf("tdf-")===0){
       var tg2=e.target.dataset.tdg||"ids", fl=[].slice.call(e.target.files||[]); e.target.value=""; if(!fl.length||!db)return;
       var tk=techKey(techCode), cur=techArr(tk,tg2).slice(), room=TD_MAX-cur.length;
       var skipped=fl.length>room; fl=fl.slice(0,Math.max(0,room));
