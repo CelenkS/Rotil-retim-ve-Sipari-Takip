@@ -681,6 +681,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 .mps.ok b{color:#2FA66E}.mps.ok i{background:#2FA66E}
 .mps.cur{border-color:var(--accent,#3B78E0);box-shadow:0 0 0 1px var(--accent,#3B78E0) inset}
 .mps.cur span{color:var(--ink)}
+.mps.hsub{padding-bottom:11px}
+.mps .mpsub{display:flex;gap:10px;margin-top:3px;font-style:normal;white-space:nowrap;overflow:hidden}
+.mps .mpsub u{text-decoration:none;font:700 10.5px var(--font-ui);color:var(--ink2);opacity:.75}
+.mps .mpsub u.go{color:#C98A1E;opacity:1}.mps .mpsub u.ok{color:#2FA66E;opacity:1}
+.mps .mpsub.tr u{letter-spacing:.01em}
+
 .mpitem{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 10px;cursor:pointer}
 .mpitem:active{border-color:var(--accent,#3B78E0)}
 .mpkal{display:flex;flex-direction:column;align-items:flex-end;flex:0 0 auto}
@@ -1023,6 +1029,12 @@ tr.grand td.s-good,tr.grand td.s-bad,tr.grand td.s-warn{color:#fff}
 #tbulk .tbn{font:500 12px/1.4 var(--font-ui);color:var(--ink2);margin-top:8px;display:block}
 #tbulk .tbt>div{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;padding:7px 0;border-top:1px solid var(--line);font:600 14px var(--font-ui)}
 #tbulk .tbt>.tbh{border-top:0;font:700 11px var(--font-ui);color:var(--ink2);text-transform:uppercase}
+#tbulk .tbu0{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+#tbulk .tbul{max-height:46vh;overflow:auto;margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:4px 10px}
+#tbulk .tbgh{font:800 11px var(--font-ui);text-transform:uppercase;color:var(--ink2);padding:8px 0 2px}
+#tbulk .tbu{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0;border-top:1px solid var(--line);font:600 13px var(--font-ui)}
+#tbulk .tbu span{flex:1 1 100%;overflow-wrap:anywhere}
+#tbulk .tbm{min-height:34px;padding:0 10px;font:700 12px var(--font-ui)}
 #tbulk .tbd{margin-top:8px}#tbulk .tbd summary{cursor:pointer;font:600 13px var(--font-ui)}
 #tbulk .tbl{max-height:220px;overflow:auto;font:500 12px/1.6 var(--font-ui);color:var(--ink2);margin-top:6px}
 #tbulk .tbp{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:12px}#tbulk .tbp i{display:block;height:100%;background:var(--accent,#2F8F83);border-radius:99px;transition:width .2s}
@@ -2264,7 +2276,13 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 .line .lsel[data-f="mac"]{background:color-mix(in srgb,#E08A2E 18%,var(--surface));border-color:color-mix(in srgb,#E08A2E 65%,transparent)}
 .line .lsel:focus{outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent,#6D5BF5) 25%,transparent)}
 /* ---- Takımlar ve elmaslar ---- */
-#tools .tltabs{margin-top:2px;flex-wrap:nowrap}
+#tools .tltabs{margin-top:2px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+#tools .tltabs::-webkit-scrollbar{display:none}
+#tools .tltabs button{flex:0 0 auto}
+#tools .tltabs em{font-style:normal;font-size:11px;font-weight:800;background:var(--bad);color:#fff;border-radius:99px;padding:1px 6px;margin-left:3px}
+.tlchip.ok{background:color-mix(in srgb,#2E7D5B 22%,var(--surface));border-color:#2E7D5B}
+.tlsum>div.tlw{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.tlcsvr{margin-top:8px}.tlcsvr .btn{font-size:12.5px;padding:0 12px;flex:1}
 .tlcats{margin-top:8px;flex-wrap:wrap}
 .tlrow{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:10px;cursor:pointer;display:flex;flex-direction:column;gap:9px;box-shadow:0 1px 3px rgba(10,25,30,.06)}
 .tlrow.low{border-color:color-mix(in srgb,var(--bad) 60%,var(--line));box-shadow:0 0 0 1px color-mix(in srgb,var(--bad) 35%,transparent)}
@@ -5363,6 +5381,20 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   #as .aslbtn{display:none}
   #as .asbar{left:calc(var(--snw,0px) + 288px)}
 }
+
+/* ---- PERFORMANS: Cam / Buzlu cam / Çelsan / Yeni modlarında kasma (telefon + PC) ----
+   Sebep: kartların her birinde backdrop-filter (bulanıklık) + altta sürekli hareket eden, blur(70px) filtreli ışık küreleri
+   + tam ekran grenli doku (mix-blend) + sayfa geçişinde blur filtresi. Hepsi her karede yeniden hesaplanıyordu.
+   Çözüm: bulanıklık sadece sabit üst/alt çubuk, yan menü ve açılır panellerde kalır; kartlarda kapalı. Işık küreleri sabit. */
+:is(html[data-theme="glass"],html[data-theme="celsan"]):root:root:root *:not(#cstop):not(#csdock):not(#cslaunch):not(#sidenav):not(#frostbar):not(.sheet):not(.sheetbg):not(#scrim):not(#lookpick):not(.nfpop){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html:root:root:root[data-ui="celsan"] #csbg i{filter:none!important;animation:none!important;will-change:auto!important}
+html:root:root:root[data-ui="celsan"] #csbg .gr{display:none!important}
+html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
+@keyframes csIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#divGate::before,#divGate::after{animation:none!important}
+@media (max-width:820px){
+  html:root:root:root[data-ui="celsan"] .wrap:not([hidden]){animation-duration:.28s}
+}
 </style>
 </head>
 <body>
@@ -6548,17 +6580,26 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     return null;
   }
   function tbPick(list,def){
-    var C=tbCands(); TB.files=[]; TB.done=null; TB.cn=C.n;
+    var C=tbCands(); TB.files=[]; TB.done=null; TB.cn=C.n; TB.C=C;
     [].slice.call(list||[]).forEach(function(f){
       var name=f.name||"", path=f.webkitRelativePath||name;
       if(/^desktop\.ini$/i.test(name)||/^thumbs\.db$/i.test(name))return;
       var pdf=f.type==="application/pdf"||/\.pdf$/i.test(name), img=/^image\//.test(f.type)||/\.(jpe?g|png|webp)$/i.test(name);
       var e={f:f,name:name,g:tbGroupOf(path,def),state:"ok",cand:null};
       if(!pdf&&!img)e.state="type"; else if(pdf&&f.size>TD_PDF_MAX)e.state="big";
-      else{e.cand=tbMatch(C,name); if(!e.cand)e.state="nomatch"}
+      else{e.cand=tbMatch(C,name); if(!e.cand){e.state="nomatch"; e.sug=tbSuggest(C,name)}}
       TB.files.push(e);
     });
     tbPaint();
+  }
+  function tbSuggest(C,name){
+    var kb=techKey(String(name).replace(/\.[^.]+$/,"")), out=[]; if(kb.length<4)return out;
+    Object.keys(C.m).forEach(function(k){
+      if(k===kb)return;
+      var a=k.indexOf(kb)===0&&k.length-kb.length<=2, b=kb.indexOf(k)===0&&kb.length-k.length<=2;
+      if(a||b)out.push(C.m[k]);
+    });
+    return out.slice(0,3);
   }
   function tbOpen(){
     if(!TD_ROT){alert("Bu araç sadece Rotil bölümünde çalışır."); return}
@@ -6580,7 +6621,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       var okN=TB.files.filter(function(e){return e.state==="ok"}).length;
       h+='<div class="tbc"><b>Rapor</b> <small>('+(TB.cn||0)+' ürün kodu ile karşılaştırıldı)</small><div class="tbt"><div class="tbh"><span></span><span>Dosya</span><span>Eşleşen</span></div>'+
         ["ids","aids","bids"].map(function(g){return '<div><span>'+tbGName(g)+'</span><span>'+G[g].n+'</span><span><b>'+G[g].ok+'</b></span></div>'}).join("")+'</div>'+
-        (bad.nomatch.length?'<details class="tbd"><summary>Eşleşmeyen '+bad.nomatch.length+' dosya (atlanacak)</summary><div class="tbl">'+bad.nomatch.slice(0,400).map(function(e){return esc(tbGName(e.g)+" · "+e.name)}).join("<br>")+(bad.nomatch.length>400?"<br>…":"")+'</div></details>':'')+
+        (bad.nomatch.length?tbUnmatchedHtml(bad.nomatch):'')+
         (bad.big.length?'<details class="tbd"><summary>6 MB\'tan büyük '+bad.big.length+' PDF (atlanacak)</summary><div class="tbl">'+bad.big.map(function(e){return esc(e.name)}).join("<br>")+'</div></details>':'')+
         (bad.type.length?'<div class="tbn">'+bad.type.length+' dosya PDF/resim değil, atlanacak.</div>':'')+
         (TB.busy?'<div class="tbp"><i id="tbbar" style="width:0%"></i></div><div class="tbs" id="tbst">Başlıyor…</div><button type="button" class="btn ghost" id="tbstop" style="margin-top:8px">⏹ Durdur</button>':
@@ -6588,6 +6629,20 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     }
     if(TB.done){var d=TB.done; h+='<div class="tbc tbdone"><b>'+(d.stopped?"Durduruldu":"Bitti ✓")+'</b><div class="tbs">Yüklenen: <b>'+d.up+'</b> · Zaten vardı: '+d.dup+' · Bölüm dolu (en fazla '+TD_MAX+'): '+d.full+' · Hata: '+d.err+'</div>'+(d.errs.length?'<div class="tbl">'+d.errs.slice(0,30).map(esc).join("<br>")+'</div>':'')+'<div class="tbn">Ürün kartı → Teknik resim bölümünden kontrol edebilirsin.</div></div>'}
     b.innerHTML=h;
+  }
+  function tbUnmatchedHtml(list){
+    var one=list.filter(function(e){return e.sug&&e.sug.length===1}).length;
+    var h='<div class="tbu0"><b>⚠ Eşleşmeyen '+list.length+' dosya</b> <small>(bunlar atlanacak; ürün kodu uygulamada bulunamadı)</small>'+
+      '<div class="tbrow" style="margin-top:8px"><button type="button" class="btn ghost" id="tbcopy">📋 Listeyi kopyala</button>'+(one?'<button type="button" class="btn ghost" id="tball">✓ Önerilen '+one+' tanesini eşle</button>':'')+'</div>'+
+      '<div class="tbul">';
+    ["ids","aids","bids"].forEach(function(g){
+      var l=list.filter(function(e){return e.g===g}); if(!l.length)return;
+      h+='<div class="tbgh">'+tbGName(g)+' ('+l.length+')</div>'+l.slice(0,600).map(function(e){
+        var i=TB.files.indexOf(e);
+        return '<div class="tbu"><span>'+esc(e.name)+'</span>'+((e.sug||[]).map(function(c){return '<button type="button" class="btn ghost tbm" data-tbm="'+i+'|'+esc(c.k)+'">→ '+esc(c.code)+'</button>'}).join(""))+'</div>';
+      }).join("")+(l.length>600?'<div class="tbn">… ve '+(l.length-600)+' dosya daha (listeyi kopyala ile hepsini alırsın)</div>':'');
+    });
+    return h+'</div><small class="tbn">Önerilen butona basarsan o dosya o ürüne eşlenir. Öneri yoksa dosya adı ürün kodundan farklı demektir.</small></div>';
   }
   function tbSt(done,total,txt){var s=$("tbst"), p=$("tbbar"); if(s)s.textContent=txt||(done+" / "+total+" dosya"); if(p)p.style.width=Math.round(done/Math.max(1,total)*100)+"%"}
   function tbReadPdf(f,id,cb){
@@ -6638,8 +6693,16 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     pump();
   }
   document.addEventListener("click",function(e){
-    var t=e.target.closest&&e.target.closest("#prtdbulk,#tbclose,#tbgo,#tbstop"); if(!t)return;
+    var t=e.target.closest&&e.target.closest("#prtdbulk,#tbclose,#tbgo,#tbstop,#tbcopy,#tball,[data-tbm]"); if(!t)return;
     if(t.id==="prtdbulk")tbOpen(); else if(t.id==="tbclose"){if(TB.busy&&!confirm("Yükleme sürüyor, durdurup kapatılsın mı?"))return; TB.stop=true; $("tbulk").hidden=true} else if(t.id==="tbgo")tbRun(); else if(t.id==="tbstop")TB.stop=true;
+    else if(t.dataset&&t.dataset.tbm!==undefined){var pr=t.dataset.tbm.split("|"), fe=TB.files[+pr[0]]; if(fe&&TB.C&&TB.C.m[pr[1]]){fe.cand=TB.C.m[pr[1]]; fe.state="ok"; tbPaint()}}
+    else if(t.id==="tball"){TB.files.forEach(function(fe){if(fe.state==="nomatch"&&fe.sug&&fe.sug.length===1){fe.cand=fe.sug[0]; fe.state="ok"}}); tbPaint()}
+    else if(t.id==="tbcopy"){
+      var tx=["ESLESMEYEN DOSYALAR"].concat(TB.files.filter(function(fe){return fe.state==="nomatch"}).map(function(fe){return tbGName(fe.g)+" | "+fe.name+((fe.sug&&fe.sug.length)?" | öneri: "+fe.sug.map(function(c){return c.code}).join(", "):"")})).join("\n");
+      var done=function(ok){t.textContent=ok?"✓ Kopyalandı":"Kopyalanamadı"};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(tx).then(function(){done(1)},function(){done(0)});
+      else{var ta=document.createElement("textarea"); ta.value=tx; ta.style.cssText="position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); var ok=false; try{ok=document.execCommand("copy")}catch(x){} ta.remove(); done(ok)}
+    }
   });
   document.addEventListener("change",function(e){
     if(e.target.id==="tbdef"){TB.def=e.target.value; return}
@@ -13253,13 +13316,13 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       var db2=ggDb(); if(db2)db2.doc("expenses/"+d.id).delete().catch(function(){}); ggModalClose(); ggRender(); return;
     }
   });
-  /* ---------- Çelik Kapıcılar (Rozet · sadece sahibine özel): dünyadaki çelik kapı üreticileri ----------
+  /* ---------- Çelik Kapıcılar (Rozet · herkese açık): dünyadaki çelik kapı üreticileri ----------
      "ck" = senin listen, "ckaday" = aday havuzu (seçip listene ekle). Rotil yolundaki ortak db'de durur, index.html'e gömülmez. */
   var CK_REL=[["yuksek","Çelik kapı üreticisi"],["orta","Belki"],["dusuk","Alakasız olabilir"]];
   var CK_TP=[["uretici","Rozet / defender üreticisi"],["kapi","Kapı üreticisi (alıcı olabilir)"]];
   var CK_ST=[["yeni","Yeni"],["aranacak","Aranacak"],["gorusuldu","Görüşüldü"],["olumlu","Olumlu"],["olumsuz","Olumsuz"]];
   var CK={list:[],cand:[],roz:[],unL:null,unC:null,unR:null,rq:"",rfc:"",rlim:60,col:"ck",tab:"list",q:"",fc:"",fr:"",fs:"",cq:"",cfc:"",cfr:"yo",cfon:false,sel:{},modal:false,cur:null,lim:60,clim:60,busy:false,draft:null};
-  function ckOn(){return typeof finOwner==="function"&&finOwner()&&window.__DIV==="rozet"}
+  function ckOn(){return window.__DIV==="rozet"}
   function ckDb(){return dbDiv("rotil")}
   function ckHash(s){var h=5381,i; for(i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36)}
   function ckKey(n,c){var s=fold(String(n||"")+" "+String(c||"")).replace(/[^a-z0-9а-яё]+/g," ").trim(); return s.replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,48)+"-"+ckHash(s)}
@@ -16217,8 +16280,15 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     var cells=STAGES.map(function(stg,i){
       if(!(o.st||[])[i])return "";
       var nd=need(o,stg.sec), dn=Math.min(doneOf(o.id,stg.sec).q,nd); if(stClosed(o,i))dn=nd;
-      var pc=nd?Math.min(100,Math.round(dn/nd*100)):0, mu=muOf(o,i);
-      return '<div class="mps'+(stg.sec===curSec?' cur':'')+(pc>=100?' ok':pc>0?' go':'')+'"><span>'+esc(stg.short)+(mu>1?' ×'+mu:'')+'</span><b>'+nf.format(dn)+' / '+nf.format(nd)+'</b><i style="width:'+pc+'%"></i></div>';
+      var pc=nd?Math.min(100,Math.round(dn/nd*100)):0, mu=muOf(o,i), sub="";
+      // Rotil gövde işleme: ön / kanal ayrı ayrı görünsün (CNC); Transfer'de tek işlem olduğu yazsın
+      if(IS_RT&&stg.sec==="cncg"){
+        if(opSplit(stg.sec,o)){
+          var dd=doneOf(o.id,stg.sec), cl=stClosed(o,i), qo=cl?nd:Math.min(dd.qo||0,nd), qk=cl?nd:Math.min(dd.qk||0,nd);
+          sub='<em class="mpsub"><u class="'+(qo>=nd?'ok':qo>0?'go':'')+'">Ön '+nf.format(qo)+'</u><u class="'+(qk>=nd?'ok':qk>0?'go':'')+'">Kanal '+nf.format(qk)+'</u></em>';
+        }else sub='<em class="mpsub tr"><u class="'+(pc>=100?'ok':pc>0?'go':'')+'">Transfer · ön+kanal birlikte</u></em>';
+      }
+      return '<div class="mps'+(stg.sec===curSec?' cur':'')+(pc>=100?' ok':pc>0?' go':'')+(sub?' hsub':'')+'"><span>'+esc(stg.short)+(mu>1?' ×'+mu:'')+'</span><b>'+nf.format(dn)+' / '+nf.format(nd)+'</b>'+sub+'<i style="width:'+pc+'%"></i></div>';
     }).join("");
     return cells?'<div class="stgw"><span class="stgl" role="button" tabindex="0" data-stgl>'+esc(label||"İşlem durumu")+'</span><div class="mpst">'+cells+'</div></div>':'';
   }
@@ -21726,9 +21796,12 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   // toolmoves/{id}: {tid,t:"in"|"mount"|"end"|"use",q,p,mid,d,ref,why,u,note,ts}
   //  in=stok girişi · mount=makineye takma (1 adet) · end=çıkarma (bitti/kırıldı/bilendi, u=o anki toplam adet) · use=elle adet ekle/düzelt
   //  Stok = girişler − takılanlar + bilenip dönenler. "Yaptığı adet" = takıldığı günden beri o makinede girilen üretim (CNC/Transfer) + elle düzeltmeler.
-  var TL_SECS=["cncg","cnca"], TL_CATS=["Freze","Parmak freze","Matkap","Kesici uç","Tutucu","Kılavuz","Rayba","Pens","Diş çekme","Delik işleme","Bileme taşı","Diğer"];
-  var TL_WHY={bitti:"Ömrü bitti",kirildi:"Kırıldı",bilendi:"Bilendi (stoğa döner)"};
-  var TL_CATS_E=["Elmas uç","Elmas disk","Elmas bileme","Elmas kalem","Elmas pens","Diğer"], tlKind="", tools=[], tmoves=[], unsubTl=null, unsubTm=null, tlDiv="all", tlBy={}, tlByM={}, tlUnA={}, tlTab="list", tlQ="", tlCat="", tlId=null, tlMt=null, tlDraft=null, tlDelArm=false, tlWhy="bitti", tlFrom="", tlMsg="";
+  var TL_SECS=["cncg","cnca"], TL_CATS=["Karbür Matkap","Kılavuz","Freze","Sarf Malzeme","Parmak freze","Matkap","Kesici uç","Tutucu","Rayba","Pens","Diş çekme","Delik işleme","Bileme taşı","Diğer"];
+  // Çıkış / değişim nedenleri (Excel "TANIMLAR" sayfasıyla aynı) — bitti, kirildi, bilendi eski kayıtlarla uyumlu kalır
+  var TL_WHY={bitti:"Normal aşınma",cevir:"Köşe çevrildi (sonraki köşe)",kirildi:"Uç kırılması",devir:"Yanlış devir / ilerleme",sertlik:"Malzeme sertliği",baglama:"Bağlama hatası",bilendi:"Bilendi (stoğa döner)"};
+  var TL_WHY_ORD=["bitti","cevir","kirildi","devir","sertlik","baglama","bilendi"], TL_EARLY=["kirildi","devir","sertlik","baglama"], TL_SHIFT=["1. Vardiya","2. Vardiya","3. Vardiya"], TL_CORN=[1,2,3,4,6,8,10,12];
+  var TL_FF=["name","code","cat","price","life","crit","note","holder","loc","corners"];
+  var TL_CATS_E=["Negatif Elmas","Pozitif Elmas","Kanal Ucu","Elmas uç","Elmas disk","Elmas bileme","Elmas kalem","Elmas pens","Diğer"], tlMvK="ret", tlFWhy="bitti", tlMvTab="", tlKind="", tools=[], tmoves=[], unsubTl=null, unsubTm=null, tlDiv="all", tlBy={}, tlByM={}, tlUnA={}, tlTab="list", tlQ="", tlCat="", tlId=null, tlMt=null, tlDraft=null, tlDelArm=false, tlWhy="bitti", tlFrom="", tlMsg="";
   function tdb(t){return dbDiv((t&&t._div)||window.__DIV)||db}
   function tlVis(t){return tlDiv==="all"||t._div===tlDiv}
   function tlWatch(){
@@ -21760,13 +21833,18 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   }
   function tlCalc(){
     var idx=tlUseIdx(), info={}, ends={}, uses={};
-    tools.forEach(function(t){info[t.id]={t:t,inQ:0,inV:0,mounts:[],live:[],ended:[],sharp:0,scrap:0,broke:0,lifeSum:0,lifeN:0,stock:0,avgLife:0,eff:0,cpp:0}});
+    tools.forEach(function(t){info[t.id]={t:t,nc:Math.max(1,Math.round(+t.corners||1)),inQ:0,inV:0,mounts:[],live:[],ended:[],spent:0,sharp:0,cev:0,scrap:0,broke:0,lifeSum:0,lifeN:0,ret:0,adj:0,iss:0,fire:0,sret:0,why:{},used:0,stock:0,avgLife:0,eff:0,cpp:0,cornerPrice:0,ratio:0,effSt:"",val:0}});
     tmoves.forEach(function(m){
-      var I=info[m.tid]; if(!I)return;
-      if(m.t==="in"){I.inQ+=+m.q||0; I.inV+=(+m.q||0)*(+m.p||0)}
-      else if(m.t==="mount")I.mounts.push(m);
+      var I=info[m.tid]; if(!I)return; var q=+m.q||0;
+      if(m.t==="in"){I.inQ+=q; I.inV+=q*(+m.p||0)}
+      else if(m.t==="mount"){I.mounts.push(m); if(!m.nc)I.spent++}
       else if(m.t==="end")ends[m.ref]=m;
       else if(m.t==="use")(uses[m.ref]=uses[m.ref]||[]).push(m);
+      else if(m.t==="ret")I.ret+=q;
+      else if(m.t==="adj")I.adj+=q;
+      else if(m.t==="iss")I.iss+=q;
+      else if(m.t==="fire")I.fire+=q;
+      else if(m.t==="sret")I.sret+=q;
     });
     Object.keys(info).forEach(function(id){
       var I=info[id], t=I.t, codes=(t.codes||[]).map(function(c){return String(c).toLowerCase().trim()});
@@ -21775,18 +21853,32 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
         if(en&&en.u!=null)used=+en.u||0;
         else{
           (uses[mt.id]||[]).forEach(function(u){man+=+u.q||0});
-          if(t._div===window.__DIV)(idx[mt.mid]||[]).forEach(function(r){if(r.d>=(mt.d||"")&&(!codes.length||codes.indexOf(r.c)>-1))auto+=r.q});
+          // köşe çevrilince yeni köşe, bir önceki köşenin çıktığı günden SONRAKİ üretimi sayar (aynı gün iki kez sayılmasın)
+          if(t._div===window.__DIV)(idx[mt.mid]||[]).forEach(function(r){if((mt.nc?r.d>(mt.d||""):r.d>=(mt.d||""))&&(!codes.length||codes.indexOf(r.c)>-1))auto+=r.q});
           used=auto+man;
         }
-        mt._used=used; mt._auto=auto; mt._man=man; mt._end=en||null;
+        mt._used=used; mt._auto=auto; mt._man=man; mt._end=en||null; I.used+=used;
         if(en){
-          if(en.why==="bilendi")I.sharp++; else{I.scrap++; if(en.why==="kirildi")I.broke++; if(used>0){I.lifeSum+=used; I.lifeN++}}
+          if(en.why==="bilendi")I.sharp++;
+          else{
+            I.scrap++; var wk=en.why||"bitti"; I.why[wk]=(I.why[wk]||0)+1;
+            if(wk==="cevir")I.cev++;
+            if(TL_EARLY.indexOf(wk)>-1)I.broke++;
+            if(used>0){I.lifeSum+=used; I.lifeN++}
+          }
           I.ended.push(mt);
         }else I.live.push(mt);
       });
-      I.stock=I.inQ-I.mounts.length+I.sharp;
+      I.stock=I.inQ-I.spent+I.sharp+I.ret+I.adj-I.iss-I.fire-I.sret;
       I.avgLife=I.lifeN?I.lifeSum/I.lifeN:0;
-      I.eff=I.avgLife||(+t.life||0); I.cpp=(+t.price>0&&I.eff>0)?t.price/I.eff:0;
+      I.eff=I.avgLife||(+t.life||0);
+      // köşe başı fiyat = fiyat ÷ köşe sayısı · parça başı maliyet = köşe başı fiyat ÷ köşe ömrü (Excel'deki mantık)
+      I.cornerPrice=+t.price>0?t.price/I.nc:0;
+      I.cpp=(I.cornerPrice>0&&I.eff>0)?I.cornerPrice/I.eff:0;
+      var tg=+t.life||0;
+      I.ratio=(I.lifeN&&tg>0)?I.avgLife/tg:0;
+      I.effSt=(I.lifeN&&tg>0)?(I.ratio>=0.7?"ok":"low"):"";
+      I.val=Math.max(0,I.stock)*(+t.price||0);
     });
     return info;
   }
@@ -21812,63 +21904,126 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     try{watchOrders()}catch(e){}
     chain.then(function(){return loadProgress(true)}).then(function(){if(!$("tools").hidden)tlRender()});
   }
+  function tlEffChip(I){
+    if(!I.effSt)return "";
+    return I.effSt==="ok"?'<span class="tlchip ok">✅ İdeal ömür %'+Math.round(I.ratio*100)+'</span>':'<span class="tlchip warn">⚠ Düşük ömür %'+Math.round(I.ratio*100)+'</span>';
+  }
+  function tlSub(t,I){
+    var a=[t.sk,t.code,t.cat].filter(Boolean);
+    return esc(a.join(" · ")||"—")+(+t.price>0?' · '+pf(t.price)+' ₺':'')+(I&&I.nc>1?' · '+I.nc+' köşe':'')+(+t.life>0?' · ömür '+nf.format(+t.life)+(I&&I.nc>1?' parça/köşe':' adet'):'');
+  }
   function tlRow(I){
     var t=I.t, low=tlIsLow(I), worst=0; I.live.forEach(function(mt){worst=Math.max(worst,tlPct(mt,t))});
+    var trk=t.trk!==false;
     return '<div class="tlrow'+(low?' low':'')+'" data-tld="'+t.id+'" role="button" tabindex="0">'+
-      '<div class="tlr1">'+tlThumb(t)+'<div class="tlt"><b>'+esc(t.name||"Takım")+(tlDiv==="all"?poDivTag(t._div):"")+'</b><small>'+esc([t.code,t.cat].filter(Boolean).join(" · ")||"—")+(+t.price>0?' · '+pf(t.price)+' ₺':'')+(+t.life>0?' · ömür '+nf.format(+t.life)+' adet':'')+'</small></div>'+
+      '<div class="tlr1">'+tlThumb(t)+'<div class="tlt"><b>'+esc(t.name||"Takım")+(tlDiv==="all"?poDivTag(t._div):"")+'</b><small>'+tlSub(t,I)+'</small></div>'+
       '<div class="tlstk'+(low?' low':'')+'"><b>'+nf.format(I.stock)+'</b><small>stokta</small></div></div>'+
-      '<div class="tlmeta">'+(t.kind==="e"?'<span class="tlchip dm">◆ Elmas</span>':'')+'<span class="tlchip">⚙ Takılı <b>'+I.live.length+'</b></span>'+(+t.crit>0?'<span class="tlchip'+(low?' bad':'')+'">Kritik '+nf.format(+t.crit)+'</span>':'')+(I.live.length&&+t.life>0?'<span class="tlchip'+(worst>=100?' bad':(worst>=80?' warn':''))+'">En yüksek ömür %'+worst+'</span>':'')+(low?'<span class="tlchip bad">⚠ Stok az</span>':'')+'</div>'+
-      '<div class="tlact"><button type="button" data-tlin="'+t.id+'">＋ Giriş</button><button type="button" data-tlmt="'+t.id+'">⚙ Makineye tak</button></div></div>';
+      '<div class="tlmeta">'+(t.kind==="e"?'<span class="tlchip dm">◆ Elmas</span>':'')+(trk?'<span class="tlchip">⚙ Takılı <b>'+I.live.length+'</b></span>':'<span class="tlchip">Sarf · adet takibi</span>')+(t.loc?'<span class="tlchip">📍 '+esc(t.loc)+'</span>':'')+(t.holder?'<span class="tlchip">Kater: '+esc(t.holder)+'</span>':'')+(+t.crit>0?'<span class="tlchip'+(low?' bad':'')+'">Kritik '+nf.format(+t.crit)+'</span>':'')+(I.live.length&&+t.life>0?'<span class="tlchip'+(worst>=100?' bad':(worst>=80?' warn':''))+'">En yüksek ömür %'+worst+'</span>':'')+tlEffChip(I)+(low?'<span class="tlchip bad">⚠ Stok az</span>':'')+'</div>'+
+      '<div class="tlact"><button type="button" data-tlin="'+t.id+'">＋ Giriş</button><button type="button" data-tlmt="'+t.id+'">'+(trk?'⚙ Makineye tak':'➜ Tezgaha çıkış')+'</button></div></div>';
   }
   function tlInstRow(I,mt,withTool){
-    var t=I.t;
-    return '<div class="tlinst">'+(withTool?'<div class="tli1">'+tlThumb(t)+'<div class="tlt"><b>'+esc(t.name||"Takım")+'</b><small>'+esc(tlMacName(mt.mid))+' · '+(mt.d?fmtD(mt.d)+' tarihinden beri':'')+'</small></div></div>':'<div class="tli1"><div class="tlt"><b>'+esc(tlMacName(mt.mid))+'</b><small>'+(mt.d?fmtD(mt.d)+' tarihinden beri':'')+'</small></div></div>')+
+    var t=I.t, cr=mt.cr||1, ctag=I.nc>1?' · köşe '+cr+'/'+I.nc:'', who=[mt.op,mt.sh].filter(Boolean).join(" · ");
+    return '<div class="tlinst">'+(withTool?'<div class="tli1">'+tlThumb(t)+'<div class="tlt"><b>'+esc(t.name||"Takım")+'</b><small>'+esc(tlMacName(mt.mid))+ctag+' · '+(mt.d?fmtD(mt.d)+' tarihinden beri':'')+(who?' · '+esc(who):'')+'</small></div></div>':'<div class="tli1"><div class="tlt"><b>'+esc(tlMacName(mt.mid))+ctag+'</b><small>'+(mt.d?fmtD(mt.d)+' tarihinden beri':'')+(who?' · '+esc(who):'')+'</small></div></div>')+
       tlLifeBar(mt,t)+
       (mt._man?'<div class="tlnote">Otomatik '+nf.format(mt._auto)+' · elle '+(mt._man>0?'+':'')+nf.format(mt._man)+'</div>':'')+
-      '<div class="tlact"><button type="button" data-tluse="'+mt.id+'">± Adet düzelt</button><button type="button" class="end" data-tlend="'+mt.id+'">⏏ Çıkar</button></div></div>';
+      '<div class="tlact"><button type="button" data-tluse="'+mt.id+'">± Adet düzelt</button><button type="button" class="end" data-tlend="'+mt.id+'">⏏ Çıkar'+(I.nc>1&&cr<I.nc?' / köşe çevir':'')+'</button></div></div>';
   }
   function tlMoveText(m,info){
-    var I=info[m.tid], n=I?(I.t.name||"Takım"):"(silinmiş takım)";
-    if(m.t==="in")return {i:"＋",c:"in",t:n+" · giriş +"+nf.format(+m.q||0)+(+m.p>0?" · "+pf(m.p)+" ₺":"")};
-    if(m.t==="mount")return {i:"⚙",c:"mt",t:n+" · "+tlMacName(m.mid)+" makinesine takıldı"};
-    if(m.t==="end"){var mt=null; if(I)I.mounts.forEach(function(x){if(x.id===m.ref)mt=x}); return {i:m.why==="kirildi"?"✕":(m.why==="bilendi"?"↻":"⏏"),c:m.why==="kirildi"?"bad":"end",t:n+" · "+(mt?tlMacName(mt.mid)+" · ":"")+(TL_WHY[m.why]||"çıkarıldı")+(m.u!=null?" · "+nf.format(+m.u)+" adet yaptı":"")}}
-    if(m.t==="use")return {i:"±",c:"us",t:n+" · adet düzeltme "+((+m.q)>0?"+":"")+nf.format(+m.q||0)};
+    var I=info[m.tid], n=I?(I.t.name||"Takım"):"(silinmiş takım)", who=[m.op,m.sh].filter(Boolean).join(" · "), w=who?" · "+who:"", q=+m.q||0;
+    if(m.t==="in")return {i:"＋",c:"in",t:n+" · giriş +"+nf.format(q)+(+m.p>0?" · "+pf(m.p)+" ₺":"")};
+    if(m.t==="mount")return {i:m.nc?"◇":"⚙",c:"mt",t:n+" · "+tlMacName(m.mid)+(m.nc?" · "+(m.cr||"?")+". köşeye geçildi":" makinesine takıldı")+w};
+    if(m.t==="iss")return {i:"➜",c:"mt",t:n+" · "+tlMacName(m.mid)+" tezgahına çıkış −"+nf.format(q)+w};
+    if(m.t==="end"){var mt=null; if(I)I.mounts.forEach(function(x){if(x.id===m.ref)mt=x}); var bad=TL_EARLY.indexOf(m.why)>-1; return {i:bad?"✕":(m.why==="bilendi"?"↻":(m.why==="cevir"?"◇":"⏏")),c:bad?"bad":"end",t:n+" · "+(mt?tlMacName(mt.mid)+" · ":"")+(TL_WHY[m.why]||"çıkarıldı")+(m.u!=null?" · "+nf.format(+m.u)+" parça":"")+w}}
+    if(m.t==="use")return {i:"±",c:"us",t:n+" · adet düzeltme "+(q>0?"+":"")+nf.format(q)};
+    if(m.t==="ret")return {i:"↩",c:"in",t:n+" · depoya iade +"+nf.format(q)+w};
+    if(m.t==="fire")return {i:"✕",c:"bad",t:n+" · kırılma / fire −"+nf.format(q)+(m.why?" · "+(TL_WHY[m.why]||m.why):"")+w};
+    if(m.t==="sret")return {i:"⤺",c:"end",t:n+" · tedarikçiye iade −"+nf.format(q)};
+    if(m.t==="adj")return {i:"≈",c:"us",t:n+" · sayım düzeltmesi "+(q>0?"+":"")+nf.format(q)};
     return {i:"•",c:"",t:n};
+  }
+  var TL_MVG={in:["in"],mt:["mount","iss"],end:["end"],oth:["ret","fire","sret","adj","use"]};
+  function tlOrderRows(info){
+    var rows=[]; Object.keys(info).forEach(function(id){
+      var I=info[id], t=I.t; if(!tlVis(t)||!tlIsLow(I))return;
+      var crit=+t.crit, tgt=Math.max(crit*2,crit+1), need=Math.max(1,Math.ceil(tgt-I.stock));
+      rows.push({I:I,need:need,cost:need*(+t.price||0)});
+    });
+    rows.sort(function(a,b){return (a.I.stock-(+a.I.t.crit))-(b.I.stock-(+b.I.t.crit))});
+    return rows;
+  }
+  function tlSumHtml(info){
+    var val=0, low=0, live=0, bad=0;
+    Object.keys(info).forEach(function(id){var I=info[id]; if(!tlVis(I.t))return; val+=I.val; if(tlIsLow(I))low++; live+=I.live.length; if(I.effSt==="low")bad++});
+    return '<div class="tlsum"><div><small>Stoktaki toplam değer</small><b>'+money(val)+' ₺</b></div><div><small>Makinede takılı</small><b>'+live+'</b></div><div class="'+(low?'tlw':'')+'"><small>Kritik stok</small><b>'+low+'</b></div><div><small>Düşük ömür / erken kırılma</small><b>'+bad+'</b></div></div>'+
+      '<div class="frow tlcsvr"><button type="button" class="btn ghost" data-tlcsv="stok">⬇ Stok listesi (Excel)</button><button type="button" class="btn ghost" data-tlcsv="mal">⬇ Maliyet analizi (Excel)</button></div>';
+  }
+  function tlCsvCell(v){var x=String(v==null?"":v); return /[;"\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}
+  function tlCsvN(v,d){return (v===""||v==null||!isFinite(+v))?"":(+v).toLocaleString("tr-TR",{minimumFractionDigits:0,maximumFractionDigits:d==null?2:d,useGrouping:false})}
+  function tlCsv(kind){
+    var info=tlCalc(), rows=[], list=tools.filter(tlVis);
+    if(kind==="stok"){
+      rows.push(["Stok Kodu","Ürün Adı / Özelliği","Kategori","Köşe / Ağız Sayısı","Uyumlu Kater","Depo / Raf Konumu","Birim","Güncel Stok","Min. Stok","Birim Fiyat (₺)","Toplam Değer (₺)","Stok Durumu","Bölüm"]);
+      list.forEach(function(t){var I=info[t.id]; rows.push([t.sk||"",t.name||"",t.cat||"",I.nc,t.holder||"",t.loc||"","Adet",I.stock,+t.crit>0?+t.crit:"",tlCsvN(t.price),tlCsvN(I.val),tlIsLow(I)?"KRİTİK":"Normal",divInfo(t._div).name])});
+    }else{
+      rows.push(["Stok Kodu","Ürün Adı / Özelliği","Kategori","Köşe / Ağız Sayısı","Birim Fiyat (₺)","Köşe Başı Fiyat (₺)","Hedef Parça Ömrü (Köşe Başı)","Güncel Stok","Toplam Kullanım (Parça)","Gerçekleşen Ort. Ömür (Köşe Başı)","Parça Başı Maliyet (₺/Parça)","Mevcut Stok Değeri (₺)","Ömür Verimlilik Durumu","Bölüm"]);
+      list.forEach(function(t){var I=info[t.id]; rows.push([t.sk||"",t.name||"",t.cat||"",I.nc,tlCsvN(t.price),tlCsvN(I.cornerPrice,4),+t.life>0?+t.life:"",I.stock,I.used,I.lifeN?Math.round(I.avgLife):"",tlCsvN(I.cpp,4),tlCsvN(I.val),I.effSt==="ok"?"İDEAL ÖMÜR":(I.effSt==="low"?"ERKEN KIRILMA / DÜŞÜK ÖMÜR":(I.used>0?"HEDEF ÖMÜR YOK":"KULLANIM YOK")),divInfo(t._div).name])});
+    }
+    var text="﻿"+rows.map(function(r){return r.map(tlCsvCell).join(";")}).join("\r\n");
+    var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type:"text/csv;charset=utf-8"})); a.download=(kind==="stok"?"takim-stok-listesi-":"takim-maliyet-analizi-")+todayIso+".csv"; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href); a.remove()},600);
   }
   function tlRenderList(){
     var box=$("tllist"); if(!box)return;
     var info=tlCalc(), q=fold(tlQ.trim()), html="";
     if(tlTab==="list"){
-      var l=tools.filter(function(t){return tlVis(t)&&(!tlKind||(tlKind==="e"?t.kind==="e":t.kind!=="e"))&&(!tlCat||(t.cat||"Diğer")===tlCat)&&(!q||fold((t.name||"")+" "+(t.code||"")+" "+(t.cat||"")).indexOf(q)>-1)});
+      var l=tools.filter(function(t){return tlVis(t)&&(!tlKind||(tlKind==="e"?t.kind==="e":t.kind!=="e"))&&(!tlCat||(t.cat||"Diğer")===tlCat)&&(!q||fold((t.name||"")+" "+(t.code||"")+" "+(t.cat||"")+" "+(t.sk||"")+" "+(t.holder||"")+" "+(t.loc||"")).indexOf(q)>-1)});
       html=l.length?l.map(function(t){return tlRow(info[t.id])}).join(""):'<div class="empty">'+(tools.length?"Aramayla eşleşen kayıt yok.":"Henüz takım veya elmas tanımlı değil.<br>“＋ Yeni takım” veya “◆ Yeni elmas” ile ilkini ekle.")+'</div>';
     }else if(tlTab==="live"){
       var rows=[]; Object.keys(info).forEach(function(id){if(!tlVis(info[id].t))return; info[id].live.forEach(function(mt){rows.push({I:info[id],mt:mt})})});
       rows.sort(function(a,b){return tlPct(b.mt,b.I.t)-tlPct(a.mt,a.I.t)});
       html=rows.length?rows.map(function(r){return tlInstRow(r.I,r.mt,true)}).join(""):'<div class="empty">Şu an makinede takılı takım yok.<br>Bir takımda “⚙ Makineye tak” ile başlat.</div>';
     }else if(tlTab==="moves"){
-      var mv=tmoves.filter(function(m){var I=info[m.tid]; return !I||tlVis(I.t)}).reverse().slice(0,80);
-      html=mv.length?'<div class="tlmoves">'+mv.map(function(m){var x=tlMoveText(m,info); return '<div class="tlmv '+x.c+'"><span class="i">'+x.i+'</span><div><b>'+esc(x.t)+'</b><small>'+(m.d?fmtD(m.d):"")+(m.note?' · '+esc(m.note):'')+'</small></div></div>'}).join("")+'</div>':'<div class="empty">Henüz hareket yok.</div>';
+      var grp=TL_MVG[tlMvTab]||null;
+      var mv=tmoves.filter(function(m){var I=info[m.tid]; return (!I||tlVis(I.t))&&(!grp||grp.indexOf(m.t)>-1)}).reverse().slice(0,150);
+      html='<div class="chiprow tlcats" style="margin-top:0">'+[["","Hepsi"],["in","Giriş"],["mt","Takma / çıkış"],["end","Söküm"],["oth","İade · fire · düzeltme"]].map(function(x){return '<button type="button" data-tlmvf="'+x[0]+'" aria-pressed="'+(tlMvTab===x[0])+'">'+x[1]+'</button>'}).join("")+'</div>'+
+        (mv.length?'<div class="tlmoves" style="margin-top:8px">'+mv.map(function(m){var x=tlMoveText(m,info); return '<div class="tlmv '+x.c+'"><span class="i">'+x.i+'</span><div><b>'+esc(x.t)+'</b><small>'+(m.d?fmtD(m.d):"")+(m.note?' · '+esc(m.note):'')+'</small></div></div>'}).join("")+'</div>':'<div class="empty">Bu filtrede hareket yok.</div>');
+    }else if(tlTab==="order"){
+      var or=tlOrderRows(info), tot=0; or.forEach(function(r){tot+=r.cost});
+      html=or.length?'<div class="note" style="margin:0 0 8px">Stoğu kritik seviyeye inen veya altında olan kalemler. Önerilen adet, stoğu kritik seviyenin 2 katına tamamlar.</div><div class="tltab">'+or.map(function(r){var t=r.I.t; return '<div class="tlcr"><div class="tlt"><b>'+esc(t.name||"Takım")+'</b><small>'+esc([t.sk,t.code,t.cat].filter(Boolean).join(" · ")||"—")+' · stokta '+nf.format(r.I.stock)+' / kritik '+nf.format(+t.crit)+(t.loc?' · 📍 '+esc(t.loc):'')+'</small></div><div class="v"><b>'+nf.format(r.need)+' adet</b><small>'+(r.cost>0?'≈ '+money(r.cost)+' ₺':'önerilen')+'</small></div></div>'}).join("")+'</div>'+
+        '<div class="frow" style="margin-top:10px"><button type="button" class="btn" data-tlcopy="1">📋 Sipariş listesini kopyala</button></div>'+(tot>0?'<div class="note" style="margin:6px 0 0">Tahmini toplam: <b>'+money(tot)+' ₺</b></div>':''):'<div class="empty">Kritik stokta kalem yok.<br>Takım kartında “Kritik stok” yazdıysan, stok o adede inince burada görünür.</div>';
     }else{var infoV={}; Object.keys(info).forEach(function(k){if(tlVis(info[k].t))infoV[k]=info[k]}); html=tlCostHtml(infoV)}
     box.innerHTML=html;
   }
   function tlCostHtml(info){
-    var mk=todayIso.slice(0,7), buyM=0, usedM=0, stockV=0, liveV=0, pc={};
+    var mk=todayIso.slice(0,7), buyM=0, usedM=0, stockV=0, liveV=0, pc={}, mac={}, rsn={}, rsnC=0, mById={};
+    Object.keys(info).forEach(function(id){info[id].mounts.forEach(function(m){mById[m.id]=m})});
     Object.keys(info).forEach(function(id){
-      var I=info[id], t=I.t, pr=+t.price||0;
-      stockV+=Math.max(0,I.stock)*pr; liveV+=I.live.length*pr;
+      var I=info[id], t=I.t, pr=+t.price||0, cp=I.cornerPrice;
+      stockV+=I.val; liveV+=I.live.length*cp;
+      I.live.forEach(function(mt){var k=mt.mid||"?"; (mac[k]=mac[k]||{id:k,live:0,liveV:0,cost:0,early:0,ends:0}); mac[k].live++; mac[k].liveV+=cp});
       tmoves.forEach(function(m){
-        if(m.tid!==id)return;
-        if(m.t==="in"&&(m.d||"").slice(0,7)===mk)buyM+=(+m.q||0)*(+m.p||pr);
-        if(m.t==="end"&&m.why!=="bilendi"&&(m.d||"").slice(0,7)===mk)usedM+=pr;
+        if(m.tid!==id)return; var inM=(m.d||"").slice(0,7)===mk; if(!inM)return;
+        if(m.t==="in")buyM+=(+m.q||0)*(+m.p||pr);
+        if(m.t==="end"&&m.why!=="bilendi"){
+          usedM+=cp; var mt=mById[m.ref], k=(mt&&mt.mid)||"?"; (mac[k]=mac[k]||{id:k,live:0,liveV:0,cost:0,early:0,ends:0}); mac[k].cost+=cp; mac[k].ends++; if(TL_EARLY.indexOf(m.why)>-1)mac[k].early++;
+          var w=m.why||"bitti"; rsn[w]=rsn[w]||{n:0,v:0}; rsn[w].n++; rsn[w].v+=cp; rsnC++;
+        }
+        if(m.t==="iss"){var v=(+m.q||0)*pr; usedM+=v; var k2=m.mid||"?"; (mac[k2]=mac[k2]||{id:k2,live:0,liveV:0,cost:0,early:0,ends:0}); mac[k2].cost+=v}
+        if(m.t==="fire"){var v2=(+m.q||0)*pr; usedM+=v2; var w2=m.why||"kirildi"; rsn[w2]=rsn[w2]||{n:0,v:0}; rsn[w2].n+=(+m.q||0); rsn[w2].v+=v2; rsnC++}
       });
       (t.codes||[]).forEach(function(c){var k=String(c).toLowerCase().trim(); if(!k)return; (pc[k]=pc[k]||{code:c,tot:0,tl:[]}); if(I.cpp>0){pc[k].tot+=I.cpp; pc[k].tl.push(t.name+" "+pf(I.cpp)+" ₺")}else pc[k].tl.push(t.name+" (maliyet yok)")});
     });
     var ps=Object.keys(pc).map(function(k){return pc[k]}).sort(function(a,b){return b.tot-a.tot});
     var upOf={}; orders.forEach(function(o){var k=(o.code||"").toLowerCase().trim(); if(+o.up>0&&!upOf[k])upOf[k]=+o.up});
     var rows=Object.keys(info).map(function(k){return info[k]}).filter(function(I){return +I.t.price>0||I.scrap}).sort(function(a,b){return b.cpp-a.cpp});
-    return '<div class="tlsum"><div><small>Stoktaki takım değeri</small><b>'+money(stockV)+' ₺</b></div><div><small>Makinedeki takım değeri</small><b>'+money(liveV)+' ₺</b></div><div><small>Bu ay alınan</small><b>'+money(buyM)+' ₺</b></div><div><small>Bu ay tüketilen (biten/kırılan)</small><b>'+money(usedM)+' ₺</b></div></div>'+
-      '<h3 class="tlh">Takım bazında adet başı maliyet</h3><div class="note" style="margin:0 0 8px">Adet başı maliyet = takım fiyatı ÷ ömür. Gerçekleşen ortalama ömür (biten/kırılan takımlardan) varsa o, yoksa tanımladığın ömür kullanılır.</div>'+
-      (rows.length?'<div class="tltab">'+rows.map(function(I){var t=I.t; return '<div class="tlcr"><div class="tlt"><b>'+esc(t.name)+'</b><small>'+(+t.price>0?pf(t.price)+' ₺':'fiyat yok')+' · tanımlı ömür '+(+t.life>0?nf.format(+t.life):'—')+' · gerçekleşen '+(I.lifeN?nf.format(Math.round(I.avgLife))+' ('+I.lifeN+' takım)':'—')+(I.scrap?' · kırılan '+I.broke+'/'+I.scrap:'')+'</small></div><div class="v"><b>'+(I.cpp>0?pf(I.cpp):'—')+'</b><small>₺ / adet</small></div></div>'}).join("")+'</div>':'<div class="empty">Fiyat ve ömür girilmiş takım yok.</div>')+
+    var ms=Object.keys(mac).map(function(k){return mac[k]}).sort(function(a,b){return b.cost-a.cost});
+    var rs=Object.keys(rsn).sort(function(a,b){return rsn[b].v-rsn[a].v});
+    return '<div class="tlsum"><div><small>Stoktaki takım değeri</small><b>'+money(stockV)+' ₺</b></div><div><small>Makinedeki takım değeri</small><b>'+money(liveV)+' ₺</b></div><div><small>Bu ay alınan</small><b>'+money(buyM)+' ₺</b></div><div><small>Bu ay tüketilen (köşe, kırılan, çıkış)</small><b>'+money(usedM)+' ₺</b></div></div>'+
+      '<h3 class="tlh">Parça başı maliyet</h3><div class="note" style="margin:0 0 8px">Parça başı maliyet = fiyat ÷ köşe sayısı ÷ köşe ömrü. Gerçekleşen ortalama ömür (biten/kırılan köşelerden) varsa o, yoksa tanımladığın hedef ömür kullanılır. Gerçekleşen ömür hedefin %70’inin altındaysa “düşük ömür / erken kırılma” uyarısı çıkar.</div>'+
+      (rows.length?'<div class="tltab">'+rows.map(function(I){var t=I.t; return '<div class="tlcr"><div class="tlt"><b>'+esc(t.name)+'</b><small>'+(+t.price>0?pf(t.price)+' ₺':'fiyat yok')+(I.nc>1?' · köşe başı '+pf(I.cornerPrice)+' ₺ ('+I.nc+' köşe)':'')+' · hedef ömür '+(+t.life>0?nf.format(+t.life):'—')+' · gerçekleşen '+(I.lifeN?nf.format(Math.round(I.avgLife))+' ('+I.lifeN+' köşe)':'—')+(I.scrap?' · erken kırılan '+I.broke+'/'+I.scrap:'')+'</small>'+(I.effSt?'<div style="margin-top:4px">'+tlEffChip(I)+'</div>':'')+'</div><div class="v"><b>'+(I.cpp>0?pf(I.cpp):'—')+'</b><small>₺ / parça</small></div></div>'}).join("")+'</div>':'<div class="empty">Fiyat ve ömür girilmiş takım yok.</div>')+
+      '<h3 class="tlh">Tezgah bazında (bu ay)</h3><div class="note" style="margin:0 0 8px">Tezgahın bu ay tükettiği takım maliyeti, erken kırılan köşe sayısı ve şu an üzerinde takılı takımlar.</div>'+
+      (ms.length?'<div class="tltab">'+ms.map(function(x){return '<div class="tlcr"><div class="tlt"><b>'+esc(x.id==="?"?"Makine belirtilmemiş":tlMacName(x.id))+'</b><small>'+x.live+' takılı ('+money(x.liveV)+' ₺) · bu ay '+x.ends+' köşe/takım bitti'+(x.early?' · <b>'+x.early+' erken kırılma</b>':'')+'</small></div><div class="v"><b>'+money(x.cost)+'</b><small>₺ tüketim</small></div></div>'}).join("")+'</div>':'<div class="empty">Henüz tezgah verisi yok.</div>')+
+      '<h3 class="tlh">Çıkış / kırılma nedenleri (bu ay)</h3>'+
+      (rs.length?'<div class="tltab">'+rs.map(function(k){return '<div class="tlcr"><div class="tlt"><b>'+esc(TL_WHY[k]||k)+'</b><small>'+(TL_EARLY.indexOf(k)>-1?'erken kırılma nedeni':'normal kullanım')+'</small></div><div class="v"><b>'+nf.format(rsn[k].n)+'</b><small>'+money(rsn[k].v)+' ₺</small></div></div>'}).join("")+'</div>':'<div class="empty">Bu ay henüz çıkış kaydı yok.</div>')+
       '<h3 class="tlh">Ürün bazında takım maliyeti</h3><div class="note" style="margin:0 0 8px">Takımın detayında “Kullanıldığı ürünler”e ürün kodu ekledikçe burada toplanır.</div>'+
       (ps.length?'<div class="tltab">'+ps.map(function(x){var up=upOf[String(x.code).toLowerCase().trim()]; return '<div class="tlcr"><div class="tlt"><b>'+esc(x.code)+'</b><small>'+esc(x.tl.join(" + "))+(up&&x.tot>0?' · satış fiyatının %'+(x.tot/up*100).toLocaleString("tr-TR",{maximumFractionDigits:1}):'')+'</small></div><div class="v"><b>'+(x.tot>0?pf(x.tot):'—')+'</b><small>₺ / adet</small></div></div>'}).join("")+'</div>':'<div class="empty">Henüz ürüne bağlı takım yok.</div>');
   }
@@ -21880,8 +22035,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     $("tlobs").textContent=tv.length?(live+" takılı"+(low?" · "+low+" kritik stok":"")):"CNC ve Transfer takım ve elmaslarını buradan takip et";
     var cats={}, order=[]; tools.forEach(function(t){if(!tlVis(t))return; if(tlKind&&(tlKind==="e")!==(t.kind==="e"))return; var c=t.cat||"Diğer"; if(!cats[c]){cats[c]=0;order.push(c)} cats[c]++}); order.sort(function(a,b){return a.localeCompare(b,"tr")});
     var tdv=['all'].concat(window.__DIVS.map(function(z){return z.id})).map(function(k){var dv=k==="all"?null:divInfo(k), n=tools.filter(function(t){return k==="all"||t._div===k}).length; return '<button type="button" data-tldv="'+k+'" aria-pressed="'+(tlDiv===k)+'" style="'+(dv?'--d1:'+dv.c1+';--d2:'+dv.c2:'--d1:#6B7385;--d2:#3A4254')+'"><i></i>'+(dv?esc(dv.name):'Hepsi')+' <em>'+n+'</em></button>'}).join("");
-    el.innerHTML='<div class="stkdivs" style="margin-bottom:10px">'+tdv+'</div><div class="otabs tltabs" role="group"><button type="button" data-tltab="list" aria-pressed="'+(tlTab==="list")+'">Liste</button><button type="button" data-tltab="live" aria-pressed="'+(tlTab==="live")+'">Takılı</button><button type="button" data-tltab="moves" aria-pressed="'+(tlTab==="moves")+'">Hareket</button><button type="button" data-tltab="cost" aria-pressed="'+(tlTab==="cost")+'">Maliyet</button></div>'+
-      (tlTab==="list"?'<input class="search" id="tlq" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Takım / elmas adı, kod veya kategori ara…" value="'+esc(tlQ)+'" style="margin-top:10px">'+
+    el.innerHTML='<div class="stkdivs" style="margin-bottom:10px">'+tdv+'</div><div class="otabs tltabs" role="group"><button type="button" data-tltab="list" aria-pressed="'+(tlTab==="list")+'">Liste</button><button type="button" data-tltab="live" aria-pressed="'+(tlTab==="live")+'">Takılı</button><button type="button" data-tltab="moves" aria-pressed="'+(tlTab==="moves")+'">Hareket</button><button type="button" data-tltab="cost" aria-pressed="'+(tlTab==="cost")+'">Maliyet</button><button type="button" data-tltab="order" aria-pressed="'+(tlTab==="order")+'">Sipariş'+(function(){var n=tlOrderRows(info).length; return n?' <em>'+n+'</em>':''})()+'</button></div>'+
+      (tlTab==="list"?tlSumHtml(info)+'<input class="search" id="tlq" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Takım / elmas adı, kod veya kategori ara…" value="'+esc(tlQ)+'" style="margin-top:10px">'+
         '<div class="chiprow tlcats"><button type="button" data-tlkind="" aria-pressed="'+(tlKind==="")+'">Hepsi '+tools.length+'</button><button type="button" data-tlkind="t" aria-pressed="'+(tlKind==="t")+'">Takım '+tools.filter(function(t){return t.kind!=="e"}).length+'</button><button type="button" data-tlkind="e" aria-pressed="'+(tlKind==="e")+'">◆ Elmas '+tools.filter(function(t){return t.kind==="e"}).length+'</button></div>'+
         (order.length>1?'<div class="chiprow tlcats"><button type="button" data-tlcat="" aria-pressed="'+(tlCat==="")+'">Hepsi</button>'+order.map(function(c){return '<button type="button" data-tlcat="'+esc(c)+'" aria-pressed="'+(tlCat===c)+'">'+esc(c)+' '+cats[c]+'</button>'}).join("")+'</div>':'')+
         '<div class="frow" style="margin-top:10px"><button type="button" class="btn" id="tlnew">＋ Yeni takım</button><button type="button" class="btn tlnewe" id="tlnewe">◆ Yeni elmas</button></div>':'')+
@@ -21899,16 +22054,18 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     if(sheetMode==="tldet"){
       if(!I)return '<div class="shead"><div><h2 id="sh-title">Takım</h2></div><button type="button" class="tpill" id="tlclose">Kapat</button></div><div class="empty">Takım bulunamadı.</div>';
       var low=tlIsLow(I);
-      h='<div class="shead"><div><h2 id="sh-title">'+esc(t.name||"Takım")+'</h2><small>'+esc(([t.kind==="e"?"◆ Elmas":""].concat([t.code,t.cat])).filter(Boolean).join(" · ")||"Takım kartı")+'</small></div><div style="display:flex;gap:6px"><button type="button" class="tpill" data-tledit="'+t.id+'">✎ Düzenle</button><button type="button" class="tpill" id="tlclose">Kapat</button></div></div><div class="form" style="gap:12px">';
+      h='<div class="shead"><div><h2 id="sh-title">'+esc(t.name||"Takım")+'</h2><small>'+esc(([t.kind==="e"?"◆ Elmas":""].concat([t.sk,t.code,t.cat])).filter(Boolean).join(" · ")||"Takım kartı")+'</small></div><div style="display:flex;gap:6px"><button type="button" class="tpill" data-tledit="'+t.id+'">✎ Düzenle</button><button type="button" class="tpill" id="tlclose">Kapat</button></div></div><div class="form" style="gap:12px">';
       h+='<div class="tlhero">'+tlThumb(t)+'<div class="tlstats"><div class="'+(low?'low':'')+'"><b>'+nf.format(I.stock)+'</b><small>stokta</small></div><div><b>'+I.live.length+'</b><small>takılı</small></div><div><b>'+I.sharp+'</b><small>bilenen</small></div><div><b>'+I.scrap+'</b><small>biten/kırılan</small></div></div></div>';
-      h+='<div class="tlkv">'+(+t.price>0?'<div><small>Birim fiyat</small><b>'+pf(t.price)+' ₺</b></div>':'')+(+t.life>0?'<div><small>Tanımlı ömür</small><b>'+nf.format(+t.life)+' adet</b></div>':'')+(I.lifeN?'<div><small>Gerçekleşen ort. ömür</small><b>'+nf.format(Math.round(I.avgLife))+' adet</b></div>':'')+(I.cpp>0?'<div><small>Adet başı maliyet</small><b>'+pf(I.cpp)+' ₺</b></div>':'')+(+t.crit>0?'<div><small>Kritik stok</small><b>'+nf.format(+t.crit)+'</b></div>':'')+'</div>';
+      h+='<div class="tlkv">'+(+t.price>0?'<div><small>Birim fiyat</small><b>'+pf(t.price)+' ₺</b></div>':'')+(+t.life>0?'<div><small>Tanımlı ömür</small><b>'+nf.format(+t.life)+' adet</b></div>':'')+(I.lifeN?'<div><small>Gerçekleşen ort. ömür</small><b>'+nf.format(Math.round(I.avgLife))+' adet</b></div>':'')+(I.cpp>0?'<div><small>Parça başı maliyet</small><b>'+pf(I.cpp)+' ₺</b></div>':'')+(+t.crit>0?'<div><small>Kritik stok</small><b>'+nf.format(+t.crit)+'</b></div>':'')+(I.nc>1?'<div><small>Köşe sayısı · köşe başı fiyat</small><b>'+I.nc+' · '+pf(I.cornerPrice)+' ₺</b></div>':'')+(t.loc?'<div><small>Depo / raf</small><b>'+esc(t.loc)+'</b></div>':'')+(t.holder?'<div><small>Uyumlu kater</small><b>'+esc(t.holder)+'</b></div>':'')+(I.val>0?'<div><small>Stok değeri</small><b>'+money(I.val)+' ₺</b></div>':'')+(I.effSt?'<div><small>Ömür verimliliği</small><b>'+(I.effSt==='ok'?'✅ İdeal':'⚠ Düşük')+' · %'+Math.round(I.ratio*100)+'</b></div>':'')+'</div>';
       if(low)h+='<div class="impnote err show" style="margin:0">⚠ Stok kritik seviyede ('+nf.format(I.stock)+' / kritik '+nf.format(+t.crit)+'). Yenisini almalısın.</div>';
       if(t._div!==window.__DIV)h+='<div class="note" style="margin:0"><b>'+esc(divInfo(t._div).name)+'</b> bölümünün kaydı — adet otomatik sayılmaz; “± Adet düzelt” ile elle gir.</div>';
-      h+='<div class="frow"><button type="button" class="btn" data-tlin="'+t.id+'">＋ Giriş</button><button type="button" class="btn ghost" data-tlmt="'+t.id+'">⚙ Makineye tak</button></div>';
+      h+='<div class="frow"><button type="button" class="btn" data-tlin="'+t.id+'">＋ Giriş</button><button type="button" class="btn ghost" data-tlmt="'+t.id+'">'+(t.trk===false?'➜ Tezgaha çıkış':'⚙ Makineye tak')+'</button><button type="button" class="btn ghost" data-tlmv="'+t.id+'">⋯ İade · fire · sayım</button></div>';
       h+='<div><span class="fl">Makinede takılı ('+I.live.length+')</span>'+(I.live.length?I.live.map(function(mt){return tlInstRow(I,mt,false)}).join(""):'<div class="note" style="margin:4px 0 0">Şu an takılı değil.</div>')+'</div>';
       h+='<div><span class="fl">Kullanıldığı ürünler</span><div class="note" style="margin:0 0 6px">'+((t.codes||[]).length?'Adet sayımı sadece bu ürünlerin üretiminden yapılır.':'Hiç ürün seçilmezse takıldığı makinenin tüm CNC/Transfer üretimi sayılır.')+'</div><div class="chiprow tlcodes">'+(t.codes||[]).map(function(c){return '<button type="button" data-tlcrm="'+esc(c)+'" aria-label="'+esc(c)+' kaldır">'+esc(c)+' ✕</button>'}).join("")+'</div>'+
         '<div class="frow" style="margin-top:6px"><input class="fin" id="tlcadd" list="tlcl" autocomplete="off" autocapitalize="none" placeholder="Ürün kodu yaz / seç" style="flex:1"><button type="button" class="btn" id="tlcaddb" style="flex:0 0 auto;padding:0 16px">Ekle</button></div><datalist id="tlcl">'+(function(){var s={},o=[]; orders.forEach(function(x){var c=(x.code||"").trim(); if(c&&!s[c.toLowerCase()]){s[c.toLowerCase()]=1;o.push(c)}}); return o.sort().slice(0,400).map(function(c){return '<option value="'+esc(c)+'">'}).join("")})()+'</datalist></div>';
-      var hist=tmoves.filter(function(m){return m.tid===t.id}).slice().reverse().slice(0,20);
+      var rk=Object.keys(I.why).sort(function(a,b){return I.why[b]-I.why[a]});
+      if(rk.length)h+='<div><span class="fl">Çıkış / değişim nedenleri</span><div class="chiprow">'+rk.map(function(k){return '<span class="tlchip'+(TL_EARLY.indexOf(k)>-1?' warn':'')+'">'+esc(TL_WHY[k]||k)+' <b>'+I.why[k]+'</b></span>'}).join("")+'</div></div>';
+      var hist=tmoves.filter(function(m){return m.tid===t.id}).slice().reverse().slice(0,30);
       h+='<div><span class="fl">Son hareketler</span>'+(hist.length?'<div class="tlmoves">'+hist.map(function(m){var x=tlMoveText(m,info); return '<div class="tlmv '+x.c+'"><span class="i">'+x.i+'</span><div><b>'+esc(x.t)+'</b><small>'+(m.d?fmtD(m.d):"")+(m.note?' · '+esc(m.note):'')+'</small></div></div>'}).join("")+'</div>':'<div class="note" style="margin:4px 0 0">Henüz hareket yok.</div>')+'</div>';
       if(t.note)h+='<div class="note" style="margin:0">'+esc(t.note)+'</div>';
       return h+'</div>';
@@ -21922,7 +22079,10 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
         '<div><span class="fl">Tür</span><div class="chiprow"><button type="button" data-tlfk="t" aria-pressed="'+(d.kind!=="e")+'">Takım</button><button type="button" data-tlfk="e" aria-pressed="'+(d.kind==="e")+'">◆ Elmas</button></div></div>'+
         '<div><label class="fl" for="tlf-name">'+(d.kind==="e"?"Elmas adı":"Takım adı")+'</label><input class="fin" id="tlf-name" autocomplete="off" placeholder="'+(d.kind==="e"?"ör. Elmas uç 12 mm":"ör. 10 mm parmak freze")+'" value="'+esc(d.name)+'"></div>'+
         '<div class="dgrid"><div><label class="fl" for="tlf-code">Kod / ölçü</label><input class="fin" id="tlf-code" autocomplete="off" placeholder="ör. CNMG 120408" value="'+esc(d.code)+'"></div><div><label class="fl" for="tlf-cat">Kategori</label><input class="fin" id="tlf-cat" list="tlcatl" autocomplete="off" value="'+esc(d.cat)+'"><datalist id="tlcatl">'+cl.map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist></div></div>'+
-        '<div class="dgrid"><div><label class="fl" for="tlf-price">Birim fiyat (₺)</label><input class="fin" id="tlf-price" type="text" inputmode="decimal" placeholder="0" value="'+esc(d.price)+'"></div><div><label class="fl" for="tlf-life">Ömür (kaç adet yapar)</label><input class="fin" id="tlf-life" type="text" inputmode="numeric" placeholder="ör. 2000" value="'+esc(d.life)+'"></div></div>'+
+        '<div class="dgrid"><div><label class="fl" for="tlf-price">Birim fiyat (₺)</label><input class="fin" id="tlf-price" type="text" inputmode="decimal" placeholder="0" value="'+esc(d.price)+'"></div><div><label class="fl" for="tlf-life">Hedef ömür (köşe başı kaç parça)</label><input class="fin" id="tlf-life" type="text" inputmode="numeric" placeholder="ör. 2000" value="'+esc(d.life)+'"></div></div>'+
+        '<div class="dgrid"><div><label class="fl" for="tlf-corners">Köşe / ağız sayısı</label><select class="fin" id="tlf-corners">'+(function(){var cl=TL_CORN.slice(); if(+d.corners>0&&cl.indexOf(+d.corners)<0)cl.push(+d.corners); return cl.map(function(n){return '<option value="'+n+'"'+(+d.corners===n?' selected':'')+'>'+n+'</option>'}).join("")})()+'</select></div><div><label class="fl" for="tlf-loc">Depo / raf konumu</label><input class="fin" id="tlf-loc" autocomplete="off" placeholder="ör. Dolap A - Çekmece 1" value="'+esc(d.loc)+'"></div></div>'+
+        '<div><label class="fl" for="tlf-holder">Uyumlu kater / tutucu</label><input class="fin" id="tlf-holder" autocomplete="off" placeholder="ör. MDJNR 2020 K11" value="'+esc(d.holder)+'"></div>'+
+        '<div><span class="fl">Ömür takibi</span><div class="chiprow"><button type="button" data-tlftrk="1" aria-pressed="'+(d.trk!==false)+'">Makineye takılır, ömrü izlenir</button><button type="button" data-tlftrk="0" aria-pressed="'+(d.trk===false)+'">Sarf: sadece tezgaha çıkış (adet)</button></div></div>'+
         '<div><label class="fl" for="tlf-crit">Kritik stok (isteğe bağlı)</label><input class="fin" id="tlf-crit" type="text" inputmode="numeric" placeholder="Bu adede inince uyarı" value="'+esc(d.crit)+'"></div>'+
         '<div><label class="fl" for="tlf-note">Not</label><textarea class="fin" id="tlf-note" rows="2">'+esc(d.note)+'</textarea></div>'+
         '<div class="frow"><button type="button" class="btn" id="tlfsave">Kaydet</button><button type="button" class="btn ghost" id="tlfcancel">Vazgeç</button>'+(d.id?'<button type="button" class="btn danger" id="tlfdel">'+(tlDelArm?'Emin misin? Sil':'Takımı sil')+'</button>':'')+'</div>'+(tlDelArm?'<div class="note" style="margin:0;color:var(--bad)">Takım ve tüm hareketleri kalıcı silinir.</div>':'')+'<div class="note" id="tlfmsg" style="margin:0">'+esc(tlMsg)+'</div></div>';
@@ -21930,11 +22090,26 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     if(!t)return '<div class="empty">Takım bulunamadı.</div>';
     var head=function(ti,sub){return '<div class="shead"><div><h2 id="sh-title">'+ti+'</h2><small>'+esc(sub)+'</small></div></div>'};
     if(sheetMode==="tlin")return head("Stok girişi",t.name)+'<div class="form"><div class="dgrid"><div><label class="fl" for="tli-q">Adet</label><input class="fin" id="tli-q" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div><div><label class="fl" for="tli-p">Birim fiyat (₺)</label><input class="fin" id="tli-p" type="text" inputmode="decimal" value="'+(+t.price>0?esc(String(t.price)):"")+'"></div></div><div><label class="fl" for="tli-d">Tarih</label><input class="fin" id="tli-d" type="date" value="'+todayIso+'"></div><div><label class="fl" for="tli-n">Not (tedarikçi vb.)</label><input class="fin" id="tli-n" autocomplete="off"></div><div class="frow"><button type="button" class="btn" id="tlisave">Girişi kaydet</button><button type="button" class="btn ghost" id="tlback">Vazgeç</button></div><div class="note" id="tlfmsg" style="margin:0">'+esc(tlMsg)+'</div></div>';
-    if(sheetMode==="tlmt")return head("Makineye tak",t.name+" · stokta "+nf.format(I.stock))+'<div class="form"><div><label class="fl" for="tlm-mac">Hangi makine</label><select class="fin" id="tlm-mac">'+tlMacOpts("")+'</select></div><div class="dgrid"><div><label class="fl" for="tlm-q">Adet</label><input class="fin" id="tlm-q" type="text" inputmode="numeric" value="1"></div><div><label class="fl" for="tlm-d">Takılma tarihi</label><input class="fin" id="tlm-d" type="date" value="'+todayIso+'"></div></div><div class="note" style="margin:0">Adet sayımı bu tarihten itibaren o makinede girilen üretimden otomatik yapılır.</div><div class="frow"><button type="button" class="btn" id="tlmsave">Takıldı</button><button type="button" class="btn ghost" id="tlback">Vazgeç</button></div><div class="note" id="tlfmsg" style="margin:0">'+esc(tlMsg)+'</div></div>';
+    if(sheetMode==="tlmt"){
+      var iss=t.trk===false;
+      return head(iss?"Tezgaha çıkış":"Makineye tak",t.name+" · stokta "+nf.format(I.stock))+'<div class="form"><div><label class="fl" for="tlm-mac">Hangi makine</label><select class="fin" id="tlm-mac">'+tlMacOpts("")+'</select></div><div class="dgrid"><div><label class="fl" for="tlm-q">Adet</label><input class="fin" id="tlm-q" type="text" inputmode="numeric" value="1"></div><div><label class="fl" for="tlm-d">'+(iss?'Tarih':'Takılma tarihi')+'</label><input class="fin" id="tlm-d" type="date" value="'+todayIso+'"></div></div>'+tlOpSh("tlm","","")+
+        '<div class="note" style="margin:0">'+(iss?'Sarf malzeme: adet stoktan düşer, tezgah ve operatör kaydı tutulur. Tek tek ömür sayılmaz.':'Adet sayımı bu tarihten itibaren o makinede girilen üretimden otomatik yapılır.'+(I.nc>1?' Yeni uç 1. köşeden başlar; köşe bitince “Çıkar” ekranında “Köşe çevrildi” seçersen sonraki köşe otomatik başlar, stoktan tekrar düşmez.':''))+'</div><div class="frow"><button type="button" class="btn" id="tlmsave">'+(iss?'Çıkışı kaydet':'Takıldı')+'</button><button type="button" class="btn ghost" id="tlback">Vazgeç</button></div><div class="note" id="tlfmsg" style="margin:0">'+esc(tlMsg)+'</div></div>';
+    }
+    if(sheetMode==="tlmv"){
+      var kinds=[["ret","↩ Depoya iade"],["fire","✕ Kırılma / fire"],["sret","⤺ Tedarikçiye iade"],["adj","≈ Sayım düzelt"]], fw=TL_WHY_ORD.filter(function(k){return k!=="cevir"&&k!=="bilendi"});
+      var desc={ret:"Tezgahtan veya depodan geri gelen, kullanılmamış adet stoğa eklenir.",fire:"Takım kullanılmadan kırıldı/bozuldu: stoktan düşer, nedeniyle birlikte kaydedilir.",sret:"Tedarikçiye geri gönderilen adet stoktan düşer.",adj:"Rafı saydın: sayımda bulduğun adedi yaz, fark otomatik düzeltme olarak işlenir."};
+      return head("Diğer hareket",t.name+" · stokta "+nf.format(I.stock))+'<div class="form"><div><span class="fl">Hareket türü</span><div class="chiprow">'+kinds.map(function(k){return '<button type="button" data-tlmvk="'+k[0]+'" aria-pressed="'+(tlMvK===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>'+
+        '<div class="dgrid"><div><label class="fl" for="tlv-q">'+(tlMvK==="adj"?"Sayımda bulunan adet":"Adet")+'</label><input class="fin" id="tlv-q" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div><div><label class="fl" for="tlv-d">Tarih</label><input class="fin" id="tlv-d" type="date" value="'+todayIso+'"></div></div>'+
+        (tlMvK==="fire"?'<div><span class="fl">Neden</span><div class="chiprow">'+fw.map(function(k){return '<button type="button" data-tlfw="'+k+'" aria-pressed="'+(tlFWhy===k)+'">'+TL_WHY[k]+'</button>'}).join("")+'</div></div>':'')+
+        (tlMvK==="ret"||tlMvK==="fire"?tlOpSh("tlv","",""):'')+
+        '<div><label class="fl" for="tlv-n">Not</label><input class="fin" id="tlv-n" autocomplete="off"></div><div class="note" style="margin:0">'+desc[tlMvK]+'</div><div class="frow"><button type="button" class="btn" id="tlmvsave">Kaydet</button><button type="button" class="btn ghost" id="tlback">Vazgeç</button></div><div class="note" id="tlfmsg" style="margin:0">'+esc(tlMsg)+'</div></div>';
+    }
     var mt=null; I.mounts.forEach(function(x){if(x.id===tlMt)mt=x});
     if(sheetMode==="tlend"){
       if(!mt)return head("Takımı çıkar",t.name)+'<div class="empty">Kayıt bulunamadı.</div>';
-      return head("Takımı çıkar",t.name+" · "+tlMacName(mt.mid))+'<div class="form">'+tlLifeBar(mt,t)+'<div><span class="fl">Neden çıkarılıyor?</span><div class="chiprow">'+Object.keys(TL_WHY).map(function(k){return '<button type="button" data-tlwhy="'+k+'" aria-pressed="'+(tlWhy===k)+'">'+TL_WHY[k]+'</button>'}).join("")+'</div></div><div class="dgrid"><div><label class="fl" for="tle-u">Toplam yaptığı adet</label><input class="fin" id="tle-u" type="text" inputmode="numeric" value="'+(mt._used||0)+'"></div><div><label class="fl" for="tle-d">Tarih</label><input class="fin" id="tle-d" type="date" value="'+todayIso+'"></div></div><div class="note" style="margin:0">Adet otomatik hesaplandı, gerekirse düzelt. “Bilendi” seçersen takım stoğa geri döner.</div><div class="frow"><button type="button" class="btn" id="tlesave">Çıkar</button><button type="button" class="btn ghost" id="tlback">Vazgeç</button></div></div>';
+      var last=(mt.cr||1)>=I.nc, ord=TL_WHY_ORD.filter(function(k){return k!=="cevir"||(I.nc>1&&!last)});
+      if(ord.indexOf(tlWhy)<0)tlWhy="bitti";
+      return head(I.nc>1?"Takımı çıkar / köşe çevir":"Takımı çıkar",t.name+" · "+tlMacName(mt.mid)+(I.nc>1?" · köşe "+(mt.cr||1)+"/"+I.nc:""))+'<div class="form">'+tlLifeBar(mt,t)+'<div><span class="fl">Neden çıkarılıyor?</span><div class="chiprow">'+ord.map(function(k){return '<button type="button" data-tlwhy="'+k+'" aria-pressed="'+(tlWhy===k)+'">'+TL_WHY[k]+'</button>'}).join("")+'</div></div><div class="dgrid"><div><label class="fl" for="tle-u">Köşenin yaptığı toplam parça</label><input class="fin" id="tle-u" type="text" inputmode="numeric" value="'+(mt._used||0)+'"></div><div><label class="fl" for="tle-d">Tarih</label><input class="fin" id="tle-d" type="date" value="'+todayIso+'"></div></div>'+tlOpSh("tle",mt.op||"",mt.sh||"")+'<div class="note" style="margin:0">Adet otomatik hesaplandı, gerekirse düzelt. “Bilendi” seçersen takım stoğa geri döner.'+(I.nc>1?(last?' Bu son köşe: çevirecek köşe kalmadı.':' “Köşe çevrildi” seçersen aynı makinede '+((mt.cr||1)+1)+'. köşe otomatik başlar.'):'')+'</div><div class="frow"><button type="button" class="btn" id="tlesave">Kaydet</button><button type="button" class="btn ghost" id="tlback">Vazgeç</button></div><div class="note" id="tlfmsg" style="margin:0">'+esc(tlMsg)+'</div></div>';
     }
     if(sheetMode==="tluse"){
       if(!mt)return head("Adet düzelt",t.name)+'<div class="empty">Kayıt bulunamadı.</div>';
@@ -21942,12 +22117,16 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     }
     return "";
   }
+  function tlOpList(){return '<datalist id="tlopl">'+employees.map(function(e){return '<option value="'+esc(e.name||"")+'">'}).join("")+'</datalist>'}
+  function tlShiftOpts(sel){return '<option value="">Vardiya…</option>'+TL_SHIFT.map(function(v){return '<option value="'+v+'"'+(sel===v?' selected':'')+'>'+v+'</option>'}).join("")}
+  function tlOpSh(p,op,sh){return '<div class="dgrid"><div><label class="fl" for="'+p+'-op">Operatör</label><input class="fin" id="'+p+'-op" list="tlopl" autocomplete="off" placeholder="İsim" value="'+esc(op||"")+'"></div><div><label class="fl" for="'+p+'-sh">Vardiya</label><select class="fin" id="'+p+'-sh">'+tlShiftOpts(sh)+'</select></div></div>'+tlOpList()}
+  function tlKeep(ids){var o={}; ids.forEach(function(i){var e=$(i); if(e)o[i]=e.value}); renderSheet(); Object.keys(o).forEach(function(i){var e=$(i); if(e)e.value=o[i]})}
   function tlGo(mode,id){tlMsg=""; tlDelArm=false; sheetMode=mode; if(id!==undefined)tlId=id; $("ov").hidden=false; renderSheet(); $("sheet").scrollTop=0}
   function tlBack(){if(tlFrom==="det"&&tlId&&tools.some(function(t){return t.id===tlId}))tlGo("tldet"); else{closeSheet(); tlRender()}}
   function tlAdd(doc){var tt=tools.filter(function(x){return x.id===doc.tid})[0], d=tdb(tt); if(!d)return Promise.reject(); doc.ts=Date.now(); return d.collection("toolmoves").add(doc)}
   function tlOpenForm(id,kind){
     var t=id?tools.filter(function(x){return x.id===id})[0]:null;
-    tlDraft={div:t?t._div:(tlDiv!=="all"?tlDiv:window.__DIV),kind:t?(t.kind==="e"?"e":"t"):(kind==="e"?"e":"t"),id:id||"",name:t?t.name||"":"",code:t?t.code||"":"",cat:t?t.cat||"":"",price:t&&+t.price>0?String(t.price):"",life:t&&+t.life>0?String(t.life):"",crit:t&&+t.crit>0?String(t.crit):"",note:t?t.note||"":"",th:t?t.th||"":"",codes:t?(t.codes||[]).slice():[]};
+    tlDraft={div:t?t._div:(tlDiv!=="all"?tlDiv:window.__DIV),kind:t?(t.kind==="e"?"e":"t"):(kind==="e"?"e":"t"),id:id||"",name:t?t.name||"":"",code:t?t.code||"":"",cat:t?t.cat||"":"",price:t&&+t.price>0?String(t.price):"",life:t&&+t.life>0?String(t.life):"",crit:t&&+t.crit>0?String(t.crit):"",holder:t?t.holder||"":"",loc:t?t.loc||"":"",corners:t&&+t.corners>0?String(t.corners):"1",trk:t?t.trk!==false:true,note:t?t.note||"":"",th:t?t.th||"":"",codes:t?(t.codes||[]).slice():[]};
     tlGo("tlform",id||null);
   }
   function tlNum(v){var n=parseFloat(String(v||"").replace(/\./g,"").replace(",","."));return isFinite(n)?n:0}
@@ -21960,6 +22139,13 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     if(b.dataset.tltab){tlTab=b.dataset.tltab; tlRender(); return}
     if(b.dataset.tlkind!==undefined){tlKind=b.dataset.tlkind; tlCat=""; tlRender(); return}
     if(b.dataset.tlcat!==undefined){tlCat=b.dataset.tlcat; tlRender(); return}
+    if(b.dataset.tlcsv){tlCsv(b.dataset.tlcsv); return}
+    if(b.dataset.tlmvf!==undefined){tlMvTab=b.dataset.tlmvf; tlRenderList(); return}
+    if(b.dataset.tlcopy){
+      var txt=tlOrderRows(tlCalc()).map(function(r){var t0=r.I.t; return "• "+(t0.name||"")+(t0.code?" ("+t0.code+")":"")+" — "+r.need+" adet"}).join("\n"), stt=$("tlstatus");
+      (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){if(stt)stt.textContent="Sipariş listesi kopyalandı"}).catch(function(){if(stt)stt.textContent="Kopyalanamadı — listeyi elle seçip kopyala"});
+      return;
+    }
     if(b.id==="tlnew"){tlFrom=""; tlOpenForm("","t"); return}
     if(b.id==="tlnewe"){tlFrom=""; tlOpenForm("","e"); return}
     if(b.dataset.tlin){tlFrom=""; tlGo("tlin",b.dataset.tlin); return}
@@ -21977,25 +22163,29 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     if(b.dataset.tledit){tlFrom="det"; tlOpenForm(b.dataset.tledit); return}
     if(b.dataset.tlin){tlFrom="det"; tlGo("tlin",b.dataset.tlin); return}
     if(b.dataset.tlmt){tlFrom="det"; tlGo("tlmt",b.dataset.tlmt); return}
+    if(b.dataset.tlmv){tlFrom="det"; tlMvK="ret"; tlFWhy="kirildi"; tlGo("tlmv",b.dataset.tlmv); return}
+    if(b.dataset.tlmvk){tlMvK=b.dataset.tlmvk; tlKeep(["tlv-q","tlv-d","tlv-n","tlv-op","tlv-sh"]); return}
+    if(b.dataset.tlfw){tlFWhy=b.dataset.tlfw; tlKeep(["tlv-q","tlv-d","tlv-n","tlv-op","tlv-sh"]); return}
     if(b.dataset.tluse){tlMt=b.dataset.tluse; tlFrom="det"; tlGo("tluse"); return}
     if(b.dataset.tlend){tlMt=b.dataset.tlend; tlWhy="bitti"; tlFrom="det"; tlGo("tlend"); return}
-    if(b.dataset.tlwhy){tlWhy=b.dataset.tlwhy; var u0=$("tle-u")?$("tle-u").value:null; renderSheet(); if(u0!==null&&$("tle-u"))$("tle-u").value=u0; return}
+    if(b.dataset.tlwhy){tlWhy=b.dataset.tlwhy; tlKeep(["tle-u","tle-d","tle-op","tle-sh"]); return}
     if(b.dataset.tlcrm&&t){var nc=(t.codes||[]).filter(function(c){return c!==b.dataset.tlcrm}); tdb(t).doc("tools/"+t.id).set({codes:nc},{merge:true}).catch(function(){}); t.codes=nc; renderSheet(); return}
     if(b.id==="tlcaddb"&&t){
       var cv=($("tlcadd").value||"").trim(); if(!cv)return; var cs=(t.codes||[]).slice(); if(cs.map(function(c){return c.toLowerCase()}).indexOf(cv.toLowerCase())<0)cs.push(cv);
       tdb(t).doc("tools/"+t.id).set({codes:cs},{merge:true}).catch(function(){}); t.codes=cs; renderSheet(); return;
     }
     var msg=function(m){tlMsg=m; var el=$("tlfmsg"); if(el)el.textContent=m};
-    if(!db&&/^tl(fsave|isave|msave|esave|usave|fdel)$/.test(b.id)){msg("Bağlantı yok — kaydedilemedi."); return}
-    if(b.dataset.tlfdiv){["name","code","cat","price","life","crit","note"].forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value}); tlDraft.div=b.dataset.tlfdiv; renderSheet(); return}
-    if(b.dataset.tlfk){["name","code","cat","price","life","crit","note"].forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value}); tlDraft.kind=b.dataset.tlfk; tlMsg=""; renderSheet(); return}
+    if(!db&&/^tl(fsave|isave|msave|esave|usave|fdel|mvsave)$/.test(b.id)){msg("Bağlantı yok — kaydedilemedi."); return}
+    if(b.dataset.tlfdiv){TL_FF.forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value}); tlDraft.div=b.dataset.tlfdiv; renderSheet(); return}
+    if(b.dataset.tlfk){TL_FF.forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value}); tlDraft.kind=b.dataset.tlfk; tlMsg=""; renderSheet(); return}
+    if(b.dataset.tlftrk!==undefined){TL_FF.forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value}); tlDraft.trk=b.dataset.tlftrk==="1"; tlMsg=""; renderSheet(); return}
     if(b.id==="tlimgrm"){tlDraft.th=""; renderSheet(); return}
     if(b.id==="tlfsave"){
       var d=tlDraft, nm=($("tlf-name").value||"").trim(); if(!nm){msg(d.kind==="e"?"Elmas adı yaz.":"Takım adı yaz."); $("tlf-name").focus(); return}
-      var doc={name:nm,code:($("tlf-code").value||"").trim(),cat:($("tlf-cat").value||"").trim(),price:tlNumP($("tlf-price").value),life:Math.round(tlNumP($("tlf-life").value)),crit:Math.round(tlNumP($("tlf-crit").value)),note:($("tlf-note").value||"").trim(),th:d.th||"",kind:d.kind==="e"?"e":"t"};
+      var doc={name:nm,code:($("tlf-code").value||"").trim(),cat:($("tlf-cat").value||"").trim(),price:tlNumP($("tlf-price").value),life:Math.round(tlNumP($("tlf-life").value)),crit:Math.round(tlNumP($("tlf-crit").value)),note:($("tlf-note").value||"").trim(),th:d.th||"",kind:d.kind==="e"?"e":"t",holder:($("tlf-holder").value||"").trim(),loc:($("tlf-loc").value||"").trim(),corners:Math.max(1,parseInt($("tlf-corners").value,10)||1),trk:d.trk!==false};
       var done=function(id){tlId=id||tlId; tlBack()};
       if(d.id){tdb(tools.filter(function(x){return x.id===d.id})[0]).doc("tools/"+d.id).set(doc,{merge:true}).then(function(){done(d.id)}).catch(function(){msg("Kaydedilemedi, tekrar dene.")}); logActivity("Takım güncellendi: "+nm,"info")}
-      else{doc.codes=[]; doc.ts=Date.now(); (dbDiv(d.div||window.__DIV)||db).collection("tools").add(doc).then(function(r){tlFrom="det"; done(r.id)}).catch(function(){msg("Kaydedilemedi, tekrar dene.")}); logActivity((d.kind==="e"?"Yeni elmas tanımlandı: ":"Yeni takım tanımlandı: ")+nm,"info")}
+      else{doc.codes=[]; doc.ts=Date.now(); (function(){var mx=0; tools.forEach(function(x){var m=/^TKM-(\d+)$/.exec(x.sk||""); if(m)mx=Math.max(mx,+m[1])}); doc.sk="TKM-"+String(mx+1).padStart(3,"0")})(); (dbDiv(d.div||window.__DIV)||db).collection("tools").add(doc).then(function(r){tlFrom="det"; done(r.id)}).catch(function(){msg("Kaydedilemedi, tekrar dene.")}); logActivity((d.kind==="e"?"Yeni elmas tanımlandı: ":"Yeni takım tanımlandı: ")+nm,"info")}
       return;
     }
     if(b.id==="tlfdel"){
@@ -22014,13 +22204,34 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
       var info=tlCalc(), I=info[t.id], q2=Math.round(tlNumP($("tlm-q").value)), mid=$("tlm-mac").value, dt2=$("tlm-d").value||todayIso;
       if(!mid){msg("Makine seç."); return} if(!(q2>0)){msg("Adet yaz."); return}
       if(q2>I.stock){msg("Stok yetersiz — stokta "+nf.format(I.stock)+" adet var. Önce giriş yap."); return}
-      var jobs=[]; for(var i=0;i<Math.min(q2,20);i++)jobs.push(tlAdd({tid:t.id,t:"mount",q:1,mid:mid,d:dt2}));
-      Promise.all(jobs).then(function(){logActivity("Takım makineye takıldı: "+t.name+" → "+tlMacName(mid)+" ("+q2+" adet)","info"); tlBack()}).catch(function(){msg("Kaydedilemedi, tekrar dene.")});
+      var opx=($("tlm-op")?$("tlm-op").value:"").trim(), shx=$("tlm-sh")?$("tlm-sh").value:"", jobs=[];
+      if(t.trk===false){var dc={tid:t.id,t:"iss",q:q2,mid:mid,d:dt2}; if(opx)dc.op=opx; if(shx)dc.sh=shx; jobs.push(tlAdd(dc))}
+      else for(var i=0;i<Math.min(q2,20);i++){var dm={tid:t.id,t:"mount",q:1,mid:mid,d:dt2,cr:1}; if(opx)dm.op=opx; if(shx)dm.sh=shx; jobs.push(tlAdd(dm))}
+      Promise.all(jobs).then(function(){logActivity((t.trk===false?"Tezgaha çıkış: ":"Takım makineye takıldı: ")+t.name+" → "+tlMacName(mid)+" ("+q2+" adet)","info"); tlBack()}).catch(function(){msg("Kaydedilemedi, tekrar dene.")});
       return;
     }
     if(b.id==="tlesave"){
-      var u=Math.max(0,Math.round(tlNumP($("tle-u").value))), de=$("tle-d").value||todayIso;
-      tlAdd({tid:t.id,t:"end",ref:tlMt,why:tlWhy,u:u,d:de}).then(function(){logActivity("Takım çıkarıldı ("+(TL_WHY[tlWhy]||"")+"): "+t.name+" · "+nf.format(u)+" adet","info"); tlBack()}).catch(function(){msg("Kaydedilemedi, tekrar dene.")});
+      var u=Math.max(0,Math.round(tlNumP($("tle-u").value))), de=$("tle-d").value||todayIso, Ie=tlCalc()[t.id], mt0=Ie?Ie.mounts.filter(function(x){return x.id===tlMt})[0]:null;
+      var ope=($("tle-op")?$("tle-op").value:"").trim(), she=$("tle-sh")?$("tle-sh").value:"";
+      if(tlWhy==="cevir"&&mt0&&(mt0.cr||1)>=Ie.nc){msg("Son köşe: çevirecek köşe kalmadı. “Normal aşınma” seç."); return}
+      var ed={tid:t.id,t:"end",ref:tlMt,why:tlWhy,u:u,d:de}; if(ope)ed.op=ope; if(she)ed.sh=she;
+      tlAdd(ed).then(function(){
+        if(tlWhy==="cevir"&&mt0){var nm={tid:t.id,t:"mount",q:1,mid:mt0.mid,d:de,nc:true,cr:(mt0.cr||1)+1,iid:mt0.iid||mt0.id}; if(ope)nm.op=ope; if(she)nm.sh=she; return tlAdd(nm)}
+      }).then(function(){logActivity("Takım çıkarıldı ("+(TL_WHY[tlWhy]||"")+"): "+t.name+" · "+nf.format(u)+" parça","info"); tlBack()}).catch(function(){msg("Kaydedilemedi, tekrar dene.")});
+      return;
+    }
+    if(b.id==="tlmvsave"){
+      var I2=tlCalc()[t.id], qv=Math.round(tlNumP($("tlv-q").value)), dv=$("tlv-d").value||todayIso, nv=($("tlv-n").value||"").trim(), opv=($("tlv-op")?$("tlv-op").value:"").trim(), shv=$("tlv-sh")?$("tlv-sh").value:"";
+      if(tlMvK==="adj"){
+        if(!($("tlv-q").value||"").trim()){msg("Sayımda bulunan adedi yaz."); return}
+        var diff=qv-I2.stock; if(!diff){msg("Sayım stokla aynı, değişiklik yok."); return}
+        tlAdd({tid:t.id,t:"adj",q:diff,d:dv,note:nv||("Sayım: "+qv+" adet")}).then(function(){logActivity("Takım sayım düzeltmesi: "+t.name+" "+(diff>0?"+":"")+diff,"info"); tlBack()}).catch(function(){msg("Kaydedilemedi, tekrar dene.")});
+        return;
+      }
+      if(!(qv>0)){msg("Adet yaz."); return}
+      if((tlMvK==="fire"||tlMvK==="sret")&&qv>I2.stock){msg("Stoktan fazla olamaz — stokta "+nf.format(I2.stock)+" adet var."); return}
+      var dd={tid:t.id,t:tlMvK,q:qv,d:dv,note:nv}; if(opv)dd.op=opv; if(shv)dd.sh=shv; if(tlMvK==="fire")dd.why=tlFWhy;
+      tlAdd(dd).then(function(){logActivity("Takım hareketi ("+tlMvK+"): "+t.name+" · "+nf.format(qv),"info"); tlBack()}).catch(function(){msg("Kaydedilemedi, tekrar dene.")});
       return;
     }
     if(b.id==="tlusave"){
@@ -22034,7 +22245,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
   $("sheet").addEventListener("change",function(e){
     if(sheetMode!=="tlform"||e.target.id!=="tlimgf")return;
     var f=e.target.files&&e.target.files[0]; e.target.value=""; if(!f)return;
-    ["name","code","cat","price","life","crit","note"].forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value});
+    TL_FF.forEach(function(k){var el=$("tlf-"+k); if(el&&tlDraft)tlDraft[k]=el.value});
     resizeImg(f,380,.74,function(th){if(!th){tlMsg="Görsel okunamadı."; renderSheet(); return} tlDraft.th=th; tlMsg=""; renderSheet()});
   });
 
@@ -23058,8 +23269,8 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     var h='<div class="snbrand"><span class="snlogo cgl"><img src="data:image/webp;base64,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" alt=""></span><div><b class="nocap">Çelsan Group ERP</b><small>'+esc(window.__DIVO.name)+'</small></div></div>'+
       '<div class="sngrp">Genel</div>'+it("home","prod","Ana sayfa")+
       '<div class="sngrp">'+esc(window.__DIVO.name)+' bölümü</div>'+it("orders","orders","Siparişler")+it("prods","prods","Ürünlerim")+it("plans","plans","Planlar")+SECTIONS.map(function(x){return it("sec:"+x.id,x.id,x.name)}).join("")+
-      '<div class="sngrp">Tüm bölümler (ortak)</div>'+it("stock","stock","Stok")+it("purch","purch","İhtiyaçlar")+it("po","po","Satın Alma")+it("gg","gg","Genel giderler")+it("sl","sl","Satış")+it("pu","pu","Puantaj")+it("tools","tools","Takımlar ve elmaslar")+it("staff","staff","Eleman, makine ve mesai")+it("notes","notes","Notlarım")+(finOwner()?it("cams","cam","Kameralar"):"")+
-      '<div class="sngrp">Sana özel</div>'+(finOwner()?it("as","as","Asistanım")+it("mts","mts","Toplantılarım")+(sfOn()?it("saha","saha","Saha satış"):"")+(ckOn()?it("ck","ck","Çelik kapıcılar"):"")+it("fv","fv","Finans Merkezi")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
+      '<div class="sngrp">Tüm bölümler (ortak)</div>'+it("stock","stock","Stok")+it("purch","purch","İhtiyaçlar")+it("po","po","Satın Alma")+it("gg","gg","Genel giderler")+it("sl","sl","Satış")+it("pu","pu","Puantaj")+it("tools","tools","Takımlar ve elmaslar")+it("staff","staff","Eleman, makine ve mesai")+it("notes","notes","Notlarım")+(ckOn()?it("ck","ck","Çelik kapıcılar"):"")+(finOwner()?it("cams","cam","Kameralar"):"")+
+      '<div class="sngrp">Sana özel</div>'+(finOwner()?it("as","as","Asistanım")+it("mts","mts","Toplantılarım")+(sfOn()?it("saha","saha","Saha satış"):"")+it("fv","fv","Finans Merkezi")+it("fin","fin","Maaş ve giderler")+it("calc","calc","İşçilik hesaplama"):"")+
       '<div class="snsp"></div><button type="button" class="snitem" data-nav="div"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>Bölüm değiştir</span></button><button type="button" class="snitem" data-nav="look"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Görünüm: '+({glass:"Cam koyu",glasslight:"Cam aydınlık",glassfrost:"Buzlu cam"}[lookNow()]||"")+' ›</span></button>';
     nv.innerHTML=h; [].forEach.call(nv.querySelectorAll(".snitem"),function(b){var sp=b.querySelector("span"); if(sp)b.title=sp.textContent}); var fd=$("fbdiv"); if(fd)fd.textContent=window.__DIVO.name; paintSideActive();
   }
@@ -23433,7 +23644,7 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     var sahaC=!sfOn()?"":'<button type="button" class="hcard ordc sahac" data-saha="1">'+hcIcon("saha")+'<div><div class="hk">Sadece sana özel · tamirci ağı</div><div class="hn">Saha satış</div><div class="hs">Servisler, ziyaretler, rota, harita</div></div><span class="go">›</span></button>';
     var asC=!asOn()?"":(function(){try{asLoad(); asWatch()}catch(e){} return '<button type="button" class="hcard ordc asc" data-as="1">'+hcIcon("as")+'<div><div class="hk">Sadece sana özel · sesli · sabah raporu</div><div class="hn">Asistanım</div><div class="hs" id="hs-as">Sor, dinle, takip et</div></div><span class="go">›</span></button>'})();
     var mtC=!asOn()?"":'<button type="button" class="hcard ordc mtc2" data-mts="1">'+hcIcon("mts")+'<div><div class="hk">Sadece sana özel · notlar · yapılanlar</div><div class="hn">Toplantılarım</div><div class="hs">Günlük, saatlik ve haftalık gör</div></div><span class="go">›</span></button>';
-    var ckC=!ckOn()?"":'<button type="button" class="hcard ordc ckc" data-ck="1">'+hcIcon("ck")+'<div><div class="hk">Sadece sana özel · rozet müşterileri</div><div class="hn">Çelik kapıcılar</div><div class="hs" id="hs-ck">Dünyadaki çelik kapı üreticileri, iletişim ve takip</div></div><span class="go">›</span></button>';
+    var ckC=!ckOn()?"":'<button type="button" class="hcard ordc ckc" data-ck="1">'+hcIcon("ck")+'<div><div class="hk">Rozet · ihracat müşterileri</div><div class="hn">Çelik kapıcılar</div><div class="hs" id="hs-ck">Dünyadaki çelik kapı üreticileri, iletişim ve takip</div></div><span class="go">›</span></button>';
     var toolC='<button type="button" class="hcard ordc toolc" data-tools="1">'+hcIcon("tools")+'<div><div class="hk">CNC · Transfer</div><div class="hn">Takımlar ve elmaslar</div><div class="hs" id="hs-tools">Takım ve elmas stoğu, ömür ve maliyet takibi</div></div><span class="go">›</span></button>';
     var prodsC='<button type="button" class="hcard ordc prodsc" data-prods="1">'+hcIcon("prods")+'<div><div class="hk">Ürün kartları · reçete</div><div class="hn">Ürünlerim</div><div class="hs">Ürün bilgisi, görsel ve reçete parçaları</div></div><span class="go">›</span></button>';
     var prodC='<button type="button" class="hcard ordc prodc" data-prod="1">'+hcIcon("prod")+'<div><div class="hk">Günlük kayıt · plan · ekip</div><div class="hn">Üretim</div><div class="hs">Bölümler, planlar ve elemanlar</div></div><span class="go">›</span></button>';
@@ -23545,10 +23756,10 @@ html:root:root:root[data-ui="celsan"] #cstop .cst-as[aria-current="page"]{box-sh
     P("Genel","home","home","Ana sayfa");
     P(dn+" bölümü","orders","orders","Siparişler"); P(dn+" bölümü","prods","prods","Ürünlerim"); P(dn+" bölümü","prod","prod","Üretim"); P(dn+" bölümü","plans","plans","Planlar");
     SECTIONS.forEach(function(x){P(dn+" bölümü","sec:"+x.id,x.id,x.name)});
-    P("Tüm bölümler","stock","stock","Stok"); P("Tüm bölümler","purch","purch","İhtiyaçlar"); P("Tüm bölümler","po","po","Satın Alma"); P("Tüm bölümler","gg","gg","Genel giderler"); P("Tüm bölümler","sl","sl","Satış"); P("Tüm bölümler","pu","pu","Puantaj"); P("Tüm bölümler","tools","tools","Takımlar ve elmaslar"); P("Tüm bölümler","staff","staff","Eleman ve makine"); P("Tüm bölümler","notes","notes","Notlarım");
+    P("Tüm bölümler","stock","stock","Stok"); P("Tüm bölümler","purch","purch","İhtiyaçlar"); P("Tüm bölümler","po","po","Satın Alma"); P("Tüm bölümler","gg","gg","Genel giderler"); P("Tüm bölümler","sl","sl","Satış"); P("Tüm bölümler","pu","pu","Puantaj"); P("Tüm bölümler","tools","tools","Takımlar ve elmaslar"); P("Tüm bölümler","staff","staff","Eleman ve makine"); P("Tüm bölümler","notes","notes","Notlarım"); if(ckOn())P(dn+" bölümü","ck","ck","Çelik kapıcılar");
     if(finOwner()){
       P("Tüm bölümler","cams","cam","Kameralar");
-      P("Sana özel","as","as","Asistanım"); P("Sana özel","mts","mts","Toplantılarım"); if(sfOn())P("Sana özel","saha","saha","Saha satış"); if(ckOn())P("Sana özel","ck","ck","Çelik kapıcılar"); P("Sana özel","fv","fv","Finans Merkezi"); P("Sana özel","fin","fin","Maaş ve giderler"); P("Sana özel","calc","calc","İşçilik hesaplama");
+      P("Sana özel","as","as","Asistanım"); P("Sana özel","mts","mts","Toplantılarım"); if(sfOn())P("Sana özel","saha","saha","Saha satış"); P("Sana özel","fv","fv","Finans Merkezi"); P("Sana özel","fin","fin","Maaş ve giderler"); P("Sana özel","calc","calc","İşçilik hesaplama");
     }
     return L;
   }
