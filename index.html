@@ -5475,6 +5475,16 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .jpb{height:7px;border-radius:9px;background:#0a1120;overflow:hidden}
 #fab .jpb i{display:block;height:100%;background:linear-gradient(90deg,#3fa9ff,#2fd08a);border-radius:9px}
 #fab .ohero .obs{display:none}
+#fab .tabs{display:flex;flex-wrap:nowrap;overflow-x:auto}#fab .tabs button{padding:8px 10px;font-size:12.5px}
+#fab .btn.ln{background:transparent;border:1px solid rgba(255,84,104,.6);color:#ff8a98}
+#fab .btn[disabled]{opacity:.5;pointer-events:none}
+#fab .jb .s2{color:#7f93b8;font-size:11px}
+#fab .tiles{grid-template-columns:repeat(2,1fr)}
+#fab .tile{appearance:none;text-align:left;background:#162036;border:1px solid transparent;border-radius:12px;padding:9px 11px;cursor:pointer;color:#e8eefc;font-family:inherit}
+#fab .tile.on{border-color:#3fa9ff;background:#192a4a}
+#fab .tile small{display:block;color:#93a4c4;font-size:11px}#fab .tile b{font-size:15px;color:#e8eefc}#fab .tile em{display:block;font-style:normal;font-size:11px;color:#7cc4ff;margin-top:2px}
+#fab .lb.on{transform:translate(-50%,6px);font:600 10px var(--font-ui,system-ui);padding:1px 7px;background:rgba(10,16,30,.5);border:0;color:#e8eefc;pointer-events:none;opacity:0;transition:opacity .25s}
+#fab .lb.on.no{color:#ff9aa6}
 #fab .fbh{font:800 11px var(--font-ui,system-ui);letter-spacing:.09em;text-transform:uppercase;color:#93a4c4;margin:6px 0 -4px;display:flex;gap:8px;align-items:center}
 #fab .fbh span{background:#162036;border-radius:99px;padding:2px 8px;letter-spacing:0;text-transform:none;color:#c3d0ea}
 #fab .stc{display:flex;gap:12px;align-items:center;border-radius:14px;padding:12px 14px;border:1px solid #243352;background:#111b2e}
@@ -5558,7 +5568,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 16:48</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 17:02</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22588,7 +22598,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     Object.keys(S_.mach).forEach(function(id){if(!ids[id]){var o=S_.mach[id]; S_.scene.remove(o.g); S_.pick.splice(S_.pick.indexOf(o.hit),1); o.el.remove(); delete S_.mach[id]; if(fabSel===id)fabSel=null}});
     list.forEach(function(m){if(!S_.mach[m.id])S_.mach[m.id]=fabMakeMachine(m)});
     if(sig!==fabSig){fabSig=sig; var lay=fabLayout(list); list.forEach(function(m){var p=lay[m.id],o=S_.mach[m.id]; o.g.position.set(p.x,.08,p.z); o.g.rotation.y=p.rot; o.g.scale.set(p.sc*(fabType(m)==="testere"?5:1),p.sc,p.sc)}); S_.lay=lay; fabOps(list,lay); S_.osig=null}
-    var osg=list.map(function(m){return m.id+(fabAssigned(m)?1:0)}).join(","); if(S_.lay&&osg!==S_.osig){S_.osig=osg; fabOps(list,S_.lay)}
+    var osg=list.map(function(m){return m.id+":"+fabOpsOf(m).map(function(e){return e.id+(e.name||"")}).join("+")}).join(","); if(S_.lay&&osg!==S_.osig){S_.osig=osg; fabOps(list,S_.lay)}
     var bad=0;
     list.forEach(function(m){var o=S_.mach[m.id], f=macFault(m); if(f)bad++; o.bad=!!f;
       var on=(fabDept==="Tümü"||macDeptsOf(m).indexOf(fabDept)>-1); o.dim=!on;
@@ -22602,11 +22612,13 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   // operatörler: CNC'lerde komşu her iki makinenin arasında 1 kişi, diğer makinelerin her birinde 1 kişi
   function fabAssigned(m){return employees.some(function(e){return (e.machines||[]).indexOf(m.id)>-1})}
   function fabOps(list,lay){
-    var S_=fabS, T=S_.T; S_.ops.forEach(function(o){S_.scene.remove(o.g)}); S_.ops=[];
-    function add(x,z,ry,c){var g=new T.Group(), b=new T.Mesh(new T.CapsuleGeometry(.26,.75,3,8),S_.M(c)); b.position.y=.9; g.add(b);
+    var S_=fabS, T=S_.T; S_.ops.forEach(function(o){S_.scene.remove(o.g); if(o.el&&o.el.parentNode)o.el.parentNode.removeChild(o.el)}); S_.ops=[];
+    function add(x,z,ry,ms){var as=ms.some(fabAssigned), c=as?0x2fd08a:0xff5468, nm=[]; ms.forEach(function(m){fabOpsOf(m).forEach(function(e){if(nm.indexOf(e.name||"")<0)nm.push(e.name||"")})});
+      var el=document.createElement("div"); el.className="lb on"+(nm.length?"":" no"); el.textContent=nm.length?(nm.length>2?nm.slice(0,2).join(" · ")+" +"+(nm.length-2):nm.join(" · ")):"Operatör atanmadı"; $("fblb").appendChild(el);
+      var g=new T.Group(), b=new T.Mesh(new T.CapsuleGeometry(.26,.75,3,8),S_.M(c)); b.position.y=.9; g.add(b);
       var h=new T.Mesh(new T.SphereGeometry(.24,8,6),S_.M(0xe8c9a0)); h.position.y=1.7; g.add(h);
       var hm=new T.Mesh(new T.SphereGeometry(.26,8,5,0,Math.PI*2,0,Math.PI/2),S_.M(0xf2c21b)); hm.position.y=1.76; g.add(hm);
-      g.position.set(x,.08,z); g.rotation.y=ry; S_.scene.add(g); S_.ops.push({g:g,ph:Math.random()*6,y:.08})}
+      g.position.set(x,.08,z); g.rotation.y=ry; S_.scene.add(g); S_.ops.push({g:g,el:el,ph:Math.random()*6,y:.08})}
     var cn=list.filter(function(m){return /CNC/i.test(m.name||"")}).sort(function(p,q){var A=lay[p.id],B=lay[q.id]; return (A.x-B.x)||(A.z-B.z)}), used={};
     // iki CNC'ye 1 kişi: en yakın boştaki komşuyla eşleştir, ikisinin ortasına dur; eşi yoksa makinenin yanına
     function pairUp(sameCol){
@@ -22614,19 +22626,19 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
         if(used[m.id])return; var A=lay[m.id], best=null, bd=sameCol?2.35:3.2;
         cn.forEach(function(n){if(used[n.id]||n===m)return; var B=lay[n.id], dx=Math.abs(A.x-B.x), dz=Math.abs(A.z-B.z);
           if(sameCol?dx>.6:dz>.6)return; var d=Math.hypot(dx,dz); if(d<bd){bd=d; best=n}});
-        if(best){used[m.id]=1; used[best.id]=1; var B2=lay[best.id]; add((A.x+B2.x)/2,(A.z+B2.z)/2,Math.atan2(B2.x-A.x,B2.z-A.z)+Math.PI/2,0xf08a24)}
+        if(best){used[m.id]=1; used[best.id]=1; var B2=lay[best.id]; add((A.x+B2.x)/2,(A.z+B2.z)/2,Math.atan2(B2.x-A.x,B2.z-A.z)+Math.PI/2,[m,best])}
       });
     }
     pairUp(true); pairUp(false);   // önce aynı sütunda alt alta (CNC 5-6), kalanlar yan yana
-    cn.forEach(function(m){if(!used[m.id]){used[m.id]=1; var A=lay[m.id]; add(A.x+1.2,A.z,-Math.PI/2,0xf08a24)}});
+    cn.forEach(function(m){if(!used[m.id]){used[m.id]=1; var A=lay[m.id]; add(A.x+1.2,A.z,-Math.PI/2,[m])}});
     // diğer makinelerde 1 kişi, makinenin önünde. Yeşil = makineye operatör bağlı, kırmızı = bağlı değil
     var te=[];
     list.forEach(function(m){
       if(/CNC/i.test(m.name||""))return; if(/TESTERE/i.test(m.name||"")){te.push(m); return}
-      var p=lay[m.id]; add(p.x+Math.sin(p.rot)*1.5,p.z+Math.cos(p.rot)*1.5,p.rot+Math.PI,fabAssigned(m)?0x2fd08a:0xff5468);
+      var p=lay[m.id]; add(p.x+Math.sin(p.rot)*1.5,p.z+Math.cos(p.rot)*1.5,p.rot+Math.PI,[m]);
     });
     if(te.length){var cx=0,mz=-1e9,any=false; te.forEach(function(m){var p=lay[m.id]; cx+=p.x; mz=Math.max(mz,p.z); if(fabAssigned(m))any=true});
-      add(cx/te.length,mz+5.3,Math.PI,any?0x2fd08a:0xff5468)}   // tüm testerelere ortak 1 kişi, önlerinde ortada
+      add(cx/te.length,mz+5.3,Math.PI,te)}   // tüm testerelere ortak 1 kişi, önlerinde ortada
   }
   function fabInput(S_){
     var cv=$("fbcv"), ptr={}, moved=0, lastPinch=0, lastMid=null, st=S_.st, goal=S_.goal, cam=S_.cam, T=S_.T;
@@ -22663,7 +22675,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(h.length)fabSelect(h[0].object.userData.mid); else if(fabSel)fabClose();
   }
   function fabSelect(id){
-    var S_=fabS, o=S_.mach[id]; if(!o)return; fabSel=id; fabTab="durum"; fabQ=""; fabJQ=""; fabJSec=null;
+    var S_=fabS, o=S_.mach[id]; if(!o)return; fabSel=id; fabTab="durum"; fabQ=""; fabJQ=""; fabJSec=null; fabPO=""; fabPOinit=false; fabPSec=null; fabPQty=""; fabPE=null; fabMsg=""; fabPLo=""; fabPLsec=null; fabPLq=""; fabPLe=null; fabDrill=null;
     S_.goal.tx=o.g.position.x; S_.goal.tz=o.g.position.z; S_.goal.dist=Math.min(S_.goal.dist,30); S_.goal.el=Math.max(S_.goal.el,.6);
     if(!S_.igoal){S_.igoal=1; $("fbRoof").setAttribute("aria-pressed","true")}
     $("fbsheet").classList.add("on"); fabSheet(); fabSync();
@@ -22677,7 +22689,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       return '<h4>'+g[0]+'</h4><div class="g">'+items.map(function(i){return '<button type="button" data-fbm="'+i[0]+'">'+esc(i[1])+'</button>'}).join("")+'</div>'}).join("");
   }
   function fabClose(){if(fabHold)return; fabSel=null; $("fbsheet").classList.remove("on"); if(fabS)fabSync()}
-  var FAB_TABS=[["durum","Durum"],["op","Operatör"],["is","İş emri"],["uretim","Üretim"],["diger","Diğer"]];
+  var FAB_TABS=[["durum","Durum"],["op","Operatör"],["is","İş emri"],["uretim","Üretim"],["plan","Plan"],["diger","Diğer"]];
   var fabQ="", fabJSec=null, fabJQ="", fabProg=0;
   function fabAct(ic,t,d,btn,go){return '<div class="act"><div class="ai">'+ic+'</div><div><b>'+t+'</b><small>'+d+'</small></div></div>'+btn}
   function fabOpHtml(m){
@@ -22687,17 +22699,21 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(!list.length)return '<div class="note">'+(employees.length?"Eşleşen eleman yok.":"Henüz eleman tanımlı değil (Eleman ve makine ekranından ekle).")+'</div>';
     return '<div class="fbchips">'+list.slice(0,60).map(function(e){return '<button type="button" data-fbop="'+e.id+'" aria-pressed="'+((e.machines||[]).indexOf(m.id)>-1)+'">'+esc(e.name||"")+'</button>'}).join("")+'</div>'+(!q&&cand.length&&cand.length<employees.length?'<div class="note">Bu makinenin bölümündeki elemanlar. Başkasını eklemek için adını ara.</div>':'');
   }
-  function fabJobHtml(m){
+  function fabJobBtns(){return '<div class="g2"><button type="button" class="btn" data-fbjenter="1">Üretim gir ›</button><button type="button" class="btn g" data-fbt="is">İşi değiştir</button></div><div class="g2"><button type="button" class="btn g" data-fbjfin="1">✓ İşi bitir</button><button type="button" class="btn ln" data-fbjclear="1">✕ İptal et</button></div>'}
+  function fabPickMode(){return fabTab==="uretim"?"prod":fabTab==="plan"?"plan":"job"}
+  function fabPickBlock(m,mode){
     var secs=(m.secs&&m.secs.length)?m.secs:SECTIONS.map(function(x){return x.id}), h="";
     if(!fabJSec||secs.indexOf(fabJSec)<0)fabJSec=secs[0];
+    if(secs.length>1)h+='<div class="fbchips">'+secs.map(function(x){return '<button type="button" data-fbjs="'+x+'" aria-pressed="'+(fabJSec===x)+'">'+esc(secNameOf(x))+'</button>'}).join("")+'</div>';
+    return h+'<input class="fin" id="fbjq" type="search" autocomplete="off" placeholder="Kod veya müşteri ara…" value="'+esc(fabJQ)+'"><div id="fbjlist">'+fabJobList(m,mode)+'</div>';
+  }
+  function fabJobHtml(m){
+    var h="";
     if(m.job){
-      var jo2=orders.filter(function(x){return x.id===m.job.oid})[0], jbtn='<div class="g2"><button type="button" class="btn" data-fbjenter="1">Üretim gir ›</button><button type="button" class="btn g" data-fbjclear="1">İşi bitir</button></div>';
+      var jo2=orders.filter(function(x){return x.id===m.job.oid})[0], jbtn=fabJobBtns();
       h+='<div class="note" style="font-weight:800;color:#2fd08a">● Şu an çalışan iş</div>'+(jo2?fabJobCard(jo2,m.job.sec,true,jbtn):'<div class="jc on"><div class="jr"><div class="jimg ph">◆</div><div class="jb"><b>'+esc(cvTi(m.job.code))+'</b><small>'+esc(secNameOf(m.job.sec))+(m.job.cust?' · '+esc(m.job.cust):'')+'</small></div></div>'+jbtn+'</div>');
     }else h+='<div class="note">Bu makinede şu an aktif iş yok.</div>';
-    h+='<div class="note" style="margin-top:2px">Yeni iş ata</div>';
-    if(secs.length>1)h+='<div class="fbchips">'+secs.map(function(x){return '<button type="button" data-fbjs="'+x+'" aria-pressed="'+(fabJSec===x)+'">'+esc(secNameOf(x))+'</button>'}).join("")+'</div>';
-    h+='<input class="fin" id="fbjq" type="search" autocomplete="off" placeholder="Kod veya müşteri ara…" value="'+esc(fabJQ)+'"><div id="fbjlist">'+fabJobList(m)+'</div>';
-    return h;
+    return h+'<div class="note" style="margin-top:2px">Yeni iş ata</div>'+fabPickBlock(m,"job");
   }
   function fabOImg(o){return o.th?'<img class="jimg" alt="" loading="lazy" src="'+esc(o.th)+'">':'<div class="jimg ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>'}
   function fabDue(o,fin){
@@ -22712,68 +22728,200 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       '<div class="jq">sipariş<b>'+nf.format(o.qty||0)+'</b>'+(mu>1?'<span>×'+mu+' = '+nf.format(nd)+'</span>':'')+'</div></div>'+
       '<div class="jp"><div class="jpt"><span>'+esc(secNameOf(sec))+' · yapılan '+nf.format(d)+' / '+nf.format(nd)+' · %'+pc+'</span><span class="'+(fin?'ok':'')+'">'+(fin?'✓ Tamam':nf.format(rem)+' kalan')+'</span></div><div class="jpb"><i style="width:'+pc+'%"></i></div></div>'+(btn||"")+'</div>';
   }
-  function fabJobList(m){
-    if(fabProg===0){fabProg=1; loadProgress(true).then(function(){fabProg=2; fabRefreshJobs()}).catch(function(){fabProg=2; fabRefreshJobs()})}
-    if(fabProg===1)return '<div class="note">Siparişler yükleniyor…</div>';
+  function fabJobList(m,mode){
+    mode=mode||fabPickMode();
+    fabKick();
+    if(fabProg!==2)return '<div class="note">Siparişler yükleniyor…</div>';
     var jsi=stageIdx(fabJSec), q=fold(fabJQ.trim());
-    var rows=orders.filter(function(o){return (o.st||[])[jsi]&&!(m.job&&m.job.oid===o.id&&m.job.sec===fabJSec)&&(!q||fold((o.code||"")+" "+(oTi(o)||"")+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)>-1)}).map(function(o){var d=doneOf(o.id,fabJSec).q, nd=need(o,fabJSec)||0; return {o:o,fin:(nd&&d>=nd)||stClosed(o,jsi)}})
+    var rows=orders.filter(function(o){return (o.st||[])[jsi]&&!(mode==="job"&&m.job&&m.job.oid===o.id&&m.job.sec===fabJSec)&&(!q||fold((o.code||"")+" "+(oTi(o)||"")+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)>-1)}).map(function(o){var d=doneOf(o.id,fabJSec).q, nd=need(o,fabJSec)||0; return {o:o,fin:(nd&&d>=nd)||stClosed(o,jsi)}})
       .sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))});
     if(!rows.length)return '<div class="note">'+(orders.length?"Bu bölüm için eşleşen sipariş yok.":"Henüz sipariş yok.")+'</div>';
-    return '<div class="jgrid">'+rows.slice(0,40).map(function(x){var on=!!(m.job&&m.job.oid===x.o.id);
-      return fabJobCard(x.o,fabJSec,on,'<button type="button" class="btn'+(on?' g':'')+'" data-fbjo="'+x.o.id+'">'+(on?'Atandı ✓':'Bu işi ata')+'</button>')}).join("")+'</div>'+(rows.length>40?'<div class="note">İlk 40 sipariş gösteriliyor, aramayla daralt.</div>':'');
+    var at=mode==="prod"?'data-fbpo':mode==="plan"?'data-fbpl':'data-fbjo', lb=mode==="prod"?'Üretim gir ›':mode==="plan"?'Plana ekle ›':'Bu işi ata';
+    return '<div class="jgrid">'+rows.slice(0,40).map(function(x){var on=mode==="job"&&!!(m.job&&m.job.oid===x.o.id);
+      return fabJobCard(x.o,fabJSec,on,'<button type="button" class="btn" '+at+'="'+x.o.id+'">'+lb+'</button>')}).join("")+'</div>'+(rows.length>40?'<div class="note">İlk 40 sipariş gösteriliyor, aramayla daralt.</div>':'');
   }
-  function fabRefreshJobs(){var m=machinesList.filter(function(x){return x.id===fabSel})[0], el=$("fbjlist"); if(m&&el&&fabTab==="is")el.innerHTML=fabJobList(m)}
-  function fabMini(o,right,sub){
-    return '<div class="mr">'+(o?fabOImg(o).replace('class="jimg','class="jimg sm'):'<div class="jimg sm ph">?</div>')+'<div class="jb"><b>'+esc(o?oTi(o):"Silinmiş sipariş")+'</b><small>'+esc(sub||"")+'</small></div><div class="mrr">'+right+'</div></div>';
+  function fabRefreshJobs(){var m=machinesList.filter(function(x){return x.id===fabSel})[0], el=$("fbjlist"); if(m&&el)el.innerHTML=fabJobList(m,fabPickMode())}
+  var fabPO="", fabPOinit=false, fabPSec=null, fabPQty="", fabPE=null, fabMsg="", fabBusy=false, fabPLo="", fabPLsec=null, fabPLq="", fabPLsc="day0", fabPLe=null, fabDrill=null, fabProgTs=0, fabLoading=false;
+  function fabLoadProg(){
+    if(fabLoading)return; fabLoading=true; if(!fabProgTs)fabProg=Math.min(fabProg,1)||1;
+    var fin=function(){fabLoading=false; fabProg=2; fabProgTs=Date.now(); fabRefreshOv(); fabRefreshJobs()};
+    try{loadProgress(true).then(fin,fin)}catch(e){fin()}
+  }
+  function fabKick(){if(!fabLoading&&(fabProg===0||Date.now()-fabProgTs>30000))fabLoadProg()}
+  function fabMini(o,right,sub,sub2){
+    return '<div class="mr">'+(o?fabOImg(o).replace('class="jimg','class="jimg sm'):'<div class="jimg sm ph">?</div>')+'<div class="jb"><b>'+esc(o?oTi(o):"Silinmiş sipariş")+'</b><small>'+esc(sub||"")+'</small>'+(sub2?'<small class="s2">'+esc(sub2)+'</small>':'')+'</div><div class="mrr">'+right+'</div></div>';
   }
   function fabAgo(ts){if(!ts)return ""; var mn=Math.max(0,Math.round((Date.now()-ts)/60000)); if(mn<60)return mn+" dk önce"; var h=Math.round(mn/60); if(h<48)return h+" saat önce"; return Math.round(h/24)+" gün önce"}
+  function fabOpsOf(m){return employees.filter(function(e){return (e.machines||[]).indexOf(m.id)>-1})}
   function fabOvData(m){
-    var today=isoFmt(new Date()), mon=isoWeekMonday(today), mk=today.slice(0,7), out={today:today,prod:[],tq:0,mq:0,plans:[]};
+    var today=isoFmt(new Date()), tom=isoAdd(today,1), mon=isoWeekMonday(today), mk=today.slice(0,7), out={today:today,prod:[],pmon:[],tq:0,mq:0,plans:[]};
     var oby={}; orders.forEach(function(o){oby[o.id]=o});
     Object.keys(pm).forEach(function(k){
       var sp=k.split("|"); if(sp[1]!==mk)return; var src=pm[k]||{};
-      Object.keys(src).forEach(function(oid){var e=(src[oid]&&src[oid].e)||[], t=0, mq=0;
-        e.forEach(function(x){if((x.m||"")!==m.id)return; mq+=x.q; if(x.d===today)t+=x.q});
-        out.mq+=mq; if(t){out.tq+=t; out.prod.push({o:oby[oid],sec:sp[0],q:t})}});
+      Object.keys(src).forEach(function(oid){var e=(src[oid]&&src[oid].e)||[], t=0, mq=0, days={}, last="";
+        e.forEach(function(x){if((x.m||"")!==m.id)return; mq+=x.q; days[x.d]=1; if(x.d>last)last=x.d; if(x.d===today)t+=x.q});
+        out.mq+=mq; if(mq)out.pmon.push({o:oby[oid],sec:sp[0],q:mq,days:Object.keys(days).length,last:last});
+        if(t){out.tq+=t; out.prod.push({o:oby[oid],sec:sp[0],q:t})}});
     });
+    out.pmon.sort(function(a,b){return b.q-a.q});
     SECTIONS.forEach(function(x){
-      var Pp=pmPlans[x.id+"|"+mk]||{}, Pw=pmPlans[x.id+"|"+mon.slice(0,7)]||{};
-      [["day",today,Pp,"Bugün"],["week",mon,Pw,"Bu hafta"]].forEach(function(sc){
-        var items=((sc[2][sc[0]]||{})[sc[1]])||[];
+      [["day",today,"Bugün",today.slice(0,7)],["day",tom,"Yarın",tom.slice(0,7)],["week",mon,"Bu hafta",mon.slice(0,7)],["week",mon,"Bu hafta",mk]].forEach(function(sc,si){
+        if(si===3&&sc[3]===mon.slice(0,7))return;
+        var Pp=pmPlans[x.id+"|"+sc[3]]||{}, items=((Pp[sc[0]]||{})[sc[1]])||[];
         items.forEach(function(pe){
           if((pe.mid||"")!==m.id)return; var o=oby[pe.oid], w=0;
           try{if(o)w=planDoneOn(items,pe,doneOf(o.id,x.id),planRange(sc[0],sc[1])).w||0}catch(e){}
-          out.plans.push({o:o,pe:pe,sec:x.id,scope:sc[0],lbl:sc[3],w:w});
+          out.plans.push({o:o,pe:pe,sec:x.id,scope:sc[0],lbl:sc[2],key:sc[1],dk:sc[3],w:w});
         });
       });
     });
     return out;
   }
+  function fabDrillHtml(D){
+    var list=fabDrill==="day"?D.prod:D.pmon; if(!list.length)return '<div class="note">'+(fabDrill==="day"?"Bugün bu makineye üretim girilmemiş.":"Bu ay bu makineye üretim girilmemiş.")+'</div>';
+    return '<div class="fbh">'+(fabDrill==="day"?"Bugün yapılan ürünler":"Bu ay yapılan ürünler")+' <span>'+list.length+'</span></div>'+list.slice(0,40).map(function(x){
+      var o=x.o, sub=(o&&o.cust?o.cust:"Müşteri yok")+(o&&ORDER_CATS[o.cat]?" · "+ORDER_CATS[o.cat]:"")+" · "+secNameOf(x.sec), sub2="";
+      if(fabDrill==="month")sub2=x.days+" gün üretildi · son: "+fmtD(x.last)+(o?" · sipariş "+nf.format(o.qty||0)+(o.dd?" · termin "+fmtD(o.dd):""):"");
+      else if(o)sub2="Sipariş "+nf.format(o.qty||0)+(o.dd?" · termin "+fmtD(o.dd):"");
+      return fabMini(o,'<b>'+nf.format(x.q)+'</b><small>adet</small>',sub,sub2)}).join("");
+  }
   function fabOverview(m,f){
-    if(fabProg===0){fabProg=1; loadProgress(true).then(function(){fabProg=2; fabRefreshOv()}).catch(function(){fabProg=2; fabRefreshOv()})}
+    fabKick();
     var h='<div class="fbh">Durum</div><div class="stc '+(f?'bad':'ok')+'"><i></i><div><b>'+(f?'Arızalı':'Çalışıyor')+'</b><small>'+(f?esc(m.faultNote||"Arıza notu yok")+(m.faultTs?' · '+fabAgo(m.faultTs):''):'Makine üretimde, sorun bildirilmedi')+'</small></div></div>'+
       '<div class="seg"><button type="button" class="ok'+(f?'':' on')+'" data-fbs="ok">● Çalışıyor</button><button type="button" class="bad'+(f?' on':'')+'" data-fbs="ariza">⚠ Arızalı</button></div>'+
       (f?'<div><label class="fl" for="fbnote">Arıza notu</label><input class="fin" id="fbnote" autocomplete="off" placeholder="ör. mil sesi yapıyor" value="'+esc(m.faultNote||"")+'"></div>':'');
     h+='<div class="fbh">Şu an çalışılan iş</div>';
     if(m.job){var jo=orders.filter(function(x){return x.id===m.job.oid})[0];
-      h+=jo?fabJobCard(jo,m.job.sec,true,'<div class="g2"><button type="button" class="btn" data-fbjenter="1">Üretim gir ›</button><button type="button" class="btn g" data-fbt="is">İşi değiştir</button></div>'):'<div class="jc on"><div class="jr"><div class="jimg ph">◆</div><div class="jb"><b>'+esc(cvTi(m.job.code))+'</b><small>'+esc(secNameOf(m.job.sec))+(m.job.cust?' · '+esc(m.job.cust):'')+'</small></div></div></div>';
+      h+=jo?fabJobCard(jo,m.job.sec,true,fabJobBtns()):'<div class="jc on"><div class="jr"><div class="jimg ph">◆</div><div class="jb"><b>'+esc(cvTi(m.job.code))+'</b><small>'+esc(secNameOf(m.job.sec))+(m.job.cust?' · '+esc(m.job.cust):'')+'</small></div></div>'+fabJobBtns()+'</div>';
     }else h+='<div class="jc"><div class="note">Bu makineye iş atanmamış.</div><button type="button" class="btn" data-fbt="is">İş ata ›</button></div>';
-    var ops=employees.filter(function(e){return (e.machines||[]).indexOf(m.id)>-1});
+    var ops=fabOpsOf(m);
     h+='<div class="fbh">Operatörler <span>'+ops.length+'</span></div>';
-    h+=ops.length?'<div class="fbchips">'+ops.map(function(e){var n=(e.machines||[]).length; return '<button type="button" data-fbt="op" aria-pressed="true">☻ '+esc(e.name||"")+(n>1?' · '+n+' makine':'')+'</button>'}).join("")+'</div>':'<div class="jc"><div class="note">Operatör bağlı değil, makine boşta görünür.</div><button type="button" class="btn" data-fbt="op">Operatör seç ›</button></div>';
+    h+=ops.length?'<div class="fbchips">'+ops.map(function(e){var n=(e.machines||[]).length; return '<button type="button" data-fbt="op" aria-pressed="true">☻ '+esc(e.name||"")+(n>1?' · '+n+' makine':'')+'</button>'}).join("")+'</div>':'<div class="jc"><div class="note">Operatör atanmadı, makine boşta görünür.</div><button type="button" class="btn" data-fbt="op">Operatör seç ›</button></div>';
     if(fabProg!==2){h+='<div class="fbh">Üretim ve plan</div><div class="note">Üretim ve plan bilgileri yükleniyor…</div>'}
     else{var D=fabOvData(m);
-      h+='<div class="fbh">Üretim <span>bugün</span></div><div class="kv"><div><small>Bugün bu makinede</small><b>'+nf.format(D.tq)+' adet</b></div><div><small>Bu ay bu makinede</small><b>'+nf.format(D.mq)+' adet</b></div></div>';
-      h+=D.prod.length?D.prod.map(function(x){return fabMini(x.o,'<b>'+nf.format(x.q)+'</b><small>adet</small>',(x.o&&x.o.cust?x.o.cust+' · ':'')+secNameOf(x.sec))}).join(""):'<div class="note">Bugün bu makineye üretim girilmemiş.</div>';
+      h+='<div class="fbh">Üretim</div><div class="kv tiles"><button type="button" class="tile'+(fabDrill==="day"?' on':'')+'" data-fbdr="day"><small>Bugün bu makinede</small><b>'+nf.format(D.tq)+' adet</b><em>'+(fabDrill==="day"?'Gizle ▴':'Ürünleri gör ▾')+'</em></button><button type="button" class="tile'+(fabDrill==="month"?' on':'')+'" data-fbdr="month"><small>Bu ay bu makinede</small><b>'+nf.format(D.mq)+' adet</b><em>'+(fabDrill==="month"?'Gizle ▴':'Ürünleri gör ▾')+'</em></button></div>';
+      if(fabDrill)h+=fabDrillHtml(D);
+      else h+=D.prod.length?D.prod.slice(0,3).map(function(x){return fabMini(x.o,'<b>'+nf.format(x.q)+'</b><small>adet</small>',(x.o&&x.o.cust?x.o.cust+' · ':'')+secNameOf(x.sec))}).join(""):'<div class="note">Bugün bu makineye üretim girilmemiş.</div>';
+      h+='<button type="button" class="btn" data-fbt="uretim">＋ Üretim gir</button>';
       h+='<div class="fbh">Planlanan <span>'+D.plans.length+'</span></div>';
-      h+=D.plans.length?D.plans.map(function(x){var pe=x.pe, emp=pe.eid?employees.filter(function(e){return e.id===pe.eid})[0]:null, pc=pe.q?Math.min(100,Math.round(x.w/pe.q*100)):0;
-        return '<div class="jc"><div class="jr">'+(x.o?fabOImg(x.o):'<div class="jimg ph">?</div>')+'<div class="jb"><b>'+esc(x.o?oTi(x.o):"Silinmiş sipariş")+'</b><small>'+esc((x.o&&x.o.cust)||"")+' · '+esc(secNameOf(x.sec))+'</small><span class="jdue">'+x.lbl+(pe.a&&pe.b?' · '+esc(pe.a)+'–'+esc(pe.b):'')+(emp?' · '+esc(emp.name):'')+'</span></div><div class="jq">plan<b>'+nf.format(pe.q||0)+'</b></div></div><div class="jp"><div class="jpt"><span>Yapılan '+nf.format(x.w)+' / '+nf.format(pe.q||0)+' · %'+pc+'</span></div><div class="jpb"><i style="width:'+pc+'%"></i></div></div></div>'}).join(""):'<div class="jc"><div class="note">Bu makineye bugün ya da bu hafta için plan yazılmamış.</div><button type="button" class="btn g" data-fbgo="plans">Planlar ekranı ›</button></div>';
+      h+=D.plans.length?D.plans.map(fabPlanCard).join(""):'<div class="jc"><div class="note">Bu makineye bugün, yarın ya da bu hafta için plan yazılmamış.</div></div>';
+      h+='<button type="button" class="btn" data-fbt="plan">＋ Plan ekle</button>';
     }
     var secs=(m.secs||[]).map(secNameOf), caps=macCapsOf(m).map(function(c){return c.n});
-    h+='<div class="fbh">Makine bilgisi</div><div class="kv"><div><small>Bölümler</small><b>'+esc(secs.join(", ")||"—")+'</b></div><div><small>Ürün tipleri</small><b>'+esc(caps.join(", ")||"—")+'</b></div><div><small>Bölüm</small><b>'+esc(macDeptsOf(m).join(" + ")||"—")+'</b></div><div><small>Kroki yeri</small><b>'+esc(fabSlotLabel?fabSlotLabel(m):(m.floorSlot||"—"))+'</b></div></div>'+(m.note?'<div class="note">Not: '+esc(m.note)+'</div>':'');
+    h+='<div class="fbh">Makine bilgisi</div><div class="kv"><div><small>Bölümler</small><b>'+esc(secs.join(", ")||"—")+'</b></div><div><small>Ürün tipleri</small><b>'+esc(caps.join(", ")||"—")+'</b></div><div><small>Bölüm</small><b>'+esc(macDeptsOf(m).join(" + ")||"—")+'</b></div><div><small>Kroki yeri</small><b>'+esc(fabSlotLabel(m)||"—")+'</b></div></div>'+(m.note?'<div class="note">Not: '+esc(m.note)+'</div>':'');
     return h;
   }
-  function fabRefreshOv(){var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(m&&fabTab==="durum")fabSheet()}
+  function fabPlanCard(x,rm){
+    var pe=x.pe, emp=pe.eid?employees.filter(function(e){return e.id===pe.eid})[0]:null, pc=pe.q?Math.min(100,Math.round(x.w/pe.q*100)):0;
+    return '<div class="jc"><div class="jr">'+(x.o?fabOImg(x.o):'<div class="jimg ph">?</div>')+'<div class="jb"><b>'+esc(x.o?oTi(x.o):"Silinmiş sipariş")+'</b><small>'+esc((x.o&&x.o.cust)||"")+' · '+esc(secNameOf(x.sec))+'</small><span class="jdue">'+x.lbl+(pe.a&&pe.b?' · '+esc(pe.a)+'–'+esc(pe.b):'')+(emp?' · '+esc(emp.name):'')+'</span></div><div class="jq">plan<b>'+nf.format(pe.q||0)+'</b></div></div><div class="jp"><div class="jpt"><span>Yapılan '+nf.format(x.w)+' / '+nf.format(pe.q||0)+' · %'+pc+'</span></div><div class="jpb"><i style="width:'+pc+'%"></i></div></div>'+(rm?'<button type="button" class="btn ln" data-fbplrm="'+esc([x.sec,x.pe.oid,x.scope,x.key,x.dk].join("|"))+'">Plandan sil</button>':'')+'</div>';
+  }
+  function fabRefreshOv(){var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(m&&(fabTab==="durum"||fabTab==="uretim"||fabTab==="plan"))fabSheet()}
+  function fabEmpChips(m,sel,attr,eff){
+    var ops=fabOpsOf(m); if(!ops.length)return '<div class="note">Bu makineye operatör bağlı değil (Operatör sekmesinden bağlayabilirsin). Kim yaptığı boş kaydedilir.</div>';
+    return '<div class="fbh">Kim</div><div class="fbchips">'+ops.map(function(e){return '<button type="button" '+attr+'="'+e.id+'" aria-pressed="'+(eff===e.id)+'">'+esc(e.name||"")+'</button>'}).join("")+'</div>';
+  }
+  function fabEffE(m,sel){if(sel!==null)return sel; var ops=fabOpsOf(m); return ops.length===1?ops[0].id:""}
+  function fabProdHtml(m){
+    if(!fabPO&&!fabPOinit){fabPOinit=true; if(m.job&&m.job.oid){fabPO=m.job.oid; fabPSec=m.job.sec}}
+    var o=fabPO?orders.filter(function(x){return x.id===fabPO})[0]:null, h="";
+    if(fabPO&&!o){fabPO=""}
+    if(o){
+      if(!fabPSec)fabPSec=fabJSec||(m.secs||[])[0]||SECTIONS[0].id;
+      h+='<div class="fbh">Üretim girilecek ürün</div>'+fabJobCard(o,fabPSec,true,"");
+      if(opSplit(fabPSec,o))h+='<div class="jc"><div class="note">Bu bölümde ön işleme / kanal işleme ayrı girilir, bölüm ekranından gir.</div><button type="button" class="btn" data-fbgo="sec:'+fabPSec+'">Bölüm ekranını aç ›</button></div>';
+      else{
+        var eff=fabEffE(m,fabPE), nd=need(o,fabPSec)||0, dn=doneOf(o.id,fabPSec).q;
+        h+='<div><label class="fl" for="fbpq">Bugün yapılan adet · kalan '+nf.format(Math.max(0,nd-dn))+'</label><input class="fin" id="fbpq" type="number" inputmode="numeric" min="1" placeholder="Adet yaz" value="'+esc(fabPQty)+'"></div>'+
+          '<div class="fbchips">'+[10,50,100,500,1000].map(function(n){return '<button type="button" data-fbpa="'+n+'">+'+n+'</button>'}).join("")+'</div>'+
+          fabEmpChips(m,fabPE,"data-fbpe",eff)+
+          '<button type="button" class="btn ok" data-fbpsave="1"'+(fabBusy?' disabled':'')+'>Üretimi kaydet</button>'+(fabMsg?'<div class="note" style="color:'+(/^✓/.test(fabMsg)?'#2fd08a':'#ff8a98')+'">'+esc(fabMsg)+'</div>':'')+
+          '<div class="note">Bugünün üretimine, uygulamadaki bölüm ekranıyla aynı kayıt olarak yazılır.</div>';
+      }
+      h+='<div class="g2"><button type="button" class="btn g" data-fbpclr="1">Başka ürün seç</button><button type="button" class="btn g" data-fbapp="1">Bölüm ekranında aç ›</button></div>';
+    }else h+='<div class="fbh">Hangi ürün için üretim girilecek?</div>'+fabPickBlock(m,"prod");
+    if(fabProg===2){var D=fabOvData(m); h+='<div class="fbh">Bugün bu makinede <span>'+nf.format(D.tq)+' adet</span></div>'+(D.prod.length?D.prod.map(function(x){return fabMini(x.o,'<b>'+nf.format(x.q)+'</b><small>adet</small>',(x.o&&x.o.cust?x.o.cust+' · ':'')+secNameOf(x.sec))}).join(""):'<div class="note">Henüz giriş yok.</div>')}
+    return h;
+  }
+  function fabPlanHtml(m){
+    var h="", o=fabPLo?orders.filter(function(x){return x.id===fabPLo})[0]:null; if(fabPLo&&!o)fabPLo="";
+    if(o){
+      if(!fabPLsec)fabPLsec=fabJSec||(m.secs||[])[0]||SECTIONS[0].id;
+      var eff=fabEffE(m,fabPLe);
+      h+='<div class="fbh">Plana eklenecek ürün</div>'+fabJobCard(o,fabPLsec,true,"")+
+        '<div class="fbchips">'+[["day0","Bugün"],["day1","Yarın"],["week","Bu hafta"]].map(function(x){return '<button type="button" data-fbplsc="'+x[0]+'" aria-pressed="'+(fabPLsc===x[0])+'">'+x[1]+'</button>'}).join("")+'</div>'+
+        '<div><label class="fl" for="fbplq">Planlanan adet</label><input class="fin" id="fbplq" type="number" inputmode="numeric" min="1" placeholder="Adet yaz" value="'+esc(fabPLq)+'"></div>'+
+        fabEmpChips(m,fabPLe,"data-fbple",eff)+
+        '<div class="g2"><button type="button" class="btn ok" data-fbplsave="1"'+(fabBusy?' disabled':'')+'>Plana ekle</button><button type="button" class="btn g" data-fbplclr="1">Vazgeç</button></div>'+(fabMsg?'<div class="note" style="color:'+(/^✓/.test(fabMsg)?'#2fd08a':'#ff8a98')+'">'+esc(fabMsg)+'</div>':'');
+    }
+    if(fabProg===2){var D=fabOvData(m); h+='<div class="fbh">Bu makinenin planı <span>'+D.plans.length+'</span></div>'+(D.plans.length?D.plans.map(function(x){return fabPlanCard(x,true)}).join(""):'<div class="note">Plan yok.</div>')}
+    else h+='<div class="note">Plan bilgileri yükleniyor…</div>';
+    if(!o)h+='<div class="fbh">Yeni plan: ürün seç</div>'+fabPickBlock(m,"plan")+(fabMsg?'<div class="note" style="color:'+(/^✓/.test(fabMsg)?'#2fd08a':'#ff8a98')+'">'+esc(fabMsg)+'</div>':'');
+    return h;
+  }
+  function fabRecipe(secId,code,n){
+    if(!db||!n||!code)return;
+    try{
+      if(IS_CV){ if(secId!=="pres")return; var cp=products.filter(function(x){return (x.code||"").toLowerCase()===String(code).toLowerCase()})[0], bm=cp&&cvBarMat(cp), kg=cp?cvKg(cp):0;
+        if(bm&&kg>0)db.doc("materials/"+bm.id).update({stock:firebase.firestore.FieldValue.increment(-kg*n)}).catch(function(){}); return}
+      var use=function(items){var it=(items||[]).filter(function(x){return (x.code||"").toLowerCase()===String(code).toLowerCase()})[0];
+        if(!it||!it.rec||!it.rec.length)return; it.rec.forEach(function(r){if(!r.m||!r.q)return; db.doc("materials/"+r.m).update({stock:firebase.firestore.FieldValue.increment(-r.q*n)}).catch(function(){})})};
+      if(sec&&sec.id===secId)use(catalog); else db.doc(catPathOf(secId)).get().then(function(sn){use(sn.exists?(sn.data().items||[]):[])}).catch(function(){});
+    }catch(e){}
+  }
+  function fabSaveProd(m){
+    var o=orders.filter(function(x){return x.id===fabPO})[0], secId=fabPSec, n=Math.floor(+String(fabPQty).replace(",","."));
+    if(!o||!secId||fabBusy)return;
+    if(!(n>0)){fabMsg="Önce adet yaz."; fabSheet(); return}
+    if(!db){fabMsg="İnternet yok, kaydedilemedi."; fabSheet(); return}
+    fabBusy=true; fabMsg="Kaydediliyor…"; fabSheet();
+    var si=stageIdx(secId), today=isoFmt(new Date()), price=(secId==="kaplama"&&!IS_RZ)?0:(+((o.pr||[])[si])||0), eid=fabEffE(m,fabPE);
+    resolveCatIndex(secId,ORDER_CATS[o.cat]||ORDER_CATS[0]).then(function(k){
+      var line={c:o.code,k:k,q:n,p:price,u:o.cust||"",o:o.id,e:eid||"",m:m.id,t:Date.now()};
+      return writeCatchupLine(secId,today,line);
+    }).then(function(){
+      try{logActivity(secNameOf(secId)+": "+oTi(o)+" için "+nf.format(n)+" adet üretim girildi (sanal fabrika, "+(m.name||"")+")","prod",{oid:o.id,code:o.code,sec:secId})}catch(e){}
+      try{fabRecipe(secId,o.code,n)}catch(e){} try{cpAfterLine({o:o.id},n,secId)}catch(e){} try{zsAfterLine({o:o.id},n,secId)}catch(e){}
+      try{var pk=secId+"|"+today.slice(0,7); pm[pk]=pm[pk]||{}; var pa=pm[pk][o.id]||(pm[pk][o.id]={q:0,r:0,e:[]}); pa.q+=n; pa.r+=n*price; pa.e.push({d:today,q:n,m:m.id})}catch(e){}
+      fabPQty=""; fabMsg="✓ "+nf.format(n)+" adet kaydedildi"; fabBusy=false; fabProgTs=0; fabLoadProg(); fabSheet();
+    }).catch(function(){fabBusy=false; fabMsg="Kaydedilemedi, tekrar dene."; fabSheet()});
+  }
+  function fabPlanWrite(secId,scope,k,dk,fn){
+    var ref=db.doc(secCol(secId)+"/"+dk);
+    return ref.get().then(function(sn){
+      var data=sn.exists?sn.data():{}, cur=((data.plans&&data.plans[scope]&&data.plans[scope][k])||[]).map(function(x){return Object.assign({},x)}), arr=fn(cur), patch={plans:{}};
+      patch.plans[scope]={}; patch.plans[scope][k]=arr;
+      return ref.set(patch,{merge:true}).then(function(){
+        var key=secId+"|"+dk, Pp=pmPlans[key]||normPlans(null); Pp[scope]=Pp[scope]||{}; Pp[scope][k]=arr; pmPlans[key]=Pp;
+      });
+    });
+  }
+  function fabSavePlan(m){
+    var o=orders.filter(function(x){return x.id===fabPLo})[0], secId=fabPLsec, n=Math.floor(+String(fabPLq).replace(",","."));
+    if(!o||!secId||fabBusy)return;
+    if(!(n>0)){fabMsg="Önce planlanan adedi yaz."; fabSheet(); return}
+    if(!db){fabMsg="İnternet yok, kaydedilemedi."; fabSheet(); return}
+    var today=isoFmt(new Date()), sc=fabPLsc, scope=sc==="week"?"week":"day", k=sc==="day0"?today:sc==="day1"?isoAdd(today,1):isoWeekMonday(today), dk=sc==="week"?today.slice(0,7):k.slice(0,7), eid=fabEffE(m,fabPLe);
+    fabBusy=true; fabMsg="Kaydediliyor…"; fabSheet();
+    fabPlanWrite(secId,scope,k,dk,function(cur){
+      var old=cur.filter(function(x){return x.oid===o.id&&(x.mid||"")===m.id})[0], it={oid:o.id,q:n,mid:m.id}; if(eid)it.eid=eid; if(scope==="day"){it.au=1; if(old&&old.ad)it.ad=1; if(old&&old.a&&old.b){it.a=old.a; it.b=old.b}}
+      return cur.filter(function(x){return !(x.oid===o.id&&(x.mid||"")===m.id)}).concat([it]);
+    }).then(function(){
+      try{logActivity(secNameOf(secId)+": "+oTi(o)+" için "+nf.format(n)+" adet plan yazıldı (sanal fabrika, "+(m.name||"")+")","info",{oid:o.id,code:o.code,sec:secId})}catch(e){}
+      fabPLo=""; fabPLq=""; fabBusy=false; fabMsg="✓ Plana eklendi"; fabSheet();
+    }).catch(function(){fabBusy=false; fabMsg="Kaydedilemedi, tekrar dene."; fabSheet()});
+  }
+  function fabDelPlan(m,spec){
+    var a=spec.split("|"); if(a.length<5||!db||fabBusy)return; fabBusy=true;
+    fabPlanWrite(a[0],a[2],a[3],a[4],function(cur){return cur.filter(function(x){return !(x.oid===a[1]&&(x.mid||"")===m.id)})}).then(function(){fabBusy=false; fabMsg="✓ Plandan silindi"; fabSheet()}).catch(function(){fabBusy=false; fabMsg="Silinemedi, tekrar dene."; fabSheet()});
+  }
+  function fabOpenApp(m,o,jsec){
+    var jmid=m.id, jcode=o?o.code:"", ho=!!o, jops=fabOpsOf(m);
+    function land(){curMac=jmid; try{localStorage.setItem(secPrefix(jsec)+"mac",jmid)}catch(x){}
+      if(jops.length===1){curEmp=jops[0].id; try{localStorage.setItem(secPrefix(jsec)+"emp",curEmp)}catch(x){}}
+      openSheet(); addTab=ho?"order":"cat"; search=jcode; renderSheet()}
+    try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}
+    fabHold=true; $("fbret").hidden=false; closeSheet(); NAV_WRAPS.forEach(function(i){var e2=$(i); if(e2)e2.hidden=true}); enterSection(jsec,land);
+  }
   function fabSheet(){
     var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(!m)return;
     var f=macFault(m);
@@ -22781,7 +22929,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var p=$("fbshP"); p.textContent=f?FAB_ST.bad:FAB_ST.ok; p.className="pill"+(f?" bad":"");
     var tb=$("fbtabs"); tb.innerHTML=FAB_TABS.map(function(t){return '<button type="button" data-fbt="'+t[0]+'" aria-pressed="'+(fabTab===t[0])+'">'+t[1]+'</button>'}).join("");
     var secs=(m.secs||[]).map(secNameOf), caps=macCapsOf(m).map(function(c){return c.n}), h="";
-    var ae=document.activeElement; if(ae&&((ae.id==="fbnote"&&fabTab==="durum")||ae.id==="fbq"||ae.id==="fbjq"))return;
+    var ae=document.activeElement; if(ae&&((ae.id==="fbnote"&&fabTab==="durum")||ae.id==="fbq"||ae.id==="fbjq"||ae.id==="fbpq"||ae.id==="fbplq"))return;
     if(fabTab==="durum"){
       h=fabOverview(m,f);
     }else if(fabTab==="op"){
@@ -22791,7 +22939,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     }else if(fabTab==="is"){
       h=fabJobHtml(m);
     }else if(fabTab==="uretim"){
-      h=fabAct("▣","Üretim girişi","Giriş, makinenin bölümünün kendi ekranından yapılır.","")+((m.secs||[]).length?(m.secs||[]).map(function(x){return '<button type="button" class="btn" data-fbgo="sec:'+x+'">'+esc(secNameOf(x))+' · üretim girişi ›</button>'}).join(""):'<div class="note">Bu makineye henüz bölüm atanmamış (Eleman ve makine ekranından ata).</div>');
+      h=fabProdHtml(m);
+    }else if(fabTab==="plan"){
+      h=fabPlanHtml(m);
     }else{
       h=fabAct("▤","Plan ve sipariş","Hedef, sipariş ve iş atama Planlar ekranında.",'<button type="button" class="btn" data-fbgo="plans">Planlar ekranını aç ›</button>')+
         fabAct("⚙","Takımlar ve elmaslar","Takım stoğu, makineye takma ve ömür takibi.",'<button type="button" class="btn" data-fbgo="tools">Takımlar ve elmaslar ›</button>')+
@@ -22802,7 +22952,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   $("fbsheet").addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b)return;
     if(b.id==="fbshX"){fabClose(); return}
-    if(b.dataset.fbt){fabTab=b.dataset.fbt; fabQ=""; fabJQ=""; fabSheet(); return}
+    if(b.dataset.fbt){fabTab=b.dataset.fbt; fabQ=""; fabJQ=""; fabMsg=""; fabSheet(); return}
     if(b.dataset.fbgo){fabGo(b.dataset.fbgo); return}
     var fm=machinesList.filter(function(x){return x.id===fabSel})[0];
     if(b.dataset.fbop&&fm){var e=employees.filter(function(x){return x.id===b.dataset.fbop})[0]; if(!e)return;
@@ -22811,13 +22961,23 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(b.dataset.fbjs){fabJSec=b.dataset.fbjs; fabJQ=""; fabSheet(); return}
     if(b.dataset.fbjo&&fm){var jo=orders.filter(function(x){return x.id===b.dataset.fbjo})[0]; if(!jo)return;
       var job={sec:fabJSec,code:jo.code,oid:jo.id,cust:jo.cust||"",ts:Date.now()}; if(db)db.doc("machines/"+fm.id).set({job:job},{merge:true}).catch(function(){}); fm.job=job; fabSheet(); return}
-    if(b.dataset.fbjclear&&fm){if(db)db.doc("machines/"+fm.id).update({job:firebase.firestore.FieldValue.delete()}).catch(function(){}); fm.job=null; fabSheet(); return}
-    if(b.dataset.fbjenter&&fm&&fm.job){
-      var jsec=fm.job.sec, jmid=fm.id, jcode=fm.job.code||"", ho=!!fm.job.oid, jops=employees.filter(function(x){return (x.machines||[]).indexOf(jmid)>-1});
-      function land(){curMac=jmid; try{localStorage.setItem(secPrefix(jsec)+"mac",jmid)}catch(x){}
-        if(jops.length===1){curEmp=jops[0].id; try{localStorage.setItem(secPrefix(jsec)+"emp",curEmp)}catch(x){}}
-        openSheet(); addTab=ho?"order":"cat"; search=jcode; renderSheet()}
-      fabHold=true; $("fbret").hidden=false; closeSheet(); NAV_WRAPS.forEach(function(i){var e2=$(i); if(e2)e2.hidden=true}); enterSection(jsec,land); return}
+    if((b.dataset.fbjclear||b.dataset.fbjfin)&&fm){
+      if(b.dataset.fbjfin&&fm.job){try{logActivity(secNameOf(fm.job.sec)+": "+cvTi(fm.job.code)+" işi bitti ("+(fm.name||"")+", sanal fabrika)","complete",{oid:fm.job.oid,code:fm.job.code,sec:fm.job.sec})}catch(x){}}
+      if(db)db.doc("machines/"+fm.id).update({job:firebase.firestore.FieldValue.delete()}).catch(function(){}); fm.job=null; fabPO=""; fabPOinit=true; fabSheet(); return}
+    if(b.dataset.fbjenter&&fm&&fm.job){fabPO=fm.job.oid||""; fabPSec=fm.job.sec; fabPOinit=true; fabPQty=""; fabMsg=""; fabTab="uretim"; fabSheet(); return}
+    if(b.dataset.fbpo){fabPO=b.dataset.fbpo; fabPSec=fabJSec; fabPOinit=true; fabPQty=""; fabMsg=""; fabSheet(); return}
+    if(b.dataset.fbpclr){fabPO=""; fabPOinit=true; fabMsg=""; fabSheet(); return}
+    if(b.dataset.fbpa){fabPQty=String((+fabPQty||0)+(+b.dataset.fbpa)); var qi=$("fbpq"); if(qi)qi.value=fabPQty; return}
+    if(b.dataset.fbpe!==undefined&&b.hasAttribute("data-fbpe")&&fm){fabPE=(fabEffE(fm,fabPE)===b.dataset.fbpe)?"":b.dataset.fbpe; fabSheet(); return}
+    if(b.dataset.fbpsave&&fm){fabSaveProd(fm); return}
+    if(b.dataset.fbapp&&fm){var oo=orders.filter(function(x){return x.id===fabPO})[0]; fabOpenApp(fm,oo,fabPSec||(fm.secs||[])[0]||SECTIONS[0].id); return}
+    if(b.dataset.fbdr){fabDrill=(fabDrill===b.dataset.fbdr)?null:b.dataset.fbdr; fabSheet(); return}
+    if(b.dataset.fbpl){fabPLo=b.dataset.fbpl; fabPLsec=fabJSec; fabPLq=""; fabMsg=""; fabSheet(); return}
+    if(b.dataset.fbplclr){fabPLo=""; fabMsg=""; fabSheet(); return}
+    if(b.dataset.fbplsc){fabPLsc=b.dataset.fbplsc; fabSheet(); return}
+    if(b.hasAttribute("data-fbple")&&fm){fabPLe=(fabEffE(fm,fabPLe)===b.dataset.fbple)?"":b.dataset.fbple; fabSheet(); return}
+    if(b.dataset.fbplsave&&fm){fabSavePlan(fm); return}
+    if(b.dataset.fbplrm&&fm){fabDelPlan(fm,b.dataset.fbplrm); return}
     if(b.dataset.fbs){var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(!m)return;
       if(b.dataset.fbs==="ariza"){if(m.st==="ariza")return; macSaveFields(m.id,{st:"ariza",faultTs:Date.now()})}
       else macSaveFields(m.id,{st:"",faultNote:"",faultTs:0});
@@ -22825,7 +22985,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   });
   $("fbsheet").addEventListener("input",function(e){
     if(e.target.id==="fbq"){fabQ=e.target.value; var m=machinesList.filter(function(x){return x.id===fabSel})[0], l=$("fblist"); if(m&&l)l.innerHTML=fabOpHtml(m)}
-    else if(e.target.id==="fbjq"){fabJQ=e.target.value; var m2=machinesList.filter(function(x){return x.id===fabSel})[0], l2=$("fbjlist"); if(m2&&l2)l2.innerHTML=fabJobList(m2)}
+    else if(e.target.id==="fbjq"){fabJQ=e.target.value; fabRefreshJobs()}
+    else if(e.target.id==="fbpq")fabPQty=e.target.value; else if(e.target.id==="fbplq")fabPLq=e.target.value;
   });
   $("fbsheet").addEventListener("change",function(e){if(e.target.id==="fbnote"&&fabSel)macSaveFields(fabSel,{faultNote:e.target.value.trim()})});
   $("fbRoof").addEventListener("click",function(){if(!fabS)return; fabS.igoal=fabS.igoal?0:1; this.setAttribute("aria-pressed",!!fabS.igoal); if(fabS.igoal){fabS.goal.tx=-9; fabS.goal.tz=-8; fabS.goal.dist=Math.min(fabS.goal.dist,40); fabS.goal.el=Math.max(fabS.goal.el,.95)}});
@@ -22874,6 +23035,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var v=new T.Vector3();
     Object.keys(S_.mach).forEach(function(id){var o=S_.mach[id]; v.set(o.g.position.x,o.top*.85+.9,o.g.position.z).project(cam); var e=o.el;
       if(v.z>1){e.style.display="none"; return} e.style.display=""; e.style.left=((v.x+1)/2*w)+"px"; e.style.top=((1-v.y)/2*h)+"px"; e.style.opacity=(st.dist>62&&S_.interior<.5)?0:""});
+    S_.ops.forEach(function(o){if(!o.el)return; v.set(o.g.position.x,0,o.g.position.z).project(cam); if(v.z>1){o.el.style.display="none"; return} o.el.style.display=""; o.el.style.left=((v.x+1)/2*w)+"px"; o.el.style.top=((1-v.y)/2*h)+"px"; o.el.style.opacity=st.dist<46?1:0});
     S_.bl.forEach(function(o){v.set(o.b.x,o.b.y,o.b.z).project(cam); o.e.style.left=((v.x+1)/2*w)+"px"; o.e.style.top=((1-v.y)/2*h)+"px"; o.e.style.opacity=st.dist<48?0:1});
   }
   function openFab(){
