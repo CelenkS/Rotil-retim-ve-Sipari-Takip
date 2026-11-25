@@ -5460,7 +5460,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .jc.on{border-color:#2fd08a;box-shadow:0 0 0 1px rgba(47,208,138,.4),0 8px 24px rgba(47,208,138,.12)}
 #fab .jc.fin{opacity:.7}
 #fab .jr{display:flex;gap:12px;align-items:center}
-#fab .jimg{flex:0 0 68px;width:68px;height:68px;border-radius:12px;object-fit:cover;background:#fff;border:1px solid #2b3d62}
+#fab .jimg{flex:0 0 68px;width:68px;height:68px;border-radius:12px;object-fit:contain;background:#fff;border:1px solid #2b3d62;box-sizing:border-box;padding:3px}
 #fab .jimg.ph{display:flex;align-items:center;justify-content:center;background:#1d2d4a;color:#8fb6ff;font:800 26px var(--font-ui,system-ui)}
 #fab .jb{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
 #fab .jb b{font-size:15px;color:#f2f6ff;line-height:1.25;word-break:break-word}
@@ -5476,26 +5476,31 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .jpb i{display:block;height:100%;background:linear-gradient(90deg,#3fa9ff,#2fd08a);border-radius:9px}
 #fab .ohero .obs{display:none}
 #fab .tabs{display:flex;flex-wrap:nowrap;overflow-x:auto}#fab .tabs button{padding:8px 10px;font-size:12.5px}
-#fab .dbar{display:flex;align-items:center;gap:8px;justify-content:center}
-#fab .dbar button{appearance:none;border:1px solid #243352;background:#162036;color:#e8eefc;font:800 16px var(--font-ui,system-ui);min-width:40px;height:38px;border-radius:12px;cursor:pointer}
-#fab .dbar button[disabled]{opacity:.35}
-#fab .dbar .tdy{font-size:12.5px;padding:0 12px;background:#3fa9ff;color:#04101f;border-color:#3fa9ff}
-#fab .dbar input[type=date]{flex:1;max-width:190px;height:38px;background:#070B14;border:1px solid #243352;color:#e8eefc;border-radius:12px;padding:0 10px;font:700 14px var(--font-ui,system-ui);color-scheme:dark}
-#fab .dbar .mlab{flex:1;text-align:center;color:#f2f6ff;font-size:15px}
+#fab .fdb{display:flex;align-items:center;gap:8px;justify-content:center}
+#fab .fdb button{appearance:none;border:1px solid #243352;background:#162036;color:#e8eefc;font:800 16px var(--font-ui,system-ui);min-width:40px;height:38px;border-radius:12px;cursor:pointer}
+#fab .fdb button[disabled]{opacity:.35}
+#fab .fdb .tdy{font-size:12.5px;padding:0 12px;background:#3fa9ff;color:#04101f;border-color:#3fa9ff}
+#fab .fdb input[type=date]{flex:1;max-width:190px;height:38px;background:#070B14;border:1px solid #243352;color:#e8eefc;border-radius:12px;padding:0 10px;font:700 14px var(--font-ui,system-ui);color-scheme:dark}
+#fab .fdb .mlab{flex:1;text-align:center;color:#f2f6ff;font-size:15px}
 #fab .fpp{display:inline-block;font:800 12px var(--font-ui,system-ui);padding:3px 9px;border-radius:99px;background:#1d2d4a;color:#c3d0ea}
 #fab .fpp.g{background:#1FA064;color:#fff}#fab .fpp.y{background:#E3B100;color:#1b1500}#fab .fpp.o{background:#F0861F;color:#1b0d00}#fab .fpp.r{background:#D6453A;color:#fff}
-#fab .pcs{gap:6px}
-#fab .pur{display:flex;gap:9px;align-items:center;border-top:1px solid #1f2d4a;padding-top:8px}
-#fab .jimg.xs{flex:0 0 32px;width:32px;height:32px;border-radius:8px;font-size:14px}
+#fab .fpc{gap:6px}
+#fab .fpr{display:flex;flex-direction:row;align-items:center;gap:10px;padding:9px 0;border:0;border-top:1px solid #1f2d4a;border-radius:0;background:transparent;box-shadow:none;margin:0;cursor:default}
+#fab .fprs{display:flex;flex-direction:column}
+#fab .fpr .jb{flex:1;min-width:0}
+#fab .fpq{display:flex;flex-direction:column;align-items:flex-end;flex:0 0 auto;min-width:54px}#fab .fpq b{font-size:15px;color:#f2f6ff;line-height:1.1}#fab .fpq small{font-size:10.5px;color:#9fb1d3}
+#fab .jc.dy{gap:4px}
+#fab .jimg.xs{flex:0 0 44px;width:44px;height:44px;border-radius:10px;font-size:16px;object-fit:contain;padding:2px;box-sizing:border-box}
 #fab .fbchips button.pf{background:#162036}
+#fab .mdr{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #1f2d4a;font-size:13px;color:#9fb1d3}#fab .mdr:last-child{border:0}#fab .mdr b{color:#f2f6ff;text-align:right}
 #fab .btn.ln{background:transparent;border:1px solid rgba(255,84,104,.6);color:#ff8a98}
 #fab .btn[disabled]{opacity:.5;pointer-events:none}
 #fab .jb .s2{color:#7f93b8;font-size:11px}
-#fab .tiles{grid-template-columns:repeat(2,1fr)}
+#fab .tiles{grid-template-columns:repeat(2,1fr)}#fab .tiles4{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}#fab .tiles4>div{background:#162036;border-radius:12px;padding:9px 11px}#fab .tiles4 small{display:block;color:#93a4c4;font-size:11px}#fab .tiles4 b{font-size:15px;color:#e8eefc}
 #fab .tile{appearance:none;text-align:left;background:#162036;border:1px solid transparent;border-radius:12px;padding:9px 11px;cursor:pointer;color:#e8eefc;font-family:inherit}
 #fab .tile.on{border-color:#3fa9ff;background:#192a4a}
 #fab .tile small{display:block;color:#93a4c4;font-size:11px}#fab .tile b{font-size:15px;color:#e8eefc}#fab .tile em{display:block;font-style:normal;font-size:11px;color:#7cc4ff;margin-top:2px}
-#fab .lb.on{transform:translate(-50%,6px);font:600 10px var(--font-ui,system-ui);padding:1px 7px;background:rgba(10,16,30,.5);border:0;color:#e8eefc;pointer-events:none;opacity:0;transition:opacity .25s}
+#fab .lb.on{transform:translate(-50%,12px);font:600 10px var(--font-ui,system-ui);padding:1px 7px;background:rgba(10,16,30,.5);border:0;color:#e8eefc;pointer-events:none;opacity:0;transition:opacity .25s}
 #fab .lb.on.no{color:#ff9aa6}
 #fab .fbh{font:800 11px var(--font-ui,system-ui);letter-spacing:.09em;text-transform:uppercase;color:#93a4c4;margin:6px 0 -4px;display:flex;gap:8px;align-items:center}
 #fab .fbh span{background:#162036;border-radius:99px;padding:2px 8px;letter-spacing:0;text-transform:none;color:#c3d0ea}
@@ -5505,7 +5510,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .stc.bad{border-color:rgba(255,84,104,.5);background:rgba(255,84,104,.08)}
 #fab .stc b{display:block;font-size:16px;color:#f2f6ff}#fab .stc small{font-size:12px;color:#9fb1d3}
 #fab .mr{display:flex;gap:10px;align-items:center;background:#111b2e;border:1px solid #243352;border-radius:14px;padding:8px 10px}
-#fab .jimg.sm{flex:0 0 42px;width:42px;height:42px;border-radius:9px;font-size:18px}
+#fab .jimg.sm{flex:0 0 48px;width:48px;height:48px;border-radius:10px;font-size:18px}
 #fab .mrr{text-align:right;color:#9fb1d3;font-size:11px;display:flex;flex-direction:column;align-items:flex-end}#fab .mrr b{font-size:17px;color:#f2f6ff}
 #fab .fbstage:fullscreen{height:100vh;min-height:0;margin:0;border-radius:0}
 @media (min-width:1000px){
@@ -5580,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 17:13</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 17:20</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22521,7 +22526,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, px=.14;
     var ov0=pr.filter(function(m){return /OVALAMA/i.test(m.name||"")})[0], pcol=pr.filter(function(m){return m!==ov0});
     if(ov0)ppos[ov0.id]={x:px,z:-16.65,rot:0};
-    var pz0=ov0?-12.7:-15.8, pz1=-3.4, pstep=pcol.length>1?Math.min(3.1,(pz1-pz0)/(pcol.length-1)):0;
+    var pz0=ov0?-11.4:-15.8, pz1=1.9, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
     pcol.forEach(function(m,i){ppos[m.id]={x:px,z:pz0+i*pstep,rot:-Math.PI/2}});
     list.forEach(function(m){
       if(ppos[m.id]){var q=ppos[m.id]; out[m.id]={x:q.x,z:q.z,rot:q.rot,sc:.66}; return}
@@ -22632,12 +22637,13 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   // operatörler: CNC'lerde komşu her iki makinenin arasında 1 kişi, diğer makinelerin her birinde 1 kişi
   function fabAssigned(m){return employees.some(function(e){return (e.machines||[]).indexOf(m.id)>-1})}
   function fabOps(list,lay){
-    var S_=fabS, T=S_.T; S_.ops.forEach(function(o){S_.scene.remove(o.g); if(o.el&&o.el.parentNode)o.el.parentNode.removeChild(o.el)}); S_.ops=[];
+    var S_=fabS, T=S_.T; S_.ops.forEach(function(o){S_.scene.remove(o.g); if(o.el&&o.el.parentNode)o.el.parentNode.removeChild(o.el)}); S_.ops=[]; S_.opPick=[];
     function add(x,z,ry,ms){var as=ms.some(fabAssigned), c=as?0x2fd08a:0xff5468, nm=[]; ms.forEach(function(m){fabOpsOf(m).forEach(function(e){if(nm.indexOf(e.name||"")<0)nm.push(e.name||"")})});
       var el=document.createElement("div"); el.className="lb on"+(nm.length?"":" no"); el.textContent=nm.length?(nm.length>2?nm.slice(0,2).join(" · ")+" +"+(nm.length-2):nm.join(" · ")):"Operatör atanmadı"; $("fblb").appendChild(el);
       var g=new T.Group(), b=new T.Mesh(new T.CapsuleGeometry(.26,.75,3,8),S_.M(c)); b.position.y=.9; g.add(b);
       var h=new T.Mesh(new T.SphereGeometry(.24,8,6),S_.M(0xe8c9a0)); h.position.y=1.7; g.add(h);
       var hm=new T.Mesh(new T.SphereGeometry(.26,8,5,0,Math.PI*2,0,Math.PI/2),S_.M(0xf2c21b)); hm.position.y=1.76; g.add(hm);
+      var oh=new T.Mesh(new T.BoxGeometry(1.5,2.5,1.5),new T.MeshBasicMaterial({visible:false})); oh.position.y=1.2; oh.userData.opms=ms.map(function(m){return m.id}); g.add(oh); S_.opPick.push(oh);
       g.position.set(x,.08,z); g.rotation.y=ry; S_.scene.add(g); S_.ops.push({g:g,el:el,ph:Math.random()*6,y:.08})}
     var cn=list.filter(function(m){return /CNC/i.test(m.name||"")}).sort(function(p,q){var A=lay[p.id],B=lay[q.id]; return (A.x-B.x)||(A.z-B.z)}), used={};
     // iki CNC'ye 1 kişi: en yakın boştaki komşuyla eşleştir, ikisinin ortasına dur; eşi yoksa makinenin yanına
@@ -22691,11 +22697,11 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   }
   function fabPick(x,y){
     var S_=fabS, r=$("fbcv").getBoundingClientRect(), v2=new S_.T.Vector2((x-r.left)/r.width*2-1,-((y-r.top)/r.height)*2+1), ray=new S_.T.Raycaster();
-    ray.setFromCamera(v2,S_.cam); var h=ray.intersectObjects(S_.pick,false);
-    if(h.length)fabSelect(h[0].object.userData.mid); else if(fabSel)fabClose();
+    ray.setFromCamera(v2,S_.cam); var h=ray.intersectObjects(S_.pick.concat(S_.opPick||[]),false);
+    if(h.length){var u=h[0].object.userData; if(u.opms){var wp=new S_.T.Vector3(); h[0].object.getWorldPosition(wp); fabSelectOp(u.opms,wp.x,wp.z)} else fabSelect(u.mid)} else if(fabSel||fabSelEmp)fabClose();
   }
   function fabSelect(id){
-    var S_=fabS, o=S_.mach[id]; if(!o)return; fabSel=id; fabTab="durum"; fabQ=""; fabJQ=""; fabJSec=null; fabPO=""; fabPOinit=false; fabPSec=null; fabPQty=""; fabPE=null; fabMsg=""; fabPLo=""; fabPLsec=null; fabPLq=""; fabPLe=null; fabDrill=null; fabDate=isoToday(); fabEmp=""; fabEmpMk=isoToday().slice(0,7);
+    var S_=fabS, o=S_.mach[id]; if(!o)return; fabSel=id; fabSelEmp=""; fabChoose=[]; fabTab="durum"; fabQ=""; fabJQ=""; fabJSec=null; fabPO=""; fabPOinit=false; fabPSec=null; fabPQty=""; fabPE=null; fabMsg=""; fabPLo=""; fabPLsec=null; fabPLq=""; fabPLe=null; fabDrill=null; fabDate=isoToday(); fabEmp=""; fabEmpMk=isoToday().slice(0,7);
     S_.goal.tx=o.g.position.x; S_.goal.tz=o.g.position.z; S_.goal.dist=Math.min(S_.goal.dist,30); S_.goal.el=Math.max(S_.goal.el,.6);
     if(!S_.igoal){S_.igoal=1; $("fbRoof").setAttribute("aria-pressed","true")}
     $("fbsheet").classList.add("on"); fabSheet(); fabSync();
@@ -22708,7 +22714,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     return FAB_MENU.map(function(g){var items=(g[1]||SECTIONS.map(function(x){return ["sec:"+x.id,x.name]})).filter(function(i){return i[0]!=="cams"||finOwner()});
       return '<h4>'+g[0]+'</h4><div class="g">'+items.map(function(i){return '<button type="button" data-fbm="'+i[0]+'">'+esc(i[1])+'</button>'}).join("")+'</div>'}).join("");
   }
-  function fabClose(){if(fabHold)return; fabSel=null; $("fbsheet").classList.remove("on"); if(fabS)fabSync()}
+  function fabClose(){if(fabHold)return; fabSel=null; fabSelEmp=""; fabChoose=[]; $("fbsheet").classList.remove("on"); if(fabS)fabSync()}
   var FAB_TABS=[["durum","Durum"],["op","Operatör"],["is","İş emri"],["uretim","Üretim"],["plan","Plan"],["diger","Diğer"]];
   var fabQ="", fabJSec=null, fabJQ="", fabProg=0;
   function fabAct(ic,t,d,btn,go){return '<div class="act"><div class="ai">'+ic+'</div><div><b>'+t+'</b><small>'+d+'</small></div></div>'+btn}
@@ -22735,7 +22741,13 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     }else h+='<div class="note">Bu makinede şu an aktif iş yok.</div>';
     return h+'<div class="note" style="margin-top:2px">Yeni iş ata</div>'+fabPickBlock(m,"job");
   }
-  function fabOImg(o){return o.th?'<img class="jimg" alt="" loading="lazy" src="'+esc(o.th)+'">':'<div class="jimg ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>'}
+  function fabThumb(o){
+    if(!o)return ""; if(o.th)return o.th;
+    try{var pr=cpProdOf(o); if(pr&&pr.th)return pr.th}catch(e){}
+    try{var cu=catImgUrl(o.cat||0); if(cu)return cu}catch(e){}
+    return "";
+  }
+  function fabOImg(o){var u=o?fabThumb(o):""; return u?'<img class="jimg" alt="" loading="lazy" src="'+esc(u)+'">':'<div class="jimg ph">'+(o?esc((oTi(o)||"?").charAt(0).toUpperCase()):"▣")+'</div>'}
   function fabDue(o,fin){
     if(!o.dd)return ""; var late=!fin&&o.dd<new Date().toISOString().slice(0,10);
     return '<span class="jdue'+(late?' late':'')+'">'+(late?'Gecikti · ':'Termin · ')+esc(fmtD(o.dd))+'</span>';
@@ -22826,7 +22838,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   function fabPill(c,p){return '<span class="fpp '+(c||"n")+'">'+(c?puPctTxt(p):"—")+'</span>'}
   function fabDateBar(maxToday){
     var real=isoToday();
-    return '<div class="dbar"><button type="button" data-fbdd="-1" aria-label="Önceki gün">‹</button><input type="date" id="fbdate" value="'+fabDate+'"'+(maxToday?' max="'+real+'"':'')+'><button type="button" data-fbdd="1" aria-label="Sonraki gün">›</button>'+(fabDate===real?'':'<button type="button" class="tdy" data-fbdd="0">Bugün</button>')+'</div><div class="note" style="text-align:center;margin-top:-6px">'+esc(puDayName(fabDate))+(fabDate===real?' · bugün':'')+'</div>';
+    return '<div class="fdb"><button type="button" data-fbdd="-1" aria-label="Önceki gün">‹</button><input type="date" id="fbdate" value="'+fabDate+'"'+(maxToday?' max="'+real+'"':'')+'><button type="button" data-fbdd="1" aria-label="Sonraki gün">›</button>'+(fabDate===real?'':'<button type="button" class="tdy" data-fbdd="0">Bugün</button>')+'</div><div class="note" style="text-align:center;margin-top:-6px">'+esc(puDayName(fabDate))+(fabDate===real?' · bugün':'')+'</div>';
   }
   function fabDayWho(m,date){
     var mk=date.slice(0,7); fabPuLoad(mk);
@@ -22838,26 +22850,112 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     }).join("");
   }
   function fabPuRowHtml(r){
-    var c=puCalc(r), o=r.o?orders.filter(function(x){return x.id===r.o})[0]:null, nm=o?oTi(o):(r.code||"");
-    return '<div class="pur">'+(o?fabOImg(o).replace('class="jimg','class="jimg xs'):'<div class="jimg xs ph">▣</div>')+'<div class="jb"><b>'+esc(nm)+'</b><small>'+esc(r.mac?machineNameOf(r.mac):"Makine yok")+' · '+esc(puSecName(r.div||window.__DIV,r.sec))+(r.a&&r.b?' · '+esc(r.a)+'–'+esc(r.b):' · saat yok')+'</small></div><div class="mrr"><b>'+(c.q===null?'—':nf.format(c.q))+'</b><small>'+(c.tgt>0?'hedef '+nf.format(Math.round(c.tgt)):(c.st==="saat"?'saat yok':c.st==="sure"?'süre yok':''))+'</small></div>'+fabPill(c.c,c.pct)+'</div>';
+    var c=puCalc(r), o=r.o?orders.filter(function(x){return x.id===r.o})[0]:null, nm=o?oTi(o):(r.code||""), mc=r.mac?machineNameOf(r.mac).replace(/^[^-]*-\s*/,""):"Makine yok";
+    var note=c.tgt>0?'hedef '+nf.format(Math.round(c.tgt)):(c.st==="saat"?'saat yok':c.st==="sure"?'süre yok':'');
+    return '<div class="fpr">'+fabOImg(o||null).replace('class="jimg','class="jimg xs')+'<div class="jb"><b>'+esc(nm)+'</b><small>'+esc(mc)+' · '+esc(puSecName(r.div||window.__DIV,r.sec))+(r.a&&r.b?' · '+esc(r.a)+'–'+esc(r.b):'')+'</small></div><div class="fpq"><b>'+(c.q===null?'—':nf.format(c.q))+'</b><small>'+note+'</small></div>'+fabPill(c.c,c.pct)+'</div>';
   }
-  function fabEmpHtml(m){
-    var e=employees.filter(function(x){return x.id===fabEmp})[0]; if(!e){fabEmp=""; return ""}
-    var mk=fabEmpMk, real=isoToday().slice(0,7), a=mk.split("-"), nm=AY[+a[1]-1]+" "+a[0], h='<div class="g2"><button type="button" class="btn g" data-fbemp="">‹ Operatörler</button><button type="button" class="btn g" data-fbgo="pu">Puantaj ekranı ›</button></div>';
-    h+='<div class="stc ok" style="border-color:#243352"><i style="background:#3fa9ff;box-shadow:none"></i><div><b>'+esc(e.name||"")+'</b><small>'+esc((e.secs||[]).map(secNameOf).join(", "))+((e.machines||[]).length?' · '+(e.machines||[]).length+' makinede':'')+'</small></div></div>';
-    h+='<div class="dbar"><button type="button" data-fbmm="-1">‹</button><b class="mlab">'+esc(nm)+'</b><button type="button" data-fbmm="1"'+(mk>=real?' disabled':'')+'>›</button></div>';
-    fabPuLoad(mk);
+  var fabSelEmp="", fabET="ozet", fabEmpBack="", fabChoose=[], fabMsDocs={}, fabMsLoad_={};
+  var FAB_ETABS=[["ozet","Özet"],["puantaj","Puantaj"],["mesai","Mesai"],["bilgi","Bilgi"]];
+  function fabMsLoad(eid,mk){
+    var key=mk+"_"+eid, c=fabMsDocs[key]; if((c&&Date.now()-c.at<60000)||fabMsLoad_[key]||!db)return; fabMsLoad_[key]=1;
+    var fin=function(days){fabMsDocs[key]={days:days||{},at:Date.now()}; delete fabMsLoad_[key]; fabRefreshOv()};
+    try{db.doc("mesai/"+key).get().then(function(sn){fin(sn.exists?((sn.data()||{}).days||{}):{})},function(){fin({})})}catch(e){fin({})}
+  }
+  function fabMsTotals(e,days){
+    var t={n:0,m:0,sh:0,ad:0,days:0,g:0,dd:0,dn:0,dp:0,fe:msForeign(e)};
+    Object.keys(days||{}).forEach(function(k){var r=days[k]; if(!r||!r.s)return; var c=msCalc(r,t.fe); t.n+=c.n; t.g+=c.m; t.sh+=c.sh; t.ad+=c.ad; if(c.dd){t.dd+=c.dd; if(c.ad)t.dn++; else t.dp+=c.dd} if(c.n>0)t.days++});
+    t.m=Math.max(0,t.g-t.dd); return t;
+  }
+  function fabMonthBar(){
+    var mk=fabEmpMk, real=isoToday().slice(0,7), a=mk.split("-");
+    return '<div class="fdb"><button type="button" data-fbmm="-1">‹</button><b class="mlab">'+esc(AY[+a[1]-1]+" "+a[0])+'</b><button type="button" data-fbmm="1"'+(mk>=real?' disabled':'')+'>›</button></div>';
+  }
+  function fabPuSummary(e,mk){
+    var S=fabPuMonth(e.id,mk), h='<div class="kv tiles"><div><small>Ay ortalaması</small><b>'+(S.pct===null?'—':puPctTxt(S.pct))+'</b></div><div><small>Yapılan / hedef</small><b>'+nf.format(Math.round(S.Q))+' / '+nf.format(Math.round(S.T))+'</b></div></div>';
+    h+='<div class="fbchips fpc">'+[["g","Yeşil"],["y","Sarı"],["o","Turuncu"],["r","Kırmızı"]].map(function(x){return '<span class="fpp '+x[0]+'">'+x[1]+' '+S[x[0]]+'</span>'}).join("")+(S.inc?'<span class="fpp n">Eksik veri '+S.inc+'</span>':'')+'</div>';
+    return {S:S,h:h};
+  }
+  function fabEmpPuHtml(e){
+    var mk=fabEmpMk, h=fabMonthBar(); fabPuLoad(mk);
     if(!fabPuReady(mk))return h+'<div class="note">Puantaj yükleniyor…</div>';
-    var S=fabPuMonth(e.id,mk);
-    h+='<div class="kv tiles"><div><small>Ay ortalaması</small><b>'+(S.pct===null?'—':puPctTxt(S.pct))+'</b></div><div><small>Yapılan / hedef</small><b>'+nf.format(Math.round(S.Q))+' / '+nf.format(Math.round(S.T))+'</b></div></div>';
-    h+='<div class="fbchips pcs">'+[["g","Yeşil"],["y","Sarı"],["o","Turuncu"],["r","Kırmızı"]].map(function(x){return '<span class="fpp '+x[0]+'">'+x[1]+' '+S[x[0]]+'</span>'}).join("")+(S.inc?'<span class="fpp n">Eksik veri '+S.inc+'</span>':'')+'</div>';
+    var r=fabPuSummary(e,mk), S=r.S; h+=r.h;
     var days=Object.keys(S.days).sort().reverse();
     if(!days.length)return h+'<div class="note">Bu ay için puantaj kaydı yok.</div>';
     h+='<div class="fbh">Günlük <span>'+days.length+' gün</span></div>';
     days.forEach(function(iso){var A=S.days[iso];
-      h+='<div class="jc"><div class="jr"><div class="jb"><b>'+esc(puDayName(iso))+'</b><small>'+nf.format(A.q+0)+' adet'+(A.tgt>0?' · hedef '+nf.format(Math.round(A.tgt)):'')+(A.inc?' · '+A.inc+' satır eksik':'')+'</small></div><div class="mrr">'+fabPill(A.c,A.pct)+'</div></div>'+A.list.map(fabPuRowHtml).join("")+'</div>';
+      h+='<div class="jc dy"><div class="jr"><div class="jb"><b>'+esc(puDayName(iso))+'</b><small>'+nf.format(A.q+0)+' adet'+(A.tgt>0?' · hedef '+nf.format(Math.round(A.tgt)):'')+(A.inc?' · '+A.inc+' satır eksik':'')+'</small></div><div class="mrr">'+fabPill(A.c,A.pct)+'</div></div><div class="fprs">'+A.list.map(fabPuRowHtml).join("")+'</div></div>';
     });
+    return h+'<button type="button" class="btn g" data-fbgo="pu">Puantaj ekranında aç ›</button>';
+  }
+  function fabEmpMsHtml(e){
+    var mk=fabEmpMk, h=fabMonthBar(); fabMsLoad(e.id,mk);
+    var c=fabMsDocs[mk+"_"+e.id]; if(!c)return h+'<div class="note">Mesai yükleniyor…</div>';
+    var days=c.days, t=fabMsTotals(e,days);
+    h+='<div class="kv tiles"><div><small>Normal çalışma</small><b>'+fmtHM(t.n)+' sa</b></div><div><small>Mesai'+(t.dd?' (net)':'')+'</small><b>'+fmtHM(t.m)+' sa</b></div><div><small>Çalıştığı gün</small><b>'+t.days+'</b></div><div><small>Gelmedi</small><b>'+t.ad+' gün</b></div></div>';
+    if(t.sh&&!t.dd)h+='<div class="note">Eksik çalıştığı süre: '+fmtHM(t.sh)+' sa</div>';
+    if(t.dd)h+='<div class="jc"><div class="note" style="color:#ff8a98">Yabancı uyruklu: gelmediği günler mesaisinden düşüldü.</div><div class="kv"><div><small>Normalde yaptığı mesai</small><b>'+fmtHM(t.g)+' sa</b></div><div><small>Düşülen · '+t.dn+' gün gelmedi'+(t.dp?' + '+fmtHM(t.dp)+' eksik':'')+'</small><b>'+fmtHM(t.dd)+' sa</b></div></div></div>';
+    var keys=Object.keys(days).filter(function(k){return days[k]&&days[k].s}).sort().reverse();
+    if(!keys.length)return h+'<div class="note">Bu ay için mesai kaydı yok.</div>';
+    h+='<div class="fbh">Günlük <span>'+keys.length+' gün</span></div>';
+    keys.forEach(function(k){var r=days[k], st=MS_BY[r.s]||{n:r.s,c:"#8C97AD"}, cc=msCalc(r,t.fe), iso=mk+"-"+k;
+      var tm=(r.a&&r.b)?r.a+'–'+r.b:"", mm=(r.ma&&r.mb)?r.ma+'–'+r.mb:(cc.m?fmtHM(cc.m)+' sa':"");
+      h+='<div class="jc"><div class="jr"><div class="jb"><b>'+esc(puDayName(iso))+'</b><small>'+(tm?'Çalışma '+tm:'')+(tm&&mm?' · ':'')+(mm?'Mesai '+mm:'')+(!tm&&!mm?'Saat yok':'')+'</small></div><div class="mrr"><span class="fpp" style="background:'+st.c+';color:#fff">'+esc(st.n)+'</span></div></div>'+(r.n?'<div class="note">Not: '+esc(r.n)+'</div>':'')+'</div>';
+    });
+    return h+'<button type="button" class="btn g" data-fbgo="staff">Mesai ekranında aç ›</button>';
+  }
+  function fabEmpInfoHtml(e){
+    var sb=subOf(e.sub), row=function(k,v){return '<div class="mdr"><span>'+k+'</span><b>'+(v?esc(v):"—")+'</b></div>'}, macs=(e.machines||[]).filter(function(id){return machinesList.some(function(m){return m.id===id})});
+    var h='<div class="jc">'+row("Görev",e.role||"")+row("Bölüm grubu",(sb?sb.g:e.dept)||"")+row("Alt bölüm",sb?sb.n:"")+row("Uyruk",e.nat||"")+'</div>';
+    h+='<div class="fbh">Çalıştığı bölümler</div>'+((e.secs||[]).length?'<div class="fbchips">'+(e.secs||[]).map(function(x){return '<span class="fpp">'+esc(secNameOf(x))+'</span>'}).join("")+'</div>':'<div class="note">Atanmamış</div>');
+    h+='<div class="fbh">Atandığı makineler</div>'+(macs.length?'<div class="fbchips">'+macs.map(function(id){return '<button type="button" data-fbmach="'+id+'">'+esc(machineNameOf(id))+' ›</button>'}).join("")+'</div>':'<div class="note">Atanmamış</div>');
+    if(e.note)h+='<div class="fbh">Not</div><div class="note">'+esc(e.note)+'</div>';
+    return h+'<button type="button" class="btn g" data-fbgo="staff">Eleman ekranında aç ›</button>';
+  }
+  function fabEmpOzetHtml(e){
+    var real=isoToday(), mk=real.slice(0,7), h='';
+    var secs=(e.secs||[]).map(secNameOf);
+    h+='<div class="stc ok" style="border-color:#243352"><i style="background:#3fa9ff;box-shadow:none"></i><div><b>'+esc(e.name||"")+'</b><small>'+esc([e.role,secs.join(", ")].filter(Boolean).join(" · ")||"Bölüm atanmadı")+'</small></div></div>';
+    fabPuLoad(mk); fabMsLoad(e.id,mk);
+    h+='<div class="fbh">Bugün <span>'+esc(fabShort(real))+'</span></div>';
+    var S0=null;
+    if(!fabPuReady(mk))h+='<div class="note">Puantaj yükleniyor…</div>';
+    else{var rows=fabPuRows(e.id,real);
+      if(!rows.length)h+='<div class="jc"><div class="note">Bugün için puantaj satırı yok.</div></div>';
+      else{var A=puAgg(rows); h+='<div class="jc dy"><div class="jr"><div class="jb"><b>'+nf.format(A.q+0)+' adet</b><small>'+(A.tgt>0?'hedef '+nf.format(Math.round(A.tgt)):'hedef hesaplanamadı')+'</small></div><div class="mrr">'+fabPill(A.c,A.pct)+'</div></div><div class="fprs">'+rows.map(fabPuRowHtml).join("")+'</div></div>'}
+      S0=fabPuSummary(e,mk);
+    }
+    var c=fabMsDocs[mk+"_"+e.id], T0=c?fabMsTotals(e,c.days):null;
+    h+='<div class="fbh">Bu ay</div><div class="kv tiles4"><div><small>Performans</small><b>'+(S0&&S0.S.pct!==null?puPctTxt(S0.S.pct):'—')+'</b></div><div><small>Yapılan / hedef</small><b>'+(S0?nf.format(Math.round(S0.S.Q))+' / '+nf.format(Math.round(S0.S.T)):'—')+'</b></div><div><small>Normal çalışma</small><b>'+(T0?fmtHM(T0.n)+' sa':'—')+'</b></div><div><small>Mesai'+(T0&&T0.dd?' (net)':'')+'</small><b>'+(T0?fmtHM(T0.m)+' sa':'—')+'</b></div></div>';
+    if(S0)h+='<div class="fbchips fpc">'+[["g","Yeşil"],["y","Sarı"],["o","Turuncu"],["r","Kırmızı"]].map(function(x){return '<span class="fpp '+x[0]+'">'+x[1]+' '+S0.S[x[0]]+'</span>'}).join("")+(T0&&T0.ad?'<span class="fpp n">Gelmedi '+T0.ad+' gün</span>':'')+'</div>';
+    h+='<div class="g2"><button type="button" class="btn g" data-fbet="puantaj">Günlük puantaj ›</button><button type="button" class="btn g" data-fbet="mesai">Günlük mesai ›</button></div>';
+    var macs=(e.machines||[]).filter(function(id){return machinesList.some(function(m){return m.id===id})});
+    h+='<div class="fbh">Makineleri <span>'+macs.length+'</span></div>'+(macs.length?'<div class="fbchips">'+macs.map(function(id){return '<button type="button" data-fbmach="'+id+'">'+esc(machineNameOf(id))+' ›</button>'}).join("")+'</div>':'<div class="note">Makine atanmamış.</div>');
     return h;
+  }
+  function fabEmpSheet(){
+    if(fabSelEmp==="?"){
+      $("fbshT").innerHTML="Hangi operatör?<small>Bu adam birden fazla makineye bakıyor</small>"; var p0=$("fbshP"); p0.textContent=fabChoose.length+" kişi"; p0.className="pill"; $("fbtabs").innerHTML="";
+      $("fbbody").innerHTML=fabChoose.map(function(id){var e=employees.filter(function(x){return x.id===id})[0]; return e?'<button type="button" class="btn g" data-fbemp="'+id+'" style="text-align:left">☻ '+esc(e.name||"")+' · '+esc((e.secs||[]).map(secNameOf).join(", "))+' ›</button>':''}).join("");
+      return;
+    }
+    var e=employees.filter(function(x){return x.id===fabSelEmp})[0]; if(!e){fabSelEmp=""; return}
+    var sb=subOf(e.sub); $("fbshT").innerHTML=esc(e.name||"")+"<small>"+esc([e.role,sb?subLabel(sb):e.dept].filter(Boolean).join(" · ")||"Operatör")+"</small>";
+    var p=$("fbshP"); p.textContent="Operatör"; p.className="pill";
+    $("fbtabs").innerHTML=FAB_ETABS.map(function(t){return '<button type="button" data-fbet="'+t[0]+'" aria-pressed="'+(fabET===t[0])+'">'+t[1]+'</button>'}).join("");
+    var h=fabEmpBack?'<button type="button" class="btn g" data-fbemback="1">‹ '+esc(machineNameOf(fabEmpBack)||"Makine")+'</button>':'';
+    h+=fabET==="puantaj"?fabEmpPuHtml(e):fabET==="mesai"?fabEmpMsHtml(e):fabET==="bilgi"?fabEmpInfoHtml(e):fabEmpOzetHtml(e);
+    $("fbbody").innerHTML=h;
+  }
+  function fabOpenEmp(id,mid){
+    fabSelEmp=id; fabEmpBack=mid||""; fabET="ozet"; fabEmpMk=isoToday().slice(0,7); fabSel=null; fabChoose=[];
+    $("fbsheet").classList.add("on"); if(fabS)fabSync(); fabSheet();
+  }
+  function fabSelectOp(mids,x,z){
+    var S_=fabS, ids=[]; employees.forEach(function(e){if((e.machines||[]).some(function(id){return mids.indexOf(id)>-1}))ids.push(e.id)});
+    S_.goal.tx=x; S_.goal.tz=z; S_.goal.dist=Math.min(S_.goal.dist,28); S_.goal.el=Math.max(S_.goal.el,.6); if(!S_.igoal){S_.igoal=1; $("fbRoof").setAttribute("aria-pressed","true")}
+    if(ids.length===1){fabOpenEmp(ids[0],""); return}
+    if(ids.length>1){fabSel=null; fabSelEmp="?"; fabChoose=ids; $("fbsheet").classList.add("on"); fabSync(); fabSheet(); return}
+    fabSelect(mids[0]); fabTab="op"; fabSheet();
   }
   function fabDrillHtml(D){
     var list=fabDrill==="day"?D.prod:D.pmon; if(!list.length)return '<div class="note">'+(fabDrill==="day"?"Bugün bu makineye üretim girilmemiş.":"Bu ay bu makineye üretim girilmemiş.")+'</div>';
@@ -22897,7 +22995,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var pe=x.pe, emp=pe.eid?employees.filter(function(e){return e.id===pe.eid})[0]:null, pc=pe.q?Math.min(100,Math.round(x.w/pe.q*100)):0;
     return '<div class="jc"><div class="jr">'+(x.o?fabOImg(x.o):'<div class="jimg ph">?</div>')+'<div class="jb"><b>'+esc(x.o?oTi(x.o):"Silinmiş sipariş")+'</b><small>'+esc((x.o&&x.o.cust)||"")+' · '+esc(secNameOf(x.sec))+'</small><span class="jdue">'+x.lbl+(pe.a&&pe.b?' · '+esc(pe.a)+'–'+esc(pe.b):'')+(emp?' · '+esc(emp.name):'')+'</span></div><div class="jq">plan<b>'+nf.format(pe.q||0)+'</b></div></div><div class="jp"><div class="jpt"><span>Yapılan '+nf.format(x.w)+' / '+nf.format(pe.q||0)+' · %'+pc+'</span></div><div class="jpb"><i style="width:'+pc+'%"></i></div></div>'+(rm?'<button type="button" class="btn ln" data-fbplrm="'+esc([x.sec,x.pe.oid,x.scope,x.key,x.dk].join("|"))+'">Plandan sil</button>':'')+'</div>';
   }
-  function fabRefreshOv(){var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(m&&(fabTab==="durum"||fabTab==="uretim"||fabTab==="plan"||(fabTab==="op"&&fabEmp)))fabSheet()}
+  function fabRefreshOv(){var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(fabSelEmp&&fabSelEmp!=="?"){fabSheet(); return} if(m&&(fabTab==="durum"||fabTab==="uretim"||fabTab==="plan"))fabSheet()}
   function fabEmpChips(m,sel,attr,eff){
     var ops=fabOpsOf(m); if(!ops.length)return '<div class="note">Bu makineye operatör bağlı değil (Operatör sekmesinden bağlayabilirsin). Kim yaptığı boş kaydedilir.</div>';
     return '<div class="fbh">Kim</div><div class="fbchips">'+ops.map(function(e){return '<button type="button" '+attr+'="'+e.id+'" aria-pressed="'+(eff===e.id)+'">'+esc(e.name||"")+'</button>'}).join("")+'</div>';
@@ -23010,6 +23108,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     fabHold=true; $("fbret").hidden=false; closeSheet(); NAV_WRAPS.forEach(function(i){var e2=$(i); if(e2)e2.hidden=true}); enterSection(jsec,land);
   }
   function fabSheet(){
+    if(fabSelEmp){fabEmpSheet(); return}
     var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(!m)return;
     var f=macFault(m);
     $("fbshT").innerHTML=esc(m.name||"")+"<small>"+esc(macDeptsOf(m).join(" + "))+" · "+fabType(m)+"</small>";
@@ -23019,8 +23118,6 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var ae=document.activeElement; if(ae&&((ae.id==="fbnote"&&fabTab==="durum")||ae.id==="fbq"||ae.id==="fbjq"||ae.id==="fbpq"||ae.id==="fbplq"))return;
     if(fabTab==="durum"){
       h=fabOverview(m,f);
-    }else if(fabTab==="op"&&fabEmp){
-      h=fabEmpHtml(m);
     }else if(fabTab==="op"){
       var ops=employees.filter(function(e){return (e.machines||[]).indexOf(m.id)>-1});
       h=fabAct("☻","Operatörler",ops.length?(ops.length+" operatör bağlı. İsmine dokununca geçmiş performansını görürsün."):"Bu makineye operatör bağlı değil.",ops.length?'<div class="fbchips">'+ops.map(function(e){return '<button type="button" class="pf" data-fbemp="'+e.id+'">'+esc(e.name||"")+' · performans ›</button>'}).join("")+'</div>':'')+
@@ -23061,7 +23158,10 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(b.dataset.fbpsave&&fm){fabSaveProd(fm); return}
     if(b.dataset.fbapp&&fm){var oo=orders.filter(function(x){return x.id===fabPO})[0]; fabOpenApp(fm,oo,fabPSec||(fm.secs||[])[0]||SECTIONS[0].id); return}
     if(b.dataset.fbdd!==undefined){var rl2=isoToday(), nd=b.dataset.fbdd==="0"?rl2:isoAdd(fabDate,+b.dataset.fbdd); if(fabTab==="uretim"&&nd>rl2)nd=rl2; fabDate=nd; fabMsg=""; fabSheet(); return}
-    if(b.hasAttribute("data-fbemp")){fabEmp=b.dataset.fbemp||""; fabEmpMk=isoToday().slice(0,7); fabTab="op"; fabSheet(); return}
+    if(b.hasAttribute("data-fbemp")&&b.dataset.fbemp){fabOpenEmp(b.dataset.fbemp,fabSel||fabEmpBack||""); return}
+    if(b.dataset.fbet){fabET=b.dataset.fbet; fabSheet(); return}
+    if(b.dataset.fbemback){var bk=fabEmpBack; fabSelEmp=""; fabSelect(bk); return}
+    if(b.dataset.fbmach){fabSelEmp=""; fabSelect(b.dataset.fbmach); return}
     if(b.dataset.fbmm){var a3=fabEmpMk.split("-"), d3=new Date(+a3[0],+a3[1]-1+(+b.dataset.fbmm),1), nm3=d3.getFullYear()+"-"+pad(d3.getMonth()+1); if(nm3<=isoToday().slice(0,7)){fabEmpMk=nm3; fabSheet()} return}
     if(b.dataset.fbdr){fabDrill=(fabDrill===b.dataset.fbdr)?null:b.dataset.fbdr; fabSheet(); return}
     if(b.dataset.fbpl){fabPLo=b.dataset.fbpl; fabPLsec=fabJSec; fabPLq=""; fabMsg=""; fabSheet(); return}
