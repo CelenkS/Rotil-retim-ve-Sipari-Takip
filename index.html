@@ -5414,6 +5414,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .fbst.ok b{color:#2fd08a}#fab .fbst.bad b{color:#ff5468}
 #fab .fbctl{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px}
 #fab .fbctl .fbch{padding:10px 14px}
+#fab .fbzm{display:flex;gap:8px}#fab .fbzm .fbch{flex:1;font-size:16px;padding:8px 0}
 #fab .fbsheet{position:absolute;left:0;right:0;bottom:0;max-height:70%;background:#0f1726;border-top:1px solid #243352;border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;box-shadow:0 -20px 60px rgba(0,0,0,.5)}
 #fab .fbsheet.on{transform:none}
 #fab .grab{width:42px;height:4px;border-radius:9px;background:#243352;margin:8px auto 0}
@@ -5422,10 +5423,16 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .pill{font:800 11px var(--font-ui,system-ui);padding:4px 10px;border-radius:99px;background:rgba(47,208,138,.15);color:#2fd08a}
 #fab .pill.bad{background:rgba(255,84,104,.15);color:#ff5468}
 #fab .x{appearance:none;border:0;background:#162036;color:#e8eefc;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer}
-#fab .tabs{display:flex;gap:4px;padding:2px 12px 8px;overflow-x:auto;scrollbar-width:none}
-#fab .tabs::-webkit-scrollbar{display:none}
-#fab .tabs button{flex:0 0 auto;appearance:none;border:0;background:transparent;color:#93a4c4;font:700 13px var(--font-ui,system-ui);padding:8px 12px;border-radius:10px;cursor:pointer}
-#fab .tabs button[aria-pressed=true]{background:#162036;color:#e8eefc}
+#fab .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin:0 14px 10px;padding:4px;background:#0a1120;border:1px solid #1b2842;border-radius:14px}
+#fab .tabs button{appearance:none;border:0;background:transparent;color:#93a4c4;font:700 12.5px var(--font-ui,system-ui);padding:9px 0;border-radius:10px;cursor:pointer;min-width:0;text-align:center}
+#fab .tabs button[aria-pressed=true]{background:#3fa9ff;color:#04101f}
+#fab .act{display:flex;gap:12px;align-items:center;background:#162036;border:1px solid #20304f;border-radius:14px;padding:12px}
+#fab .act .ai{flex:0 0 42px;height:42px;border-radius:12px;background:linear-gradient(145deg,#2b6cb0,#1b3a6b);display:grid;place-items:center;font-size:20px}
+#fab .act b{display:block;font-size:14.5px;color:#e8eefc}#fab .act small{display:block;font-size:12px;color:#93a4c4;margin-top:2px;line-height:1.35}
+#fab .sheetg{display:flex;flex-direction:column;gap:8px}
+#fab .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#0a1120;border:1px solid #1b2842;border-radius:14px}
+#fab .seg button{appearance:none;border:0;background:transparent;color:#93a4c4;font:800 14px var(--font-ui,system-ui);padding:12px 0;border-radius:10px;cursor:pointer}
+#fab .seg button.on.ok{background:#2fd08a;color:#04101f}#fab .seg button.on.bad{background:#ff5468;color:#fff}
 #fab .fbbody{overflow:auto;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px}
 #fab .kv{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 #fab .kv div{background:#162036;border-radius:12px;padding:9px 11px}#fab .kv small{display:block;color:#93a4c4;font-size:11px}#fab .kv b{font-size:14px;color:#e8eefc}
@@ -5435,6 +5442,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .btn{appearance:none;border:0;background:#3fa9ff;color:#04101f;font:800 14px var(--font-ui,system-ui);padding:12px 16px;border-radius:12px;cursor:pointer}
 #fab .btn.g{background:#162036;color:#e8eefc}#fab .btn.ok{background:#2fd08a}#fab .btn.b{background:#ff5468;color:#fff}
 #fab .note{font-size:12.5px;color:#93a4c4}
+#fab .fbstage *{text-transform:none}
 #fab .tabs button,#fab .btn,#fab .fbch,#fab .pill,#fab .fl,#fab .fbst,#fab .obs,#fab .oeyebrow{text-transform:none}
 @media (min-width:820px){#fab .fbsheet{left:auto;right:12px;bottom:12px;width:380px;max-height:calc(100% - 24px);border-radius:20px;border:1px solid #243352}#fab .fbctl{right:auto;left:12px}}
 </style>
@@ -5494,7 +5502,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 18.11 12:55</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 16:18</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5794,7 +5802,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="fbstage" id="fbstage">
     <canvas id="fbcv"></canvas><div class="fblb" id="fblb"></div>
     <div class="fbhud"><div class="fbrow" id="fbdepts"></div><div class="fbrow"><div class="fbst ok"><b id="fbOk">0</b>Çalışıyor</div><div class="fbst bad"><b id="fbBd">0</b>Arızalı</div></div></div>
-    <div class="fbctl"><button type="button" class="fbch" id="fbRoof" aria-pressed="false">▦ İç görünüm</button><button type="button" class="fbch" id="fbHome">⌂ Genel bakış</button></div>
+    <div class="fbctl"><button type="button" class="fbch" id="fbRoof" aria-pressed="false">▦ İç görünüm</button><button type="button" class="fbch" id="fbMode">✥ Kaydır</button><div class="fbzm"><button type="button" class="fbch" id="fbZi" aria-label="Yakınlaştır">＋</button><button type="button" class="fbch" id="fbZo" aria-label="Uzaklaştır">－</button></div><button type="button" class="fbch" id="fbHome">⌂ Genel bakış</button></div>
     <div class="fbsheet" id="fbsheet"><div class="grab"></div><div class="sh"><h2 id="fbshT"></h2><span class="pill" id="fbshP"></span><button type="button" class="x" id="fbshX" aria-label="Kapat">✕</button></div><div class="tabs" id="fbtabs"></div><div class="fbbody" id="fbbody"></div></div>
   </div>
 </div>
@@ -22430,8 +22438,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     list.forEach(function(m){
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
-        out[m.id]={x:hx+1.6+(b.col-1)*1.95,z:hz+1.7+(b.row-1)*1.6+(b.rs-1)*.8,rot:b.vert?Math.PI/2:0,sc:.85}; return}
-      var p=over[Math.min(oi,over.length-1)]; oi++; out[m.id]={x:p.x,z:p.z,rot:0,sc:.85};
+        out[m.id]={x:hx+1.3+(b.col-1)*2.1,z:hz+1.5+(b.row-1)*1.95+(b.rs-1)*.975,rot:b.vert?Math.PI/2:0,sc:.66}; return}
+      var p=over[Math.min(oi,over.length-1)]; oi++; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
     });
     return out;
   }
@@ -22490,7 +22498,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     person([[wx(380),wz(300)],[wx(450),wz(300)]],1.2,0x3fa9ff);person([[wx(440),wz(250)],[wx(440),wz(180)]],1);person([[wx(260),wz(330)],[wx(320),wz(360)],[wx(230),wz(370)]],1,0x3fa9ff);
     var S_={T:T,scene:scene,cam:cam,renderer:renderer,roofs:roofs,walls:walls,bld:bld,truck:truck,fk:fk,fkPath:fkPath,people:people,M:M,box:box,mach:{},pick:[],
       st:{az:.62,el:.62,dist:140,tx:-2,ty:0,tz:0},goal:{az:.62,el:.62,dist:76,tx:-2,ty:0,tz:0},HOME:{az:.62,el:.62,dist:76,tx:-2,ty:0,tz:0},
-      interior:0,igoal:0,vo:0,clock:new T.Clock(),lbl:{},bl:[],touched:false};
+      drag:(window.matchMedia&&matchMedia("(pointer:coarse)").matches)?"pan":"rot",ops:[],interior:0,igoal:0,vo:0,clock:new T.Clock(),lbl:{},bl:[],touched:false};
     var lb=$("fblb");
     bld.forEach(function(b){var e=document.createElement("div"); e.className="lb bld"; e.textContent=b.t; lb.appendChild(e); S_.bl.push({e:e,b:b})});
     fabInput(S_);
@@ -22506,7 +22514,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     else if(type==="transfer"){box(3.4,1.8,1.7,mm(0x58667d),0,.9,0,g); box(3.4,.18,1.72,mm(0xf2c21b),0,1.1,0,g); box(.6,1,.4,mm(0x3a7bd5),1.4,1.4,.95,g); mover=box(.9,.15,.9,mm(0xcfd6e2),-.5,1.88,0,g); top=2.4}
     else{box(2.3,1.7,1.7,mm(0x9aa3b0),0,.85,0,g); box(1.5,1,.06,mm(0x20405e),-.25,1,.88,g); box(.5,.9,.4,mm(0x3a7bd5),1,1.3,.95,g); mover=box(.7,.12,.7,mm(0xcfd6e2),-.25,1.76,0,g); top=2.3}
     var lm=new T.MeshBasicMaterial({color:0x2fd08a}), lamp=new T.Mesh(new T.SphereGeometry(.22,10,8),lm); lamp.position.set(0,top+.3,0); g.add(lamp);
-    var ring=new T.Mesh(new T.RingGeometry(1.9,2.3,40),new T.MeshBasicMaterial({color:0x2fd08a,transparent:true,opacity:.55,side:T.DoubleSide})); ring.rotation.x=-Math.PI/2; ring.position.y=.03; g.add(ring);
+    var ring=new T.Mesh(new T.RingGeometry(1.5,1.85,40),new T.MeshBasicMaterial({color:0x2fd08a,transparent:true,opacity:.55,side:T.DoubleSide})); ring.rotation.x=-Math.PI/2; ring.position.y=.03; g.add(ring);
     var hit=new T.Mesh(new T.BoxGeometry(3,top+.6,2.4),new T.MeshBasicMaterial({visible:false})); hit.position.y=top/2; hit.userData.mid=m.id; g.add(hit); S_.pick.push(hit);
     var e=document.createElement("div"); e.className="lb"; e.innerHTML="<i></i><span></span>"; $("fblb").appendChild(e);
     return {id:m.id,g:g,mats:mats,lamp:lm,ring:ring,mover:mover,moverY:mover?mover.position.y:0,top:top,ph:Math.random()*6,el:e,hit:hit,bad:false,dim:false};
@@ -22517,7 +22525,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var ids={}; list.forEach(function(m){ids[m.id]=1});
     Object.keys(S_.mach).forEach(function(id){if(!ids[id]){var o=S_.mach[id]; S_.scene.remove(o.g); S_.pick.splice(S_.pick.indexOf(o.hit),1); o.el.remove(); delete S_.mach[id]; if(fabSel===id)fabSel=null}});
     list.forEach(function(m){if(!S_.mach[m.id])S_.mach[m.id]=fabMakeMachine(m)});
-    if(sig!==fabSig){fabSig=sig; var lay=fabLayout(list); list.forEach(function(m){var p=lay[m.id],o=S_.mach[m.id]; o.g.position.set(p.x,.08,p.z); o.g.rotation.y=p.rot; o.g.scale.setScalar(p.sc)})}
+    if(sig!==fabSig){fabSig=sig; var lay=fabLayout(list); list.forEach(function(m){var p=lay[m.id],o=S_.mach[m.id]; o.g.position.set(p.x,.08,p.z); o.g.rotation.y=p.rot; o.g.scale.setScalar(p.sc)}); fabOps(list,lay)}
     var bad=0;
     list.forEach(function(m){var o=S_.mach[m.id], f=macFault(m); if(f)bad++; o.bad=!!f;
       var on=(fabDept==="Tümü"||macDeptsOf(m).indexOf(fabDept)>-1); o.dim=!on;
@@ -22528,19 +22536,38 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     $("fbobs").textContent=list.length?"Makineye dokun, durumu ve işlemleri aç":"Henüz makine yok — Eleman ve makine ekranından ekle";
     if(fabSel)fabSheet();
   }
+  // operatörler: CNC'lerde komşu her iki makinenin arasında 1 kişi, diğer makinelerin her birinde 1 kişi
+  function fabOps(list,lay){
+    var S_=fabS, T=S_.T; S_.ops.forEach(function(o){S_.scene.remove(o.g)}); S_.ops=[];
+    function add(x,z,ry,c){var g=new T.Group(), b=new T.Mesh(new T.CapsuleGeometry(.26,.75,3,8),S_.M(c)); b.position.y=.9; g.add(b);
+      var h=new T.Mesh(new T.SphereGeometry(.24,8,6),S_.M(0xe8c9a0)); h.position.y=1.7; g.add(h);
+      var hm=new T.Mesh(new T.SphereGeometry(.26,8,5,0,Math.PI*2,0,Math.PI/2),S_.M(0xf2c21b)); hm.position.y=1.76; g.add(hm);
+      g.position.set(x,.08,z); g.rotation.y=ry; S_.scene.add(g); S_.ops.push({g:g,ph:Math.random()*6,y:.08})}
+    var cn=list.filter(function(m){return /CNC/i.test(m.name||"")}).sort(function(p,q){var A=lay[p.id],B=lay[q.id]; return (A.x-B.x)||(A.z-B.z)}), used={};
+    // iki CNC'ye 1 kişi: en yakın boştaki komşuyla eşleştir, ikisinin ortasına dur; eşi yoksa makinenin yanına
+    cn.forEach(function(m){
+      if(used[m.id])return; used[m.id]=1; var A=lay[m.id], best=null, bd=2.35;
+      cn.forEach(function(n){if(used[n.id])return; var B=lay[n.id], d=Math.hypot(A.x-B.x,A.z-B.z); if(d<bd){bd=d; best=n}});
+      if(best){used[best.id]=1; var B2=lay[best.id]; add((A.x+B2.x)/2,(A.z+B2.z)/2,Math.atan2(B2.x-A.x,B2.z-A.z)+Math.PI/2,0xf08a24)}
+      else add(A.x+1.2,A.z,-Math.PI/2,0xf08a24);
+    });
+    list.forEach(function(m){if(/CNC/i.test(m.name||""))return; var p=lay[m.id]; add(p.x+Math.sin(p.rot)*1.3,p.z+Math.cos(p.rot)*1.3,p.rot+Math.PI,0x3fa9ff)});
+  }
   function fabInput(S_){
     var cv=$("fbcv"), ptr={}, moved=0, lastPinch=0, lastMid=null, st=S_.st, goal=S_.goal, cam=S_.cam, T=S_.T;
-    function clampD(d){return Math.min(130,Math.max(14,d))}
-    function pan(dx,dy){var k=st.dist*.0016,r=new T.Vector3(),f=new T.Vector3(); cam.getWorldDirection(f); f.y=0; f.normalize(); r.crossVectors(f,new T.Vector3(0,1,0));
+    function clampD(d){return Math.min(130,Math.max(9,d))}
+    function pan(dx,dy){var k=st.dist*.0013,r=new T.Vector3(),f=new T.Vector3(); cam.getWorldDirection(f); f.y=0; f.normalize(); r.crossVectors(f,new T.Vector3(0,1,0));
       goal.tx+=(-r.x*dx+f.x*dy)*k; goal.tz+=(-r.z*dx+f.z*dy)*k; goal.tx=Math.max(-40,Math.min(40,goal.tx)); goal.tz=Math.max(-30,Math.min(30,goal.tz)); st.tx=goal.tx; st.tz=goal.tz}
-    cv.addEventListener("pointerdown",function(e){cv.setPointerCapture(e.pointerId); ptr[e.pointerId]={x:e.clientX,y:e.clientY}; moved=0; S_.touched=true; lastPinch=0; lastMid=null});
+    var lastAng=null;
+    cv.addEventListener("pointerdown",function(e){cv.setPointerCapture(e.pointerId); ptr[e.pointerId]={x:e.clientX,y:e.clientY,t:e.pointerType}; moved=0; S_.touched=true; lastPinch=0; lastMid=null; lastAng=null});
     cv.addEventListener("pointermove",function(e){var p=ptr[e.pointerId]; if(!p)return; var dx=e.clientX-p.x, dy=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
       var ids=Object.keys(ptr);
       if(ids.length>=2){var a=ptr[ids[0]],b=ptr[ids[1]],d=Math.hypot(a.x-b.x,a.y-b.y),mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
-        if(lastPinch)goal.dist=clampD(goal.dist*(lastPinch/d)); if(lastMid)pan(mid.x-lastMid.x,mid.y-lastMid.y); lastPinch=d; lastMid=mid}
-      else if(e.shiftKey||e.buttons===2){pan(dx,dy)}
-      else{goal.az-=dx*.006; goal.el=Math.min(1.35,Math.max(.3,goal.el+dy*.005)); st.az=goal.az; st.el=goal.el}});
-    cv.addEventListener("pointerup",function(e){var was=ptr[e.pointerId]; delete ptr[e.pointerId]; lastPinch=0; lastMid=null; if(was&&moved<6&&!Object.keys(ptr).length)fabPick(e.clientX,e.clientY)});
+        var ang=Math.atan2(b.y-a.y,b.x-a.x); if(lastAng!==null){var da=ang-lastAng; if(da>Math.PI)da-=2*Math.PI; if(da<-Math.PI)da+=2*Math.PI; goal.az-=da; st.az=goal.az} lastAng=ang;
+        if(lastPinch)goal.dist=clampD(goal.dist*(lastPinch/d)); if(lastMid){pan(mid.x-lastMid.x,mid.y-lastMid.y); goal.el=Math.min(1.35,Math.max(S_.igoal?.5:.3,goal.el-(mid.y-lastMid.y)*.0015))} lastPinch=d; lastMid=mid}
+      else if(e.shiftKey||e.buttons===2||S_.drag==="pan"){pan(dx,dy)}
+      else{goal.az-=dx*.006; goal.el=Math.min(1.35,Math.max(S_.igoal?.5:.3,goal.el+dy*.005)); st.az=goal.az; st.el=goal.el}});
+    cv.addEventListener("pointerup",function(e){var was=ptr[e.pointerId]; delete ptr[e.pointerId]; lastPinch=0; lastMid=null; if(was&&moved<(was.t==='mouse'?6:12)&&!Object.keys(ptr).length)fabPick(e.clientX,e.clientY)});
     cv.addEventListener("pointercancel",function(e){delete ptr[e.pointerId]});
     cv.addEventListener("contextmenu",function(e){e.preventDefault()});
     cv.addEventListener("wheel",function(e){e.preventDefault(); goal.dist=clampD(goal.dist*(1+e.deltaY*.0012))},{passive:false});
@@ -22557,7 +22584,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     $("fbsheet").classList.add("on"); fabSheet(); fabSync();
   }
   function fabClose(){fabSel=null; $("fbsheet").classList.remove("on"); if(fabS)fabSync()}
-  var FAB_TABS=[["durum","Durum"],["uretim","Üretim girişi"],["plan","Plan · sipariş"],["takim","Takım"],["kamera","Kamera"]];
+  var FAB_TABS=[["durum","Durum"],["uretim","Üretim"],["plan","Plan"],["takim","Takım"],["kamera","Kamera"]];
+  function fabAct(ic,t,d,btn,go){return '<div class="act"><div class="ai">'+ic+'</div><div><b>'+t+'</b><small>'+d+'</small></div></div>'+btn}
   function fabSheet(){
     var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(!m)return;
     var f=macFault(m);
@@ -22569,16 +22597,16 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(fabTab==="durum"){
       h='<div class="kv"><div><small>Bölümler</small><b>'+esc(secs.join(", ")||"—")+'</b></div><div><small>Ürün tipleri</small><b>'+esc(caps.join(", ")||"—")+'</b></div></div>'+
         (m.note?'<div class="note">Not: '+esc(m.note)+'</div>':'')+
-        '<div class="g2"><button type="button" class="btn ok" data-fbs="ok">● Çalışıyor</button><button type="button" class="btn b" data-fbs="ariza">⚠ Arızalı</button></div>'+
+        '<div class="seg"><button type="button" class="ok'+(f?'':' on')+'" data-fbs="ok">● Çalışıyor</button><button type="button" class="bad'+(f?' on':'')+'" data-fbs="ariza">⚠ Arızalı</button></div>'+
         (f?'<div><label class="fl" for="fbnote">Arıza notu</label><input class="fin" id="fbnote" autocomplete="off" placeholder="ör. mil sesi yapıyor" value="'+esc(m.faultNote||"")+'"></div>':'');
     }else if(fabTab==="uretim"){
-      h='<div class="note">Üretim girişi, makinenin bölümünün kendi ekranından yapılır.</div>'+((m.secs||[]).length?(m.secs||[]).map(function(s){return '<button type="button" class="btn" data-fbgo="sec:'+s+'">'+esc(secNameOf(s))+' · üretim girişi</button>'}).join(""):'<div class="note">Bu makineye henüz bölüm atanmamış (Eleman ve makine ekranından ata).</div>');
+      h=fabAct("▣","Üretim girişi","Giriş, makinenin bölümünün kendi ekranından yapılır.","")+((m.secs||[]).length?(m.secs||[]).map(function(x){return '<button type="button" class="btn" data-fbgo="sec:'+x+'">'+esc(secNameOf(x))+' · üretim girişi ›</button>'}).join(""):'<div class="note">Bu makineye henüz bölüm atanmamış (Eleman ve makine ekranından ata).</div>');
     }else if(fabTab==="plan"){
-      h='<div class="note">Hedef, sipariş ve iş atama Planlar ekranında.</div><button type="button" class="btn" data-fbgo="plans">Planlar ekranını aç</button>';
+      h=fabAct("▤","Plan ve sipariş","Hedef, sipariş ve iş atama Planlar ekranında.",'<button type="button" class="btn" data-fbgo="plans">Planlar ekranını aç ›</button>');
     }else if(fabTab==="takim"){
-      h='<div class="note">Takım stoğu, makineye takma ve ömür takibi.</div><button type="button" class="btn" data-fbgo="tools">Takımlar ve elmaslar</button>';
+      h=fabAct("⚙","Takımlar ve elmaslar","Takım stoğu, makineye takma ve ömür takibi.",'<button type="button" class="btn" data-fbgo="tools">Takımlar ve elmaslar ›</button>');
     }else{
-      h='<div class="note">Kameralar ekranı.</div><button type="button" class="btn" data-fbgo="cams">Kameraları aç</button>';
+      h=fabAct("◉","Kameralar","Fabrikadaki kameraları canlı izle.",'<button type="button" class="btn" data-fbgo="cams">Kameraları aç ›</button>');
     }
     $("fbbody").innerHTML=h;
   }
@@ -22593,7 +22621,11 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       fabSync(); var n=$("fbnote"); if(n&&b.dataset.fbs==="ariza")n.focus()}
   });
   $("fbsheet").addEventListener("change",function(e){if(e.target.id==="fbnote"&&fabSel)macSaveFields(fabSel,{faultNote:e.target.value.trim()})});
-  $("fbRoof").addEventListener("click",function(){if(!fabS)return; fabS.igoal=fabS.igoal?0:1; this.setAttribute("aria-pressed",!!fabS.igoal); if(fabS.igoal){fabS.goal.tx=-12; fabS.goal.tz=-8; fabS.goal.dist=Math.min(fabS.goal.dist,44); fabS.goal.el=Math.max(fabS.goal.el,.75)}});
+  $("fbRoof").addEventListener("click",function(){if(!fabS)return; fabS.igoal=fabS.igoal?0:1; this.setAttribute("aria-pressed",!!fabS.igoal); if(fabS.igoal){fabS.goal.tx=-12; fabS.goal.tz=-8; fabS.goal.dist=Math.min(fabS.goal.dist,40); fabS.goal.el=Math.max(fabS.goal.el,.95)}});
+  function fabModeLbl(){if(fabS)$("fbMode").textContent=fabS.drag==="pan"?"✥ Kaydır":"⟳ Döndür"}
+  $("fbMode").addEventListener("click",function(){if(!fabS)return; fabS.drag=fabS.drag==="pan"?"rot":"pan"; fabModeLbl()});
+  $("fbZi").addEventListener("click",function(){if(fabS)fabS.goal.dist=Math.max(9,fabS.goal.dist*.75)});
+  $("fbZo").addEventListener("click",function(){if(fabS)fabS.goal.dist=Math.min(130,fabS.goal.dist*1.33)});
   $("fbHome").addEventListener("click",function(){if(!fabS)return; fabClose(); Object.assign(fabS.goal,fabS.HOME)});
   $("fbback").addEventListener("click",function(){navGo("home")});
   (function(){var box=$("fbdepts"); ["Tümü","Rotil","Cıvata","Rozet"].forEach(function(n){var b=document.createElement("button"); b.type="button"; b.className="fbch"; b.textContent=n; b.setAttribute("aria-pressed",n==="Tümü"); b.onclick=function(){fabDept=n; [].forEach.call(box.children,function(c){c.setAttribute("aria-pressed",c.textContent===n)}); fabSync()}; box.appendChild(b)})})();
@@ -22617,6 +22649,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       var pulse=o.bad?(Math.sin(t*8)>0?1:.25):.75+.25*Math.sin(t*3+o.ph);
       o.lamp.color.setHex(o.bad?FAB_STC.bad:FAB_STC.ok); o.lamp.color.multiplyScalar(pulse);
       o.ring.scale.setScalar(fabSel===id?1.15+Math.sin(t*4)*.06:1)});
+    S_.ops.forEach(function(o){o.g.position.y=o.y+Math.abs(Math.sin(t*2+o.ph))*.04});
     S_.people.forEach(function(p){var a=p.path[p.i%p.path.length],b=p.path[(p.i+1)%p.path.length],L=Math.hypot(b[0]-a[0],b[1]-a[1])||1;
       p.t+=dt*p.spd/L; if(p.t>=1){p.t=0; p.i++; a=b; b=p.path[(p.i+1)%p.path.length]}
       p.g.position.set(sm(a[0],b[0],p.t),Math.abs(Math.sin(t*6+p.ph))*.05,sm(a[1],b[1],p.t)); p.g.rotation.y=Math.atan2(b[0]-a[0],b[1]-a[1])});
@@ -22635,7 +22668,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(!fabLoad()){$("fbobs").textContent="3D motoru yüklenemedi, sayfayı yenile"; paintSideActive(); return}
     watchMachinesList();
     if(!fabS)fabS=fabBuild();
-    fabResize(); fabSync();
+    fabModeLbl(); fabResize(); fabSync();
     if(!fabRun){fabRun=true; fabS.clock.getDelta(); fabLoop()}
     paintSideActive();
   }
