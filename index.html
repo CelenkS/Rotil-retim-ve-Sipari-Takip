@@ -5455,11 +5455,52 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
 #fab .btn.g{background:#162036;color:#e8eefc}#fab .btn.ok{background:#2fd08a}#fab .btn.b{background:#ff5468;color:#fff}
 #fab .note{font-size:12.5px;color:#93a4c4}
 #fab .fbchips{display:flex;flex-wrap:wrap;gap:6px}
+#fab .jgrid{display:flex;flex-direction:column;gap:10px}
+#fab .jc{background:linear-gradient(180deg,#16233b,#111b2e);border:1px solid #243352;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+#fab .jc.on{border-color:#2fd08a;box-shadow:0 0 0 1px rgba(47,208,138,.4),0 8px 24px rgba(47,208,138,.12)}
+#fab .jc.fin{opacity:.7}
+#fab .jr{display:flex;gap:12px;align-items:center}
+#fab .jimg{flex:0 0 68px;width:68px;height:68px;border-radius:12px;object-fit:cover;background:#fff;border:1px solid #2b3d62}
+#fab .jimg.ph{display:flex;align-items:center;justify-content:center;background:#1d2d4a;color:#8fb6ff;font:800 26px var(--font-ui,system-ui)}
+#fab .jb{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+#fab .jb b{font-size:15px;color:#f2f6ff;line-height:1.25;word-break:break-word}
+#fab .jb small{font-size:12px;color:#9fb1d3}
+#fab .jdue{align-self:flex-start;font:700 11px var(--font-ui,system-ui);padding:3px 8px;border-radius:99px;background:rgba(63,169,255,.14);color:#7cc4ff}
+#fab .jdue.late{background:rgba(255,84,104,.16);color:#ff8a98}
+#fab .jq{text-align:right;font-size:11px;color:#9fb1d3;display:flex;flex-direction:column;align-items:flex-end;flex:0 0 auto}
+#fab .jq b{font-size:19px;color:#f2f6ff;line-height:1.1}#fab .jq span{font-size:10.5px}
+#fab .jp{display:flex;flex-direction:column;gap:5px}
+#fab .jpt{display:flex;justify-content:space-between;gap:8px;font:600 11.5px var(--font-ui,system-ui);color:#9fb1d3}
+#fab .jpt .ok{color:#2fd08a;font-weight:800}
+#fab .jpb{height:7px;border-radius:9px;background:#0a1120;overflow:hidden}
+#fab .jpb i{display:block;height:100%;background:linear-gradient(90deg,#3fa9ff,#2fd08a);border-radius:9px}
+#fab .ohero .obs{display:none}
+#fab .fbh{font:800 11px var(--font-ui,system-ui);letter-spacing:.09em;text-transform:uppercase;color:#93a4c4;margin:6px 0 -4px;display:flex;gap:8px;align-items:center}
+#fab .fbh span{background:#162036;border-radius:99px;padding:2px 8px;letter-spacing:0;text-transform:none;color:#c3d0ea}
+#fab .stc{display:flex;gap:12px;align-items:center;border-radius:14px;padding:12px 14px;border:1px solid #243352;background:#111b2e}
+#fab .stc i{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
+#fab .stc.ok i{background:#2fd08a;box-shadow:0 0 12px #2fd08a}#fab .stc.bad i{background:#ff5468;box-shadow:0 0 12px #ff5468}
+#fab .stc.bad{border-color:rgba(255,84,104,.5);background:rgba(255,84,104,.08)}
+#fab .stc b{display:block;font-size:16px;color:#f2f6ff}#fab .stc small{font-size:12px;color:#9fb1d3}
+#fab .mr{display:flex;gap:10px;align-items:center;background:#111b2e;border:1px solid #243352;border-radius:14px;padding:8px 10px}
+#fab .jimg.sm{flex:0 0 42px;width:42px;height:42px;border-radius:9px;font-size:18px}
+#fab .mrr{text-align:right;color:#9fb1d3;font-size:11px;display:flex;flex-direction:column;align-items:flex-end}#fab .mrr b{font-size:17px;color:#f2f6ff}
+#fab .fbstage:fullscreen{height:100vh;min-height:0;margin:0;border-radius:0}
+@media (min-width:1000px){
+  html #fab.wrap{display:block;max-width:none;width:100%}
+  html #fab.wrap>*{grid-column:auto}
+  html #fab.wrap>.hero.ohero{position:static;max-height:none;overflow:visible;display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;padding:12px 20px;border-radius:18px;margin:0}
+  #fab .ohero .obig{display:flex;flex-direction:row;align-items:baseline;gap:12px;margin:0}
+  #fab .ohero .obig b{font-size:30px}
+  #fab .ohero .hirow{flex:0 0 auto;gap:20px}
+  #fab .fbstage{height:calc(100dvh - 128px);min-height:560px;margin-top:12px}
+  #fab .fbsheet{width:480px}
+}
 #fab .fbchips button{appearance:none;border:1px solid #243352;background:#0a1120;color:#c3d0ea;font:700 13px var(--font-ui,system-ui);padding:8px 12px;border-radius:99px;cursor:pointer}
 #fab .fbchips button[aria-pressed=true]{background:#2fd08a;border-color:#2fd08a;color:#04101f}
 #fab .fbstage *{text-transform:none}
 #fab .tabs button,#fab .btn,#fab .fbch,#fab .pill,#fab .fl,#fab .fbst,#fab .obs,#fab .oeyebrow{text-transform:none}
-@media (min-width:820px){#fab .fbsheet{left:auto;right:12px;bottom:12px;width:380px;max-height:calc(100% - 24px);border-radius:20px;border:1px solid #243352}#fab .fbctl{right:auto;left:12px}}
+@media (min-width:820px){#fab .fbsheet{left:auto;right:12px;bottom:12px;width:400px;max-height:calc(100% - 24px);border-radius:20px;border:1px solid #243352}#fab .fbctl{right:auto;left:12px}}
 </style>
 </head>
 <body>
@@ -5517,7 +5558,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 16:40</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 16:48</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -5817,7 +5858,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="fbstage" id="fbstage">
     <canvas id="fbcv"></canvas><div class="fblb" id="fblb"></div>
     <div class="fbhud"><div class="fbrow" id="fbdepts"></div><div class="fbrow"><div class="fbst ok"><b id="fbOk">0</b>Çalışıyor</div><div class="fbst bad"><b id="fbBd">0</b>Arızalı</div></div></div>
-    <div class="fbctl"><button type="button" class="fbch" id="fbRoof" aria-pressed="false">▦ İç görünüm</button><button type="button" class="fbch" id="fbMode">✥ Kaydır</button><div class="fbzm"><button type="button" class="fbch" id="fbZi" aria-label="Yakınlaştır">＋</button><button type="button" class="fbch" id="fbZo" aria-label="Uzaklaştır">－</button></div><button type="button" class="fbch" id="fbHome">⌂ Genel bakış</button></div>
+    <div class="fbctl"><button type="button" class="fbch" id="fbFs">⛶ Tam ekran</button><button type="button" class="fbch" id="fbRoof" aria-pressed="false">▦ İç görünüm</button><button type="button" class="fbch" id="fbMode">✥ Kaydır</button><div class="fbzm"><button type="button" class="fbch" id="fbZi" aria-label="Yakınlaştır">＋</button><button type="button" class="fbch" id="fbZo" aria-label="Uzaklaştır">－</button></div><button type="button" class="fbch" id="fbHome">⌂ Genel bakış</button></div>
     <div class="fbmenu" id="fbmenu" hidden><div class="fbmh"><b>Her şey burada</b><button type="button" class="x" id="fbmx" aria-label="Kapat">✕</button></div><div class="fbmb" id="fbmb"></div></div>
     <div class="fbsheet" id="fbsheet"><div class="grab"></div><div class="sh"><h2 id="fbshT"></h2><span class="pill" id="fbshP"></span><button type="button" class="x" id="fbshX" aria-label="Kapat">✕</button></div><div class="tabs" id="fbtabs"></div><div class="fbbody" id="fbbody"></div></div>
   </div>
@@ -22628,7 +22669,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     $("fbsheet").classList.add("on"); fabSheet(); fabSync();
   }
   var fabHold=false;
-  function fabGo(k){fabHold=true; $("fbret").hidden=false; $("fbmenu").hidden=true; navGo(k)}
+  function fabGo(k){try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){} fabHold=true; $("fbret").hidden=false; $("fbmenu").hidden=true; navGo(k)}
   function fabBack(){fabHold=false; $("fbret").hidden=true; try{if(!$("app").hidden)goHome()}catch(e){} openFab()}
   var FAB_MENU=[["Fabrika",[["orders","Siparişler"],["prods","Ürünlerim"],["plans","Planlar"],["notifs","Bildirimler"]]],["Bölümler",null],["Ortak",[["stock","Stok"],["purch","İhtiyaçlar"],["po","Satın alma"],["gg","Genel giderler"],["sl","Satış"],["pu","Puantaj"],["tools","Takımlar ve elmaslar"],["staff","Eleman, makine, mesai"],["notes","Notlarım"],["cams","Kameralar"]]]];
   function fabMenuHtml(){
@@ -22650,25 +22691,89 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var secs=(m.secs&&m.secs.length)?m.secs:SECTIONS.map(function(x){return x.id}), h="";
     if(!fabJSec||secs.indexOf(fabJSec)<0)fabJSec=secs[0];
     if(m.job){
-      h+=fabAct("◆","Aktif iş",esc(cvTi(m.job.code))+" · "+esc(secNameOf(m.job.sec))+(m.job.cust?" · "+esc(m.job.cust):""),
-        '<div class="g2"><button type="button" class="btn" data-fbjenter="1">Üretim gir ›</button><button type="button" class="btn g" data-fbjclear="1">İşi bitir</button></div>');
+      var jo2=orders.filter(function(x){return x.id===m.job.oid})[0], jbtn='<div class="g2"><button type="button" class="btn" data-fbjenter="1">Üretim gir ›</button><button type="button" class="btn g" data-fbjclear="1">İşi bitir</button></div>';
+      h+='<div class="note" style="font-weight:800;color:#2fd08a">● Şu an çalışan iş</div>'+(jo2?fabJobCard(jo2,m.job.sec,true,jbtn):'<div class="jc on"><div class="jr"><div class="jimg ph">◆</div><div class="jb"><b>'+esc(cvTi(m.job.code))+'</b><small>'+esc(secNameOf(m.job.sec))+(m.job.cust?' · '+esc(m.job.cust):'')+'</small></div></div>'+jbtn+'</div>');
     }else h+='<div class="note">Bu makinede şu an aktif iş yok.</div>';
     h+='<div class="note" style="margin-top:2px">Yeni iş ata</div>';
     if(secs.length>1)h+='<div class="fbchips">'+secs.map(function(x){return '<button type="button" data-fbjs="'+x+'" aria-pressed="'+(fabJSec===x)+'">'+esc(secNameOf(x))+'</button>'}).join("")+'</div>';
     h+='<input class="fin" id="fbjq" type="search" autocomplete="off" placeholder="Kod veya müşteri ara…" value="'+esc(fabJQ)+'"><div id="fbjlist">'+fabJobList(m)+'</div>';
     return h;
   }
+  function fabOImg(o){return o.th?'<img class="jimg" alt="" loading="lazy" src="'+esc(o.th)+'">':'<div class="jimg ph">'+esc((oTi(o)||"?").charAt(0).toUpperCase())+'</div>'}
+  function fabDue(o,fin){
+    if(!o.dd)return ""; var late=!fin&&o.dd<new Date().toISOString().slice(0,10);
+    return '<span class="jdue'+(late?' late':'')+'">'+(late?'Gecikti · ':'Termin · ')+esc(fmtD(o.dd))+'</span>';
+  }
+  function fabJobCard(o,sec,on,btn){
+    var si=stageIdx(sec), d=doneOf(o.id,sec).q, nd=need(o,sec)||0, fin=(nd&&d>=nd)||stClosed(o,si), mu=muOf(o,si),
+        rem=fin&&stClosed(o,si)?0:Math.max(0,nd-d), pc=nd?Math.min(100,Math.round(d/nd*100)):0;
+    return '<div class="jc'+(on?' on':'')+(fin?' fin':'')+'"><div class="jr">'+fabOImg(o)+
+      '<div class="jb"><b>'+esc(oTi(o))+'</b><small>'+esc(o.cust||"Müşteri yok")+(ORDER_CATS[o.cat]?' · '+esc(ORDER_CATS[o.cat]):'')+'</small>'+fabDue(o,fin)+'</div>'+
+      '<div class="jq">sipariş<b>'+nf.format(o.qty||0)+'</b>'+(mu>1?'<span>×'+mu+' = '+nf.format(nd)+'</span>':'')+'</div></div>'+
+      '<div class="jp"><div class="jpt"><span>'+esc(secNameOf(sec))+' · yapılan '+nf.format(d)+' / '+nf.format(nd)+' · %'+pc+'</span><span class="'+(fin?'ok':'')+'">'+(fin?'✓ Tamam':nf.format(rem)+' kalan')+'</span></div><div class="jpb"><i style="width:'+pc+'%"></i></div></div>'+(btn||"")+'</div>';
+  }
   function fabJobList(m){
     if(fabProg===0){fabProg=1; loadProgress(true).then(function(){fabProg=2; fabRefreshJobs()}).catch(function(){fabProg=2; fabRefreshJobs()})}
     if(fabProg===1)return '<div class="note">Siparişler yükleniyor…</div>';
     var jsi=stageIdx(fabJSec), q=fold(fabJQ.trim());
-    var rows=orders.filter(function(o){return (o.st||[])[jsi]&&(!q||fold((o.code||"")+" "+(o.cust||"")).indexOf(q)>-1)}).map(function(o){var d=doneOf(o.id,fabJSec).q, nd=need(o,fabJSec); return {o:o,d:d,nd:nd,fin:d>=nd||stClosed(o,jsi)}})
+    var rows=orders.filter(function(o){return (o.st||[])[jsi]&&!(m.job&&m.job.oid===o.id&&m.job.sec===fabJSec)&&(!q||fold((o.code||"")+" "+(oTi(o)||"")+" "+(o.cust||"")+" "+(ORDER_CATS[o.cat]||"")).indexOf(q)>-1)}).map(function(o){var d=doneOf(o.id,fabJSec).q, nd=need(o,fabJSec)||0; return {o:o,fin:(nd&&d>=nd)||stClosed(o,jsi)}})
       .sort(function(a,b){return (a.fin-b.fin)||((b.o.ts||0)-(a.o.ts||0))});
     if(!rows.length)return '<div class="note">'+(orders.length?"Bu bölüm için eşleşen sipariş yok.":"Henüz sipariş yok.")+'</div>';
-    return rows.slice(0,25).map(function(x){var o=x.o, pc=x.nd?Math.min(100,Math.round(x.d/x.nd*100)):0, on=m.job&&m.job.oid===o.id;
-      return '<div class="act" style="flex-direction:column;align-items:stretch"><div style="display:flex;justify-content:space-between;gap:8px"><div style="min-width:0"><b>'+esc(oTi(o))+'</b><small>'+esc(o.cust||"Müşteri yok")+' · '+nf.format(x.d)+' / '+nf.format(x.nd)+' · %'+pc+(x.fin?' ✓':'')+'</small></div></div><button type="button" class="btn'+(on?' g':'')+'" data-fbjo="'+o.id+'" style="margin-top:8px">'+(on?'Atandı ✓':'Bu işi ata')+'</button></div>'}).join("");
+    return '<div class="jgrid">'+rows.slice(0,40).map(function(x){var on=!!(m.job&&m.job.oid===x.o.id);
+      return fabJobCard(x.o,fabJSec,on,'<button type="button" class="btn'+(on?' g':'')+'" data-fbjo="'+x.o.id+'">'+(on?'Atandı ✓':'Bu işi ata')+'</button>')}).join("")+'</div>'+(rows.length>40?'<div class="note">İlk 40 sipariş gösteriliyor, aramayla daralt.</div>':'');
   }
   function fabRefreshJobs(){var m=machinesList.filter(function(x){return x.id===fabSel})[0], el=$("fbjlist"); if(m&&el&&fabTab==="is")el.innerHTML=fabJobList(m)}
+  function fabMini(o,right,sub){
+    return '<div class="mr">'+(o?fabOImg(o).replace('class="jimg','class="jimg sm'):'<div class="jimg sm ph">?</div>')+'<div class="jb"><b>'+esc(o?oTi(o):"Silinmiş sipariş")+'</b><small>'+esc(sub||"")+'</small></div><div class="mrr">'+right+'</div></div>';
+  }
+  function fabAgo(ts){if(!ts)return ""; var mn=Math.max(0,Math.round((Date.now()-ts)/60000)); if(mn<60)return mn+" dk önce"; var h=Math.round(mn/60); if(h<48)return h+" saat önce"; return Math.round(h/24)+" gün önce"}
+  function fabOvData(m){
+    var today=isoFmt(new Date()), mon=isoWeekMonday(today), mk=today.slice(0,7), out={today:today,prod:[],tq:0,mq:0,plans:[]};
+    var oby={}; orders.forEach(function(o){oby[o.id]=o});
+    Object.keys(pm).forEach(function(k){
+      var sp=k.split("|"); if(sp[1]!==mk)return; var src=pm[k]||{};
+      Object.keys(src).forEach(function(oid){var e=(src[oid]&&src[oid].e)||[], t=0, mq=0;
+        e.forEach(function(x){if((x.m||"")!==m.id)return; mq+=x.q; if(x.d===today)t+=x.q});
+        out.mq+=mq; if(t){out.tq+=t; out.prod.push({o:oby[oid],sec:sp[0],q:t})}});
+    });
+    SECTIONS.forEach(function(x){
+      var Pp=pmPlans[x.id+"|"+mk]||{}, Pw=pmPlans[x.id+"|"+mon.slice(0,7)]||{};
+      [["day",today,Pp,"Bugün"],["week",mon,Pw,"Bu hafta"]].forEach(function(sc){
+        var items=((sc[2][sc[0]]||{})[sc[1]])||[];
+        items.forEach(function(pe){
+          if((pe.mid||"")!==m.id)return; var o=oby[pe.oid], w=0;
+          try{if(o)w=planDoneOn(items,pe,doneOf(o.id,x.id),planRange(sc[0],sc[1])).w||0}catch(e){}
+          out.plans.push({o:o,pe:pe,sec:x.id,scope:sc[0],lbl:sc[3],w:w});
+        });
+      });
+    });
+    return out;
+  }
+  function fabOverview(m,f){
+    if(fabProg===0){fabProg=1; loadProgress(true).then(function(){fabProg=2; fabRefreshOv()}).catch(function(){fabProg=2; fabRefreshOv()})}
+    var h='<div class="fbh">Durum</div><div class="stc '+(f?'bad':'ok')+'"><i></i><div><b>'+(f?'Arızalı':'Çalışıyor')+'</b><small>'+(f?esc(m.faultNote||"Arıza notu yok")+(m.faultTs?' · '+fabAgo(m.faultTs):''):'Makine üretimde, sorun bildirilmedi')+'</small></div></div>'+
+      '<div class="seg"><button type="button" class="ok'+(f?'':' on')+'" data-fbs="ok">● Çalışıyor</button><button type="button" class="bad'+(f?' on':'')+'" data-fbs="ariza">⚠ Arızalı</button></div>'+
+      (f?'<div><label class="fl" for="fbnote">Arıza notu</label><input class="fin" id="fbnote" autocomplete="off" placeholder="ör. mil sesi yapıyor" value="'+esc(m.faultNote||"")+'"></div>':'');
+    h+='<div class="fbh">Şu an çalışılan iş</div>';
+    if(m.job){var jo=orders.filter(function(x){return x.id===m.job.oid})[0];
+      h+=jo?fabJobCard(jo,m.job.sec,true,'<div class="g2"><button type="button" class="btn" data-fbjenter="1">Üretim gir ›</button><button type="button" class="btn g" data-fbt="is">İşi değiştir</button></div>'):'<div class="jc on"><div class="jr"><div class="jimg ph">◆</div><div class="jb"><b>'+esc(cvTi(m.job.code))+'</b><small>'+esc(secNameOf(m.job.sec))+(m.job.cust?' · '+esc(m.job.cust):'')+'</small></div></div></div>';
+    }else h+='<div class="jc"><div class="note">Bu makineye iş atanmamış.</div><button type="button" class="btn" data-fbt="is">İş ata ›</button></div>';
+    var ops=employees.filter(function(e){return (e.machines||[]).indexOf(m.id)>-1});
+    h+='<div class="fbh">Operatörler <span>'+ops.length+'</span></div>';
+    h+=ops.length?'<div class="fbchips">'+ops.map(function(e){var n=(e.machines||[]).length; return '<button type="button" data-fbt="op" aria-pressed="true">☻ '+esc(e.name||"")+(n>1?' · '+n+' makine':'')+'</button>'}).join("")+'</div>':'<div class="jc"><div class="note">Operatör bağlı değil, makine boşta görünür.</div><button type="button" class="btn" data-fbt="op">Operatör seç ›</button></div>';
+    if(fabProg!==2){h+='<div class="fbh">Üretim ve plan</div><div class="note">Üretim ve plan bilgileri yükleniyor…</div>'}
+    else{var D=fabOvData(m);
+      h+='<div class="fbh">Üretim <span>bugün</span></div><div class="kv"><div><small>Bugün bu makinede</small><b>'+nf.format(D.tq)+' adet</b></div><div><small>Bu ay bu makinede</small><b>'+nf.format(D.mq)+' adet</b></div></div>';
+      h+=D.prod.length?D.prod.map(function(x){return fabMini(x.o,'<b>'+nf.format(x.q)+'</b><small>adet</small>',(x.o&&x.o.cust?x.o.cust+' · ':'')+secNameOf(x.sec))}).join(""):'<div class="note">Bugün bu makineye üretim girilmemiş.</div>';
+      h+='<div class="fbh">Planlanan <span>'+D.plans.length+'</span></div>';
+      h+=D.plans.length?D.plans.map(function(x){var pe=x.pe, emp=pe.eid?employees.filter(function(e){return e.id===pe.eid})[0]:null, pc=pe.q?Math.min(100,Math.round(x.w/pe.q*100)):0;
+        return '<div class="jc"><div class="jr">'+(x.o?fabOImg(x.o):'<div class="jimg ph">?</div>')+'<div class="jb"><b>'+esc(x.o?oTi(x.o):"Silinmiş sipariş")+'</b><small>'+esc((x.o&&x.o.cust)||"")+' · '+esc(secNameOf(x.sec))+'</small><span class="jdue">'+x.lbl+(pe.a&&pe.b?' · '+esc(pe.a)+'–'+esc(pe.b):'')+(emp?' · '+esc(emp.name):'')+'</span></div><div class="jq">plan<b>'+nf.format(pe.q||0)+'</b></div></div><div class="jp"><div class="jpt"><span>Yapılan '+nf.format(x.w)+' / '+nf.format(pe.q||0)+' · %'+pc+'</span></div><div class="jpb"><i style="width:'+pc+'%"></i></div></div></div>'}).join(""):'<div class="jc"><div class="note">Bu makineye bugün ya da bu hafta için plan yazılmamış.</div><button type="button" class="btn g" data-fbgo="plans">Planlar ekranı ›</button></div>';
+    }
+    var secs=(m.secs||[]).map(secNameOf), caps=macCapsOf(m).map(function(c){return c.n});
+    h+='<div class="fbh">Makine bilgisi</div><div class="kv"><div><small>Bölümler</small><b>'+esc(secs.join(", ")||"—")+'</b></div><div><small>Ürün tipleri</small><b>'+esc(caps.join(", ")||"—")+'</b></div><div><small>Bölüm</small><b>'+esc(macDeptsOf(m).join(" + ")||"—")+'</b></div><div><small>Kroki yeri</small><b>'+esc(fabSlotLabel?fabSlotLabel(m):(m.floorSlot||"—"))+'</b></div></div>'+(m.note?'<div class="note">Not: '+esc(m.note)+'</div>':'');
+    return h;
+  }
+  function fabRefreshOv(){var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(m&&fabTab==="durum")fabSheet()}
   function fabSheet(){
     var m=machinesList.filter(function(x){return x.id===fabSel})[0]; if(!m)return;
     var f=macFault(m);
@@ -22678,10 +22783,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var secs=(m.secs||[]).map(secNameOf), caps=macCapsOf(m).map(function(c){return c.n}), h="";
     var ae=document.activeElement; if(ae&&((ae.id==="fbnote"&&fabTab==="durum")||ae.id==="fbq"||ae.id==="fbjq"))return;
     if(fabTab==="durum"){
-      h='<div class="kv"><div><small>Bölümler</small><b>'+esc(secs.join(", ")||"—")+'</b></div><div><small>Ürün tipleri</small><b>'+esc(caps.join(", ")||"—")+'</b></div></div>'+
-        (m.note?'<div class="note">Not: '+esc(m.note)+'</div>':'')+
-        '<div class="seg"><button type="button" class="ok'+(f?'':' on')+'" data-fbs="ok">● Çalışıyor</button><button type="button" class="bad'+(f?' on':'')+'" data-fbs="ariza">⚠ Arızalı</button></div>'+
-        (f?'<div><label class="fl" for="fbnote">Arıza notu</label><input class="fin" id="fbnote" autocomplete="off" placeholder="ör. mil sesi yapıyor" value="'+esc(m.faultNote||"")+'"></div>':'');
+      h=fabOverview(m,f);
     }else if(fabTab==="op"){
       var ops=employees.filter(function(e){return (e.machines||[]).indexOf(m.id)>-1});
       h=fabAct("☻","Operatörler",ops.length?(ops.length+" operatör bağlı: "+esc(ops.map(function(e){return e.name}).join(", "))):"Bu makineye operatör bağlı değil.","")+
@@ -22731,6 +22833,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   $("fbMode").addEventListener("click",function(){if(!fabS)return; fabS.drag=fabS.drag==="pan"?"rot":"pan"; fabModeLbl()});
   $("fbZi").addEventListener("click",function(){if(fabS)fabS.goal.dist=Math.max(9,fabS.goal.dist*.75)});
   $("fbZo").addEventListener("click",function(){if(fabS)fabS.goal.dist=Math.min(130,fabS.goal.dist*1.33)});
+  $("fbFs").addEventListener("click",function(){var st=$("fbstage"); try{if(document.fullscreenElement)document.exitFullscreen(); else if(st.requestFullscreen)st.requestFullscreen()}catch(e){}});
+  document.addEventListener("fullscreenchange",function(){var on=!!document.fullscreenElement; $("fbFs").setAttribute("aria-pressed",on); $("fbFs").textContent=on?"⛶ Küçült":"⛶ Tam ekran"; setTimeout(fabResize,60); setTimeout(fabResize,300)});
   $("fbMenu").addEventListener("click",function(){$("fbmb").innerHTML=fabMenuHtml(); $("fbmenu").hidden=false});
   $("fbmx").addEventListener("click",function(){$("fbmenu").hidden=true});
   $("fbmb").addEventListener("click",function(e){var b=e.target.closest("[data-fbm]"); if(b)fabGo(b.dataset.fbm)});
