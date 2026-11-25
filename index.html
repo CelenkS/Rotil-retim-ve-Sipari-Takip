@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:23</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:33</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22514,7 +22514,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   // krokideki kutusu olan makineler kroki sırasına göre salona, diğerleri sırayla ek alanlara dizilir
   function fabLayout(list){
     var out={}, free=[], used={};
-    var hx=-19.8, hz=-17.7, HZ1=hz+31.5, FK=1.486;   // salon CAD'de 31.5 m: kroki aralıkları FK kadar uzatıldı, transferler güney duvarında
+    var hx=-19.8, hz=-17.7, HZ1=hz+21.2, FK=1;   // salon içi ilk düzenle aynı (kroki ızgarası, transferler ilk güney duvarında); salonun fazladan güney kısmı polisaj
     var grid={}; FLOOR_CIVATA.forEach(function(b){grid[b.label.toUpperCase()]=b});
     var over=[];
     // ek makine alanları (salon dışı): transfer → Rotil Transfer, pres → Preshane, diğerleri → Sac Deposu
@@ -22522,14 +22522,14 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var ovT=[], ovP=[], ovS=[]; function slotsTo(arr,x,z,nc,nr,dx,dz){var n0=over.length; slots(x,z,nc,nr,dx,dz); over.splice(n0).forEach(function(q){arr.push(q)})}
     slotsTo(ovT,33.7,-6.0,2,2,2.3,2.4); slotsTo(ovP,23.4,-15.8,4,2,2.4,2.8); slotsTo(ovS,24.2,17,5,7,2.3,2.3);   // Rotil Transfer · Preshane · Sac Deposu
     var oc={};
-    // polisaj bölümü: doğu duvar boyunca, preslerin ARKASINDA duvarla ayrılmış şerit (güneyden kuzeye dizilir, önü batıya/kapıya bakar)
-    var pol=[], pi=0; for(var pk=0;pk<12;pk++)pol.push({x:-.25,z:11.6-pk*2.3,rot:-Math.PI/2});
+    // polisaj bölümü: salonun fazladan güney kısmında, doğu duvar boyunca (presler bittiği yerden sonra) duvarla ayrılmış oda
+    var pol=[], pi=0; for(var pr2=0;pr2<2;pr2++)for(var pc2=0;pc2<4;pc2++)pol.push({x:-6.4+pc2*2.3,z:7.4+pr2*3.1,rot:pr2?Math.PI:0});
     // Presler: kuzey duvarına dayalı OVALAMA, onun altında doğu duvar boyunca D.PRES 1..n sıralı ve aralıklı; hepsinin önü salona bakar
     var pr=list.filter(function(m){return fabType(m)==="pres"}).sort(function(a,b){
-      var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, px=-2.15;
+      var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, px=.14;
     var ov0=pr.filter(function(m){return /OVALAMA/i.test(m.name||"")})[0], pcol=pr.filter(function(m){return m!==ov0});
     if(ov0)ppos[ov0.id]={x:.14,z:-16.65,rot:0};
-    var pz0=ov0?-11.6:-14.2, pz1=12.2, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
+    var pz0=ov0?-11.4:-15.8, pz1=1.9, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
     pcol.forEach(function(m,i){ppos[m.id]={x:px,z:pz0+i*pstep,rot:-Math.PI/2}});
     list.forEach(function(m){
       if(ppos[m.id]){var q=ppos[m.id]; out[m.id]={x:q.x,z:q.z,rot:q.rot,sc:.66}; return}
@@ -22620,14 +22620,12 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       if(o.t)bld.push({t:o.t,x:xm,y:H+1.2,z:zm});
     }
     FAB_CAD.forEach(building);
-    // Polisaj şeridi: ana salonun doğu duvarı boyunca, preslerin arkasında duvarla ayrılmış bölüm (presler bu duvarın önünde dizili)
-    (function(){var pxw=-1.5, ex=.9, zn=-15, zs=13.5, ph=3.2, pt=.2, pg=new T.Group(), pm=M(0x9aa6ba); scene.add(pg);
-      box(ex-pxw,.03,zs-zn,M(0x4a5568),(pxw+ex)/2,.115,(zn+zs)/2,pg);
-      function seg(a,b){box(pt,ph,b-a,pm,pxw,ph/2,(a+b)/2,pg)}
-      seg(zn,-5.2); seg(-3.4,6.6); seg(8.8,zs);                           // arka duvar: 2 kapı boşluğu
-      box(pt,.6,2.2,pm,pxw,ph-.3,-4.3,pg); box(pt,.6,2.2,pm,pxw,ph-.3,7.7,pg);
-      box(ex-pxw,ph,pt,pm,(pxw+ex)/2,ph/2,zn,pg);                            // kuzey kapak
-      walls.push(pg); bld.push({t:"Rozet Polisaj",x:(pxw+ex)/2,y:ph+.9,z:0});
+    // Polisaj odası (Rozet Polisaj): ana salonun doğu duvarı boyunca, preslerin devamında güneyde duvarla ayrılmış bölüm
+    (function(){var rx0=-8.6, rx1=.9, rz0=4.7, rz1=13.5, ph=3.2, pt=.2, pg=new T.Group(), pm=M(0x9aa6ba); scene.add(pg);
+      box(rx1-rx0,.03,rz1-rz0,M(0x4a5568),(rx0+rx1)/2,.115,(rz0+rz1)/2,pg);
+      box(6.9,ph,pt,pm,rx0+3.45,ph/2,rz0,pg); box(2.2,.6,pt,pm,rx1-1.1,ph-.3,rz0,pg);                       // kuzey duvarı (doğu ucunda kapı boşluğu)
+      box(pt,ph,2.3,pm,rx0,ph/2,rz0+1.15,pg); box(pt,ph,2.8,pm,rx0,ph/2,rz1-1.4,pg); box(pt,.6,3.6,pm,rx0,ph-.3,(rz0+rz1)/2,pg);   // batı duvarı (ortada kapı boşluğu)
+      walls.push(pg); bld.push({t:"Rozet Polisaj",x:(rx0+rx1)/2,y:ph+.9,z:(rz0+rz1)/2});
     })();
     // iç bölmeler + bölüm adları (CAD'e göre): uzun kanat + köşe = Rozet Preshane (tek bölüm); doğu kol: Boyahane | Transfer
     (function(){var pg=new T.Group(), pm=M(0x8e99ab), h=270*CS; scene.add(pg);
@@ -22710,7 +22708,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     // iki CNC'ye 1 kişi: en yakın boştaki komşuyla eşleştir, ikisinin ortasına dur; eşi yoksa makinenin yanına
     function pairUp(sameCol){
       cn.forEach(function(m){
-        if(used[m.id])return; var A=lay[m.id], best=null, bd=sameCol?2.35*1.486:3.2;
+        if(used[m.id])return; var A=lay[m.id], best=null, bd=sameCol?2.35:3.2;
         cn.forEach(function(n){if(used[n.id]||n===m)return; var B=lay[n.id], dx=Math.abs(A.x-B.x), dz=Math.abs(A.z-B.z);
           if(sameCol?dx>.6:dz>.6)return; var d=Math.hypot(dx,dz); if(d<bd){bd=d; best=n}});
         if(best){used[m.id]=1; used[best.id]=1; var B2=lay[best.id]; add((A.x+B2.x)/2,(A.z+B2.z)/2,Math.atan2(B2.x-A.x,B2.z-A.z)+Math.PI/2,[m,best])}
