@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:09</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:23</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22514,7 +22514,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   // krokideki kutusu olan makineler kroki sırasına göre salona, diğerleri sırayla ek alanlara dizilir
   function fabLayout(list){
     var out={}, free=[], used={};
-    var hx=-19.8, hz=-17.7;
+    var hx=-19.8, hz=-17.7, HZ1=hz+31.5, FK=1.486;   // salon CAD'de 31.5 m: kroki aralıkları FK kadar uzatıldı, transferler güney duvarında
     var grid={}; FLOOR_CIVATA.forEach(function(b){grid[b.label.toUpperCase()]=b});
     var over=[];
     // ek makine alanları (salon dışı): transfer → Rotil Transfer, pres → Preshane, diğerleri → Sac Deposu
@@ -22536,9 +22536,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       if(fabType(m)==="polisaj"){var pp=pol[Math.min(pi,pol.length-1)]; pi++; out[m.id]={x:pp.x,z:pp.z,rot:pp.rot,sc:.66}; return}
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
-        var ty=fabType(m), gx=hx+1.4+(b.col-1)*2.95, gz=hz+1.5+(b.row-1)*1.95+(b.rs-1)*.975, gr=b.vert?Math.PI/2:0;
+        var ty=fabType(m), gx=hx+1.4+(b.col-1)*2.95, gz=hz+1.5+((b.row-1)*1.95+(b.rs-1)*.975)*FK, gr=b.vert?Math.PI/2:0;
         if(ty==="pres")gr=-Math.PI/2;                                   // pres: önü salonun içine bakar
-        if(ty==="transfer"){gx+=(b.col-3)*1.0; gz=3.5-.35-.56-.1; gr=Math.PI}   // transfer: güney duvara dayalı, önü kuzeye
+        if(ty==="transfer"){gx+=(b.col-3)*1.0; gz=HZ1-.35-.56-.1; gr=Math.PI}   // transfer: salonun güney duvarına dayalı, önü kuzeye
         out[m.id]={x:gx,z:gz,rot:gr,sc:.66}; return}
       var t2=fabType(m), pool=t2==="transfer"?ovT:t2==="pres"?ovP:ovS, p=pool[Math.min(oc[t2]||0,pool.length-1)]; oc[t2]=(oc[t2]||0)+1; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
     });
@@ -22627,16 +22627,16 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       seg(zn,-5.2); seg(-3.4,6.6); seg(8.8,zs);                           // arka duvar: 2 kapı boşluğu
       box(pt,.6,2.2,pm,pxw,ph-.3,-4.3,pg); box(pt,.6,2.2,pm,pxw,ph-.3,7.7,pg);
       box(ex-pxw,ph,pt,pm,(pxw+ex)/2,ph/2,zn,pg);                            // kuzey kapak
-      walls.push(pg); bld.push({t:"Polisaj",x:(pxw+ex)/2,y:ph+.9,z:0});
+      walls.push(pg); bld.push({t:"Rozet Polisaj",x:(pxw+ex)/2,y:ph+.9,z:0});
     })();
-    // iç bölmeler + bölüm adları (CAD'e göre): uzun kanat = Preshane | ikinci kapıdan sonrası Rozet Preshane; doğu kol: Boyahane | Transfer
+    // iç bölmeler + bölüm adları (CAD'e göre): uzun kanat + köşe = Rozet Preshane (tek bölüm); doğu kol: Boyahane | Transfer
     (function(){var pg=new T.Group(), pm=M(0x8e99ab), h=270*CS; scene.add(pg);
       function wx2(X,Y0,Y1){box(.2,h,Math.abs(cz(Y1)-cz(Y0)),pm,cx(X),h/2,(cz(Y0)+cz(Y1))/2,pg)}
       function wz2(Y,X0,X1){box(Math.abs(cx(X1)-cx(X0)),h,.2,pm,(cx(X0)+cx(X1))/2,h/2,cz(Y),pg)}
-      wx2(233,150,750); wz2(150,250,750); wz2(-250,250,750);
+      wz2(150,250,750); wz2(-250,250,750);
       walls.push(pg);
       function lab(t,X,Y){bld.push({t:t,x:cx(X),y:442*CS+1.2,z:cz(Y)})}
-      lab("Preshane",-260,450); lab("Rozet Preshane",491,450); lab("Rotil-Rozet Boyahane",500,-50); lab("Rotil Transfer",500,-502);
+      lab("Rozet Preshane",0,450); lab("Rotil-Rozet Boyahane",500,-50); lab("Rotil Transfer",500,-502);
     })();
     bld.push({t:FAB_BLD.yard,x:cx(-1500),y:1.2,z:cz(-800)});
     var seed=7; function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
@@ -22710,7 +22710,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     // iki CNC'ye 1 kişi: en yakın boştaki komşuyla eşleştir, ikisinin ortasına dur; eşi yoksa makinenin yanına
     function pairUp(sameCol){
       cn.forEach(function(m){
-        if(used[m.id])return; var A=lay[m.id], best=null, bd=sameCol?2.35:3.2;
+        if(used[m.id])return; var A=lay[m.id], best=null, bd=sameCol?2.35*1.486:3.2;
         cn.forEach(function(n){if(used[n.id]||n===m)return; var B=lay[n.id], dx=Math.abs(A.x-B.x), dz=Math.abs(A.z-B.z);
           if(sameCol?dx>.6:dz>.6)return; var d=Math.hypot(dx,dz); if(d<bd){bd=d; best=n}});
         if(best){used[m.id]=1; used[best.id]=1; var B2=lay[best.id]; add((A.x+B2.x)/2,(A.z+B2.z)/2,Math.atan2(B2.x-A.x,B2.z-A.z)+Math.PI/2,[m,best])}
