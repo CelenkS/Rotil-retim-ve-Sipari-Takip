@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 17:20</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 20:41</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22500,7 +22500,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   }
   $("cmback").addEventListener("click",function(){navGo("home")});
   /* ===== SANAL FABRİKA (sadece sahip) — 3D sahne, gerçek makine verisi ===== */
-  var FAB_BLD={hall:"Ana Salon",b2:"Bina 2",b3:"Bina 3",b4:"Bina 4",b5:"Bina 5",yard:"Avlu · Sevkiyat"};
+  var FAB_BLD={hall:"Rotil Üretim · CNC",yard:"Avlu · Sevkiyat"};
   var fabS=null, fabRun=false, fabSel=null, fabTab="durum", fabDept="Tümü", fabSig="";
   var FAB_ST={ok:"Çalışıyor",bad:"Arızalı"}, FAB_STC={ok:0x2fd08a,bad:0xff5468};
   function fabLoad(){
@@ -22517,9 +22517,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var hx=-19.8, hz=-17.7;
     var grid={}; FLOOR_CIVATA.forEach(function(b){grid[b.label.toUpperCase()]=b});
     var over=[];
-    for(var r=0;r<3;r++)for(var c=0;c<7;c++)over.push({x:6.9+c*2.3,z:-21+r*2.3});           // Bina 3
-    for(var r2=0;r2<4;r2++)for(var c2=0;c2<3;c2++)over.push({x:2.8+c2*2.6,z:5.5+r2*2.6});     // Bina 4
-    for(var r3=0;r3<4;r3++)for(var c3=0;c3<4;c3++)over.push({x:15.5+c3*2.1,z:-9.5+r3*2.4});   // Bina 3 (sağ kol)
+    // ek makine alanları (salon dışı): Bina 2 → Bina 4 → Bina 3 → Bina 5 → Bina 7
+    function slots(x,z,nc,nr,dx,dz){for(var r=0;r<nr;r++)for(var c=0;c<nc;c++)over.push({x:x+c*dx,z:z+r*dz})}
+    slots(3.4,-15.9,5,2,2.3,2.6); slots(23.2,-15.9,5,2,2.3,2.6); slots(15.4,-15.9,3,2,2.3,2.6); slots(33.9,-9.5,2,4,2.1,2.2); slots(24.2,17,5,7,2.3,2.3);
     var oi=0;
     // Presler: kuzey duvarına dayalı OVALAMA, onun altında doğu duvar boyunca D.PRES 1..n sıralı ve aralıklı; hepsinin önü salona bakar
     var pr=list.filter(function(m){return fabType(m)==="pres"}).sort(function(a,b){
@@ -22552,49 +22552,87 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     function M(c,o){return new T.MeshLambertMaterial(Object.assign({color:c},o||{}))}
     function box(w,h,d,mat,x,y,z,par){var m=new T.Mesh(new T.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);(par||scene).add(m);return m}
     function rect(x0,y0,x1,y1){return {x:wx((x0+x1)/2),z:wz((y0+y1)/2),w:(x1-x0)*S,d:(y1-y0)*S,x0:wx(x0),x1:wx(x1),z0:wz(y0),z1:wz(y1)}}
-    var PW=82,PD=62;
-    box(PW,1.6,PD,M(0x1d2a3d),0,-.82,0); box(PW+.6,.3,PD+.6,M(0x2a3b57),0,-1.7,0);
-    function flat(x0,y0,x1,y1,c,y){var r=rect(x0,y0,x1,y1);return box(r.w,.08,r.d,M(c),r.x,y||.05,r.z)}
-    flat(-20,-10,747,571,0x2b4538,.04); flat(640,10,760,560,0x6a6044,.06); flat(325,140,505,322,0x2c3441,.1);
-    flat(190,318,335,425,0x343c49,.1); flat(90,55,170,335,0x2c3441,.1); flat(310,310,380,500,0x2c3441,.1); flat(-20,498,760,548,0x262c37,.12);
-    for(var i=0;i<24;i++)box(1.8,.02,.35,M(0xcfd6e6),wx(-10+i*33),.14,wz(523));
+    /* ===== DIŞ KABUK — CAD ön şablonu (kroki.stp, ölçüler cm). Salonun doğu duvarı x=1.2, kuzey duvarı z=-17.7'ye oturur; ölçek 1.05 (salon eni 21 m).
+       Yeni bina/çatı eklemek için FAB_CAD listesine satır eklemek yeterli. İç yerleşim (fabLayout/fabOps) bu bloktan bağımsızdır. ===== */
+    var CS=.0105;
+    function cx(X){return 1.2+(X+2704)*CS} function cz(Y){return -17.7-(Y-750)*CS}
+    var G={x0:cx(-6704),x1:cx(3611),z0:cz(3028),z1:cz(-7000)};
+    var PW=G.x1-G.x0, PD=G.z1-G.z0, PCX=(G.x0+G.x1)/2, PCZ=(G.z0+G.z1)/2;
+    box(PW,1.6,PD,M(0x1d2a3d),PCX,-.82,PCZ); box(PW+.6,.3,PD+.6,M(0x2a3b57),PCX,-1.7,PCZ);
+    function fl(x0,z0,x1,z1,c,y){return box(x1-x0,.08,z1-z0,M(c),(x0+x1)/2,y||.05,(z0+z1)/2)}
+    fl(G.x0,G.z0,G.x1,G.z1,0x2b4538,.04);
+    fl(1.4,-11.2,41,36,0x2c3441,.1);
     var roofs=[], walls=[], bld=[];
-    function building(r,h,roofC,o){
-      o=o||{}; var g=new T.Group(), wm=M(o.wall||0x8497b3), t=.35, wg=new T.Group(); scene.add(g); g.add(wg);
-      box(r.w,h,t,wm,r.x,h/2,r.z0+t/2,wg); box(r.w,h,t,wm,r.x,h/2,r.z1-t/2,wg); box(t,h,r.d,wm,r.x0+t/2,h/2,r.z,wg); box(t,h,r.d,wm,r.x1-t/2,h/2,r.z,wg);
-      box(r.w-t,.06,r.d-t,M(0x3a4351),r.x,.07,r.z,g);
-      if(o.gable){
-        var half=[[r.z0,r.z0+r.d/2],[r.z0+r.d/2,r.z1]];
-        half.forEach(function(h2,k){var sh=new T.Shape(),dd=h2[1]-h2[0]+.6; sh.moveTo(0,0); sh.lineTo(dd,0); sh.lineTo(dd/2,1.9); sh.closePath();
-          var mat=M(k?0x77808c:0x6d7682,{transparent:true}), m=new T.Mesh(new T.ExtrudeGeometry(sh,{depth:r.w+.6,bevelEnabled:false}),mat);
-          m.rotation.y=-Math.PI/2; m.position.set(r.x1+.3,h,h2[0]-.3); scene.add(m); roofs.push({o:m,m:mat})});
-      }else{
-        var rm=M(roofC,{transparent:true}), rf=box(r.w+.5,.3,r.d+.5,rm,r.x,h+.15,r.z,scene); roofs.push({o:rf,m:rm});
-        if(o.rib)for(var k2=0;k2<Math.floor(r.w/1.2);k2++){var rb=M(0x000000,{transparent:true,opacity:.14}); roofs.push({o:box(.08,.1,r.d+.5,rb,r.x0+.6+k2*1.2,h+.33,r.z,scene),m:rb,keep:.14})}
+    var FAB_CAD=[
+      {k:"hall",t:FAB_BLD.hall,x0:-4704,x1:-2704,y0:-2250,y1:750,wall:442,ridge:760,axis:"z",col:0x4b5563,floor:.07,
+       gate:{side:"e",y0:-750,y1:-150,h:283,top:383}},
+      {k:"b2",x0:-2704,x1:-1504,y0:150,y1:750,wall:270,ridge:442,axis:"x",doors:[["s",-1666,-1545,270]]},
+      {k:"b3",x0:-1504,x1:-750,y0:150,y1:750,wall:210,ridge:345,axis:"x"},
+      {k:"b4",x0:-752,x1:479,y0:150,y1:750,wall:270,ridge:442,axis:"x",doors:[["s",-298,-150,245],["s",100,233,245]]},
+      {k:"b5",x0:250,x1:750,y0:-755,y1:753,wall:270,ridge:442,axis:"z",rp:.458,doors:[["w",-217,-60,170],["w",-700,-450,245]],
+       leaves:[[250,-450,132,-392],[250,-700,132,-758]]},
+      {k:"b6",x0:-2690,x1:-2125,y0:-150,y1:150,wall:270,ridge:334,axis:"x",wins:[["s",-2570,-2370,59,199]]},
+      {k:"b7",x0:-700,x1:500,y0:-4108,y1:-2354,wall:370,ridge:619,axis:"z"}
+    ];
+    function roofGeo(x0,x1,z0,z1,h,H,axis,rp){
+      var P=[],Gb=[],o=.1; h-=.04;
+      function q(a,b,c,d){P.push(a[0],a[1],a[2],b[0],b[1],b[2],c[0],c[1],c[2],a[0],a[1],a[2],c[0],c[1],c[2],d[0],d[1],d[2])}
+      function tr(a,b,c){Gb.push(a[0],a[1],a[2],b[0],b[1],b[2],c[0],c[1],c[2])}
+      if(axis==="z"){var xr=x0+(x1-x0)*(rp||.5);
+        q([x0-o,h,z0-o],[xr,H,z0-o],[xr,H,z1+o],[x0-o,h,z1+o]); q([xr,H,z0-o],[x1+o,h,z0-o],[x1+o,h,z1+o],[xr,H,z1+o]);
+        tr([x0,h,z0],[x1,h,z0],[xr,H,z0]); tr([x0,h,z1],[x1,h,z1],[xr,H,z1]);
+      }else{var zr=z0+(z1-z0)*(rp||.5);
+        q([x0-o,h,z0-o],[x1+o,h,z0-o],[x1+o,H,zr],[x0-o,H,zr]); q([x0-o,H,zr],[x1+o,H,zr],[x1+o,h,z1+o],[x0-o,h,z1+o]);
+        tr([x0,h,z0],[x0,h,z1],[x0,H,zr]); tr([x1,h,z0],[x1,h,z1],[x1,H,zr]);
       }
-      walls.push(wg); return g;
+      function mk(a){var g=new T.BufferGeometry(); g.setAttribute("position",new T.Float32BufferAttribute(a,3)); g.computeVertexNormals(); return g}
+      return [mk(P),mk(Gb)];
     }
-    var hall=rect(175,108,385,320); building(hall,6.2,0,{gable:1,wall:0x7f93ad}); bld.push({t:FAB_BLD.hall,x:hall.x,y:9,z:hall.z});
-    [[rect(152,30,225,100),4.4,0x8a7466],[rect(225,37,318,98),4.4,0xa4573c],[rect(318,42,405,108),4.6,0x7a4a45],[rect(422,55,615,150),6,0x93393a,"b3",1],[rect(505,150,610,252),6,0x9a3d3d,0,1],
-     [rect(500,250,592,290),5,0xc9cfd8],[rect(385,322,465,432),4.6,0xbcc6d6,"b4",1],[rect(522,358,615,480),4.2,0xa8453f,"b5",1],[rect(185,435,280,475),3,0x7d6a62],[rect(152,112,176,320),1.5,0x7b5f55]
-    ].forEach(function(o){building(o[0],o[1],o[2],{rib:o[4]}); if(o[3])bld.push({t:FAB_BLD[o[3]],x:o[0].x,y:o[1]+1.4,z:o[0].z})});
-    bld.push({t:FAB_BLD.yard,x:wx(410),y:1.2,z:wz(185)});
+    var DK=0x1c2128;
+    function building(o){
+      var x0=cx(o.x0), x1=cx(o.x1), z0=cz(o.y1), z1=cz(o.y0), h=o.wall*CS, H=o.ridge*CS, t=.3, w=x1-x0, d=z1-z0, xm=(x0+x1)/2, zm=(z0+z1)/2;
+      var g=new T.Group(), wg=new T.Group(); scene.add(g); g.add(wg);
+      var wm=M(o.col||0x4b535f);
+      box(w,h,t,wm,xm,h/2,z0+t/2,wg); box(w,h,t,wm,xm,h/2,z1-t/2,wg); box(t,h,d,wm,x0+t/2,h/2,zm,wg);
+      var ga=o.gate;
+      if(ga&&ga.side==="e"){
+        var ga0=cz(ga.y1), ga1=cz(ga.y0), gh=ga.h*CS, gt=ga.top*CS, ex=x1-t/2;
+        box(t,h,ga0-z0,wm,ex,h/2,(z0+ga0)/2,wg); box(t,h,z1-ga1,wm,ex,h/2,(ga1+z1)/2,wg);
+        box(t,h-gt,ga1-ga0,wm,ex,gt+(h-gt)/2,(ga0+ga1)/2,wg);
+        box(.2,gt-gh,ga1-ga0,M(0xb9c0cb),x1-.1,gh+(gt-gh)/2,(ga0+ga1)/2,wg);
+        box(.16,gh,.16,M(0x9aa3b0),x1-.08,gh/2,ga0+.08,wg); box(.16,gh,.16,M(0x9aa3b0),x1-.08,gh/2,ga1-.08,wg);
+      }else box(t,h,d,wm,x1-t/2,h/2,zm,wg);
+      box(w-t,.06,d-t,M(0x3a4351),xm,o.floor||.17,zm,g);
+      (o.doors||[]).forEach(function(a){var dh=Math.min(a[3]*CS,h-.2), dm=M(DK);
+        if(a[0]==="s")box((a[2]-a[1])*CS,dh,.12,dm,cx((a[1]+a[2])/2),dh/2+.02,cz(o.y0)+.04,wg);
+        else if(a[0]==="w")box(.12,dh,(a[2]-a[1])*CS,dm,cx(o.x0)-.04,dh/2+.02,cz((a[1]+a[2])/2),wg)});
+      (o.leaves||[]).forEach(function(a){var ax=cx(a[0]),az=cz(a[1]),bx=cx(a[2]),bz=cz(a[3]),L=Math.hypot(bx-ax,bz-az),lh=2.35;
+        var lf=box(L,lh,.08,M(DK),(ax+bx)/2,lh/2+.02,(az+bz)/2,wg); lf.rotation.y=-Math.atan2(bz-az,bx-ax)});
+      (o.wins||[]).forEach(function(a){var wh=(a[4]-a[3])*CS, ww=(a[2]-a[1])*CS, wy=(a[3]+a[4])/2*CS;
+        box(ww+.16,wh+.16,.1,M(0xcfd6e2),cx((a[1]+a[2])/2),wy,cz(o.y0)+.03,wg); box(ww,wh,.12,M(0x2a4a6e),cx((a[1]+a[2])/2),wy,cz(o.y0)+.05,wg)});
+      var gs=roofGeo(x0,x1,z0,z1,h,H,o.axis,o.rp), rm=M(0xd9806f,{transparent:true,side:T.DoubleSide}), gm=M(0x8f4a42,{transparent:true,side:T.DoubleSide});
+      var r1=new T.Mesh(gs[0],rm), r2=new T.Mesh(gs[1],gm); scene.add(r1); scene.add(r2); roofs.push({o:r1,m:rm},{o:r2,m:gm});
+      walls.push(wg);
+      if(o.t)bld.push({t:o.t,x:xm,y:H+1.2,z:zm});
+    }
+    FAB_CAD.forEach(building);
+    bld.push({t:FAB_BLD.yard,x:cx(-1500),y:1.2,z:cz(-800)});
     var seed=7; function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
     var trunk=M(0x5a4632), leaf=[M(0x2f6a4a),M(0x3b7b55),M(0x285a40)];
     function tree(x,z,s){var g=new T.Group(); g.position.set(x,0,z); box(.3*s,1.2*s,.3*s,trunk,0,.6*s,0,g); var l=new T.Mesh(new T.IcosahedronGeometry(1.2*s,0),leaf[Math.floor(rnd()*3)]); l.position.y=2*s; g.add(l); scene.add(g)}
-    function grove(x0,y0,x1,y1,n){for(var i=0;i<n;i++)tree(wx(x0+rnd()*(x1-x0)),wz(y0+rnd()*(y1-y0)),.8+rnd()*.7)}
-    grove(30,40,140,90,6);grove(0,190,70,420,9);grove(20,420,150,490,6);grove(455,285,700,470,12);grove(620,70,720,290,8);grove(350,430,470,490,4);grove(0,500,200,571,3);
-    var truck=new T.Group(); truck.position.set(wx(458),0,wz(232)); scene.add(truck);
+    function grove(x0,z0,x1,z1,n){for(var i=0;i<n;i++)tree(x0+rnd()*(x1-x0),z0+rnd()*(z1-z0),.8+rnd()*.7)}
+    grove(-38,-38,-28,60,14);grove(-26,-40,60,-25,14);grove(44,-38,65,60,14);grove(-35,42,60,62,10);grove(-16,19,18,40,6);grove(-26,16,-22,40,3);
+    var truck=new T.Group(); truck.position.set(9,0,-5); truck.rotation.y=Math.PI/2; scene.add(truck);
     box(5.6,2.2,2.1,M(0xf2f4f8),-.8,1.7,0,truck); box(1.8,1.8,2,M(0xe5d878),2.6,1.1,0,truck); box(8,.4,2,M(0x4a4f5a),0,.5,0,truck);
-    function car(px,py,c,rot){var g=new T.Group(); g.position.set(wx(px),0,wz(py)); g.rotation.y=rot||0; scene.add(g); box(1.8,.7,4,M(c),0,.55,0,g); box(1.6,.6,2.2,M(0x2a3a52),0,1.15,-.1,g)}
-    car(404,288,0xc0392b,0);car(130,205,0xe9edf3,0);car(103,265,0xe9edf3,0);car(155,322,0xe9edf3,.2);car(147,128,0xe9edf3,0);
+    function car(x,z,c,rot){var g=new T.Group(); g.position.set(x,0,z); g.rotation.y=rot||0; scene.add(g); box(1.8,.7,4,M(c),0,.55,0,g); box(1.6,.6,2.2,M(0x2a3a52),0,1.15,-.1,g)}
+    car(-24.5,-12,0xc0392b,0);car(-24.5,-8,0xe9edf3,0);car(-24.5,-4,0xe9edf3,0);car(-24.5,0,0xe9edf3,.1);car(-24.5,4,0xe9edf3,0);
     var fk=new T.Group(); scene.add(fk); box(1.4,1,2.2,M(0xe8601c),0,.7,0,fk); box(1.2,1,.9,M(0x222831),0,1.7,-.3,fk); box(.1,2.2,.1,M(0x333333),.4,1.2,1.4,fk); box(.1,2.2,.1,M(0x333333),-.4,1.2,1.4,fk); box(1.2,.1,1.4,M(0x333333),0,.3,1.7,fk);
-    var fkPath=[[wx(405),wz(160)],[wx(485),wz(160)],[wx(485),wz(215)],[wx(405),wz(215)]];
+    var fkPath=[[14,-8],[22,-8],[22,0],[14,0]];
     var people=[];
     function person(path,spd,c){var g=new T.Group(),b=new T.Mesh(new T.CapsuleGeometry(.28,.8,3,8),M(c||0xf08a24)); b.position.y=.95; g.add(b); var h=new T.Mesh(new T.SphereGeometry(.25,8,6),M(0xe8c9a0)); h.position.y=1.8; g.add(h); scene.add(g); people.push({g:g,path:path,i:0,t:0,spd:spd,ph:Math.random()*6})}
-    person([[wx(405),wz(300)],[wx(470),wz(300)]],1.2,0x3fa9ff);person([[wx(440),wz(250)],[wx(440),wz(180)]],1);person([[wx(260),wz(330)],[wx(320),wz(360)],[wx(230),wz(370)]],1,0x3fa9ff);
+    person([[4,2],[14,2]],1.2,0x3fa9ff);person([[17,-9],[17,5]],1,0xf08a24);person([[25,6],[30,12],[22,11]],1,0x3fa9ff);
     var S_={T:T,scene:scene,cam:cam,renderer:renderer,roofs:roofs,walls:walls,bld:bld,truck:truck,fk:fk,fkPath:fkPath,people:people,M:M,box:box,mach:{},pick:[],
-      st:{az:.62,el:.62,dist:140,tx:-2,ty:0,tz:0},goal:{az:.62,el:.62,dist:76,tx:-2,ty:0,tz:0},HOME:{az:.62,el:.62,dist:76,tx:-2,ty:0,tz:0},
+      st:{az:.62,el:.62,dist:150,tx:9,ty:0,tz:6},goal:{az:.62,el:.62,dist:98,tx:9,ty:0,tz:6},HOME:{az:.62,el:.62,dist:98,tx:9,ty:0,tz:6},
       drag:(window.matchMedia&&matchMedia("(pointer:coarse)").matches)?"pan":"rot",ops:[],interior:0,igoal:0,vo:0,clock:new T.Clock(),lbl:{},bl:[],touched:false};
     var lb=$("fblb");
     bld.forEach(function(b){var e=document.createElement("div"); e.className="lb bld"; e.textContent=b.t; lb.appendChild(e); S_.bl.push({e:e,b:b})});
@@ -22670,7 +22708,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var cv=$("fbcv"), ptr={}, moved=0, lastPinch=0, lastMid=null, st=S_.st, goal=S_.goal, cam=S_.cam, T=S_.T;
     function clampD(d){return Math.min(130,Math.max(9,d))}
     function pan(dx,dy){var k=Math.max(st.dist,30)*.0016,r=new T.Vector3(),f=new T.Vector3(); cam.getWorldDirection(f); f.y=0; f.normalize(); r.crossVectors(f,new T.Vector3(0,1,0));
-      goal.tx+=(-r.x*dx+f.x*dy)*k; goal.tz+=(-r.z*dx+f.z*dy)*k; goal.tx=Math.max(-40,Math.min(40,goal.tx)); goal.tz=Math.max(-30,Math.min(30,goal.tz)); st.tx=goal.tx; st.tz=goal.tz}
+      goal.tx+=(-r.x*dx+f.x*dy)*k; goal.tz+=(-r.z*dx+f.z*dy)*k; goal.tx=Math.max(-45,Math.min(65,goal.tx)); goal.tz=Math.max(-45,Math.min(60,goal.tz)); st.tx=goal.tx; st.tz=goal.tz}
     var lastAng=null;
     cv.addEventListener("pointerdown",function(e){cv.setPointerCapture(e.pointerId); ptr[e.pointerId]={x:e.clientX,y:e.clientY,t:e.pointerType}; moved=0; S_.touched=true; lastPinch=0; lastMid=null; lastAng=null});
     cv.addEventListener("pointermove",function(e){var p=ptr[e.pointerId]; if(!p)return; var dx=e.clientX-p.x, dy=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
@@ -22689,7 +22727,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       var k=e.key.toLowerCase(), sp=Math.max(st.dist,30)*.06, f=new T.Vector3(), r=new T.Vector3(); cam.getWorldDirection(f); f.y=0; f.normalize(); r.crossVectors(f,new T.Vector3(0,1,0));
       var mv=null;
       if(k==="arrowup"||k==="w")mv=[f.x,f.z,1]; else if(k==="arrowdown"||k==="s")mv=[f.x,f.z,-1]; else if(k==="arrowright"||k==="d")mv=[r.x,r.z,1]; else if(k==="arrowleft"||k==="a")mv=[r.x,r.z,-1];
-      if(mv){goal.tx=Math.max(-40,Math.min(40,goal.tx+mv[0]*mv[2]*sp)); goal.tz=Math.max(-30,Math.min(30,goal.tz+mv[1]*mv[2]*sp)); e.preventDefault(); return}
+      if(mv){goal.tx=Math.max(-45,Math.min(65,goal.tx+mv[0]*mv[2]*sp)); goal.tz=Math.max(-45,Math.min(60,goal.tz+mv[1]*mv[2]*sp)); e.preventDefault(); return}
       if(k==="q"){goal.az+=.2; e.preventDefault()} else if(k==="e"){goal.az-=.2; e.preventDefault()}
       else if(k==="+"||k==="="){goal.dist=clampD(goal.dist*.8)} else if(k==="-"){goal.dist=clampD(goal.dist*1.25)}
     });
