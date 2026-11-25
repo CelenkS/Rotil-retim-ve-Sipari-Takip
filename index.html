@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 20:41</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:09</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22500,7 +22500,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   }
   $("cmback").addEventListener("click",function(){navGo("home")});
   /* ===== SANAL FABRİKA (sadece sahip) — 3D sahne, gerçek makine verisi ===== */
-  var FAB_BLD={hall:"Rotil Üretim · CNC",yard:"Avlu · Sevkiyat"};
+  var FAB_BLD={hall:"Rotil ve Cıvata Üretim · Pres-CNC",yard:"Avlu · Sevkiyat"};
   var fabS=null, fabRun=false, fabSel=null, fabTab="durum", fabDept="Tümü", fabSig="";
   var FAB_ST={ok:"Çalışıyor",bad:"Arızalı"}, FAB_STC={ok:0x2fd08a,bad:0xff5468};
   function fabLoad(){
@@ -22509,7 +22509,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     try{var s=document.createElement("script"); s.textContent=el.textContent; document.head.appendChild(s)}catch(e){return false}
     return !!window.THREE;
   }
-  function fabType(m){var n=String(m.name||"").toUpperCase(); return /TESTERE/.test(n)?"testere":/PRES|OVALAMA/.test(n)?"pres":/TRANSFER/.test(n)?"transfer":"cnc"}
+  function fabType(m){var n=String(m.name||"").toUpperCase(); return /POL[İI]SAJ|POLISH|PARLAT/.test(n)?"polisaj":/TESTERE/.test(n)?"testere":/PRES|OVALAMA/.test(n)?"pres":/TRANSFER/.test(n)?"transfer":"cnc"}
   function fabSlotLabel(m){var l=String(m.floorSlot||m.name||"").toUpperCase().trim(); if(FLOOR_ALIAS[l])l=FLOOR_ALIAS[l]; return l}
   // krokideki kutusu olan makineler kroki sırasına göre salona, diğerleri sırayla ek alanlara dizilir
   function fabLayout(list){
@@ -22517,26 +22517,30 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var hx=-19.8, hz=-17.7;
     var grid={}; FLOOR_CIVATA.forEach(function(b){grid[b.label.toUpperCase()]=b});
     var over=[];
-    // ek makine alanları (salon dışı): Bina 2 → Bina 4 → Bina 3 → Bina 5 → Bina 7
+    // ek makine alanları (salon dışı): transfer → Rotil Transfer, pres → Preshane, diğerleri → Sac Deposu
     function slots(x,z,nc,nr,dx,dz){for(var r=0;r<nr;r++)for(var c=0;c<nc;c++)over.push({x:x+c*dx,z:z+r*dz})}
-    slots(3.4,-15.9,5,2,2.3,2.6); slots(23.2,-15.9,5,2,2.3,2.6); slots(15.4,-15.9,3,2,2.3,2.6); slots(33.9,-9.5,2,4,2.1,2.2); slots(24.2,17,5,7,2.3,2.3);
-    var oi=0;
+    var ovT=[], ovP=[], ovS=[]; function slotsTo(arr,x,z,nc,nr,dx,dz){var n0=over.length; slots(x,z,nc,nr,dx,dz); over.splice(n0).forEach(function(q){arr.push(q)})}
+    slotsTo(ovT,33.7,-6.0,2,2,2.3,2.4); slotsTo(ovP,23.4,-15.8,4,2,2.4,2.8); slotsTo(ovS,24.2,17,5,7,2.3,2.3);   // Rotil Transfer · Preshane · Sac Deposu
+    var oc={};
+    // polisaj bölümü: doğu duvar boyunca, preslerin ARKASINDA duvarla ayrılmış şerit (güneyden kuzeye dizilir, önü batıya/kapıya bakar)
+    var pol=[], pi=0; for(var pk=0;pk<12;pk++)pol.push({x:-.25,z:11.6-pk*2.3,rot:-Math.PI/2});
     // Presler: kuzey duvarına dayalı OVALAMA, onun altında doğu duvar boyunca D.PRES 1..n sıralı ve aralıklı; hepsinin önü salona bakar
     var pr=list.filter(function(m){return fabType(m)==="pres"}).sort(function(a,b){
-      var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, px=.14;
+      var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, px=-2.15;
     var ov0=pr.filter(function(m){return /OVALAMA/i.test(m.name||"")})[0], pcol=pr.filter(function(m){return m!==ov0});
-    if(ov0)ppos[ov0.id]={x:px,z:-16.65,rot:0};
-    var pz0=ov0?-11.4:-15.8, pz1=1.9, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
+    if(ov0)ppos[ov0.id]={x:.14,z:-16.65,rot:0};
+    var pz0=ov0?-11.6:-14.2, pz1=12.2, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
     pcol.forEach(function(m,i){ppos[m.id]={x:px,z:pz0+i*pstep,rot:-Math.PI/2}});
     list.forEach(function(m){
       if(ppos[m.id]){var q=ppos[m.id]; out[m.id]={x:q.x,z:q.z,rot:q.rot,sc:.66}; return}
+      if(fabType(m)==="polisaj"){var pp=pol[Math.min(pi,pol.length-1)]; pi++; out[m.id]={x:pp.x,z:pp.z,rot:pp.rot,sc:.66}; return}
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
         var ty=fabType(m), gx=hx+1.4+(b.col-1)*2.95, gz=hz+1.5+(b.row-1)*1.95+(b.rs-1)*.975, gr=b.vert?Math.PI/2:0;
         if(ty==="pres")gr=-Math.PI/2;                                   // pres: önü salonun içine bakar
         if(ty==="transfer"){gx+=(b.col-3)*1.0; gz=3.5-.35-.56-.1; gr=Math.PI}   // transfer: güney duvara dayalı, önü kuzeye
         out[m.id]={x:gx,z:gz,rot:gr,sc:.66}; return}
-      var p=over[Math.min(oi,over.length-1)]; oi++; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
+      var t2=fabType(m), pool=t2==="transfer"?ovT:t2==="pres"?ovP:ovS, p=pool[Math.min(oc[t2]||0,pool.length-1)]; oc[t2]=(oc[t2]||0)+1; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
     });
     return out;
   }
@@ -22566,13 +22570,13 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var FAB_CAD=[
       {k:"hall",t:FAB_BLD.hall,x0:-4704,x1:-2704,y0:-2250,y1:750,wall:442,ridge:760,axis:"z",col:0x4b5563,floor:.07,
        gate:{side:"e",y0:-750,y1:-150,h:283,top:383}},
-      {k:"b2",x0:-2704,x1:-1504,y0:150,y1:750,wall:270,ridge:442,axis:"x",doors:[["s",-1666,-1545,270]]},
-      {k:"b3",x0:-1504,x1:-750,y0:150,y1:750,wall:210,ridge:345,axis:"x"},
+      {k:"b2",t:"Yemekhane",x0:-2704,x1:-1504,y0:150,y1:750,wall:270,ridge:442,axis:"x",doors:[["s",-1666,-1545,270]]},
+      {k:"b3",t:"Vibrasyon Odası",x0:-1504,x1:-750,y0:150,y1:750,wall:210,ridge:345,axis:"x"},
       {k:"b4",x0:-752,x1:479,y0:150,y1:750,wall:270,ridge:442,axis:"x",doors:[["s",-298,-150,245],["s",100,233,245]]},
       {k:"b5",x0:250,x1:750,y0:-755,y1:753,wall:270,ridge:442,axis:"z",rp:.458,doors:[["w",-217,-60,170],["w",-700,-450,245]],
        leaves:[[250,-450,132,-392],[250,-700,132,-758]]},
-      {k:"b6",x0:-2690,x1:-2125,y0:-150,y1:150,wall:270,ridge:334,axis:"x",wins:[["s",-2570,-2370,59,199]]},
-      {k:"b7",x0:-700,x1:500,y0:-4108,y1:-2354,wall:370,ridge:619,axis:"z"}
+      {k:"b6",t:"Yusuf Bey Ofis",x0:-2690,x1:-2125,y0:-150,y1:150,wall:270,ridge:334,axis:"x",wins:[["s",-2570,-2370,59,199]]},
+      {k:"b7",t:"Sac Deposu",x0:-700,x1:500,y0:-4108,y1:-2354,wall:370,ridge:619,axis:"z"}
     ];
     function roofGeo(x0,x1,z0,z1,h,H,axis,rp){
       var P=[],Gb=[],o=.1; h-=.04;
@@ -22616,6 +22620,24 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       if(o.t)bld.push({t:o.t,x:xm,y:H+1.2,z:zm});
     }
     FAB_CAD.forEach(building);
+    // Polisaj şeridi: ana salonun doğu duvarı boyunca, preslerin arkasında duvarla ayrılmış bölüm (presler bu duvarın önünde dizili)
+    (function(){var pxw=-1.5, ex=.9, zn=-15, zs=13.5, ph=3.2, pt=.2, pg=new T.Group(), pm=M(0x9aa6ba); scene.add(pg);
+      box(ex-pxw,.03,zs-zn,M(0x4a5568),(pxw+ex)/2,.115,(zn+zs)/2,pg);
+      function seg(a,b){box(pt,ph,b-a,pm,pxw,ph/2,(a+b)/2,pg)}
+      seg(zn,-5.2); seg(-3.4,6.6); seg(8.8,zs);                           // arka duvar: 2 kapı boşluğu
+      box(pt,.6,2.2,pm,pxw,ph-.3,-4.3,pg); box(pt,.6,2.2,pm,pxw,ph-.3,7.7,pg);
+      box(ex-pxw,ph,pt,pm,(pxw+ex)/2,ph/2,zn,pg);                            // kuzey kapak
+      walls.push(pg); bld.push({t:"Polisaj",x:(pxw+ex)/2,y:ph+.9,z:0});
+    })();
+    // iç bölmeler + bölüm adları (CAD'e göre): uzun kanat = Preshane | ikinci kapıdan sonrası Rozet Preshane; doğu kol: Boyahane | Transfer
+    (function(){var pg=new T.Group(), pm=M(0x8e99ab), h=270*CS; scene.add(pg);
+      function wx2(X,Y0,Y1){box(.2,h,Math.abs(cz(Y1)-cz(Y0)),pm,cx(X),h/2,(cz(Y0)+cz(Y1))/2,pg)}
+      function wz2(Y,X0,X1){box(Math.abs(cx(X1)-cx(X0)),h,.2,pm,(cx(X0)+cx(X1))/2,h/2,cz(Y),pg)}
+      wx2(233,150,750); wz2(150,250,750); wz2(-250,250,750);
+      walls.push(pg);
+      function lab(t,X,Y){bld.push({t:t,x:cx(X),y:442*CS+1.2,z:cz(Y)})}
+      lab("Preshane",-260,450); lab("Rozet Preshane",491,450); lab("Rotil-Rozet Boyahane",500,-50); lab("Rotil Transfer",500,-502);
+    })();
     bld.push({t:FAB_BLD.yard,x:cx(-1500),y:1.2,z:cz(-800)});
     var seed=7; function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
     var trunk=M(0x5a4632), leaf=[M(0x2f6a4a),M(0x3b7b55),M(0x285a40)];
@@ -22646,6 +22668,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var top=0, mover=null;
     if(type==="testere"){box(2.4,.9,1.7,mm(0x7b8696),0,.45,0,g); box(1.7,.9,1.3,mm(0xf2c21b),-.1,1.3,0,g); mover=box(.25,.9,1.5,mm(0xd9a912),.5,1.9,0,g); box(2.6,.25,.5,mm(0x4a77b4),0,.55,1.3,g); top=2.4}
     else if(type==="pres"){box(1.9,.5,1.7,mm(0x2a8f95),0,.25,0,g); box(1.1,2.2,1,mm(0x2c9aa0),-.2,1.5,0,g); mover=box(1.6,.6,1.4,mm(0x1f6f75),0,2.9,0,g); box(.5,.5,.5,mm(0xe46a2c),.9,.9,.7,g); top=3.6}
+    else if(type==="polisaj"){box(2.2,.9,1.4,mm(0x6d7a8c),0,.45,0,g); box(.7,.7,.9,mm(0x2f3a4c),-.6,1.25,0,g); var wl=new T.Mesh(new T.CylinderGeometry(.5,.5,.3,18),mm(0xe0b04a)); wl.rotation.z=Math.PI/2; wl.position.set(.2,1.35,0); g.add(wl); mover=wl; box(.5,.5,.4,mm(0x3a7bd5),.85,.9,.7,g); top=2.0}
     else if(type==="transfer"){box(3.4,1.8,1.7,mm(0x58667d),0,.9,0,g); box(3.4,.18,1.72,mm(0xf2c21b),0,1.1,0,g); box(.6,1,.4,mm(0x3a7bd5),1.4,1.4,.95,g); mover=box(.9,.15,.9,mm(0xcfd6e2),-.5,1.88,0,g); top=2.4}
     else{box(2.3,1.7,1.7,mm(0x9aa3b0),0,.85,0,g); box(1.5,1,.06,mm(0x20405e),-.25,1,.88,g); box(.5,.9,.4,mm(0x3a7bd5),1,1.3,.95,g); mover=box(.7,.12,.7,mm(0xcfd6e2),-.25,1.76,0,g); top=2.3}
     var lm=new T.MeshBasicMaterial({color:0x2fd08a}), lamp=new T.Mesh(new T.SphereGeometry(.22,10,8),lm); lamp.position.set(0,top+.3,0); g.add(lamp);
