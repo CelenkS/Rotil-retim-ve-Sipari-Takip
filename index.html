@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.11 12:26</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.11 12:33</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22514,7 +22514,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   // krokideki kutusu olan makineler kroki sırasına göre salona, diğerleri sırayla ek alanlara dizilir
   function fabLayout(list){
     var out={}, free=[], used={};
-    var hx=-19.8, hz=-17.7, KZ0=12.0, KZP=4.37, KX0=-18.5, KXP=2.29;   // kroki, varsayılan kameradan (doğudan batıya bakış) ekranda aynen görünür: sütun 1..7 soldan sağa = güneyden kuzeye, satır 1..9 yukarıdan aşağı = batıdan doğuya
+    var hx=-19.8, hz=-17.7, KZ0=12.0, KZP=4.37, KX0=-18.5, KXP=2.8;   // kroki, varsayılan kameradan (doğudan batıya bakış) ekranda aynen görünür: sütun 1..7 soldan sağa = güneyden kuzeye, satır 1..9 yukarıdan aşağı = batıdan doğuya
+    var KORD=[0,0,1,1.5,2,3,3.5,4,5,5.5]; function kord(r){var a=Math.floor(r), f=r-a; return KORD[a]+(f?(KORD[a+1]-KORD[a])*f:0)}   // kroki satırları → eşit aralıklı sıra (boş satırlar yarım aralık)
     var grid={}; FLOOR_CIVATA.forEach(function(b){grid[b.label.toUpperCase()]=b});
     var over=[];
     // ek makine alanları (salon dışı): transfer → Rotil Transfer, pres → Preshane, diğerleri → Sac Deposu
@@ -22535,9 +22536,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       if(ppos[m.id]){var q=ppos[m.id]; out[m.id]={x:q.x,z:q.z,rot:q.rot,sc:.66}; return}
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
-        var ty=fabType(m), gx=KX0+((b.row-1)+(b.rs-1)/2)*KXP, gz=KZ0-(b.col-1)*KZP, gr=0;   // krokideki yerinin aynısı
-        if(ty==="cnc"&&b.row>=7)gx-=2.3;                                 // alt CNC sırası + CNC17/18 bir sıra batıya (yukarı) ilerler
-        if(ty==="transfer"){gx=-2.3; gz+=1.5; gr=-Math.PI/2}              // transfer: doğu kapıdan uzak, biraz güneye; önü batıya
+        var ty=fabType(m), gx=KX0+kord(b.row+(b.rs-1)/2)*KXP, gz=KZ0-(b.col-1)*KZP, gr=0;   // krokideki yerinin aynısı
+        if(ty==="transfer"){gx=-1.2; gz=.4+(5-b.col)*3.7; gr=-Math.PI/2}   // transfer: doğu duvara dayalı, kapının güneyinde (T1 kapıya en yakın, T3 en güney); önü batıya
         out[m.id]={x:gx,z:gz,rot:gr,sc:.66}; return}
       if(fabType(m)==="polisaj"&&pi<pol.length){var pq=pol[pi++]; out[m.id]={x:pq.x,z:pq.z,rot:pq.rot,sc:.66}; return}
       var t2=fabType(m), pool=t2==="transfer"?ovT:t2==="pres"?ovP:ovS, p=pool[Math.min(oc[t2]||0,pool.length-1)]; oc[t2]=(oc[t2]||0)+1; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
@@ -22721,8 +22721,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       if(/CNC/i.test(m.name||""))return; if(/TESTERE/i.test(m.name||"")){te.push(m); return}
       var p=lay[m.id]; add(p.x+Math.sin(p.rot)*1.5,p.z+Math.cos(p.rot)*1.5,p.rot+Math.PI,[m]);
     });
-    if(te.length){var cx=0,mz=-1e9,any=false; te.forEach(function(m){var p=lay[m.id]; cx+=p.x; mz=Math.max(mz,p.z); if(fabAssigned(m))any=true});
-      add(cx/te.length,mz+5.3,Math.PI,te)}   // tüm testerelere ortak 1 kişi, önlerinde ortada
+    if(te.length){var cx=0, ts=te.slice().sort(function(p,q){return lay[p.id].z-lay[q.id].z}); te.forEach(function(m){cx+=lay[m.id].x});
+      add(cx/te.length,lay[ts[Math.floor(ts.length/2)].id].z+1.6,Math.PI,te)}   // tüm testerelere ortak 1 kişi: testerelerin ortasında (ortadaki testerenin önünde)
   }
   function fabInput(S_){
     var cv=$("fbcv"), ptr={}, moved=0, lastPinch=0, lastMid=null, st=S_.st, goal=S_.goal, cam=S_.cam, T=S_.T;
