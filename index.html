@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.11 12:06</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.11 12:19</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22514,7 +22514,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   // krokideki kutusu olan makineler kroki sırasına göre salona, diğerleri sırayla ek alanlara dizilir
   function fabLayout(list){
     var out={}, free=[], used={};
-    var hx=-19.8, hz=-17.7, KX0=-18.5, KXP=2.5, KZ0=hz+1.6, KZP=3.4;   // kroki ızgarası tüm salona yayılır: sütun→x (soldan sağa), satır→z (kuzeyden güneye)
+    var hx=-19.8, hz=-17.7, KZ0=12.0, KZP=4.37, KX0=-18.5, KXP=2.29;   // kroki, varsayılan kameradan (doğudan batıya bakış) ekranda aynen görünür: sütun 1..7 soldan sağa = güneyden kuzeye, satır 1..9 yukarıdan aşağı = batıdan doğuya
     var grid={}; FLOOR_CIVATA.forEach(function(b){grid[b.label.toUpperCase()]=b});
     var over=[];
     // ek makine alanları (salon dışı): transfer → Rotil Transfer, pres → Preshane, diğerleri → Sac Deposu
@@ -22523,21 +22523,20 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     slotsTo(ovT,33.7,-6.0,2,2,2.3,2.4); slotsTo(ovP,23.4,-15.8,4,2,2.4,2.8); slotsTo(ovS,24.2,17,5,7,2.3,2.3);   // Rotil Transfer · Preshane · Sac Deposu
     var oc={};
     // Rozet Polisaj: preslerin arkasında, doğu duvar ile pres duvarı arasındaki bölüm (kuzeyden güneye dizilir)
-    var pol=[], pi=0; for(var pk=0;pk<11;pk++)pol.push({x:-.5,z:-15.6+pk*2.3,rot:-Math.PI/2});
+    var pol=[], pi=0; for(var pk=0;pk<8;pk++)pol.push({x:-18+pk*2.3,z:-16.3,rot:0});
     // Presler: kuzey duvarına dayalı OVALAMA, onun altında doğu duvar boyunca D.PRES 1..n sıralı ve aralıklı; hepsinin önü salona bakar
     var pr=list.filter(function(m){return fabType(m)==="pres"}).sort(function(a,b){
-      var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, px=-3.0;
+      var A=/OVALAMA/i.test(a.name||"")?-1:(+(String(a.name||"").match(/(\d+)/)||[0,99])[1]), B=/OVALAMA/i.test(b.name||"")?-1:(+(String(b.name||"").match(/(\d+)/)||[0,99])[1]); return (A-B)||String(a.name||"").localeCompare(String(b.name||""),"tr")}), ppos={}, pzL=-14.2;
     var ov0=pr.filter(function(m){return /OVALAMA/i.test(m.name||"")})[0], pcol=pr.filter(function(m){return m!==ov0});
-    if(ov0)ppos[ov0.id]={x:px,z:-16.2,rot:0};
-    var pz0=ov0?-10.6:-15.8, pz1=10.2, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
-    pcol.forEach(function(m,i){ppos[m.id]={x:px,z:pz0+i*pstep,rot:-Math.PI/2}});
+    if(ov0)ppos[ov0.id]={x:KX0,z:pzL,rot:0};
+    var pz0=ov0?-13.6:-18.5, pz1=-.4, pstep=pcol.length>1?(pz1-pz0)/(pcol.length-1):0;
+    pcol.forEach(function(m,i){ppos[m.id]={x:pz0+i*pstep,z:pzL,rot:0}});
     list.forEach(function(m){
       if(ppos[m.id]){var q=ppos[m.id]; out[m.id]={x:q.x,z:q.z,rot:q.rot,sc:.66}; return}
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
-        var ty=fabType(m), gx=KX0+(b.col-1)*KXP, gz=KZ0+((b.row-1)+(b.rs-1)/2)*KZP, gr=b.vert?Math.PI/2:0;   // krokideki yerinin aynısı
-        if(ty==="pres")gr=-Math.PI/2;                                   // pres: önü salonun içine bakar
-        if(ty==="transfer")gr=Math.PI;                                  // transfer: önü kuzeye
+        var ty=fabType(m), gx=KX0+((b.row-1)+(b.rs-1)/2)*KXP, gz=KZ0-(b.col-1)*KZP, gr=0;   // krokideki yerinin aynısı
+        if(ty==="transfer"){gx=-.5; gr=-Math.PI/2}                      // transfer: doğu duvara dayalı, önü batıya (salona)
         out[m.id]={x:gx,z:gz,rot:gr,sc:.66}; return}
       if(fabType(m)==="polisaj"&&pi<pol.length){var pq=pol[pi++]; out[m.id]={x:pq.x,z:pq.z,rot:pq.rot,sc:.66}; return}
       var t2=fabType(m), pool=t2==="transfer"?ovT:t2==="pres"?ovP:ovS, p=pool[Math.min(oc[t2]||0,pool.length-1)]; oc[t2]=(oc[t2]||0)+1; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
@@ -22629,11 +22628,11 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       function lab(t,X,Y){bld.push({t:t,x:cx(X),y:442*CS+1.2,z:cz(Y)})}
       lab("Rozet Preshane",0,450); lab("Rotil-Rozet Boyahane",500,-50); lab("Rotil Transfer",500,-502);
     })();
-    // Rozet Polisaj: preslerin arkasında, doğu duvar boyunca duvarla ayrılmış bölüm (güney ucunda kapı boşluğu)
-    (function(){var pg=new T.Group(), pm=M(0x8e99ab), h=270*CS, px=-2.3; scene.add(pg);
-      function seg(z0,z1){box(.2,h,z1-z0,pm,px,h/2,(z0+z1)/2,pg)}
-      seg(-17.7,9.4); seg(12.2,13.8);
-      walls.push(pg); bld.push({t:"Rozet Polisaj",x:-.5,y:442*CS+1.2,z:-8})
+    // Rozet Polisaj: preslerin (kuzey duvar) arkasında, duvarla ayrılmış bölüm (doğu ucunda kapı boşluğu)
+    (function(){var pg=new T.Group(), pm=M(0x8e99ab), h=270*CS, pz=-14.95; scene.add(pg);
+      function seg(x0,x1){box(x1-x0,h,.2,pm,(x0+x1)/2,h/2,pz,pg)}
+      seg(-19.8,-2.6); seg(0,1.2);
+      walls.push(pg); bld.push({t:"Rozet Polisaj",x:-10,y:442*CS+1.2,z:-16.3})
     })();
     bld.push({t:FAB_BLD.yard,x:cx(-1500),y:1.2,z:cz(-800)});
     var seed=7; function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
@@ -22651,7 +22650,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     function person(path,spd,c){var g=new T.Group(),b=new T.Mesh(new T.CapsuleGeometry(.28,.8,3,8),M(c||0xf08a24)); b.position.y=.95; g.add(b); var h=new T.Mesh(new T.SphereGeometry(.25,8,6),M(0xe8c9a0)); h.position.y=1.8; g.add(h); scene.add(g); people.push({g:g,path:path,i:0,t:0,spd:spd,ph:Math.random()*6})}
     person([[4,2],[14,2]],1.2,0x3fa9ff);person([[17,-9],[17,5]],1,0xf08a24);person([[25,6],[30,12],[22,11]],1,0x3fa9ff);
     var S_={T:T,scene:scene,cam:cam,renderer:renderer,roofs:roofs,walls:walls,bld:bld,truck:truck,fk:fk,fkPath:fkPath,people:people,M:M,box:box,mach:{},pick:[],
-      st:{az:.62,el:.62,dist:150,tx:9,ty:0,tz:6},goal:{az:.62,el:.62,dist:98,tx:9,ty:0,tz:6},HOME:{az:.62,el:.62,dist:98,tx:9,ty:0,tz:6},
+      st:{az:1.5708,el:.58,dist:150,tx:-9,ty:0,tz:-2},goal:{az:1.5708,el:.58,dist:84,tx:-9,ty:0,tz:-2},HOME:{az:1.5708,el:.58,dist:84,tx:-9,ty:0,tz:-2},
       drag:(window.matchMedia&&matchMedia("(pointer:coarse)").matches)?"pan":"rot",ops:[],interior:0,igoal:0,vo:0,clock:new T.Clock(),lbl:{},bl:[],touched:false};
     var lb=$("fblb");
     bld.forEach(function(b){var e=document.createElement("div"); e.className="lb bld"; e.textContent=b.t; lb.appendChild(e); S_.bl.push({e:e,b:b})});
@@ -23263,7 +23262,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var S_=fabS, T=S_.T, dt=Math.min(.05,S_.clock.getDelta()), t=S_.clock.elapsedTime, k=1-Math.pow(.001,dt), st=S_.st, goal=S_.goal, cam=S_.cam;
     function sm(a,b,q){return a+(b-a)*q}
     ["az","el","dist","tx","tz"].forEach(function(p){st[p]=sm(st[p],goal[p],k)});
-    if(!S_.touched&&!fabSel&&!S_.igoal&&Math.abs(st.dist-goal.dist)<1)goal.az+=dt*.03;
+    /* otomatik dönme kapalı: kroki ekranda hep aynı yönde görünsün */
     var stg=$("fbstage"), w=stg.clientWidth, h=stg.clientHeight; if(!w||!h)return;
     var wide=window.innerWidth>=820, want=(fabSel&&!wide)?-h*.06:0, wantX=(fabSel&&wide)?190:0; S_.vo+=(want-S_.vo)*.12; S_.vx=(S_.vx||0)+(wantX-(S_.vx||0))*.12; cam.setViewOffset(w,h,S_.vx,S_.vo,w,h);
     var ce=Math.cos(st.el); cam.position.set(st.tx+st.dist*ce*Math.sin(st.az),st.ty+st.dist*Math.sin(st.el),st.tz+st.dist*ce*Math.cos(st.az)); cam.lookAt(st.tx,st.ty,st.tz);
