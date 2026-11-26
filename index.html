@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.11 12:19</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 26.11 12:26</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22536,7 +22536,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
         var ty=fabType(m), gx=KX0+((b.row-1)+(b.rs-1)/2)*KXP, gz=KZ0-(b.col-1)*KZP, gr=0;   // krokideki yerinin aynısı
-        if(ty==="transfer"){gx=-.5; gr=-Math.PI/2}                      // transfer: doğu duvara dayalı, önü batıya (salona)
+        if(ty==="cnc"&&b.row>=7)gx-=2.3;                                 // alt CNC sırası + CNC17/18 bir sıra batıya (yukarı) ilerler
+        if(ty==="transfer"){gx=-2.3; gz+=1.5; gr=-Math.PI/2}              // transfer: doğu kapıdan uzak, biraz güneye; önü batıya
         out[m.id]={x:gx,z:gz,rot:gr,sc:.66}; return}
       if(fabType(m)==="polisaj"&&pi<pol.length){var pq=pol[pi++]; out[m.id]={x:pq.x,z:pq.z,rot:pq.rot,sc:.66}; return}
       var t2=fabType(m), pool=t2==="transfer"?ovT:t2==="pres"?ovP:ovS, p=pool[Math.min(oc[t2]||0,pool.length-1)]; oc[t2]=(oc[t2]||0)+1; out[m.id]={x:p.x,z:p.z,rot:0,sc:.66};
