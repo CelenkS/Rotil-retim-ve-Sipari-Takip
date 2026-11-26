@@ -5585,7 +5585,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:33</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 25.11 21:39</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -22533,10 +22533,11 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     pcol.forEach(function(m,i){ppos[m.id]={x:px,z:pz0+i*pstep,rot:-Math.PI/2}});
     list.forEach(function(m){
       if(ppos[m.id]){var q=ppos[m.id]; out[m.id]={x:q.x,z:q.z,rot:q.rot,sc:.66}; return}
-      if(fabType(m)==="polisaj"){var pp=pol[Math.min(pi,pol.length-1)]; pi++; out[m.id]={x:pp.x,z:pp.z,rot:pp.rot,sc:.66}; return}
       var b=grid[fabSlotLabel(m)];
       if(b&&!used[b.label]){used[b.label]=1;
         var ty=fabType(m), gx=hx+1.4+(b.col-1)*2.95, gz=hz+1.5+((b.row-1)*1.95+(b.rs-1)*.975)*FK, gr=b.vert?Math.PI/2:0;
+        if(ty==="cnc"&&!b.vert&&b.col<=3){gx=hx+1.5+(b.row-1)*2.4; gz=5.6+(b.col-1)*2.9; gr=0}   // CNC'ler salonun boş güney kısmında (kroki sırası korunur)
+        else if(ty==="cnc"&&b.vert){gx=hx+1.5+(b.row-1)*2.4+(b.col-4)*2.4; gz=11.4; gr=Math.PI/2}
         if(ty==="pres")gr=-Math.PI/2;                                   // pres: önü salonun içine bakar
         if(ty==="transfer"){gx+=(b.col-3)*1.0; gz=HZ1-.35-.56-.1; gr=Math.PI}   // transfer: salonun güney duvarına dayalı, önü kuzeye
         out[m.id]={x:gx,z:gz,rot:gr,sc:.66}; return}
@@ -22620,13 +22621,6 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       if(o.t)bld.push({t:o.t,x:xm,y:H+1.2,z:zm});
     }
     FAB_CAD.forEach(building);
-    // Polisaj odası (Rozet Polisaj): ana salonun doğu duvarı boyunca, preslerin devamında güneyde duvarla ayrılmış bölüm
-    (function(){var rx0=-8.6, rx1=.9, rz0=4.7, rz1=13.5, ph=3.2, pt=.2, pg=new T.Group(), pm=M(0x9aa6ba); scene.add(pg);
-      box(rx1-rx0,.03,rz1-rz0,M(0x4a5568),(rx0+rx1)/2,.115,(rz0+rz1)/2,pg);
-      box(6.9,ph,pt,pm,rx0+3.45,ph/2,rz0,pg); box(2.2,.6,pt,pm,rx1-1.1,ph-.3,rz0,pg);                       // kuzey duvarı (doğu ucunda kapı boşluğu)
-      box(pt,ph,2.3,pm,rx0,ph/2,rz0+1.15,pg); box(pt,ph,2.8,pm,rx0,ph/2,rz1-1.4,pg); box(pt,.6,3.6,pm,rx0,ph-.3,(rz0+rz1)/2,pg);   // batı duvarı (ortada kapı boşluğu)
-      walls.push(pg); bld.push({t:"Rozet Polisaj",x:(rx0+rx1)/2,y:ph+.9,z:(rz0+rz1)/2});
-    })();
     // iç bölmeler + bölüm adları (CAD'e göre): uzun kanat + köşe = Rozet Preshane (tek bölüm); doğu kol: Boyahane | Transfer
     (function(){var pg=new T.Group(), pm=M(0x8e99ab), h=270*CS; scene.add(pg);
       function wx2(X,Y0,Y1){box(.2,h,Math.abs(cz(Y1)-cz(Y0)),pm,cx(X),h/2,(cz(Y0)+cz(Y1))/2,pg)}
