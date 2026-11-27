@@ -3275,10 +3275,11 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 :is(#fv,#gg,#ck) .fvlock .btn{width:100%;margin-top:6px}
 :is(#fv,#gg,#ck) .fvlock .fvchk{text-align:left}
 :is(#fv,#gg,#ck) .fvwarn{text-align:left;background:color-mix(in srgb,var(--warn) 14%,var(--surface));color:var(--ink);border-radius:14px;padding:10px 12px;font:600 12.5px/1.45 var(--font-ui);margin:8px 0}
-:is(#fv,#gg,#ck) .fvmodal{position:fixed;inset:0;z-index:95;display:flex;align-items:flex-end;justify-content:center}
+:is(#fv,#gg,#ck) .fvmodal{position:fixed;inset:0;z-index:100002;display:flex;align-items:flex-end;justify-content:center}
 :is(#fv,#gg,#ck) .fvmodal[hidden]{display:none}
 :is(#fv,#gg,#ck) .fvmbd{position:absolute;inset:0;background:rgba(6,12,18,.55);backdrop-filter:blur(2px)}
-:is(#fv,#gg,#ck) .fvmbox{position:relative;width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;background:var(--surface);color:var(--ink);border-radius:26px 26px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.3);overflow:hidden}
+:is(#fv,#gg,#ck):has(.fvmodal:not([hidden])){position:relative;z-index:100001}
+:is(#fv,#gg,#ck) .fvmbox{position:relative;width:100%;max-width:560px;max-height:90vh;max-height:min(90dvh,calc(100dvh - 24px));display:flex;flex-direction:column;background:linear-gradient(var(--surface),var(--surface)),var(--bg);background-color:var(--bg);color:var(--ink);border-radius:26px 26px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.3);overflow:hidden}
 :is(#fv,#gg,#ck) .fvmh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 10px}
 :is(#fv,#gg,#ck) .fvmh h3{margin:0;font:800 17px var(--font-head);overflow:hidden;text-overflow:ellipsis}
 :is(#fv,#gg,#ck) .fvx{width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--ink);font:800 14px var(--font-ui);flex:none}
@@ -3589,6 +3590,19 @@ html:root:root:root:root #fv .fvcr .cs small{display:block;font:800 9.5px var(--
 html:root:root:root:root #fv .fvcr .cs b{display:block;font:800 13.5px var(--font-head)}
 html:root:root:root:root #fv .fvcr .bar{grid-column:2/6!important}
 @media (max-width:760px){html:root:root:root:root #fv .fvcr{grid-template-columns:30px 1fr!important}html:root:root:root:root #fv .fvcr .cs{grid-column:2;text-align:left;display:flex;justify-content:space-between}html:root:root:root:root #fv .fvcr .bar{grid-column:2!important}}
+html:root:root:root:root #fv .fpgj td{padding:5px 3px;vertical-align:top}
+html:root:root:root:root #fv .fpgj td.fpT{vertical-align:middle}
+html:root:root:root:root #fv .fpgj .fpl{vertical-align:middle;min-width:190px}
+html:root:root:root:root #fv .fvjc{display:flex;flex-direction:column;gap:2px}
+html:root:root:root:root #fv .fvjd{display:flex;align-items:center;gap:2px}
+html:root:root:root:root #fv .fjd{flex:1;min-width:0;width:100%;box-sizing:border-box;text-align:right;border:1px dashed color-mix(in srgb,var(--ink2) 35%,transparent);background:transparent;color:var(--ink2);font:700 11.5px var(--font-ui);padding:5px 7px;border-radius:8px}
+html:root:root:root:root #fv .fjd::placeholder{opacity:.45}
+html:root:root:root:root #fv .fjd:focus{outline:none;border-color:var(--accent);color:var(--ink);background:var(--surface)}
+html:root:root:root:root #fv .fjb{flex:0 0 auto;border:0;background:none;color:var(--ink2);font-size:12px;padding:2px 3px;cursor:pointer;opacity:.5}
+html:root:root:root:root #fv .fjb:hover{opacity:1;color:var(--accent)}
+html:root:root:root:root #fv .fpgj{min-width:1500px}
+html:root:root:root:root #fv .fpgj .fgi{min-width:112px;padding-left:6px;padding-right:6px}
+html:root:root:root:root #fv .fpgj th,html:root:root:root:root #fv .fpgj td:not(.fpl){min-width:118px}
 /* plan tablosu v2 */
 html:root:root:root:root #fv .fpc2{padding:18px 0 14px;overflow:hidden}
 html:root:root:root:root #fv .fpch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 22px 12px;flex-wrap:wrap}
@@ -5951,7 +5965,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 15:07</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 15:29</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13721,6 +13735,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(!P.grid||!P.grid.rows){P.grid={rows:[["g_maas","Maaş","maas"],["g_sigorta","Sigorta","sgk"],["g_stopaj","Stopaj","sgk"],["g_kira","Kira","kira"],["g_elektrik","Elektrik","enerji"],["g_yemek","Yemek","diger"],["g_genel","Genel gider","diger"],["g_kredi","Krediler","kredi"]].map(function(r){return {id:r[0],name:r[1],cat:r[2],day:1,vals:{}}})}}
     if(!P.gridHam||!P.gridHam.rows){var hm=null; P.grid.rows=P.grid.rows.filter(function(x){if(x.id==="g_hammadde"){hm=x; return false} return true}); P.gridHam={rows:[hm||{id:"g_hammadde",name:"Hammadde",cat:"hammadde",day:1,vals:{}}]}}
     if(!P.cust||!P.cust.rows)P.cust={rows:[]};
+    P.cust.rows.forEach(function(c){if(!c.jobs)c.jobs={}; if(c.vals){Object.keys(c.vals).forEach(function(ym){if(!c.jobs[ym]&&+c.vals[ym]>0)c.jobs[ym]=[{a:+c.vals[ym],d:null}]}); delete c.vals}});
     if(!P.gridIn||!P.gridIn.rows)P.gridIn={rows:[]}; if(!P.kasa||!P.kasa.rows)P.kasa={rows:[]};
     if(!P.coll||P.coll.length!==7)P.coll=[100,0,0,0,0,0,0]; if(!P.base)P.base={ym:"",cash:null}; if(P.inc===undefined)P.inc=true;
     return P;
@@ -13757,8 +13772,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     // müşteri cirosu: satış (fatura) ayında tahakkuk, vade parçalarına göre tahsilat
     P.cust.rows.forEach(function(c){
       var r=row("in","Müşteri · "+(c.name||"—"),"ciro","rev",""); r.cust=c.id; r.grp="Müşteri tahsilatları"; r.ev=[];
-      Object.keys(c.vals||{}).forEach(function(ym){var A=+c.vals[ym]; if(!(A>0))return; var si=fpY(ym); if(isNaN(si))return; acc(r,si,A);
-        fpCustCol(c,ym,A).forEach(function(e){if(e.idx>=b.idx&&e.idx<=endIdx){r.v[e.idx-b.idx]+=e.amt; r.ev.push(e)}})});
+      Object.keys(c.jobs||{}).forEach(function(ym){var A=fpCustSale(c,ym); if(!(A>0))return; var si=fpY(ym); if(isNaN(si))return; acc(r,si,A);
+        fpCustCol(c,ym).forEach(function(e){if(e.idx>=b.idx&&e.idx<=endIdx){r.v[e.idx-b.idx]+=e.amt; r.ev.push(e)}})});
     });
     // kalemler
     P.items.forEach(function(it){
@@ -13937,23 +13952,29 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     r.name=name; r.amt=Math.max(0,fpNum(fvV("fvk-amt"))); r.note=fvV("fvk-note").trim();
     fvSave(); fvModalClose(); fvRender();
   }
-  /* ---- müşteri cirosu: satış + vadeye göre tahsilat ---- */
-  function fpCustCol(c,ym,A){
+  /* ---- müşteri cirosu: iş bazlı satış + her işin kendi vadesi ---- */
+  function fpDays(str){var m=String(str==null?"":str).match(/\d+/g); return m?m.map(Number):[]}
+  function fpCustJobs(c,ym){return (c.jobs&&c.jobs[ym])||[]}
+  function fpCustSale(c,ym){var s2=0; fpCustJobs(c,ym).forEach(function(j){s2+=+j.a||0}); return s2}
+  function fpJobSplit(c,j){var ds=fpDays(j.d); if(ds.length)return ds.map(function(d){return {p:100/ds.length,d:d}}); return (c.split&&c.split.length)?c.split:[{p:100,d:0}]}
+  function fpCustCol(c,ym){
     var y=+ym.slice(0,4), m=+ym.slice(5)-1, dim=new Date(y,m+1,0).getDate(), inv=new Date(y,m,Math.min(dim,Math.max(1,+c.fday||15))), out=[];
-    (c.split&&c.split.length?c.split:[{p:100,d:0}]).forEach(function(sp){var pc=+sp.p||0; if(!(pc>0))return; var d=new Date(inv.getTime()); d.setDate(d.getDate()+(+sp.d||0)+(+c.delay||0)); out.push({idx:d.getFullYear()*12+d.getMonth(),day:d.getDate(),amt:A*pc/100})});
+    fpCustJobs(c,ym).forEach(function(j){var A=+j.a||0; if(!(A>0))return;
+      fpJobSplit(c,j).forEach(function(sp){var pc=+sp.p||0; if(!(pc>0))return; var d=new Date(inv.getTime()); d.setDate(d.getDate()+(+sp.d||0)+(+c.delay||0)); out.push({idx:d.getFullYear()*12+d.getMonth(),day:d.getDate(),amt:A*pc/100})})});
     return out;
   }
   function fpCustTerm(c){
     var sp=(c.split&&c.split.length?c.split:[{p:100,d:0}]).filter(function(x){return +x.p>0}), dl=+c.delay||0, w=0, tp=0; sp.forEach(function(x){w+=(+x.p)*(+x.d||0); tp+=+x.p});
     var txt=sp.length===1?((+sp[0].d)?sp[0].d+" gün":"Peşin"):sp.map(function(x){return "%"+Math.round(x.p)+" "+((+x.d)?x.d+"g":"peşin")}).join(" · ");
-    return {txt:txt+(dl?" +"+dl+"g gecikme":""),avg:tp>0?Math.round(w/tp+dl):0};
+    return {txt:txt+(dl?" +"+dl+"g gecikme":""),avg:tp>0?Math.round(w/tp+dl):0,short:sp.length===1?((+sp[0].d)?sp[0].d+" gün":"peşin"):"karma"};
   }
   function fpCustData(y){
-    var P=fpEnsure(), rows=P.cust.rows, per={}, minK=null; // per[c.id]={sale:[12],col:[12],openSale,openCol}
-    rows.forEach(function(c){var o={sale:[0,0,0,0,0,0,0,0,0,0,0,0],col:[0,0,0,0,0,0,0,0,0,0,0,0],pre:0};
-      Object.keys(c.vals||{}).forEach(function(ym){var A=+c.vals[ym]||0; if(!(A>0))return; var si=fpY(ym); if(isNaN(si))return;
+    var P=fpEnsure(), per={};
+    P.cust.rows.forEach(function(c){var o={sale:[0,0,0,0,0,0,0,0,0,0,0,0],col:[0,0,0,0,0,0,0,0,0,0,0,0],pre:0,wd:0,ws:0};
+      Object.keys(c.jobs||{}).forEach(function(ym){var A=fpCustSale(c,ym); if(!(A>0))return; var si=fpY(ym); if(isNaN(si))return;
         if(Math.floor(si/12)===y)o.sale[si%12]+=A; else if(si<y*12)o.pre+=A;
-        fpCustCol(c,ym,A).forEach(function(e){if(Math.floor(e.idx/12)===y)o.col[e.idx%12]+=e.amt; else if(e.idx<y*12)o.pre-=e.amt})});
+        fpCustJobs(c,ym).forEach(function(j){var a2=+j.a||0; if(!(a2>0))return; var sp=fpJobSplit(c,j), av=0, tp=0; sp.forEach(function(x){av+=(+x.p||0)*(+x.d||0); tp+=+x.p||0}); o.wd+=a2*((tp>0?av/tp:0)+(+c.delay||0)); o.ws+=a2});
+        fpCustCol(c,ym).forEach(function(e){if(Math.floor(e.idx/12)===y)o.col[e.idx%12]+=e.amt; else if(e.idx<y*12)o.pre-=e.amt})});
       per[c.id]=o});
     return per;
   }
@@ -13961,53 +13982,63 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var P=fpEnsure(), rows=P.cust.rows, per=fpCustData(y), nowI=fpNow(), h='';
     var head='<thead><tr><th class="fpl">Müşteri</th>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){var on=(y*12+m)===nowI; return '<th class="'+(on?'fpnow':'')+'">'+AY[m]+(on?'<i>bu ay</i>':'')+'</th>'}).join("")+'<th class="fpT">Yıllık</th></tr></thead>';
     var tS=new Array(12).fill(0), tC=new Array(12).fill(0), pre=0; rows.forEach(function(c){var o=per[c.id]; pre+=o.pre; for(var m=0;m<12;m++){tS[m]+=o.sale[m]; tC[m]+=o.col[m]}});
-    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>Tahsilat tahmini</h3><small>'+y+' · her müşterinin satışı, vade ayarına göre hangi ayda paraya döner</small></div></div><div class="fpscroll"><table class="fpt fpt2 fpg">'+head+'<tbody>';
+    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>Tahsilat tahmini</h3><small>'+y+' · her işin parası, kendi vadesine göre hangi ayda geliyor</small></div></div><div class="fpscroll"><table class="fpt fpt2 fpg">'+head+'<tbody>';
     rows.forEach(function(c){var o=per[c.id], t=0; o.col.forEach(function(v){t+=v}); h+='<tr class="fprow"><td class="fpl"><b style="padding-left:12px">'+esc(c.name)+'</b></td>'+o.col.map(function(v,m){return '<td class="'+((y*12+m)===nowI?'fpnow':'')+'">'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(t)+'</td></tr>'});
     var sT=0, cT=0; tS.forEach(function(v){sT+=v}); tC.forEach(function(v){cT+=v});
-    h+='<tr class="fptot in"><td class="fpl">Toplam satış (fatura)</td>'+tS.map(function(v){return '<td>'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(sT)+'</td></tr>';
+    h+='<tr class="fptot in"><td class="fpl">Toplam satış (iş)</td>'+tS.map(function(v){return '<td>'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(sT)+'</td></tr>';
     h+='<tr class="fpclose"><td class="fpl">Toplam tahsilat</td>'+tC.map(function(v,m){return '<td class="'+((y*12+m)===nowI?'fpnow':'')+'">'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(cT)+'</td></tr>';
     var bal=pre; h+='<tr class="fpmarj"><td class="fpl">Açık alacak (ay sonu)</td>'+tS.map(function(v,m){bal+=v-tC[m]; return '<td>'+fpC(bal)+'</td>'}).join("")+'<td class="fpT">'+fpC(bal)+'</td></tr></tbody></table></div>';
-    h+='<p class="fvp-t">Açık alacak: kesilen ama henüz tahsil edilmemiş tutar. '+(pre>0?'Önceki yıllardan devreden: <b>'+fvMcT(pre)+'</b>. ':'')+'Tahsilat, fatura günü + vade günü + ortalama gecikme ile hesaplanır.</p></div>';
-    // müşteri özeti
-    var items=rows.map(function(c){var o=per[c.id], s2=0, c2=0; o.sale.forEach(function(v){s2+=v}); o.col.forEach(function(v){c2+=v}); return {c:c,s:s2,col:c2,open:o.pre+s2-c2,term:fpCustTerm(c)}}).filter(function(x){return x.s>0||x.open>0}).sort(function(a,b){return b.s-a.s});
-    h+='<div class="fvcard fpc2" id="fvcsum"><div class="fpch"><div><h3>Müşteri özeti</h3><small>'+y+' · satış, tahsilat, yıl sonu açık bakiye ve ortalama vade</small></div></div>'+(items.length?'<div class="fvcsl">'+items.map(function(x,i){var pc=sT>0?Math.round(x.s/sT*100):0; return '<button type="button" class="fvrk fvcr" data-fva="cedit" data-id="'+x.c.id+'"><span class="no">'+(i+1)+'</span><span class="n"><b>'+esc(x.c.name)+'</b><small>%'+pc+' pay · vade: '+esc(x.term.txt)+' · ort. '+x.term.avg+' gün</small></span><span class="cs"><small>Satış</small><b>'+fvA(x.s)+'</b></span><span class="cs"><small>Tahsilat</small><b>'+fvA(x.col)+'</b></span><span class="cs"><small>Açık bakiye</small><b>'+fvA(x.open)+'</b></span><span class="bar"><i class="ok" style="width:'+Math.max(2,pc)+'%"></i></span></button>'}).join("")+'</div>':'<div class="fvnone">Müşteri satışı yazdıkça burada özetlenir.</div>')+'</div>';
+    h+='<p class="fvp-t">Açık alacak: iş yapılmış ama parası henüz gelmemiş tutar. '+(pre>0?'Önceki yıllardan devreden: <b>'+fvMcT(pre)+'</b>. ':'')+'Tahsilat tarihi = fatura günü + işin vadesi + ortalama gecikme.</p></div>';
+    var items=rows.map(function(c){var o=per[c.id], s2=0, c2=0; o.sale.forEach(function(v){s2+=v}); o.col.forEach(function(v){c2+=v}); return {c:c,s:s2,col:c2,open:o.pre+s2-c2,avg:o.ws>0?Math.round(o.wd/o.ws):fpCustTerm(c).avg}}).filter(function(x){return x.s>0||x.open>0}).sort(function(a,b){return b.s-a.s});
+    h+='<div class="fvcard fpc2" id="fvcsum"><div class="fpch"><div><h3>Müşteri özeti</h3><small>'+y+' · satış, tahsilat, yıl sonu açık bakiye ve işlerin ortalama vadesi</small></div></div>'+(items.length?'<div class="fvcsl">'+items.map(function(x,i){var pc=sT>0?Math.round(x.s/sT*100):0; return '<button type="button" class="fvrk fvcr" data-fva="cedit" data-id="'+x.c.id+'"><span class="no">'+(i+1)+'</span><span class="n"><b>'+esc(x.c.name)+'</b><small>%'+pc+' pay · işlerin ortalama vadesi '+x.avg+' gün</small></span><span class="cs"><small>Satış</small><b>'+fvA(x.s)+'</b></span><span class="cs"><small>Tahsilat</small><b>'+fvA(x.col)+'</b></span><span class="cs"><small>Açık bakiye</small><b>'+fvA(x.open)+'</b></span><span class="bar"><i class="ok" style="width:'+Math.max(2,pc)+'%"></i></span></button>'}).join("")+'</div>':'<div class="fvnone">Müşteri işi yazdıkça burada özetlenir.</div>')+'</div>';
     return h;
   }
   function fpCustLive(){
-    var P=fpEnsure(), y=fpYear(), cum=0; var per=fpCustData(y);
-    for(var m=0;m<12;m++){var ym=y+"-"+pad(m+1), s2=0; P.cust.rows.forEach(function(r){s2+=+r.vals[ym]||0}); cum+=s2; var e=document.querySelector('#fv [data-cgt="'+ym+'"]'); if(e)e.innerHTML=fpC(s2)}
-    P.cust.rows.forEach(function(r){var t=0; for(var m2=0;m2<12;m2++)t+=+r.vals[y+"-"+pad(m2+1)]||0; var e=document.querySelector('#fv [data-cgr="'+r.id+'"]'); if(e)e.innerHTML=fpC(t); cum+=0});
-    var all=0; P.cust.rows.forEach(function(r){for(var m3=0;m3<12;m3++)all+=+r.vals[y+"-"+pad(m3+1)]||0}); var A=document.querySelector('#fv [data-cgall]'); if(A)A.innerHTML=fpC(all); var Y=document.querySelector('#fv [data-cgy]'); if(Y)Y.innerHTML=fvA(all);
+    var P=fpEnsure(), y=fpYear(), all=0;
+    for(var m=0;m<12;m++){var ym=y+"-"+pad(m+1), s2=0; P.cust.rows.forEach(function(r){s2+=fpCustSale(r,ym)}); all+=s2; var e=document.querySelector('#fv [data-cgt="'+ym+'"]'); if(e)e.innerHTML=fpC(s2)}
+    P.cust.rows.forEach(function(r){var t=0; for(var m2=0;m2<12;m2++)t+=fpCustSale(r,y+"-"+pad(m2+1)); var e=document.querySelector('#fv [data-cgr="'+r.id+'"]'); if(e)e.innerHTML=fpC(t)});
+    var A=document.querySelector('#fv [data-cgall]'); if(A)A.innerHTML=fpC(all); var Y=document.querySelector('#fv [data-cgy]'); if(Y)Y.innerHTML=fvA(all);
     var T=document.querySelector('#fv [data-ctabs]'); if(T)T.innerHTML=fpCustTables(y);
   }
   function fpCust(sim,y){
     var P=fpEnsure(), rows=P.cust.rows, nowI=fpNow(), h='';
-    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>Müşteri cirosu</h3><small>'+y+' · her müşterinin aylık satışını (fatura tutarını) yaz; ödeme vadesi müşteriye göre ayarlanır</small></div><button type="button" class="btn sm" data-fva="cadd">+ Müşteri ekle</button></div>';
-    if(!rows.length)return h+'<div class="fvempty" style="padding:30px 22px"><h3>Henüz müşteri yok</h3><p>“+ Müşteri ekle” ile müşteriyi aç, ödeme vadesini seç (peşin, 30-60-90 gün, çek…). Sonra her ayın satışını tabloya yaz; paranın hangi ayda geleceği altta kendiliğinden hesaplanır.</p><button type="button" class="btn" data-fva="cadd">+ Müşteri ekle</button></div></div>';
-    h+='<div class="fpscroll"><table class="fpt fpt2 fpg"><thead><tr><th class="fpl">Müşteri · vade</th>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){var on=(y*12+m)===nowI; return '<th class="'+(on?'fpnow':'')+'">'+AY[m]+(on?'<i>bu ay</i>':'')+'</th>'}).join("")+'<th class="fpT">Yıllık</th></tr></thead><tbody>';
+    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>Müşteri cirosu</h3><small>'+y+' · müşteri ve ay seç, işin tutarını ve vadesini (gün) yaz — her işin vadesi ayrı olabilir</small></div><button type="button" class="btn sm" data-fva="cadd">+ Müşteri ekle</button></div>';
+    if(!rows.length)return h+'<div class="fvempty" style="padding:30px 22px"><h3>Henüz müşteri yok</h3><p>“+ Müşteri ekle” ile müşteriyi aç. Sonra hangi ayda ne kadarlık iş yaptığını ve o işin vadesini (kaç gün sonra ödeme) tabloya yaz; paranın hangi ayda geleceği altta kendiliğinden hesaplanır.</p><button type="button" class="btn" data-fva="cadd">+ Müşteri ekle</button></div></div>';
+    h+='<div class="fpscroll"><table class="fpt fpt2 fpg fpgj"><thead><tr><th class="fpl">Müşteri</th>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){var on=(y*12+m)===nowI; return '<th class="'+(on?'fpnow':'')+'">'+AY[m]+(on?'<i>bu ay</i>':'')+'</th>'}).join("")+'<th class="fpT">Yıllık</th></tr></thead><tbody>';
     rows.forEach(function(c,ri){var t=0, tm=fpCustTerm(c);
-      h+='<tr class="fprow"><td class="fpl"><div class="fpgw"><span class="fpmv"><button type="button" data-fva="cup" data-id="'+c.id+'" aria-label="Yukarı taşı"'+(ri===0?' disabled':'')+'>▲</button><button type="button" data-fva="cdown" data-id="'+c.id+'" aria-label="Aşağı taşı"'+(ri===rows.length-1?' disabled':'')+'>▼</button></span><button type="button" class="fpgn fpcn" data-fva="cedit" data-id="'+c.id+'" title="Vade ve bilgileri düzenle"><span><b>'+esc(c.name)+'</b><small>'+esc(tm.txt)+'</small></span><i>✎</i></button></div></td>';
-      for(var m=0;m<12;m++){var ym=y+"-"+pad(m+1), v=+c.vals[ym]||0; t+=v; h+='<td class="'+((y*12+m)===nowI?'fpnow':'')+'"><input class="fgi" inputmode="decimal" autocomplete="off" placeholder="–" value="'+(v?esc(Math.round(v).toLocaleString("tr-TR")+" ₺"):"")+'" data-fvpin="ccell" data-r="'+c.id+'" data-ym="'+ym+'" aria-label="'+esc(c.name)+' '+AY[m]+'"></td>'}
+      h+='<tr class="fprow"><td class="fpl"><div class="fpgw"><span class="fpmv"><button type="button" data-fva="cup" data-id="'+c.id+'" aria-label="Yukarı taşı"'+(ri===0?' disabled':'')+'>▲</button><button type="button" data-fva="cdown" data-id="'+c.id+'" aria-label="Aşağı taşı"'+(ri===rows.length-1?' disabled':'')+'>▼</button></span><button type="button" class="fpgn fpcn" data-fva="cedit" data-id="'+c.id+'" title="Müşteriyi düzenle"><span><b>'+esc(c.name)+'</b><small>varsayılan vade: '+esc(tm.short)+'</small></span><i>✎</i></button></div></td>';
+      for(var m=0;m<12;m++){var ym=y+"-"+pad(m+1), jb=fpCustJobs(c,ym), v=fpCustSale(c,ym), multi=jb.length>1, j0=jb[0]||{}, dtx=fpDays(j0.d).join("+"); t+=v;
+        h+='<td class="'+((y*12+m)===nowI?'fpnow':'')+'"><div class="fvjc"><input class="fgi" inputmode="decimal" autocomplete="off" placeholder="–" value="'+(v?esc(Math.round(v).toLocaleString("tr-TR")+" ₺"):"")+'" data-fvpin="ccell" data-r="'+c.id+'" data-ym="'+ym+'" aria-label="'+esc(c.name)+' '+AY[m]+' iş tutarı"'+(multi?' readonly data-fva="cjob"':'')+'><div class="fvjd"><input class="fjd" inputmode="numeric" autocomplete="off" placeholder="'+(tm.short==="karma"?"vade":esc(tm.short))+'" value="'+(multi?jb.length+' iş':(dtx?esc(dtx+" gün"):""))+'" data-fvpin="cdays" data-r="'+c.id+'" data-ym="'+ym+'" aria-label="'+esc(c.name)+' '+AY[m]+' vade günü"'+(multi?' readonly data-fva="cjob"':'')+'><button type="button" class="fjb" data-fva="cjob" data-r="'+c.id+'" data-ym="'+ym+'" title="Bu ayın işlerini ayrı ayrı gir (birden fazla iş)">＋</button></div></div></td>'}
       h+='<td class="fpT" data-cgr="'+c.id+'">'+fpC(t)+'</td></tr>'});
-    var all=0, tr='<tr class="fpclose"><td class="fpl">Aylık satış toplamı</td>'; for(var m2=0;m2<12;m2++){var ym2=y+"-"+pad(m2+1), s2=0; rows.forEach(function(r){s2+=+r.vals[ym2]||0}); all+=s2; tr+='<td class="'+((y*12+m2)===nowI?'fpnow':'')+'" data-cgt="'+ym2+'">'+fpC(s2)+'</td>'}
+    var all=0, tr='<tr class="fpclose"><td class="fpl">Aylık satış toplamı</td>'; for(var m2=0;m2<12;m2++){var ym2=y+"-"+pad(m2+1), s2=0; rows.forEach(function(r){s2+=fpCustSale(r,ym2)}); all+=s2; tr+='<td class="'+((y*12+m2)===nowI?'fpnow':'')+'" data-cgt="'+ym2+'">'+fpC(s2)+'</td>'}
     h+=tr+'<td class="fpT" data-cgall>'+fpC(all)+'</td></tr></tbody></table></div>';
-    h+='<div class="fvgs"><span class="gi"><small>'+y+' yıllık toplam satış</small><b data-cgy>'+fvA(all)+'</b></span></div><p class="fvp-t">Hücreye satış tutarını yaz (Enter: alttaki müşteriye geç). Müşteri adına dokununca ödeme vadesini (örn. 60 gün, %40 peşin + %60 90 gün), fatura gününü ve ortalama gecikmeyi ayarlarsın. Buradaki satışlar <b>Genel ciro</b> sekmesindeki tahminden ayrıdır; ikisini birden doldurursan toplanır.</p></div>';
+    h+='<div class="fvgs"><span class="gi"><small>'+y+' yıllık toplam satış</small><b data-cgy>'+fvA(all)+'</b></span></div><p class="fvp-t">Her hücrede üstte işin tutarı, altta <b>vadesi (gün)</b> var. Örnek: 2.000.000 ₺ / 120 → para 120 gün sonra gelir. Vade boşsa müşterinin varsayılan vadesi geçerli. Çek gibi parçalı ise <b>60+90</b> yaz (yarı yarıya). Aynı ay birden fazla iş varsa <b>＋</b> ile ayrı ayrı gir. Bu satışlar <b>Genel ciro</b> sekmesinden ayrıdır; ikisini birden doldurursan toplanır.</p></div>';
     h+='<div data-ctabs>'+fpCustTables(y)+'</div>';
     return h;
   }
+  function fpJobForm(c,ym){
+    var jb=fpCustJobs(c,ym).slice(), rowsH='', tm=fpCustTerm(c), m=+ym.slice(5)-1;
+    for(var i=0;i<5;i++){var x=jb[i]||{}; rowsH+='<div class="fvcp"><input class="fin" id="fvj-a'+i+'" inputmode="decimal" placeholder="iş tutarı (₺)" value="'+(x.a?esc(String(Math.round(x.a))):"")+'" aria-label="'+(i+1)+'. iş tutarı"><input class="fin" id="fvj-d'+i+'" placeholder="vade gün (örn. 120 ya da 60+90)" value="'+(x.d?esc(fpDays(x.d).join("+")):"")+'" aria-label="'+(i+1)+'. iş vadesi"></div>'}
+    fvModal(c.name+" · "+AY[m]+" "+ym.slice(0,4)+" işleri",'<p class="fvp-t">Bu ay '+esc(c.name)+' için yaptığın her işi ayrı satıra yaz: tutarı ve parasının kaç gün sonra geleceğini. Vade boşsa müşterinin varsayılan vadesi (<b>'+esc(tm.txt)+'</b>) geçerli. Çek gibi parçalı ise <b>60+90</b> (yarı yarıya).</p>'+rowsH,
+      '<button class="btn" data-fva="cjobsave" data-r="'+c.id+'" data-ym="'+ym+'">Kaydet</button>');
+  }
+  function fpJobSave(cid,ym){
+    var P=fpEnsure(), c=P.cust.rows.filter(function(x){return x.id===cid})[0]; if(!c)return; var jb=[];
+    for(var i=0;i<5;i++){var a=fpNum(fvV("fvj-a"+i)), ds=fpDays(fvV("fvj-d"+i)); if(a>0)jb.push({a:a,d:ds.length?ds.join("+"):null})}
+    if(jb.length)c.jobs[ym]=jb; else delete c.jobs[ym];
+    fvSave(); fvModalClose(); fvRender();
+  }
   function fpCustForm(c){
-    var n=!c; c=c||{name:"",fday:15,delay:0,split:[{p:100,d:60}],note:"",vals:{}};
+    var n=!c; c=c||{name:"",fday:15,delay:0,split:[{p:100,d:60}],note:"",jobs:{}};
     var sp=c.split&&c.split.length?c.split:[{p:100,d:0}], rowsH='';
     for(var i=0;i<4;i++){var x=sp[i]||{}; rowsH+='<div class="fvcp"><input class="fin" id="fvc-p'+i+'" inputmode="decimal" placeholder="% pay" value="'+(x.p?esc(String(x.p).replace(".",",")):"")+'" aria-label="'+(i+1)+'. parça yüzdesi"><input class="fin" id="fvc-d'+i+'" inputmode="numeric" placeholder="kaç gün sonra" value="'+(x.p?esc(String(x.d||0)):"")+'" aria-label="'+(i+1)+'. parça gün"></div>'}
-    var ms=c.months||[0,1,2,3,4,5,6,7,8,9,10,11];
     var chips='<div class="fvgm">'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){return '<button type="button" class="fvgmc" data-fva="gmtog" data-m="'+m+'" aria-pressed="'+(n?'true':'false')+'">'+AY[m].slice(0,3)+'</button>'}).join("")+'</div><div class="fvrow" style="gap:8px;margin-top:8px"><button type="button" class="btn ghost sm" data-fva="gmall">Tüm aylara koy</button><button type="button" class="btn ghost sm" data-fva="gmnone">Temizle</button></div>';
     fvModal(n?"Yeni müşteri":c.name+" · düzenle",'<div class="fvgrid2">'+
-      fvF("Müşteri adı","fvc-name",c.name,'autocomplete="off" placeholder="örn. ŞEM LASTİK"','w2')+
-      '<div class="w2"><label class="fl">Ödeme vadesi — para satıştan kaç gün sonra gelir?</label><div class="fvrow" style="gap:6px;flex-wrap:wrap;margin:4px 0 8px"><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="0">Peşin</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="30">30 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="60">60 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="90">90 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="120">120 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="3">30-60-90 eşit</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="c">Çek 60+90</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="c2">%30 peşin + %70 60 gün</button></div>'+rowsH+'<small class="fvnote">Her satır bir ödeme parçası: tutarın yüzde kaçı, satıştan kaç gün sonra gelecek. Toplam %100 olmalı. Çeklerde her çekin vadesini ayrı satır yaz.</small></div>'+
+      fvF("Müşteri adı","fvc-name",c.name,'autocomplete="off" placeholder="müşteri adı"','w2')+
+      '<div class="w2"><label class="fl">Varsayılan vade (işe ayrı vade yazmazsan bu geçerli)</label><div class="fvrow" style="gap:6px;flex-wrap:wrap;margin:4px 0 8px"><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="0">Peşin</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="30">30 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="60">60 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="90">90 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="120">120 gün</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="3">30-60-90 eşit</button><button type="button" class="btn ghost sm" data-fva="cpre" data-pre="c">Çek 60+90</button></div>'+rowsH+'<small class="fvnote">Her satır bir ödeme parçası: tutarın yüzde kaçı, işten kaç gün sonra gelecek. Toplam %100 olmalı. Asıl vadeyi çoğu zaman tabloda her işin altına yazacaksın; burası boş bıraktığın işler için.</small></div>'+
       fvF("Fatura günü (ayın kaçı)","fvc-fday",c.fday||15,'inputmode="numeric"')+
       fvF("Ortalama gecikme (gün)","fvc-delay",c.delay||"",'inputmode="numeric" placeholder="0"')+
-      '<div class="w2"><label class="fl">Birden çok aya aynı satışı yaz (isteğe bağlı)</label>'+chips+'</div>'+
-      fvF("Aylık satış tutarı (₺)","fvc-amt","",'inputmode="decimal" placeholder="boş bırakabilirsin, tabloda yazarsın"','w2')+
+      (n?'<div class="w2"><label class="fl">İlk işleri hemen yaz (isteğe bağlı)</label>'+chips+'</div>'+fvF("Her ay iş tutarı (₺)","fvc-amt","",'inputmode="decimal" placeholder="boş bırakabilirsin"')+fvF("Bu işlerin vadesi (gün)","fvc-jd","",'inputmode="numeric" placeholder="boşsa varsayılan"'):'')+
       fvF("Not (isteğe bağlı)","fvc-note",c.note||"",'autocomplete="off"','w2')+
       '</div>',
       '<button class="btn" data-fva="csave" data-id="'+(c.id||"")+'">Kaydet</button>'+(n?'':'<button class="btn danger" data-fva="cdel" data-id="'+c.id+'">Sil</button>'));
@@ -14017,9 +14048,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var sp=[], tp=0; for(var i=0;i<4;i++){var pc=fpNum(fvV("fvc-p"+i)), dd=Math.max(0,Math.round(fpNum(fvV("fvc-d"+i)))||0); if(pc>0){sp.push({p:pc,d:dd}); tp+=pc}}
     if(!sp.length){msg.textContent="En az bir ödeme parçası yaz (örn. %100, 60 gün)."; return}
     if(Math.abs(tp-100)>0.5){msg.textContent="Yüzdelerin toplamı %100 olmalı (şu an %"+Math.round(tp*10)/10+")."; return}
-    var c=id?P.cust.rows.filter(function(x){return x.id===id})[0]:null; if(!c){c={id:uid(),vals:{}}; P.cust.rows.unshift(c)}
+    var c=id?P.cust.rows.filter(function(x){return x.id===id})[0]:null; if(!c){c={id:uid(),jobs:{}}; P.cust.rows.unshift(c)}
     c.name=name; c.split=sp; c.fday=Math.min(31,Math.max(1,Math.round(fpNum(fvV("fvc-fday")))||15)); c.delay=Math.max(0,Math.round(fpNum(fvV("fvc-delay")))||0); c.note=fvV("fvc-note").trim();
-    var amt=fpNum(fvV("fvc-amt")); if(amt>0)[].slice.call(document.querySelectorAll('#fvmodal .fvgmc[aria-pressed="true"]')).forEach(function(b){c.vals[y+"-"+pad(+b.dataset.m+1)]=amt});
+    if(!id){var amt=fpNum(fvV("fvc-amt")), jd=fpDays(fvV("fvc-jd")); if(amt>0)[].slice.call(document.querySelectorAll('#fvmodal .fvgmc[aria-pressed="true"]')).forEach(function(b){c.jobs[y+"-"+pad(+b.dataset.m+1)]=[{a:amt,d:jd.length?jd.join("+"):null}]})}
     fvSave(); fvModalClose(); fvRender();
   }
   /* ---- toplam gider: nakit + hammadde ---- */
@@ -14290,7 +14321,11 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     else if(k==="bcash"){var v=String(t.value).trim(); P.base.cash=v===""?null:fpNum(v)}
     else if(k==="binc"){P.inc=!!t.checked}
     else if(k==="sales"){var n=fpNum(t.value); if(n>0)P.sales[t.dataset.ym]=n; else delete P.sales[t.dataset.ym]}
-    else if(k==="ccell"){var cr2=P.cust.rows.filter(function(x){return x.id===t.dataset.r})[0]; if(!cr2)return; var cv=fpNum(t.value); if(cv>0)cr2.vals[t.dataset.ym]=cv; else delete cr2.vals[t.dataset.ym]; t.value=cv>0?Math.round(cv).toLocaleString("tr-TR")+" ₺":""; fvSave(); fpCustLive(); return}
+    else if(k==="ccell"||k==="cdays"){
+      var cr2=P.cust.rows.filter(function(x){return x.id===t.dataset.r})[0]; if(!cr2)return; var ym0=t.dataset.ym, jb=cr2.jobs[ym0]||(cr2.jobs[ym0]=[]); if(jb.length>1)return;
+      if(k==="ccell"){var cv=fpNum(t.value); if(cv>0){if(jb.length)jb[0].a=cv; else jb.push({a:cv,d:null})} else if(jb.length&&jb[0].d)jb[0].a=0; else jb.length=0; t.value=cv>0?Math.round(cv).toLocaleString("tr-TR")+" ₺":""}
+      else{var ds=fpDays(t.value), dstr=ds.length?ds.join("+"):null; if(jb.length)jb[0].d=dstr; else if(dstr)jb.push({a:0,d:dstr}); t.value=dstr?dstr+" gün":""; if(jb.length&&!(jb[0].a>0)&&!jb[0].d)jb.length=0}
+      if(!jb.length)delete cr2.jobs[ym0]; fvSave(); fpCustLive(); return}
     else if(k==="kcell"){var kr=P.kasa.rows.filter(function(x){return x.id===t.dataset.r})[0]; if(!kr)return; var kv=fpNum(t.value); kr.amt=kv>0?kv:0; t.value=kv>0?Math.round(kv).toLocaleString("tr-TR"):""; fvSave(); fpKasaTot(); return}
     else if(k==="gcell"){var gr=fpGFind(t.dataset.r); if(!gr)return; var gv=fpNum(t.value); if(gv>0)gr.vals[t.dataset.ym]=gv; else delete gr.vals[t.dataset.ym]; t.value=gv>0?Math.round(gv).toLocaleString("tr-TR")+" ₺":""; fvSave(); fpGridTot(); return}
     else if(k==="collday"){P.collDay=Math.min(31,Math.max(1,Math.round(fpNum(t.value))||15))}
@@ -14308,6 +14343,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(a==="cedit"||a==="pcustedit"){fpCustForm(P.cust.rows.filter(function(x){return x.id===id})[0]); return true}
     if(a==="csave"){fpCustSave(id); return true}
     if(a==="cdel"){if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return true} P.cust.rows=P.cust.rows.filter(function(x){return x.id!==id}); fvSave(); fvModalClose(); fvRender(); return true}
+    if(a==="cjob"){var cj=P.cust.rows.filter(function(x){return x.id===d.r})[0]; if(cj)fpJobForm(cj,d.ym); return true}
+    if(a==="cjobsave"){fpJobSave(d.r,d.ym); return true}
     if(a==="cup"||a==="cdown"){var cx=-1; P.cust.rows.forEach(function(x,i){if(x.id===id)cx=i}); var cy=cx+(a==="cdown"?1:-1); if(cx>=0&&cy>=0&&cy<P.cust.rows.length){var ct=P.cust.rows[cx]; P.cust.rows[cx]=P.cust.rows[cy]; P.cust.rows[cy]=ct; fvSave(); fvRender()} return true}
     if(a==="cpre"){var pr={"0":[[100,0]],"30":[[100,30]],"60":[[100,60]],"90":[[100,90]],"120":[[100,120]],"3":[[34,30],[33,60],[33,90]],"c":[[50,60],[50,90]],"c2":[[30,0],[70,60]]}[d.pre]||[[100,0]]; for(var i4=0;i4<4;i4++){var pe=$("fvc-p"+i4), de=$("fvc-d"+i4); if(pe)pe.value=pr[i4]?pr[i4][0]:""; if(de)de.value=pr[i4]?pr[i4][1]:""} return true}
     if(a==="kup"||a==="kdown"){var kx=-1; P.kasa.rows.forEach(function(x,i){if(x.id===id)kx=i}); var ky=kx+(a==="kdown"?1:-1); if(kx>=0&&ky>=0&&ky<P.kasa.rows.length){var kt=P.kasa.rows[kx]; P.kasa.rows[kx]=P.kasa.rows[ky]; P.kasa.rows[ky]=kt; fvSave(); fvRender()} return true}
