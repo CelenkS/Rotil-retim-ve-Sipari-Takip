@@ -3326,6 +3326,170 @@ button.doth{border:1px solid color-mix(in srgb,var(--c1) 26%,var(--line))}
 #fv .fpt .fpclose .fpl{background:var(--surface)}
 #fv .fpt td.fpneg{background:color-mix(in srgb,var(--bad) 14%,transparent)}
 #fv .fpz{opacity:.35;font-style:normal}
+/* ---- Finans Merkezi · profesyonel görünüm (geniş ekran + tablo + takvim) ---- */
+html:root:root:root:root #fv{--fvg:color-mix(in srgb,var(--ink) 6%,transparent)}
+html:root:root:root:root #fv.fvhide .fpm{filter:blur(8px);user-select:none}
+html:root:root:root:root #fv .fpm{white-space:nowrap;font-variant-numeric:tabular-nums}
+html:root:root:root:root #fv .fpm small{margin-left:2px;font-size:.78em;opacity:.55;font-weight:700}
+html:root:root:root:root #fv .fvcard{border-radius:20px}
+html:root:root:root:root #fv .fvcard h3{font:800 15px var(--font-head);letter-spacing:.01em}
+/* üst sekmeler */
+html:root:root:root:root #fv .fvtabs:not(.sm){background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px;gap:4px;top:8px;box-shadow:var(--shadow);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);margin-top:12px}
+html:root:root:root:root #fv .fvtabs:not(.sm) button{border:0;background:transparent;border-radius:13px;padding:10px 16px}
+html:root:root:root:root #fv .fvtabs:not(.sm) button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 40%,transparent)}
+html:root:root:root:root #fv .fvtabs.sm button{border-radius:13px}
+/* özet kutuları */
+html:root:root:root:root #fv .fvsum{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
+html:root:root:root:root #fv .fvsm{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:13px 15px 13px 18px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+html:root:root:root:root #fv .fvsm::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ink2);opacity:.35}
+html:root:root:root:root #fv .fvsm.ok::before{background:var(--good);opacity:1}
+html:root:root:root:root #fv .fvsm.bad::before{background:var(--bad);opacity:1}
+html:root:root:root:root #fv .fvsm.warn::before{background:var(--warn,#e0a020);opacity:1}
+html:root:root:root:root #fv .fvsm small{display:block;font:800 10.5px var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+html:root:root:root:root #fv .fvsm b{display:block;margin-top:3px;font:800 21px/1.15 var(--font-head);font-variant-numeric:tabular-nums;color:var(--ink)}
+html:root:root:root:root #fv .fvsm em{display:block;margin-top:2px;font:600 12px var(--font-ui);font-style:normal;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:720px){html:root:root:root:root #fv .fvkpis{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}}
+/* araç çubuğu */
+html:root:root:root:root #fv .fvbar{align-items:center}
+html:root:root:root:root #fv .fvsort{display:flex;align-items:center;gap:8px;font:800 11px var(--font-ui);color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+html:root:root:root:root #fv .fvsort select{width:auto;padding:9px 12px;font:700 13px var(--font-ui);text-transform:none;letter-spacing:0}
+html:root:root:root:root #fv .fvchips button em{font-style:normal;margin-left:7px;padding:1px 7px;border-radius:99px;background:var(--fvg);font:800 11px var(--font-ui)}
+html:root:root:root:root #fv .fvchips button[aria-pressed="true"] em{background:rgba(255,255,255,.22)}
+/* liste tablosu */
+html:root:root:root:root #fv .fvtbl{--cols:minmax(220px,2.2fr) 170px minmax(190px,1.5fr) 150px 160px}
+html:root:root:root:root #fv .fvtbl.fvtbl3{--cols:minmax(220px,2.4fr) 170px 150px 170px}
+html:root:root:root:root #fv .fvtbl .fvrh{display:none}
+html:root:root:root:root #fv .fvr{display:grid;grid-template-columns:1fr auto;grid-template-areas:"c1 c5" "c2 c5";gap:6px 12px;align-items:center;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:13px 16px;cursor:pointer;color:var(--ink);font:inherit}
+html:root:root:root:root #fv .fvr:hover{background:var(--fvg)}
+html:root:root:root:root #fv .fvr .c1{grid-area:c1;display:flex;flex-direction:column;gap:4px;min-width:0}
+html:root:root:root:root #fv .fvr .c1>b{font:800 14.5px var(--font-ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html:root:root:root:root #fv .fvr .c1>small{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+html:root:root:root:root #fv .fvr .c2{grid-area:c2;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+html:root:root:root:root #fv .fvr .c2 small{font:600 11.5px var(--font-ui);color:var(--ink2)}
+html:root:root:root:root #fv .fvr .c3,html:root:root:root:root #fv .fvr .c4{display:none}
+html:root:root:root:root #fv .fvr .c5{grid-area:c5;font:800 15px var(--font-head);text-align:right}
+html:root:root:root:root #fv .fvtbl3 .fvr{grid-template-areas:"c1 c5" "c2 c5" "c3 c5"}
+html:root:root:root:root #fv .fvtbl3 .fvr .c3{display:block;grid-area:c3}
+html:root:root:root:root #fv .fvpg{display:block;height:7px;border-radius:99px;background:var(--fvg);overflow:hidden}
+html:root:root:root:root #fv .fvpg i{display:block;height:100%;border-radius:99px;background:var(--bad)}
+html:root:root:root:root #fv .fvpg i.ok{background:var(--good)}
+html:root:root:root:root #fv .fvpgt{display:block;margin-top:5px;font:700 11px var(--font-ui);color:var(--ink2)}
+@media (min-width:760px){
+  html:root:root:root:root #fv .fvtbl .fvrh{display:grid;grid-template-columns:var(--cols);gap:14px;padding:11px 16px;border-bottom:1px solid var(--line);font:800 10.5px var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);background:var(--fvg)}
+  html:root:root:root:root #fv .fvtbl .fvrh .r{text-align:right}
+  html:root:root:root:root #fv .fvr{grid-template-columns:var(--cols);grid-template-areas:"c1 c2 c3 c4 c5";gap:14px;padding:12px 16px}
+  html:root:root:root:root #fv .fvtbl3 .fvr{grid-template-areas:"c1 c2 c3 c5"}
+  html:root:root:root:root #fv .fvr .c3,html:root:root:root:root #fv .fvr .c4{display:block;grid-area:auto}
+  html:root:root:root:root #fv .fvr .c4{text-align:right;font:700 13.5px var(--font-ui);color:var(--ink2)}
+  html:root:root:root:root #fv .fvr .c5{font-size:16px}
+  html:root:root:root:root #fv .fvtbl3 .fvr .c3{display:block}
+  html:root:root:root:root #fv .fvr .c1{grid-area:c1}.fvr .c2{grid-area:c2}
+}
+html:root:root:root:root #fv .fvtot{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;font:700 13px var(--font-ui);color:var(--ink2);background:var(--fvg)}
+html:root:root:root:root #fv .fvtot b{font:800 17px var(--font-head);color:var(--ink)}
+/* takvim */
+html:root:root:root:root #fv .fvcalx{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:12px}
+html:root:root:root:root #fv .fvcalx>.fvcard{margin-top:0}
+html:root:root:root:root #fv .fvch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+html:root:root:root:root #fv .fvct h3{margin:0;font:800 26px/1.1 var(--font-head)}
+html:root:root:root:root #fv .fvct h3 span{color:var(--ink2);font-weight:700}
+html:root:root:root:root #fv .fvct small{font:700 12px var(--font-ui);color:var(--ink2)}
+html:root:root:root:root #fv .fvcnav{display:flex;align-items:center;gap:8px}
+html:root:root:root:root #fv .fvcs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+html:root:root:root:root #fv .fvcs.mini{margin:8px 0 10px;grid-template-columns:1fr 1fr}
+html:root:root:root:root #fv .fvcs>span{padding:10px 13px;border-radius:14px;background:var(--fvg);min-width:0}
+html:root:root:root:root #fv .fvcs small{display:block;font:800 10px var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+html:root:root:root:root #fv .fvcs b{display:block;margin-top:2px;font:800 16px var(--font-head);font-variant-numeric:tabular-nums}
+html:root:root:root:root #fv .fvcs .in b{color:var(--good)}html:root:root:root:root #fv .fvcs .out b{color:var(--bad)}
+html:root:root:root:root #fv .fvcal .fvdow,html:root:root:root:root #fv .fvcalcard>.fvdow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}
+html:root:root:root:root #fv .fvdow span{font:800 11px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);text-align:left;padding:2px 8px}
+html:root:root:root:root #fv .fvdow .we{color:var(--bad);opacity:.75}
+html:root:root:root:root #fv .fvcg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+html:root:root:root:root #fv .fvcd{display:flex;flex-direction:column;align-items:stretch;gap:4px;min-height:58px;padding:6px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:left;cursor:pointer;position:relative;font:inherit;transition:transform .12s,box-shadow .12s}
+html:root:root:root:root #fv .fvcd:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.10)}
+html:root:root:root:root #fv .fvcd.om{opacity:.4}
+html:root:root:root:root #fv .fvcd.we{background:color-mix(in srgb,var(--ink) 4%,var(--surface))}
+html:root:root:root:root #fv .fvcd .dn{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font:800 12.5px var(--font-ui)}
+html:root:root:root:root #fv .fvcd.today .dn{background:var(--accent);color:var(--accent-ink)}
+html:root:root:root:root #fv .fvcd.sel{outline:2px solid var(--accent);outline-offset:-1px}
+html:root:root:root:root #fv .fvcd .fvce,html:root:root:root:root #fv .fvcd .fvmore{display:none}
+html:root:root:root:root #fv .fvcd .fvcn{margin-top:auto;align-self:flex-end;font:800 10.5px var(--font-ui);font-variant-numeric:tabular-nums}
+html:root:root:root:root #fv .fvce{align-items:center;justify-content:space-between;gap:6px;padding:3px 7px;border-radius:8px;font:700 11px var(--font-ui);overflow:hidden}
+html:root:root:root:root #fv .fvce.in{background:color-mix(in srgb,var(--good) 15%,transparent)}
+html:root:root:root:root #fv .fvce.out{background:color-mix(in srgb,var(--bad) 14%,transparent)}
+html:root:root:root:root #fv .fvce em{font-style:normal;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+html:root:root:root:root #fv .fvce b{white-space:nowrap;font-variant-numeric:tabular-nums}
+html:root:root:root:root #fv .fvce.in b{color:var(--good)}html:root:root:root:root #fv .fvce.out b{color:var(--bad)}
+html:root:root:root:root #fv .fvmore{font:700 10.5px var(--font-ui);color:var(--ink2);padding-left:4px}
+html:root:root:root:root #fv .fvsh small{font:800 11px var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+html:root:root:root:root #fv .fvsh h3{margin:2px 0 8px;font:800 19px var(--font-head)}
+html:root:root:root:root #fv .fvdh{display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px;padding:6px 2px;border-bottom:1px solid var(--line);font:800 11.5px var(--font-ui);color:var(--ink2);letter-spacing:.03em;text-transform:uppercase}
+html:root:root:root:root #fv .fvdh b{font:800 13px var(--font-head);text-transform:none}
+html:root:root:root:root #fv .fvev{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;width:100%;border:0;background:none;text-align:left;padding:9px 4px;border-bottom:1px solid var(--line);color:var(--ink);cursor:pointer;font:inherit}
+html:root:root:root:root #fv .fvev:hover{background:var(--fvg)}
+html:root:root:root:root #fv .fvev .n{display:flex;flex-direction:column;min-width:0}
+html:root:root:root:root #fv .fvev .n b{font:800 13.5px var(--font-ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html:root:root:root:root #fv .fvev .n small{font:600 11.5px var(--font-ui);color:var(--ink2)}
+html:root:root:root:root #fv .fvev em{font:800 14px var(--font-head);font-style:normal;white-space:nowrap}
+html:root:root:root:root #fv .fvdb{display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:46px;border-radius:13px}
+html:root:root:root:root #fv .fvdb b{font:800 16px/1 var(--font-head)}html:root:root:root:root #fv .fvdb small{font:800 9.5px var(--font-ui);text-transform:uppercase;letter-spacing:.05em;opacity:.8}
+html:root:root:root:root #fv .fvdb.in{background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)}
+html:root:root:root:root #fv .fvdb.out{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+@media (min-width:760px){
+  html:root:root:root:root #fv .fvcd{min-height:98px;padding:8px}
+  html:root:root:root:root #fv .fvcd .fvce,html:root:root:root:root #fv .fvcd .fvmore{display:flex}
+  html:root:root:root:root #fv .fvcd .fvmore{display:block}
+  html:root:root:root:root #fv .fvcd .fvcn{font-size:11px}
+}
+@media (min-width:1100px){
+  html:root:root:root:root #fv .fvcalx{grid-template-columns:minmax(0,1fr) 390px}
+  html:root:root:root:root #fv .fvcalside{align-self:start;position:sticky;top:78px;max-height:calc(100vh - 100px);overflow:auto}
+}
+/* tam sayfa düzen (geniş ekran) */
+@media (min-width:1000px){
+  html:root:root:root:root #fv.wrap{display:block;max-width:none;width:100%}
+  html:root:root:root:root #fv.wrap>*{grid-column:auto}
+  html:root:root:root:root #fv.wrap>.hero.ohero{position:static;max-height:none;overflow:visible;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:28px;padding:16px 28px;border-radius:22px;margin:0}
+  html:root:root:root:root #fv .ohero .obig{display:flex;flex-direction:row;align-items:baseline;gap:14px;margin:0;padding:0;flex:1}
+  html:root:root:root:root #fv .ohero .obig b{font-size:34px;white-space:nowrap}
+  html:root:root:root:root #fv .ohero .hirow{flex:0 0 auto;gap:18px;margin:0}
+  html:root:root:root:root #fv .fvtabs:not(.sm) button{flex:1 1 0;text-align:center}
+  html:root:root:root:root #fv .fvcard{padding:20px 22px}
+  html:root:root:root:root #fv .fvtwo{grid-template-columns:1fr 1fr 1fr}
+}
+html:root:root:root:root #fv .fvev.static{cursor:default}
+html:root:root:root:root #fv .fvev.static:hover{background:none}
+html:root:root:root:root #fv .fvev .n small{font:600 11.5px var(--font-ui);color:var(--ink2)}
+html:root:root:root:root #fv .fvev em{font:800 14px var(--font-head);font-style:normal;white-space:nowrap;font-variant-numeric:tabular-nums}
+html:root:root:root:root #fv .fvio{display:flex;gap:8px;margin-right:10px}
+html:root:root:root:root #fv .fvio span{font:700 12px var(--font-ui);padding:6px 11px;border-radius:99px;border:1px solid var(--line);color:var(--ink2)}
+html:root:root:root:root #fv .fvio b{font-weight:800}
+html:root:root:root:root #fv .fvio .in b{color:var(--good)}html:root:root:root:root #fv .fvio .out b{color:var(--bad)}
+html:root:root:root:root #fv .fvaccts{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+html:root:root:root:root #fv .fvac{padding:16px 18px;border-radius:20px;gap:4px;position:relative;overflow:hidden}
+html:root:root:root:root #fv .fvac b{font:800 15px var(--font-ui)}
+html:root:root:root:root #fv .fvac em{font:800 24px var(--font-head);margin-top:4px}
+html:root:root:root:root #fv .fvacb{display:block;width:100%;height:5px;border-radius:9px;background:var(--line);margin-top:8px;overflow:hidden}
+html:root:root:root:root #fv .fvacb i{display:block;height:100%;background:var(--accent);border-radius:9px}
+html:root:root:root:root #fv .fvacp{text-transform:none!important;letter-spacing:0!important;font:600 11px var(--font-ui)!important}
+html:root:root:root:root #fv .fvmv .fvev:last-child{border-bottom:0}
+html:root:root:root:root #fv .fvbars .fvbr .b{height:9px;border-radius:9px}
+@media (min-width:1000px){html:root:root:root:root #fv .fvtwo.fv2c{grid-template-columns:1fr 1fr;gap:12px}}
+/* plan tablosu: opak yapışkan sütun, nötr zeminler */
+html:root:root:root:root #fv .fpt{font-size:12.5px}
+html:root:root:root:root #fv .fpt .fpl,html:root:root:root:root #fv .fpt th{background:linear-gradient(var(--surface),var(--surface)),var(--bg)}
+html:root:root:root:root #fv .fpt .fpt3{background:var(--fvg)}
+html:root:root:root:root #fv .fpt .fpkey td{background:var(--fvg)}
+html:root:root:root:root #fv .fpt .fpkey .fpl{background:linear-gradient(var(--fvg),var(--fvg)),linear-gradient(var(--surface),var(--surface)),var(--bg)}
+html:root:root:root:root #fv .fpt .fpsub1 .fpl,html:root:root:root:root #fv .fpt .fpclose .fpl{background:linear-gradient(var(--surface),var(--surface)),var(--bg)}
+html:root:root:root:root #fv .fpt td.fpneg{background:color-mix(in srgb,var(--bad) 13%,transparent)}
+html:root:root:root:root #fv table.fpt{min-width:1040px}
+html:root:root:root:root #fv .fvsvg{max-height:320px}
+html:root:root:root:root #fv .fptog{display:flex;gap:6px;justify-content:flex-end;margin:0 0 8px}
+html:root:root:root:root #fv .fptog button{border:1px solid var(--line);background:transparent;color:var(--ink2);border-radius:99px;padding:6px 13px;font:800 12px var(--font-ui)}
+html:root:root:root:root #fv .fptog button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:transparent}
+html:root:root:root:root #fv .fpm.neg{color:var(--bad)}
+@media (min-width:1000px){html:root:root:root:root #fv .fpt th,html:root:root:root:root #fv .fpt td{padding:9px 7px}html:root:root:root:root #fv .fpt .fpl{min-width:150px}}
 :is(#fv,#gg,#ck) .fvgrid2 .fl{display:block;margin-bottom:4px}
 :is(#fv,#gg,#ck) .fvbig{margin:4px 0 12px}
 :is(#fv,#gg,#ck) .fvbig{font:800 30px var(--font-head);font-variant-numeric:tabular-nums}
@@ -5623,7 +5787,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 12:23</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 12:34</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -12969,31 +13133,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     return s;
   }
   /* ---- Takvim ---- */
-  function fvTakvim(T){
-    if(!FV.cal)FV.cal={y:now.getFullYear(),m:now.getMonth()};
-    var y=FV.cal.y, m=FV.cal.m, first=new Date(y,m,1), off=(first.getDay()+6)%7, dim=new Date(y,m+1,0).getDate(), mk=y+"-"+pad(m+1);
-    var ev=fvEvents(), by={}, sumIn=0, sumOut=0;
-    ev.forEach(function(e){if(!e.d)return; (by[e.d]=by[e.d]||[]).push(e); if(fvMk(e.d)===mk){if(e.amt<0)sumOut+=-e.amt; else sumIn+=e.amt}});
-    var h='<div class="fvcard"><div class="fvcalh"><button type="button" class="fvnav" data-fva="calprev" aria-label="Önceki ay">‹</button><div><h3>'+AY[m]+' '+y+'</h3><small>Tahsil <b class="pos">'+fvA(sumIn)+'</b> · Ödeme <b class="neg">'+fvA(sumOut)+'</b></small></div><button type="button" class="fvnav" data-fva="calnext" aria-label="Sonraki ay">›</button></div>';
-    h+='<div class="fvcal"><div class="fvdow">'+["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(function(d){return '<span>'+d+'</span>'}).join("")+'</div><div class="fvgrid">';
-    for(var i=0;i<off;i++)h+='<span class="fvday e"></span>';
-    for(var d=1;d<=dim;d++){
-      var iso=mk+"-"+pad(d), es=by[iso]||[], pin=0, pout=0; es.forEach(function(e){if(e.amt<0)pout+=-e.amt; else pin+=e.amt});
-      h+='<button type="button" class="fvday'+(iso===isoToday()?' today':'')+(iso===FV.calSel?' sel':'')+(es.length?' has':'')+'" data-fva="calsel" data-d="'+iso+'"><b>'+d+'</b>'+(pin?'<i class="pos">'+fvMc(pin,1)+'</i>':'')+(pout?'<i class="neg">'+fvMc(pout,1)+'</i>':'')+'</button>';
-    }
-    h+='</div></div></div>';
-    var sel=FV.calSel&&fvMk(FV.calSel)===mk?FV.calSel:"";
-    if(sel){var es2=(by[sel]||[]); h+='<div class="fvcard"><h3>'+fvDateL(sel)+'</h3>'+(es2.length?es2.map(fvEvRow).join(""):'<div class="fvnone">Bu güne kayıt yok</div>')+'</div>'}
-    else{
-      var list=ev.filter(function(e){return e.d&&fvMk(e.d)===mk}).sort(function(a,b){return a.d<b.d?-1:1});
-      h+='<div class="fvcard"><h3>'+AY[m]+' ayı hareketleri</h3>'+(list.length?list.map(fvEvRow).join(""):'<div class="fvnone">Bu ay için vadesi girilmiş kayıt yok</div>')+'</div>';
-    }
-    var nod=ev.filter(function(e){return !e.d});
-    if(nod.length)h+='<div class="fvcard"><h3>Vadesiz kayıtlar <small>('+nod.length+')</small></h3>'+nod.slice(0,12).map(fvEvRow).join("")+(nod.length>12?'<div class="fvnone">+'+(nod.length-12)+' kayıt daha — Borçlar / Alacaklar sekmesinden vade ata</div>':'')+'</div>';
-    return h;
-  }
   function fvEvRow(e){
-    return '<button type="button" class="fvli" data-fva="evopen" data-k="'+e.k+'" data-id="'+e.id+'"><span><b>'+esc(e.title)+'</b><small>'+(e.d?fvDate(e.d)+' · ':'')+esc(e.sub)+'</small></span><em class="'+(e.amt<0?'neg':'pos')+'">'+(e.amt<0?'−':'+')+fvA(Math.abs(e.amt))+'</em></button>';
+    var sd=e.d?e.d.split("-"):null;
+    return '<button type="button" class="fvev" data-fva="evopen" data-k="'+e.k+'" data-id="'+e.id+'"><span class="fvdb'+(e.amt<0?' out':' in')+'">'+(sd?'<b>'+(+sd[2])+'</b><small>'+AY[+sd[1]-1].slice(0,3)+'</small>':'<b>—</b><small>vade yok</small>')+'</span><span class="n"><b>'+esc(e.title)+'</b><small>'+esc(e.sub)+'</small></span><em class="'+(e.amt<0?'neg':'pos')+'">'+(e.amt<0?'−':'+')+fvA(Math.abs(e.amt))+'</em></button>';
   }
   /* ---- Borçlar ---- */
   function fvPayList(){
@@ -13008,18 +13150,6 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       return true;
     }).sort(function(a,b){var da=a.due||"9999", db2=b.due||"9999"; return da<db2?-1:da>db2?1:fvKalP(b)-fvKalP(a)});
   }
-  function fvBorc(T){
-    var l=fvPayList(), tot=l.reduce(function(a,p){return a+fvKalP(p)},0);
-    var chips=[["","Açık"],["late","Gecikmiş"],["nodue","Vadesiz"],["banka","Banka"],["cek","Çek"],["gr","G.R."],["nakit","Nakit"],["paid","Ödenmiş"]];
-    var h='<div class="fvbar"><input class="search" id="fvq" type="search" autocomplete="off" placeholder="Firma ara…" value="'+esc(FV.q)+'" aria-label="Borç ara"><button class="btn" data-fva="payadd">+ Yeni borç</button><button class="btn ghost" data-fva="bulkdue">Toplu vade</button></div>';
-    h+='<div class="fvchips">'+chips.map(function(c){return '<button type="button" data-fvf="'+c[0]+'" aria-pressed="'+(FV.flt===c[0])+'">'+c[1]+'</button>'}).join("")+'</div>';
-    h+='<div class="fvlist">'+(l.length?l.map(fvPayRow).join(""):'<div class="fvnone">Bu filtrede borç yok.</div>')+'<div class="fvtot"><span>'+l.length+' kayıt</span><b>'+(FV.flt==="paid"?"":"Kalan ")+fvA(tot)+'</b></div></div>';
-    return h;
-  }
-  function fvPayRow(p){
-    var k=fvKalP(p), planned=FV.F.chq.filter(function(c){return c.dir==="in"&&c.assign===p.id&&c.status==="portfoy"});
-    return '<button type="button" class="fvrow2" data-fva="paydet" data-id="'+p.id+'"><span class="n"><b>'+esc(p.firm)+'</b><small>'+(p.via?'<i class="fvp via">'+esc(FV_VIA[p.via]||p.via)+'</i>':'')+(planned.length?'<i class="fvp info">Çek planlı · '+planned.length+'</i>':'')+(p.note?'<i class="fvnt">'+esc(p.note)+'</i>':'')+'</small></span><span class="d">'+fvDuePill(p.due,k)+'</span><span class="a">'+(k>0.005?fvA(k):'<i class="fvp ok">Ödendi</i>')+(+p.paid>0&&k>0.005?'<small>/ '+fvM(p.amt)+'</small>':'')+'</span></button>';
-  }
   /* ---- Alacaklar ---- */
   function fvRecList(vad){
     var q=fold(FV.q.trim()), f=FV.flt;
@@ -13033,53 +13163,129 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       return true;
     }).sort(function(a,b){return fvKalR(b)-fvKalR(a)});
   }
+  /* ---- Çekler ---- */
+  /* ===== ortak bileşenler (Finans Merkezi tasarımı) ===== */
+  var FV_SORTS=[["due","Vadeye göre"],["amt","Tutara göre (büyük → küçük)"],["name","Ada göre (A → Z)"]];
+  function fvSm(lbl,val,sub,tone,isHtml){return '<div class="fvsm '+(tone||"")+'"><small>'+lbl+'</small><b>'+(isHtml?val:fvA(val))+'</b><em>'+sub+'</em></div>'}
+  function fvSortBar(){return '<label class="fvsort"><span>Sırala</span><select id="fvsort" class="fin">'+FV_SORTS.map(function(o){return '<option value="'+o[0]+'"'+((FV.sort||"due")===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join("")+'</select></label>'}
+  function fvSortList(l,kind){
+    var s=FV.sort||"due", amt=function(x){return kind==="pay"?fvKalP(x):kind==="rec"?fvKalR(x):(+x.amt||0)}, nm=function(x){return fold(x.firm||x.cust||x.party||"")};
+    return l.slice().sort(function(a,b){
+      if(s==="amt")return amt(b)-amt(a); if(s==="name")return nm(a)<nm(b)?-1:nm(a)>nm(b)?1:0;
+      var da=a.due||"9999", db2=b.due||"9999"; return da<db2?-1:da>db2?1:amt(b)-amt(a)});
+  }
+  function fvPg(done,total,tone){var p=total>0?Math.max(0,Math.min(100,Math.round(done/total*100))):0; return '<span class="fvpg"><i class="'+(tone||"")+'" style="width:'+p+'%"></i></span><small class="fvpgt">'+(done>0?fvM(done)+' / '+fvM(total):'%'+p)+'</small>'}
+  function fvCount(list,fn){var n=0; list.forEach(function(x){if(fn(x))n++}); return n}
+  /* ===== Borçlar ===== */
+  function fvBorc(T){
+    var l=fvSortList(fvPayList(),"pay"), tot=l.reduce(function(a,p){return a+fvKalP(p)},0), all=FV.F.pay.filter(function(p){return fvKalP(p)>0.005}), today=isoToday();
+    var late=all.filter(function(p){return p.due&&daysTo(p.due)<0}), w7=all.filter(function(p){var n=p.due?daysTo(p.due):null; return n!==null&&n>=0&&n<=7}), nod=all.filter(function(p){return !p.due});
+    var sum=function(a){return a.reduce(function(s,p){return s+fvKalP(p)},0)}, big=all.slice().sort(function(a,b){return fvKalP(b)-fvKalP(a)})[0];
+    var chips=[["","Açık",all.length],["late","Gecikmiş",late.length],["nodue","Vadesiz",nod.length],["banka","Banka",fvCount(all,function(p){return p.via==="banka"})],["cek","Çek",fvCount(all,function(p){return p.via==="cek"})],["gr","G.R.",fvCount(all,function(p){return p.via==="gr"})],["nakit","Nakit",fvCount(all,function(p){return p.via==="nakit"})],["paid","Ödenmiş",fvCount(FV.F.pay,function(p){return fvKalP(p)<=0.005})]];
+    var h='<div class="fvsum">'+fvSm("Toplam açık borç",sum(all),all.length+" firma","bad")+fvSm("Vadesi geçmiş",sum(late),late.length+" kayıt",late.length?"bad":"")+fvSm("7 gün içinde",sum(w7),w7.length+" kayıt","warn")+fvSm("Vadesiz",sum(nod),nod.length+" kayıt","")+fvSm("En büyük borç",big?fvKalP(big):0,big?esc(big.firm):"—","")+'</div>';
+    h+='<div class="fvbar"><input class="search" id="fvq" type="search" autocomplete="off" placeholder="Firma, not veya kanal ara…" value="'+esc(FV.q)+'" aria-label="Borç ara">'+fvSortBar()+'<button class="btn" data-fva="payadd">+ Yeni borç</button><button class="btn ghost" data-fva="bulkdue">Toplu vade</button></div>';
+    h+='<div class="fvchips">'+chips.map(function(c){return '<button type="button" data-fvf="'+c[0]+'" aria-pressed="'+(FV.flt===c[0])+'">'+c[1]+'<em>'+c[2]+'</em></button>'}).join("")+'</div>';
+    h+='<div class="fvlist fvtbl"><div class="fvrh"><span>Firma</span><span>Vade</span><span>Ödeme durumu</span><span class="r">Toplam borç</span><span class="r">Kalan</span></div>'+(l.length?l.map(fvPayRow).join(""):'<div class="fvnone">Bu filtrede borç yok.</div>')+'<div class="fvtot"><span>'+l.length+' kayıt</span><b>'+(FV.flt==="paid"?"":"Kalan ")+fvA(tot)+'</b></div></div>';
+    return h;
+  }
+  function fvPayRow(p){
+    var k=fvKalP(p), planned=FV.F.chq.filter(function(c){return c.dir==="in"&&c.assign===p.id&&c.status==="portfoy"});
+    return '<button type="button" class="fvr" data-fva="paydet" data-id="'+p.id+'"><span class="c1"><b>'+esc(p.firm)+'</b><small>'+(p.via?'<i class="fvp via">'+esc(FV_VIA[p.via]||p.via)+'</i>':'')+(planned.length?'<i class="fvp info">Çek planlı · '+planned.length+'</i>':'')+(p.note?'<i class="fvnt">'+esc(p.note)+'</i>':'')+'</small></span><span class="c2">'+fvDuePill(p.due,k)+(p.due?'<small>'+fvDateL(p.due)+'</small>':'')+'</span><span class="c3">'+fvPg(+p.paid||0,+p.amt||0,k>0.005?"bad":"ok")+'</span><span class="c4 r">'+fvA(p.amt)+'</span><span class="c5 r">'+(k>0.005?fvA(k):'<i class="fvp ok">Ödendi</i>')+'</span></button>';
+  }
+  /* ===== Alacaklar ===== */
   function fvAlacak(T){
-    var l=fvRecList(false), lv=fvRecList(true), tot=l.reduce(function(a,r){return a+fvKalR(r)},0), totv=lv.reduce(function(a,r){return a+fvKalR(r)},0);
-    var chips=[["","Açık"],["late","Tarihi geçen"],["nodue","Tarihsiz"],["paid","Tahsil edilmiş"]];
+    var l=fvSortList(fvRecList(false),"rec"), lv=fvRecList(true), tot=l.reduce(function(a,r){return a+fvKalR(r)},0), totv=lv.reduce(function(a,r){return a+fvKalR(r)},0);
+    var all=FV.F.rec.filter(function(r){return r.kind!=="vadeli"&&fvKalR(r)>0.005}), late=all.filter(function(r){return r.due&&daysTo(r.due)<0}), nod=all.filter(function(r){return !r.due}), mk=monthKeyNow();
+    var thisM=all.filter(function(r){return r.due&&fvMk(r.due)===mk}), sum=function(a){return a.reduce(function(s,r){return s+fvKalR(r)},0)}, big=all.slice().sort(function(a,b){return fvKalR(b)-fvKalR(a)})[0];
+    var chips=[["","Açık",all.length],["late","Tarihi geçen",late.length],["nodue","Tarihsiz",nod.length],["paid","Tahsil edilmiş",fvCount(FV.F.rec,function(r){return r.kind!=="vadeli"&&fvKalR(r)<=0.005})]];
     var dv=['all'].concat((window.__DIVS||[]).map(function(d){return d.id}));
-    var h='<div class="fvbar"><input class="search" id="fvq" type="search" autocomplete="off" placeholder="Müşteri ara…" value="'+esc(FV.q)+'" aria-label="Alacak ara"><button class="btn" data-fva="recadd">+ Yeni alacak</button></div>';
-    h+='<div class="fvchips">'+chips.map(function(c){return '<button type="button" data-fvf="'+c[0]+'" aria-pressed="'+(FV.flt===c[0])+'">'+c[1]+'</button>'}).join("")+'</div>';
-    h+='<div class="fvchips dv">'+dv.map(function(k){var di=k==="all"?null:divInfo(k); return '<button type="button" data-fvd="'+k+'" aria-pressed="'+(FV.div===k)+'">'+(di?esc(di.name):"Hepsi")+'</button>'}).join("")+'</div>';
-    h+='<div class="fvlist">'+(l.length?l.map(fvRecRow).join(""):'<div class="fvnone">Bu filtrede alacak yok.</div>')+'<div class="fvtot"><span>'+l.length+' kayıt</span><b>Kalan '+fvA(tot)+'</b></div></div>';
-    if(lv.length){h+='<div class="fvcard" style="margin-top:14px"><h3>Vadeli / çekli alacak <small>(Excel’deki alt tablo)</small></h3><div class="fvlist flat">'+lv.map(fvRecRow).join("")+'<div class="fvtot"><span>'+lv.length+' kayıt</span><b>'+fvA(totv)+'</b></div></div><small class="fvnote">Bu tutarlar “Toplam alacak”a katılmaz. Net durumuna katmak için Ayarlar’dan aç.</small></div>'}
+    var h='<div class="fvsum">'+fvSm("Toplam açık alacak",sum(all),all.length+" müşteri","ok")+fvSm("Tarihi geçen",sum(late),late.length+" kayıt",late.length?"bad":"")+fvSm("Bu ay vadesi gelen",sum(thisM),thisM.length+" kayıt","warn")+fvSm("Tarihsiz",sum(nod),nod.length+" kayıt","")+fvSm("En büyük alacak",big?fvKalR(big):0,big?esc(big.cust):"—","")+'</div>';
+    h+='<div class="fvbar"><input class="search" id="fvq" type="search" autocomplete="off" placeholder="Müşteri veya not ara…" value="'+esc(FV.q)+'" aria-label="Alacak ara">'+fvSortBar()+'<button class="btn" data-fva="recadd">+ Yeni alacak</button></div>';
+    h+='<div class="fvchips">'+chips.map(function(c){return '<button type="button" data-fvf="'+c[0]+'" aria-pressed="'+(FV.flt===c[0])+'">'+c[1]+'<em>'+c[2]+'</em></button>'}).join("")+'</div>';
+    h+='<div class="fvchips dv">'+dv.map(function(k){var di=k==="all"?null:divInfo(k); return '<button type="button" data-fvd="'+k+'" aria-pressed="'+(FV.div===k)+'">'+(di?esc(di.name):"Tüm bölümler")+'</button>'}).join("")+'</div>';
+    h+='<div class="fvlist fvtbl"><div class="fvrh"><span>Müşteri</span><span>Vade</span><span>Tahsilat durumu</span><span class="r">Toplam alacak</span><span class="r">Kalan</span></div>'+(l.length?l.map(fvRecRow).join(""):'<div class="fvnone">Bu filtrede alacak yok.</div>')+'<div class="fvtot"><span>'+l.length+' kayıt</span><b>Kalan '+fvA(tot)+'</b></div></div>';
+    if(lv.length){h+='<div class="fvcard" style="margin-top:14px"><h3>Vadeli / çekli alacak <small>(Excel’deki alt tablo)</small></h3><div class="fvlist fvtbl flat">'+lv.map(fvRecRow).join("")+'<div class="fvtot"><span>'+lv.length+' kayıt</span><b>'+fvA(totv)+'</b></div></div><small class="fvnote">Bu tutarlar “Toplam alacak”a katılmaz. Net durumuna katmak için Ayarlar’dan aç.</small></div>'}
     return h;
   }
   function fvRecRow(r){
     var k=fvKalR(r), range=r.dueFrom&&r.due?(fvDate(r.dueFrom)+" – "+fvDate(r.due)):"";
-    return '<button type="button" class="fvrow2" data-fva="recdet" data-id="'+r.id+'"><span class="n"><b>'+esc(r.cust)+'</b><small>'+(r.div?'<i class="fvp via">'+esc(fvDivName(r.div))+'</i>':'')+(r.note?'<i class="fvnt">'+esc(r.note)+'</i>':'')+'</small></span><span class="d">'+(range&&k>0.005?'<i class="fvp info">'+range+'</i>':fvDuePill(r.due,k).replace("Vade yok","Tarih yok"))+'</span><span class="a">'+(k>0.005?fvA(k):'<i class="fvp ok">Tahsil edildi</i>')+(+r.got>0&&k>0.005?'<small>/ '+fvM(r.amt)+'</small>':'')+'</span></button>';
+    return '<button type="button" class="fvr" data-fva="recdet" data-id="'+r.id+'"><span class="c1"><b>'+esc(r.cust)+'</b><small>'+(r.div?'<i class="fvp via">'+esc(fvDivName(r.div))+'</i>':'')+(r.note?'<i class="fvnt">'+esc(r.note)+'</i>':'')+'</small></span><span class="c2">'+(range&&k>0.005?'<i class="fvp info">'+range+'</i>':fvDuePill(r.due,k).replace("Vade yok","Tarih yok"))+(r.due&&!range?'<small>'+fvDateL(r.due)+'</small>':'')+'</span><span class="c3">'+fvPg(+r.got||0,+r.amt||0,"ok")+'</span><span class="c4 r">'+fvA(r.amt)+'</span><span class="c5 r">'+(k>0.005?fvA(k):'<i class="fvp ok">Tahsil edildi</i>')+'</span></button>';
   }
-  /* ---- Çekler ---- */
+  /* ===== Çekler ===== */
   function fvCek(T){
     var dir=FV.ctab, list=FV.F.chq.filter(function(c){return c.dir===dir}), showAll=FV.flt==="all";
-    var act=dir==="in"?["portfoy","bekleniyor"]:["verildi"];
-    var l=list.filter(function(c){return showAll||act.indexOf(c.status)>-1}).sort(function(a,b){var da=a.due||"9999", db2=b.due||"9999"; return da<db2?-1:da>db2?1:0});
+    var act=dir==="in"?["portfoy","bekleniyor"]:["verildi"], today=isoToday(), mk=monthKeyNow();
+    var actL=list.filter(function(c){return act.indexOf(c.status)>-1}), l=fvSortList(list.filter(function(c){return showAll||act.indexOf(c.status)>-1}),"chq");
     var tot=l.reduce(function(a,c){return a+(+c.amt||0)},0), months={};
     l.forEach(function(c){var k=c.due?fvMk(c.due):"yok"; months[k]=(months[k]||0)+(+c.amt||0)});
+    var sumA=actL.reduce(function(a,c){return a+(+c.amt||0)},0), thisM=actL.filter(function(c){return c.due&&fvMk(c.due)===mk}), lateC=actL.filter(function(c){return c.due&&c.due<today}), nxt=actL.filter(function(c){return c.due&&c.due>=today}).sort(function(a,b){return a.due<b.due?-1:1})[0], bigC=actL.slice().sort(function(a,b){return (+b.amt||0)-(+a.amt||0)})[0];
+    var sm=function(a){return a.reduce(function(s,c){return s+(+c.amt||0)},0)};
     var h='<div class="fvtabs sm"><button type="button" data-fvct="in" aria-pressed="'+(dir==="in")+'">Alınan çekler <em>'+FV.F.chq.filter(function(c){return c.dir==="in"&&(c.status==="portfoy"||c.status==="bekleniyor")}).length+'</em></button><button type="button" data-fvct="out" aria-pressed="'+(dir==="out")+'">Verilen çekler <em>'+FV.F.chq.filter(function(c){return c.dir==="out"&&c.status==="verildi"}).length+'</em></button></div>';
-    h+='<div class="fvbar"><span class="fvgrow"></span><button class="btn" data-fva="chqadd">+ '+(dir==="in"?"Alınan":"Verilen")+' çek</button></div>';
-    h+='<div class="fvchips"><button type="button" data-fvf="" aria-pressed="'+(!showAll)+'">Aktif</button><button type="button" data-fvf="all" aria-pressed="'+showAll+'">Tümü</button></div>';
-    var mk=Object.keys(months).sort();
-    if(mk.length)h+='<div class="fvmonths">'+mk.map(function(k){var lbl=k==="yok"?"Vadesiz":(AY[+k.slice(5)-1].slice(0,3)+" "+k.slice(2,4)); return '<span><small>'+lbl+'</small><b>'+fvA(months[k])+'</b></span>'}).join("")+'</div>';
-    h+='<div class="fvlist">'+(l.length?l.map(fvChqRow).join(""):'<div class="fvnone">'+(dir==="in"?"Portföyde çek yok.":"Verilmiş çek yok.")+'</div>')+'<div class="fvtot"><span>'+l.length+' çek</span><b>'+fvA(tot)+'</b></div></div>';
+    h+='<div class="fvsum">'+fvSm(dir==="in"?"Portföydeki çekler":"Ödenecek çekler",sumA,actL.length+" çek",dir==="in"?"ok":"bad")+fvSm("Bu ay vadesi",sm(thisM),thisM.length+" çek","warn")+fvSm("Vadesi geçmiş",sm(lateC),lateC.length+" çek",lateC.length?"bad":"")+fvSm("Sıradaki vade",nxt?(+nxt.amt||0):0,nxt?fvDateL(nxt.due)+" · "+esc(nxt.party||"—"):"—","")+fvSm("En büyük çek",bigC?(+bigC.amt||0):0,bigC?esc(bigC.party||"—"):"—","")+'</div>';
+    h+='<div class="fvbar">'+fvSortBar()+'<span class="fvgrow"></span><button class="btn" data-fva="chqadd">+ '+(dir==="in"?"Alınan":"Verilen")+' çek</button></div>';
+    h+='<div class="fvchips"><button type="button" data-fvf="" aria-pressed="'+(!showAll)+'">Aktif<em>'+actL.length+'</em></button><button type="button" data-fvf="all" aria-pressed="'+showAll+'">Tümü<em>'+list.length+'</em></button></div>';
+    var mks=Object.keys(months).sort();
+    if(mks.length)h+='<div class="fvmonths">'+mks.map(function(k){var lbl=k==="yok"?"Vadesiz":(AY[+k.slice(5)-1].slice(0,3)+" "+k.slice(2,4)); return '<span><small>'+lbl+'</small><b>'+fvA(months[k])+'</b></span>'}).join("")+'</div>';
+    h+='<div class="fvlist fvtbl fvtbl3"><div class="fvrh"><span>Çek sahibi</span><span>Vade</span><span>Durum</span><span class="r">Tutar</span></div>'+(l.length?l.map(fvChqRow).join(""):'<div class="fvnone">'+(dir==="in"?"Portföyde çek yok.":"Verilmiş çek yok.")+'</div>')+'<div class="fvtot"><span>'+l.length+' çek</span><b>'+fvA(tot)+'</b></div></div>';
     return h;
   }
   function fvChqRow(c){
     var st=c.status, tone=(st==="portfoy"||st==="verildi")?"info":(st==="bekleniyor"?"warn":(st==="karsiliksiz"?"bad":"ok")), asg=c.assign?FV.F.pay.filter(function(p){return p.id===c.assign})[0]:null;
-    return '<button type="button" class="fvrow2" data-fva="chqdet" data-id="'+c.id+'"><span class="n"><b>'+esc(c.party||"—")+'</b><small>'+(c.no?'<i class="fvnt">No '+esc(c.no)+'</i>':'')+(c.bank?'<i class="fvnt">'+esc(c.bank)+'</i>':'')+(asg?'<i class="fvp info">→ '+esc(asg.firm)+'</i>':'')+(c.usedTo?'<i class="fvp ok">'+esc(c.usedTo)+' ödemesinde kullanıldı</i>':'')+'</small></span><span class="d">'+(c.status==="portfoy"||c.status==="verildi"||c.status==="bekleniyor"?fvDuePill(c.due,1):'')+'</span><span class="a">'+fvA(c.amt)+'<small><i class="fvp '+tone+'">'+(FV_CST[st]||st)+'</i></small></span></button>';
+    return '<button type="button" class="fvr" data-fva="chqdet" data-id="'+c.id+'"><span class="c1"><b>'+esc(c.party||"—")+'</b><small>'+(c.no?'<i class="fvnt">No '+esc(c.no)+'</i>':'')+(c.bank?'<i class="fvnt">'+esc(c.bank)+'</i>':'')+(asg?'<i class="fvp info">→ '+esc(asg.firm)+'</i>':'')+(c.usedTo?'<i class="fvp ok">'+esc(c.usedTo)+' ödemesinde kullanıldı</i>':'')+'</small></span><span class="c2">'+(c.status==="portfoy"||c.status==="verildi"||c.status==="bekleniyor"?fvDuePill(c.due,1):'')+(c.due?'<small>'+fvDateL(c.due)+'</small>':'')+'</span><span class="c3"><i class="fvp '+tone+'">'+(FV_CST[st]||st)+'</i></span><span class="c5 r">'+fvA(c.amt)+'</span></button>';
+  }
+  /* ===== Takvim ===== */
+  var FV_WD=["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
+  function fvMcT(n){var a=Math.abs(+n||0), s=(+n||0)<0?"−":""; if(a>=1e6)return s+(Math.round(a/1e5)/10).toString().replace(".",",")+" Mn ₺"; if(a>=1e3)return s+Math.round(a/1e3)+" B ₺"; return s+Math.round(a)+" ₺"}
+  function fvTakvim(T){
+    if(!FV.cal)FV.cal={y:now.getFullYear(),m:now.getMonth()};
+    var y=FV.cal.y, m=FV.cal.m, first=new Date(y,m,1), off=(first.getDay()+6)%7, dim=new Date(y,m+1,0).getDate(), mk=y+"-"+pad(m+1), today=isoToday();
+    var ev=fvEvents(), by={}, sumIn=0, sumOut=0, cnt=0;
+    ev.forEach(function(e){if(!e.d)return; (by[e.d]=by[e.d]||[]).push(e); if(fvMk(e.d)===mk){cnt++; if(e.amt<0)sumOut+=-e.amt; else sumIn+=e.amt}});
+    var weeks=Math.ceil((off+dim)/7), h='<div class="fvcalx"><div class="fvcard fvcalcard">';
+    h+='<div class="fvch"><div class="fvct"><h3>'+AY[m]+' <span>'+y+'</span></h3><small>'+cnt+' hareket</small></div><div class="fvcnav"><button type="button" class="fvnav" data-fva="calprev" aria-label="Önceki ay">‹</button><button type="button" class="btn ghost sm" data-fva="caltoday">Bugün</button><button type="button" class="fvnav" data-fva="calnext" aria-label="Sonraki ay">›</button></div></div>';
+    h+='<div class="fvcs"><span class="in"><small>Tahsilat</small><b>'+fvA(sumIn)+'</b></span><span class="out"><small>Ödeme</small><b>'+fvA(sumOut)+'</b></span><span class="net '+(sumIn-sumOut<0?'neg':'pos')+'"><small>Net</small><b>'+fvA(sumIn-sumOut)+'</b></span></div>';
+    h+='<div class="fvdow">'+["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(function(d,i){return '<span'+(i>4?' class="we"':'')+'>'+d+'</span>'}).join("")+'</div><div class="fvcg">';
+    for(var c=0;c<weeks*7;c++){
+      var dt=new Date(y,m,1-off+c), iso=fvIsoOf(dt), inM=dt.getMonth()===m, es=(by[iso]||[]).slice().sort(function(a,b){return Math.abs(b.amt)-Math.abs(a.amt)}), pin=0, pout=0; es.forEach(function(e){if(e.amt<0)pout+=-e.amt; else pin+=e.amt});
+      var net=pin-pout, wk=(c%7)>4;
+      h+='<button type="button" class="fvcd'+(inM?'':' om')+(wk?' we':'')+(iso===today?' today':'')+(iso===FV.calSel?' sel':'')+(es.length?' has':'')+'" data-fva="calsel" data-d="'+iso+'"><span class="dn">'+dt.getDate()+'</span>'+
+        es.slice(0,2).map(function(e){return '<span class="fvce '+(e.amt<0?'out':'in')+'"><em>'+esc(e.title)+'</em><b>'+fvMcT(Math.abs(e.amt))+'</b></span>'}).join("")+(es.length>2?'<span class="fvmore">+'+(es.length-2)+' hareket daha</span>':'')+
+        (es.length?'<span class="fvcn '+(net<0?'neg':'pos')+'">'+(net<0?'−':'+')+fvMcT(Math.abs(net)).replace(" ₺","")+'</span>':'')+'</button>';
+    }
+    h+='</div></div>';
+    var sel=FV.calSel&&fvMk(FV.calSel)===mk?FV.calSel:"";
+    h+='<aside class="fvcard fvcalside">';
+    if(sel){var es2=(by[sel]||[]), sd=sel.split("-"), wd=FV_WD[(new Date(+sd[0],+sd[1]-1,+sd[2]).getDay()+6)%7], di=0, do2=0; es2.forEach(function(e){if(e.amt<0)do2+=-e.amt; else di+=e.amt});
+      h+='<div class="fvsh"><small>'+wd+'</small><h3>'+fvDateL(sel)+'</h3></div>'+(es2.length?'<div class="fvcs mini"><span class="in"><small>Tahsilat</small><b>'+fvA(di)+'</b></span><span class="out"><small>Ödeme</small><b>'+fvA(do2)+'</b></span></div>'+es2.map(fvEvRow).join(""):'<div class="fvnone">Bu güne vadesi gelen kayıt yok</div>')+'<button type="button" class="btn ghost sm" data-fva="calsel" data-d="'+sel+'" style="margin-top:10px">Ay listesine dön</button>';
+    }else{
+      var list=ev.filter(function(e){return e.d&&fvMk(e.d)===mk}).sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:Math.abs(b.amt)-Math.abs(a.amt)});
+      h+='<div class="fvsh"><small>Vadesi gelenler</small><h3>'+AY[m]+' ayı hareketleri</h3></div>';
+      if(!list.length)h+='<div class="fvnone">Bu ay için vadesi girilmiş kayıt yok</div>';
+      else{var lastd="",dsum={}; list.forEach(function(e){dsum[e.d]=(dsum[e.d]||0)+e.amt});
+        list.forEach(function(e){if(e.d!==lastd){lastd=e.d; var sd2=e.d.split("-"); h+='<div class="fvdh"><span>'+(+sd2[2])+' '+AY[+sd2[1]-1]+' · '+FV_WD[(new Date(+sd2[0],+sd2[1]-1,+sd2[2]).getDay()+6)%7]+'</span><b class="'+(dsum[e.d]<0?'neg':'pos')+'">'+(dsum[e.d]<0?'−':'+')+fvA(Math.abs(dsum[e.d]))+'</b></div>'} h+=fvEvRow(e)})}
+    }
+    h+='</aside></div>';
+    var nod=ev.filter(function(e){return !e.d});
+    if(nod.length)h+='<div class="fvcard"><h3>Vadesiz kayıtlar <small>('+nod.length+')</small></h3>'+nod.slice(0,12).map(fvEvRow).join("")+(nod.length>12?'<div class="fvnone">+'+(nod.length-12)+' kayıt daha — Borçlar / Alacaklar sekmesinden vade ata</div>':'')+'</div>';
+    return h;
   }
   /* ---- Hesaplar ---- */
   function fvHesap(T){
     var F=FV.F, h='<div class="fvbar"><span class="fvgrow"></span><button class="btn ghost" data-fva="transfer">Transfer</button><button class="btn" data-fva="acctadd">+ Hesap</button></div>';
     if(!F.accts.length)return h+'<div class="fvcard fvempty"><h3>Henüz hesap yok</h3><p>Banka, kasa ya da G.R. hesabını ekle; bakiyeler net durumuna girer, ödeme ve tahsilatlar hesaplara işlenir.</p></div>';
-    h+='<div class="fvaccts">'+F.accts.map(function(a){return '<button type="button" class="fvac'+(FV.acct===a.id?' sel':'')+'" data-fva="acctsel" data-id="'+a.id+'"><small>'+esc(a.type==="nakit"?"Nakit":"Hesap")+'</small><b>'+esc(a.name)+'</b><em class="'+((+a.bal||0)<0?'neg':'')+'">'+fvA(a.bal)+'</em></button>'}).join("")+'</div>';
+    var tot=0, bank=0, cash=0, nb=0, nc=0; F.accts.forEach(function(a){var v=+a.bal||0; tot+=v; if(a.type==="nakit"){cash+=v; nc++} else {bank+=v; nb++}});
+    h+='<div class="fvsum">'+fvSm("Toplam bakiye",tot,F.accts.length+" hesap",tot<0?"bad":"ok")+fvSm("Banka hesapları",bank,nb+" hesap","")+fvSm("Nakit / kasa",cash,nc+" kasa","")+fvSm("Net finansal durum",T.net!==undefined?T.net:tot,"hesap + alacak + çek − borç",(T.net!==undefined?T.net:tot)<0?"bad":"ok")+'</div>';
+    h+='<div class="fvaccts">'+F.accts.map(function(a){var v=+a.bal||0, pc=tot>0&&v>0?Math.round(v/tot*100):0; return '<button type="button" class="fvac'+(FV.acct===a.id?' sel':'')+'" data-fva="acctsel" data-id="'+a.id+'"><small>'+esc(a.type==="nakit"?"Nakit · kasa":"Banka hesabı")+'</small><b>'+esc(a.name)+'</b><em class="'+(v<0?'neg':'')+'">'+fvA(a.bal)+'</em><span class="fvacb"><i style="width:'+pc+'%"></i></span><small class="fvacp">Toplam bakiyenin %'+pc+'</small></button>'}).join("")+'</div>';
     var sel=fvAcct(FV.acct)||F.accts[0]; FV.acct=sel.id;
-    var mv=F.mov.filter(function(m){return m.acct===sel.id}).slice(0,40);
-    h+='<div class="fvcard"><div class="fvrow"><h3 class="fvgrow">'+esc(sel.name)+' · hareketler</h3><button class="btn ghost sm" data-fva="acctedit" data-id="'+sel.id+'">Düzenle / bakiye düzelt</button></div>'+(mv.length?mv.map(function(m){return '<div class="fvli static"><span><b>'+esc(m.note||"Hareket")+'</b><small>'+fvDate(m.d)+'</small></span><em class="'+(m.amt<0?'neg':'pos')+'">'+(m.amt<0?'−':'+')+fvA(Math.abs(m.amt))+'</em></div>'}).join(""):'<div class="fvnone">Henüz hareket yok. Ödeme ve tahsilatlar burada görünür.</div>')+'</div>';
+    var mv=F.mov.filter(function(m){return m.acct===sel.id}).slice(0,60), gi=0, go=0; mv.forEach(function(m){if(m.amt<0)go+=-m.amt; else gi+=m.amt});
+    h+='<div class="fvcard"><div class="fvrow"><h3 class="fvgrow">'+esc(sel.name)+' · hareketler <small>son '+mv.length+' hareket</small></h3>'+(mv.length?'<span class="fvio"><span class="in">Giriş <b>'+fvMcT(gi)+'</b></span><span class="out">Çıkış <b>'+fvMcT(go)+'</b></span></span>':'')+'<button class="btn ghost sm" data-fva="acctedit" data-id="'+sel.id+'">Düzenle / bakiye düzelt</button></div>'+
+      (mv.length?'<div class="fvmv">'+mv.map(function(m){var d=(m.d||"").split("-"); return '<div class="fvev static"><span class="fvdb '+(m.amt<0?'out':'in')+'"><b>'+(+d[2]||"")+'</b><small>'+(d[1]?AY[+d[1]-1].slice(0,3):"")+'</small></span><span class="n"><b>'+esc(m.note||"Hareket")+'</b><small>'+fvDate(m.d)+'</small></span><em class="'+(m.amt<0?'neg':'pos')+'">'+(m.amt<0?'−':'+')+fvA(Math.abs(m.amt))+'</em></div>'}).join("")+'</div>':'<div class="fvnone">Henüz hareket yok. Ödeme ve tahsilatlar burada görünür.</div>')+'</div>';
     return h;
   }
   /* ---- Raporlar ---- */
   function fvRapor(T){
     var F=FV.F, h='';
+    h+='<div class="fvsum">'+fvSm("Toplam borç",T.borc,T.nBorc+" firma","bad")+fvSm("Vadesi geçmiş borç",T.geciken||0,(T.gecikenN||0)+" kayıt",(T.gecikenN||0)?"bad":"")+fvSm("Toplam alacak",T.alacak,T.nAlacak+" müşteri","ok")+fvSm("Çek portföyü",T.cekIn||0,"verilen: "+fvMcT(T.cekOut||0),"")+'</div>';
     h+='<div class="fvcard"><h3>Borç yaşlandırma</h3>'+fvBars([["Vadesi geçmiş",T.agBorc.gec],["0–7 gün",T.agBorc.h1],["8–30 gün",T.agBorc.h2],["30 günden sonra",T.agBorc.h3],["Vadesiz",T.agBorc.yok]].filter(function(r){return r[1]>0}),T.borc,"bad")+(T.borc?'':'<div class="fvnone">Açık borç yok</div>')+'</div>';
     // aylık vade toplamları
     var ev=fvEvents().filter(function(e){return e.d}), ms={}; ev.forEach(function(e){var k=fvMk(e.d); ms[k]=ms[k]||{in:0,out:0}; if(e.amt<0)ms[k].out+=-e.amt; else ms[k].in+=e.amt});
@@ -13087,7 +13293,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     h+='<div class="fvcard"><h3>Aylara göre vadeler</h3>'+(mk.length?'<div class="fvtable"><div class="fvth"><span>Ay</span><span class="r">Tahsil</span><span class="r">Ödeme</span><span class="r">Fark</span></div>'+mk.map(function(k){var m=ms[k], d=m.in-m.out; return '<div class="fvtr"><span>'+AY[+k.slice(5)-1]+' '+k.slice(0,4)+'</span><span class="r pos">'+fvA(m.in)+'</span><span class="r neg">'+fvA(m.out)+'</span><span class="r '+(d<0?'neg':'pos')+'">'+fvA(d)+'</span></div>'}).join("")+'</div>':'<div class="fvnone">Vadesi girilmiş kayıt yok</div>')+'</div>';
     // en büyük alacaklar
     var tr=F.rec.filter(function(r){return fvKalR(r)>0.005&&r.kind!=="vadeli"}).sort(function(a,b){return fvKalR(b)-fvKalR(a)}).slice(0,10);
-    h+='<div class="fvtwo"><div class="fvcard"><h3>En büyük alacaklar</h3>'+(tr.length?fvBars(tr.map(function(r){return [r.cust,fvKalR(r)]}),T.alacak,"ok"):'<div class="fvnone">Alacak yok</div>')+'</div>';
+    h+='<div class="fvtwo fv2c"><div class="fvcard"><h3>En büyük alacaklar</h3>'+(tr.length?fvBars(tr.map(function(r){return [r.cust,fvKalR(r)]}),T.alacak,"ok"):'<div class="fvnone">Alacak yok</div>')+'</div>';
     var tp=F.pay.filter(function(p){return fvKalP(p)>0.005}).sort(function(a,b){return fvKalP(b)-fvKalP(a)}).slice(0,10);
     h+='<div class="fvcard"><h3>En büyük borçlar</h3>'+(tp.length?fvBars(tp.map(function(p){return [p.firm,fvKalP(p)]}),T.borc,"bad"):'<div class="fvnone">Borç yok</div>')+'</div></div>';
     // aylık durum kaydı
@@ -13316,8 +13522,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   function fpY(ym){var a=String(ym||"").split("-"); if(a.length<2||!+a[0])return NaN; return (+a[0])*12+(+a[1]-1)}
   function fpYm(i){return Math.floor(i/12)+"-"+pad(i%12+1)}
   function fpNow(){return now.getFullYear()*12+now.getMonth()}
-  function fpIn(n){n=Math.round(+n||0); return n===0?'<i class="fpz">·</i>':n.toLocaleString("tr-TR")}
-  function fpC(n){n=Math.round(+n||0); return '<span class="fva '+(n<0?'neg':'')+'">'+(n===0?'<i class="fpz">·</i>':n.toLocaleString("tr-TR"))+'</span>'}
+  function fpIn(n){n=Math.round(+n||0); return n.toLocaleString("tr-TR")}
+  function fpC(n){var k=FV.pk; n=Math.round(+n||0); if(k&&n!==0){var v=Math.round(n/1000); if(v===0)v=n<0?-1:1; return '<span class="fpm '+(n<0?'neg':'')+'"><span class="fpn">'+v.toLocaleString("tr-TR")+'</span><small>B ₺</small></span>'} return n===0?'<i class="fpz">–</i>':'<span class="fpm '+(n<0?'neg':'')+'"><span class="fpn">'+n.toLocaleString("tr-TR")+'</span><small>₺</small></span>'}
   function fpNum(s){var v=String(s==null?"":s).replace(/\./g,"").replace(",","."); var n=parseFloat(v); return isFinite(n)?n:0}
   function fpEnsure(){
     var F=FV.F; if(!F.plan||typeof F.plan!=="object")F.plan={};
@@ -13418,8 +13624,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       '</div>';
     h+='<div class="fvcard"><h3>Aylık nakit akışı</h3>'+fpChart(sim,cols)+'<div class="fplg"><span class="ok">Giriş</span><span class="bad">Çıkış</span><span class="ln">Ay sonu kasa</span></div></div>';
     if(neg.length){var worst=neg.reduce(function(a,c){return sim.close[c.j]<sim.close[a.j]?c:a},neg[0]);
-      h+='<div class="fvcard fpwarn"><h3>Kasa açığı var</h3><p class="fvp-t">'+neg.map(function(c){return AY[c.m]}).join(", ")+' aylarında kasa eksiye düşüyor. En derin açık <b>'+AY[worst.m]+'</b> sonunda <b>'+fpC(sim.close[worst.j])+' ₺</b>. Bu kadar ek kaynak (kredi, tahsilat öne çekme, ödeme erteleme) lazım.</p></div>'}
-    else h+='<div class="fvcard fpok"><h3>Kasa eksiye düşmüyor</h3><p class="fvp-t">En düşük kasa <b>'+AY[minM]+'</b> sonunda <b>'+fpC(minC)+' ₺</b>.</p></div>';
+      h+='<div class="fvcard fpwarn"><h3>Kasa açığı var</h3><p class="fvp-t">'+neg.map(function(c){return AY[c.m]}).join(", ")+' aylarında kasa eksiye düşüyor. En derin açık <b>'+AY[worst.m]+'</b> sonunda <b>'+fpC(sim.close[worst.j])+'</b>. Bu kadar ek kaynak (kredi, tahsilat öne çekme, ödeme erteleme) lazım.</p></div>'}
+    else h+='<div class="fvcard fpok"><h3>Kasa eksiye düşmüyor</h3><p class="fvp-t">En düşük kasa <b>'+AY[minM]+'</b> sonunda <b>'+fpC(minC)+'</b>.</p></div>';
     h+='<div class="fvcard"><h3>Gelir – gider (tahakkuk) <small>kâr/zarar görünümü</small></h3><div class="fvtable fpmini">'+
       '<div class="fvtr"><span>Ciro + bağlantı geliri</span><span class="r pos">'+fpC(pl.rev)+'</span></div>'+
       '<div class="fvtr"><span>Başka gelirler</span><span class="r pos">'+fpC(pl.inc)+'</span></div>'+
@@ -13428,13 +13634,13 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       '<div class="fvtr fpt"><span><b>Net sonuç</b></span><span class="r '+((pl.rev+pl.inc-pl.opex-pl.fin)<0?'neg':'pos')+'"><b>'+fpC(pl.rev+pl.inc-pl.opex-pl.fin)+'</b></span></div></div>'+
       '<p class="fvp-t">Arsa/yatırım alımı ve kredi anaparası kâr hesabına girmez; kasadan çıkar ama gider sayılmaz.</p></div>';
     if(P_hasLoans())h+='<div class="fvcard"><h3>Kredi durumu</h3><div class="fvtable fpmini"><div class="fvtr"><span>Yıl sonu kalan kredi anaparası</span><span class="r neg">'+fpC(loanEnd)+'</span></div></div></div>';
-    if(sim.noDue.n)h+='<div class="fvcard"><h3>Vadesi girilmemiş kayıtlar</h3><p class="fvp-t">Finans Merkezi\'nde vadesi olmadığı için plana katılmayan <b>'+sim.noDue.n+'</b> kayıt var (net etkisi '+fpC(sim.noDue.s)+' ₺). Borçlar/Alacaklar sekmesinden vade verirsen plana girer.</p></div>';
+    if(sim.noDue.n)h+='<div class="fvcard"><h3>Vadesi girilmemiş kayıtlar</h3><p class="fvp-t">Finans Merkezi\'nde vadesi olmadığı için plana katılmayan <b>'+sim.noDue.n+'</b> kayıt var (net etkisi '+fpC(sim.noDue.s)+'). Borçlar/Alacaklar sekmesinden vade verirsen plana girer.</p></div>';
     return h+fpSetCard(sim);
   }
   function P_hasLoans(){return fpEnsure().loans.length>0}
   function fpSetCard(sim){
     var P=fpEnsure(), b=sim.b;
-    return '<div class="fvcard"><h3>Başlangıç ayarı</h3><p class="fvp-t">Plan, başlangıç ayından ileriye doğru hesaplanır. Kasa rakamı boşsa Hesaplar sekmesindeki toplam bakiye (<b>'+fpC(b.auto)+' ₺</b>) kullanılır.</p>'+
+    return '<div class="fvcard"><h3>Başlangıç ayarı</h3><p class="fvp-t">Plan, başlangıç ayından ileriye doğru hesaplanır. Kasa rakamı boşsa Hesaplar sekmesindeki toplam bakiye (<b>'+fpC(b.auto)+'</b>) kullanılır.</p>'+
       '<div class="fvgrid2"><div><label class="fl" for="fvpb-ym">Başlangıç ayı</label><input class="fin" id="fvpb-ym" type="month" value="'+esc(P.base.ym||fpYm(fpNow()))+'" data-fvpin="bym"></div>'+
       '<div><label class="fl" for="fvpb-cash">Başlangıç kasası (₺, boş = otomatik)</label><input class="fin" id="fvpb-cash" inputmode="decimal" value="'+(b.manual?esc(String(b.cash).replace(".",",")):"")+'" placeholder="'+esc(Math.round(b.auto).toLocaleString("tr-TR"))+'" data-fvpin="bcash"></div></div>'+
       '<label class="fvchk"><input type="checkbox" id="fvpb-inc" data-fvpin="binc" '+(P.inc?'checked':'')+'><span>Finans Merkezi\'ndeki mevcut borç, alacak ve çekleri (vadesi belli olanları) plana kat</span></label></div>';
@@ -13466,6 +13672,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       rs.forEach(function(r){var tot=0; o+='<tr class="fprow"><td class="fpl">'+esc(r.label)+'</td>'+cols.map(function(c){var v=c.past?0:r.v[c.j]; tot+=v; return '<td>'+(c.past?'<i class="fpz">–</i>':fpC(v))+'</td>'}).join("")+'<td class="fpt3">'+fpC(tot)+'</td></tr>'});
       return o};
     var rowSum=function(arr){var t=0; cols.forEach(function(c){if(!c.past)t+=arr[c.j]}); return t};
+    h+='<div class="fptog"><button type="button" data-fva="pkfull" aria-pressed="'+(!FV.pk)+'">Tam tutar ₺</button><button type="button" data-fva="pkbin" aria-pressed="'+(!!FV.pk)+'">Bin ₺</button></div>';
     h+='<div class="fvcard fpcard"><div class="fpscroll"><table class="fpt"><thead><tr><th class="fpl">₺</th>'+cols.map(function(c){return '<th>'+AY[c.m].slice(0,3)+'</th>'}).join("")+'<th>Toplam</th></tr></thead><tbody>'+
       '<tr class="fpkey"><td class="fpl">Ay başı kasa</td>'+cols.map(function(c){return '<td>'+(c.past?'<i class="fpz">–</i>':fpC(sim.open[c.j]))+'</td>'}).join("")+'<td></td></tr>'+
       sec("in","GİRİŞLER","fpin")+
@@ -13625,6 +13832,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   }
   function fpAct(a,id,t,d){
     var P=fpEnsure();
+    if(a==="pkfull"){FV.pk=false; fvRender(); return true}
+    if(a==="pkbin"){FV.pk=true; fvRender(); return true}
+    if(a==="caltoday"){FV.cal={y:now.getFullYear(),m:now.getMonth()}; FV.calSel=isoToday(); fvRender(); return true}
     if(a==="pyprev"){FV.py=fpYear()-1; fvRender(); return true}
     if(a==="pynext"){FV.py=fpYear()+1; fvRender(); return true}
     if(a==="paddcat"){fpItemForm(null,id); return true}
@@ -13654,6 +13864,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   $("fv").addEventListener("change",function(e){
     var t=e.target;
     if(t.id==="fvx-src"){fvExecToggle(); fvRecToggle(); return}
+    if(t.id==="fvsort"){FV.sort=t.value; fvRender(); return}
     if(t.id==="fvpi-mode"){fpItemToggle(); return}
     if(t.id==="fvpi-cat"){var sb=$("fvmodal").querySelector('[data-fva="psave"]'); if(sb&&!sb.dataset.id&&FP_CAT[t.value]){$("fvpi-mode").value=FP_CAT[t.value].mode; fpItemToggle()} return}
     if(t.dataset&&t.dataset.fvpin){fpIn2(t); return}
