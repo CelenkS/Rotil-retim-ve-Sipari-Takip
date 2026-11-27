@@ -3573,6 +3573,11 @@ html:root:root:root:root #fv .fpmv button{border:0;background:none;color:var(--i
 html:root:root:root:root #fv .fpmv button:hover:not(:disabled){opacity:1;background:var(--fvg);color:var(--ink)}
 html:root:root:root:root #fv .fpmv button:disabled{opacity:.12;cursor:default}
 html:root:root:root:root #fv .fvkr>.fpgw{grid-column:1}
+html:root:root:root:root #fv .fvgbh{padding:20px 22px 4px}
+html:root:root:root:root #fv .fvgbh h3{margin:0;font:800 17px var(--font-head)}html:root:root:root:root #fv .fvgbh small{color:var(--ink2);font:600 12px var(--font-ui)}
+html:root:root:root:root #fv .fvgbw{padding:6px 16px 6px}
+html:root:root:root:root #fv .fvgbt{padding:10px 8px 2px;border-top:1px solid var(--line);margin-top:6px;font:800 14px var(--font-head)}
+@media (min-width:1000px){html:root:root:root:root #fv .fvgbw .fvrkl{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}html:root:root:root:root #fv .fvgbw .fvgbt{grid-column:1/-1}}
 /* plan tablosu v2 */
 html:root:root:root:root #fv .fpc2{padding:18px 0 14px;overflow:hidden}
 html:root:root:root:root #fv .fpch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 22px 12px;flex-wrap:wrap}
@@ -5935,7 +5940,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 14:14</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 14:15</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13915,6 +13920,11 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   /* ---- aylık gider tablosu (kağıt tablo gibi) ---- */
   function fpGFind(id){var P=fpEnsure(); return P.grid.rows.concat(P.gridIn.rows).filter(function(x){return x.id===id})[0]}
   function fpGList(id){var P=fpEnsure(); return P.grid.rows.some(function(x){return x.id===id})?P.grid.rows:P.gridIn.rows}
+  function fpGridBreak(rows,y,isIn){
+    var list=rows.map(function(r){var t=0; for(var m=0;m<12;m++)t+=+r.vals[y+"-"+pad(m+1)]||0; return {r:r,t:t}}).filter(function(x){return x.t>0}).sort(function(a,b){return b.t-a.t}), tot=0; list.forEach(function(x){tot+=x.t});
+    if(!list.length)return '<div class="fvnone">Tutar yazdıkça '+(isIn?"gelirin nereden geldiği":"paranın neye gittiği")+' burada yüzde ve çubukla görünür.</div>';
+    return '<div class="fvrkl">'+list.map(function(x,i){var pc=Math.round(x.t/tot*100); return '<button type="button" class="fvrk" data-fva="gedit" data-id="'+x.r.id+'"><span class="no">'+(i+1)+'</span><span class="n"><b>'+esc(x.r.name)+'</b><small>%'+pc+' · aylık ortalama '+fvMcT(x.t/12)+'</small></span><em>'+fvA(x.t)+'</em><span class="bar"><i class="'+(isIn?'ok':'bad')+'" style="width:'+Math.max(2,pc)+'%"></i></span></button>'}).join("")+'<div class="fvrow fvgbt"><b class="fvgrow">Toplam</b><b>'+fvA(tot)+'</b></div></div>';
+  }
   function fpGridTot(){
     var P=fpEnsure(), y=fpYear(), cum=0, tot=0, GR=FV.gk==="in"?P.gridIn.rows:P.grid.rows;
     for(var m=0;m<12;m++){var ym=y+"-"+pad(m+1), s=0; GR.forEach(function(r){s+=+r.vals[ym]||0}); cum+=s; tot+=s;
@@ -13922,6 +13932,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     GR.forEach(function(r){var t=0; for(var m=0;m<12;m++)t+=+r.vals[y+"-"+pad(m+1)]||0; var e=document.querySelector('#fv [data-gr="'+r.id+'"]'); if(e)e.innerHTML=fpC(t)});
     var g=document.querySelector('#fv [data-gall]'); if(g)g.innerHTML=fpC(tot);
     var mx=0, mxm=-1, nz=0; for(var q=0;q<12;q++){var qs=0; GR.forEach(function(r){qs+=+r.vals[y+"-"+pad(q+1)]||0}); if(qs>0)nz++; if(qs>mx){mx=qs; mxm=q}}
+    var GB=document.querySelector('#fv [data-gb]'); if(GB)GB.innerHTML=fpGridBreak(GR,y,FV.gk==="in");
     var A=document.querySelector('#fv [data-gy]'); if(A)A.innerHTML=fvA(tot); var B=document.querySelector('#fv [data-gavg]'); if(B)B.innerHTML=fvA(nz?tot/nz:0); var C=document.querySelector('#fv [data-gmax]'); if(C)C.innerHTML=mx>0?fvA(mx)+' <small>'+AY[mxm]+'</small>':'–';
   }
   function fpGrid(sim,y,kind){
@@ -13940,6 +13951,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     h+=tr+'<td class="fpT" data-gall>'+fpC(all)+'</td></tr>'+cr+'<td class="fpT"></td></tr></tbody></table></div>';
     var gnz=0, gmx=0, gmm=-1; for(var q=0;q<12;q++){var qs=0; rows.forEach(function(r){qs+=+r.vals[y+"-"+pad(q+1)]||0}); if(qs>0)gnz++; if(qs>gmx){gmx=qs; gmm=q}}
     h+='<div class="fvgs"><span class="'+(isIn?'gi':'go')+'"><small>'+y+' yıllık toplam '+(isIn?"gelir":"gider")+'</small><b data-gy>'+fvA(all)+'</b></span><span><small>Dolu aylar ortalaması</small><b data-gavg>'+fvA(gnz?all/gnz:0)+'</b></span><span><small>En yüksek ay</small><b data-gmax>'+(gmx>0?fvA(gmx)+' <small>'+AY[gmm]+'</small>':'–')+'</b></span></div>';
+    h+='<div class="fvgbh"><h3>'+y+' · '+(isIn?"gelir nereden geliyor":"neye ne kadar gidiyor")+'</h3><small>Yıllık toplama göre, en büyükten küçüğe</small></div><div class="fvgbw" data-gb>'+fpGridBreak(rows,y,isIn)+'</div>';
     h+='<p class="fvp-t">Hücreye tutarı yaz (Enter: alttaki satıra geç). Soldaki ▲▼ okları satırı yukarı/aşağı taşır (yeni eklenen satır en üstte açılır). Satır adına dokununca adı, hangi aylarda olacağını, ödeme gününü değiştirebilir, tüm seçili aylara aynı tutarı yazabilir ya da satırı silebilirsin. Bu satırlar Aylık tablo, Günlük takvim ve kasa tahminine otomatik girer.</p></div>';
     return h;
   }
