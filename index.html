@@ -5965,7 +5965,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 15:29</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 15:40</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13530,8 +13530,12 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     FV.modal=true; var m=$("fvmodal"); m.hidden=false;
     m.innerHTML='<div class="fvmbd" data-fva="mclose"></div><div class="fvmbox" role="dialog" aria-label="'+esc(title)+'"><div class="fvmh"><h3>'+esc(title)+'</h3><button type="button" class="fvx" data-fva="mclose" aria-label="Kapat">✕</button></div><div class="fvmb">'+body+'</div><div class="fvmsg" id="fvmmsg"></div>'+(foot?'<div class="fvmf">'+foot+'</div>':'')+'</div>';
     var f=m.querySelector("input:not([type=hidden]),select"); if(f&&!/Mobi|iPhone|Android/i.test(navigator.userAgent))try{f.focus()}catch(e){}
+    try{document.documentElement.style.overflow="hidden"}catch(e){} fvVV(); setTimeout(fvVV,120);
+    if(!m.__vvf){m.__vvf=1; m.addEventListener("focusin",function(e){var t=e.target; setTimeout(function(){fvVV(); try{t.scrollIntoView({block:"center"})}catch(x){}},320)})}
   }
-  function fvModalClose(){FV.modal=false; var m=$("fvmodal"); m.hidden=true; m.innerHTML=""}
+  function fvModalClose(){FV.modal=false; var m=$("fvmodal"); m.hidden=true; m.innerHTML=""; m.style.top=""; m.style.height=""; m.style.bottom=""; try{document.documentElement.style.overflow=""}catch(e){}}
+  function fvVV(){var m=$("fvmodal"); if(!m||m.hidden)return; var v=window.visualViewport; if(!v)return; m.style.top=v.offsetTop+"px"; m.style.bottom="auto"; m.style.height=v.height+"px"; var bx=m.querySelector(".fvmbox"); if(bx)bx.style.maxHeight=Math.max(220,v.height-16)+"px"}
+  try{if(window.visualViewport){window.visualViewport.addEventListener("resize",fvVV); window.visualViewport.addEventListener("scroll",fvVV)}}catch(e){}
   function fvV(id){var e=$(id); return e?e.value:""}
   function fvNum(id){var v=String(fvV(id)).replace(/\./g,"").replace(",","."); var n=parseFloat(v); return isFinite(n)?n:0}
   function fvF(lbl,id,val,attrs,cls){return '<div'+(cls?' class="'+cls+'"':'')+'><label class="fl" for="'+id+'">'+lbl+'</label><input class="fin" id="'+id+'" value="'+esc(val==null?"":val)+'" '+(attrs||"")+'></div>'}
@@ -13722,7 +13726,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   };
   var FP_CATK=["maas","kira","sgk","hammadde","enerji","yatirim","diger","gelir","sermaye"];
   var FP_MODE=[["monthly","Her ay"],["once","Bir kez"],["taksit","Taksit (belli ay sayısı)"],["every","Her N ayda bir"],["yearly","Yılda bir"],["pct","Cironun yüzdesi"]];
-  var FP_TABS=[["ozet","Özet"],["kasa","Kasa"],["grid","Nakit giderler"],["ham","Hammadde"],["gtop","Toplam gider"],["gelir","Gelirler"],["tablo","Aylık tablo"],["gun","Günlük takvim"],["kalem","Kalemler"],["cust","Müşteri ciro"],["ciro","Genel ciro"],["cek","Bağlantılar"],["kredi","Krediler"]];
+  var FP_TABS=[["ozet","Özet"],["kasa","Kasa"],["grid","Nakit giderler"],["ham","Hammadde ve değişken giderler"],["gtop","Toplam gider"],["gelir","Gelirler"],["tablo","Aylık tablo"],["gun","Günlük takvim"],["kalem","Kalemler"],["cust","Müşteri ciro"],["ciro","Genel ciro"],["cek","Bağlantılar"],["kredi","Krediler"]];
   function fpY(ym){var a=String(ym||"").split("-"); if(a.length<2||!+a[0])return NaN; return (+a[0])*12+(+a[1]-1)}
   function fpYm(i){return Math.floor(i/12)+"-"+pad(i%12+1)}
   function fpNow(){return now.getFullYear()*12+now.getMonth()}
@@ -13731,12 +13735,13 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   function fpNum(s){var v=String(s==null?"":s).replace(/\./g,"").replace(",","."); var n=parseFloat(v); return isFinite(n)?n:0}
   function fpEnsure(){
     var F=FV.F; if(!F.plan||typeof F.plan!=="object")F.plan={};
-    var P=F.plan; if(!P.items)P.items=[]; if(!P.loans)P.loans=[]; if(!P.cons)P.cons=[]; if(!P.sales)P.sales={};
+    var P=F.plan; if(!P.items)P.items=[]; if(!P.loans)P.loans=[]; if(!P.cons)P.cons=[]; if(!P.sales)P.sales={}; if(!P.salesJ)P.salesJ={}; if(!P.salesD)P.salesD={};
     if(!P.grid||!P.grid.rows){P.grid={rows:[["g_maas","Maaş","maas"],["g_sigorta","Sigorta","sgk"],["g_stopaj","Stopaj","sgk"],["g_kira","Kira","kira"],["g_elektrik","Elektrik","enerji"],["g_yemek","Yemek","diger"],["g_genel","Genel gider","diger"],["g_kredi","Krediler","kredi"]].map(function(r){return {id:r[0],name:r[1],cat:r[2],day:1,vals:{}}})}}
-    if(!P.gridHam||!P.gridHam.rows){var hm=null; P.grid.rows=P.grid.rows.filter(function(x){if(x.id==="g_hammadde"){hm=x; return false} return true}); P.gridHam={rows:[hm||{id:"g_hammadde",name:"Hammadde",cat:"hammadde",day:1,vals:{}}]}}
+    if(!P.gridHam||!P.gridHam.rows){var hm=null; P.grid.rows=P.grid.rows.filter(function(x){if(x.id==="g_hammadde"){hm=x; return false} return true}); P.gridHam={rows:[hm||{id:"g_hammadde",name:"Hammadde ve değişken giderler",cat:"hammadde",day:1,vals:{}}]}}
     if(!P.cust||!P.cust.rows)P.cust={rows:[]};
     P.cust.rows.forEach(function(c){if(!c.jobs)c.jobs={}; if(c.vals){Object.keys(c.vals).forEach(function(ym){if(!c.jobs[ym]&&+c.vals[ym]>0)c.jobs[ym]=[{a:+c.vals[ym],d:null}]}); delete c.vals}});
     if(!P.gridIn||!P.gridIn.rows)P.gridIn={rows:[]}; if(!P.kasa||!P.kasa.rows)P.kasa={rows:[]};
+    if(P.gridHam&&P.gridHam.rows)P.gridHam.rows.forEach(function(x){if(x.id==="g_hammadde"&&x.name==="Hammadde")x.name="Hammadde ve değişken giderler"});
     if(!P.coll||P.coll.length!==7)P.coll=[100,0,0,0,0,0,0]; if(!P.base)P.base={ym:"",cash:null}; if(P.inc===undefined)P.inc=true;
     return P;
   }
@@ -13755,11 +13760,16 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     function row(sec,label,cat,pl,ref){var r={sec:sec,label:label,cat:cat,pl:pl,ref:ref||"",day:1,v:z(),a:z()}; rows.push(r); return r}
     function cash(r,idx,amt){if(idx>=b.idx&&idx<=endIdx)r.v[idx-b.idx]+=amt}
     function acc(r,idx,amt){if(idx>=b.idx&&idx<=endIdx)r.a[idx-b.idx]+=amt}
-    function S(idx){return +P.sales[fpYm(idx)]||0}
+    function S(idx){return fpSaleAmt(P,fpYm(idx))}
     var loanBal=z(), noDue={n:0,s:0};
     // ciro tahsilatı
     var cr=row("in","Ciro tahsilatı","ciro","rev"), cp=P.coll; cr.day=Math.min(31,Math.max(1,+P.collDay||15));
-    for(var i=b.idx;i<=endIdx;i++){var s=S(i); if(!s)continue; acc(cr,i,s); for(var k=0;k<7;k++)if(cp[k])cash(cr,i+k,s*cp[k]/100)}
+    var cvd=row("in","Ciro tahsilatı (vadeli)","ciro","rev"); cvd.ev=[];
+    for(var i=b.idx;i<=endIdx;i++){var s=S(i); if(!s)continue; acc(cr,i,s); var ymI=fpYm(i);
+      fpSaleJobs(P,ymI).forEach(function(j){var A=+j.a||0; if(!(A>0))return; var ds=fpDays(j.d);
+        if(!ds.length){for(var k=0;k<7;k++)if(cp[k])cash(cr,i+k,A*cp[k]/100); return}
+        var y0=Math.floor(i/12), m0=i%12, dim0=new Date(y0,m0+1,0).getDate(), inv=new Date(y0,m0,Math.min(dim0,cr.day));
+        ds.forEach(function(dd){var d2=new Date(inv.getTime()); d2.setDate(d2.getDate()+dd); var ix=d2.getFullYear()*12+d2.getMonth(); if(ix>=b.idx&&ix<=endIdx){cvd.v[ix-b.idx]+=A/ds.length; cvd.ev.push({idx:ix,day:d2.getDate(),amt:A/ds.length})}})})}
     // yıllık bağlantılar (çekli)
     var dsc=row("none","Çek iskonto kaybı","fin","fin");
     P.cons.forEach(function(c){
@@ -14028,6 +14038,19 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(jb.length)c.jobs[ym]=jb; else delete c.jobs[ym];
     fvSave(); fvModalClose(); fvRender();
   }
+  function fpSJobForm(ym){
+    var P=fpEnsure(), jb=fpSaleJobs(P,ym).slice(), rowsH='', m=+ym.slice(5)-1;
+    for(var i=0;i<5;i++){var x=jb[i]||{}; rowsH+='<div class="fvcp"><input class="fin" id="fvj-a'+i+'" inputmode="decimal" placeholder="iş tutarı (₺)" value="'+(x.a?esc(String(Math.round(x.a))):"")+'" aria-label="'+(i+1)+'. iş tutarı"><input class="fin" id="fvj-d'+i+'" placeholder="vade gün (örn. 120 ya da 60+90)" value="'+(x.d?esc(fpDays(x.d).join("+")):"")+'" aria-label="'+(i+1)+'. iş vadesi"></div>'}
+    fvModal(AY[m]+" "+ym.slice(0,4)+" · satış işleri",'<p class="fvp-t">Bu ayın her satışını ayrı satıra yaz: tutarı ve parasının kaç gün sonra geleceğini. Vade boşsa tahsilat dağılımı geçerli olur. Çek gibi parçalı ise <b>60+90</b> (yarı yarıya).</p>'+rowsH,'<button class="btn" data-fva="sjobsave" data-ym="'+ym+'">Kaydet</button>');
+  }
+  function fpSJobSave(ym){
+    var P=fpEnsure(), jb=[];
+    for(var i=0;i<5;i++){var a=fpNum(fvV("fvj-a"+i)), ds=fpDays(fvV("fvj-d"+i)); if(a>0)jb.push({a:a,d:ds.length?ds.join("+"):null})}
+    delete P.salesJ[ym]; delete P.salesD[ym]; delete P.sales[ym];
+    if(jb.length===1){P.sales[ym]=jb[0].a; if(jb[0].d)P.salesD[ym]=jb[0].d}
+    else if(jb.length>1){P.salesJ[ym]=jb; P.sales[ym]=jb.reduce(function(t,j){return t+j.a},0)}
+    fvSave(); fvModalClose(); fvRender();
+  }
   function fpCustForm(c){
     var n=!c; c=c||{name:"",fday:15,delay:0,split:[{p:100,d:60}],note:"",jobs:{}};
     var sp=c.split&&c.split.length?c.split:[{p:100,d:0}], rowsH='';
@@ -14059,16 +14082,16 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var mo=function(rows,m){var s=0; rows.forEach(function(r){s+=+r.vals[y+"-"+pad(m+1)]||0}); return s};
     var tN=0, tH=0, aN=[], aH=[]; for(var m=0;m<12;m++){aN.push(mo(N,m)); aH.push(mo(H,m)); tN+=aN[m]; tH+=aH[m]}
     var all=tN+tH, pN=all>0?Math.round(tN/all*100):0, pH=all>0?100-pN:0;
-    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>Toplam gider</h3><small>'+y+' · Nakit giderler + Hammadde giderleri birlikte</small></div><div class="fvrow" style="gap:8px"><button type="button" class="btn ghost sm" data-fvp="grid">Nakit giderler</button><button type="button" class="btn ghost sm" data-fvp="ham">Hammadde</button></div></div>';
+    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>Toplam gider</h3><small>'+y+' · Nakit giderler + Hammadde ve değişken giderler birlikte</small></div><div class="fvrow" style="gap:8px"><button type="button" class="btn ghost sm" data-fvp="grid">Nakit giderler</button><button type="button" class="btn ghost sm" data-fvp="ham">Hammadde</button></div></div>';
     h+='<div class="fpscroll"><table class="fpt fpt2 fpg"><thead><tr><th class="fpl">Gider</th>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){var on=(y*12+m)===nowI; return '<th class="'+(on?'fpnow':'')+'">'+AY[m]+(on?'<i>bu ay</i>':'')+'</th>'}).join("")+'<th class="fpT">Yıllık</th></tr></thead><tbody>';
     h+='<tr class="fprow"><td class="fpl"><b style="padding-left:6px">Nakit giderler</b></td>'+aN.map(function(v,m){return '<td class="'+((y*12+m)===nowI?'fpnow':'')+'">'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(tN)+'</td></tr>';
-    h+='<tr class="fprow"><td class="fpl"><b style="padding-left:6px">Hammadde giderleri</b></td>'+aH.map(function(v,m){return '<td class="'+((y*12+m)===nowI?'fpnow':'')+'">'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(tH)+'</td></tr>';
+    h+='<tr class="fprow"><td class="fpl"><b style="padding-left:6px">Hammadde ve değişken giderler</b></td>'+aH.map(function(v,m){return '<td class="'+((y*12+m)===nowI?'fpnow':'')+'">'+fpC(v)+'</td>'}).join("")+'<td class="fpT">'+fpC(tH)+'</td></tr>';
     var cum=0; h+='<tr class="fpclose"><td class="fpl">Genel toplam</td>'+aN.map(function(v,m){var t=v+aH[m]; return '<td class="'+((y*12+m)===nowI?'fpnow':'')+'">'+fpC(t)+'</td>'}).join("")+'<td class="fpT">'+fpC(all)+'</td></tr>';
     h+='<tr class="fpmarj"><td class="fpl">Kümülatif</td>'+aN.map(function(v,m){cum+=v+aH[m]; return '<td>'+fpC(cum)+'</td>'}).join("")+'<td class="fpT"></td></tr></tbody></table></div>';
-    h+='<div class="fvgs"><span class="go"><small>'+y+' yıllık toplam gider</small><b>'+fvA(all)+'</b></span><span><small>Nakit giderler</small><b>'+fvA(tN)+' <small>%'+pN+'</small></b></span><span><small>Hammadde giderleri</small><b>'+fvA(tH)+' <small>%'+pH+'</small></b></span></div>';
+    h+='<div class="fvgs"><span class="go"><small>'+y+' yıllık toplam gider</small><b>'+fvA(all)+'</b></span><span><small>Nakit giderler</small><b>'+fvA(tN)+' <small>%'+pN+'</small></b></span><span><small>Hammadde ve değişken giderler</small><b>'+fvA(tH)+' <small>%'+pH+'</small></b></span></div>';
     var items=[]; N.concat(H).forEach(function(r){var t=0; for(var m2=0;m2<12;m2++)t+=+r.vals[y+"-"+pad(m2+1)]||0; if(t>0)items.push({n:r.name,k:H.indexOf(r)>-1?"Hammadde":"Nakit",t:t,id:r.id})});
     items.sort(function(a,b){return b.t-a.t});
-    h+='<div class="fvgbh"><h3>'+y+' · toplam neye ne kadar gidiyor</h3><small>Nakit ve hammadde satırları birlikte, en büyükten küçüğe</small></div><div class="fvgbw">'+(items.length?'<div class="fvrkl">'+items.map(function(x,i){var pc=Math.round(x.t/all*100); return '<button type="button" class="fvrk" data-fva="gedit" data-id="'+x.id+'"><span class="no">'+(i+1)+'</span><span class="n"><b>'+esc(x.n)+'</b><small>'+x.k+' · %'+pc+' · aylık ortalama '+fvMcT(x.t/12)+'</small></span><em>'+fvA(x.t)+'</em><span class="bar"><i class="'+(x.k==="Hammadde"?'warn':'bad')+'" style="width:'+Math.max(2,pc)+'%"></i></span></button>'}).join("")+'<div class="fvrow fvgbt"><b class="fvgrow">Toplam</b><b>'+fvA(all)+'</b></div></div>':'<div class="fvnone">Nakit giderler ve hammadde satırlarına tutar yazdıkça burada toplanır.</div>')+'</div>';
+    h+='<div class="fvgbh"><h3>'+y+' · toplam neye ne kadar gidiyor</h3><small>Nakit ve hammadde/değişken gider satırları birlikte, en büyükten küçüğe</small></div><div class="fvgbw">'+(items.length?'<div class="fvrkl">'+items.map(function(x,i){var pc=Math.round(x.t/all*100); return '<button type="button" class="fvrk" data-fva="gedit" data-id="'+x.id+'"><span class="no">'+(i+1)+'</span><span class="n"><b>'+esc(x.n)+'</b><small>'+x.k+' · %'+pc+' · aylık ortalama '+fvMcT(x.t/12)+'</small></span><em>'+fvA(x.t)+'</em><span class="bar"><i class="'+(x.k==="Hammadde"?'warn':'bad')+'" style="width:'+Math.max(2,pc)+'%"></i></span></button>'}).join("")+'<div class="fvrow fvgbt"><b class="fvgrow">Toplam</b><b>'+fvA(all)+'</b></div></div>':'<div class="fvnone">Nakit giderler ve hammadde satırlarına tutar yazdıkça burada toplanır.</div>')+'</div>';
     return h+'</div>';
   }
   /* ---- aylık gider tablosu (kağıt tablo gibi) ---- */
@@ -14092,9 +14115,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   }
   function fpGrid(sim,y,kind){
     var P=fpEnsure(), isIn=kind==="in", isH=kind==="ham", rows=fpGLst(kind), h='', nowI=fpNow(); FV.gk=isIn?"in":(isH?"ham":"out");
-    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>'+(isIn?"Aylık gelirler":isH?"Hammadde giderleri":"Nakit giderler")+'</h3><small>'+y+' · her ayın '+(isIn?"gelirini":isH?"hammadde giderini":"nakit giderini")+' satırlara yaz, toplam altta kendisi hesaplanır</small></div><div class="fvrow" style="gap:8px"><button type="button" class="btn sm" data-fva="gadd" data-id="'+FV.gk+'">+ Satır ekle</button></div></div>';
+    h+='<div class="fvcard fpcard fpc2"><div class="fpch"><div><h3>'+(isIn?"Aylık gelirler":isH?"Hammadde ve değişken giderler":"Nakit giderler")+'</h3><small>'+y+' · her ayın '+(isIn?"gelirini":isH?"hammadde ve değişken giderini":"nakit giderini")+' satırlara yaz, toplam altta kendisi hesaplanır</small></div><div class="fvrow" style="gap:8px"><button type="button" class="btn sm" data-fva="gadd" data-id="'+FV.gk+'">+ Satır ekle</button></div></div>';
     if(!rows.length)return h+'<div class="fvempty" style="padding:30px 22px"><h3>'+(isIn?"Henüz gelir satırı yok":"Henüz satır yok")+'</h3><p>“+ Satır ekle” ile ilk satırını aç (örn. '+(isIn?"Kira geliri, Hibe, Ortak girişi":isH?"Çelik, Bakır, Ambalaj":"Yakıt, Bakım")+'). Satır 12 aya birden gelir, tutarı sonra yazarsın.</p><button type="button" class="btn" data-fva="gadd" data-id="'+FV.gk+'">+ Satır ekle</button></div></div>';
-    h+='<div class="fpscroll"><table class="fpt fpt2 fpg"><thead><tr><th class="fpl">'+(isIn?"Gelir":isH?"Hammadde":"Gider")+'</th>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){var on=(y*12+m)===nowI; return '<th class="'+(on?'fpnow':'')+'">'+AY[m]+(on?'<i>bu ay</i>':'')+'</th>'}).join("")+'<th class="fpT">Yıllık</th></tr></thead><tbody>';
+    h+='<div class="fpscroll"><table class="fpt fpt2 fpg"><thead><tr><th class="fpl">'+(isIn?"Gelir":isH?"Hammadde / değişken gider":"Gider")+'</th>'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){var on=(y*12+m)===nowI; return '<th class="'+(on?'fpnow':'')+'">'+AY[m]+(on?'<i>bu ay</i>':'')+'</th>'}).join("")+'<th class="fpT">Yıllık</th></tr></thead><tbody>';
     rows.forEach(function(r,ri){
       var t=0; h+='<tr class="fprow"><td class="fpl"><div class="fpgw"><span class="fpmv"><button type="button" data-fva="gup" data-id="'+r.id+'" aria-label="Yukarı taşı"'+(ri===0?' disabled':'')+'>▲</button><button type="button" data-fva="gdown" data-id="'+r.id+'" aria-label="Aşağı taşı"'+(ri===rows.length-1?' disabled':'')+'>▼</button></span><button type="button" class="fpgn" data-fva="gedit" data-id="'+r.id+'" title="Düzenle / sil">'+esc(r.name)+'<i>✎</i></button></div></td>';
       for(var m=0;m<12;m++){var ym=y+"-"+pad(m+1), v=+r.vals[ym]||0; t+=v; if(Array.isArray(r.months)&&r.months.indexOf(m)<0&&!v){h+='<td class="fgoff"><span title="Bu ay kapalı — satır adına dokunup aç">·</span></td>'; continue}
@@ -14105,8 +14128,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     for(var m2=0;m2<12;m2++){var ym2=y+"-"+pad(m2+1), s=0; rows.forEach(function(r){s+=+r.vals[ym2]||0}); cum+=s; all+=s; tr+='<td class="'+((y*12+m2)===nowI?'fpnow':'')+'" data-gt="'+ym2+'">'+fpC(s)+'</td>'; cr+='<td data-gk="'+ym2+'">'+fpC(cum)+'</td>'}
     h+=tr+'<td class="fpT" data-gall>'+fpC(all)+'</td></tr>'+cr+'<td class="fpT"></td></tr></tbody></table></div>';
     var gnz=0, gmx=0, gmm=-1; for(var q=0;q<12;q++){var qs=0; rows.forEach(function(r){qs+=+r.vals[y+"-"+pad(q+1)]||0}); if(qs>0)gnz++; if(qs>gmx){gmx=qs; gmm=q}}
-    h+='<div class="fvgs"><span class="'+(isIn?'gi':'go')+'"><small>'+y+' yıllık toplam '+(isIn?"gelir":isH?"hammadde gideri":"nakit gider")+'</small><b data-gy>'+fvA(all)+'</b></span><span><small>Dolu aylar ortalaması</small><b data-gavg>'+fvA(gnz?all/gnz:0)+'</b></span><span><small>En yüksek ay</small><b data-gmax>'+(gmx>0?fvA(gmx)+' <small>'+AY[gmm]+'</small>':'–')+'</b></span></div>';
-    h+='<div class="fvgbh"><h3>'+y+' · '+(isIn?"gelir nereden geliyor":isH?"hammaddeye ne kadar gidiyor":"neye ne kadar gidiyor")+'</h3><small>Yıllık toplama göre, en büyükten küçüğe</small></div><div class="fvgbw" data-gb>'+fpGridBreak(rows,y,isIn)+'</div>';
+    h+='<div class="fvgs"><span class="'+(isIn?'gi':'go')+'"><small>'+y+' yıllık toplam '+(isIn?"gelir":isH?"hammadde ve değişken gider":"nakit gider")+'</small><b data-gy>'+fvA(all)+'</b></span><span><small>Dolu aylar ortalaması</small><b data-gavg>'+fvA(gnz?all/gnz:0)+'</b></span><span><small>En yüksek ay</small><b data-gmax>'+(gmx>0?fvA(gmx)+' <small>'+AY[gmm]+'</small>':'–')+'</b></span></div>';
+    h+='<div class="fvgbh"><h3>'+y+' · '+(isIn?"gelir nereden geliyor":isH?"hammadde ve değişken giderlere ne kadar gidiyor":"neye ne kadar gidiyor")+'</h3><small>Yıllık toplama göre, en büyükten küçüğe</small></div><div class="fvgbw" data-gb>'+fpGridBreak(rows,y,isIn)+'</div>';
     h+='<p class="fvp-t">Hücreye tutarı yaz (Enter: alttaki satıra geç). Soldaki ▲▼ okları satırı yukarı/aşağı taşır (yeni eklenen satır en üstte açılır). Satır adına dokununca adı, hangi aylarda olacağını, ödeme gününü değiştirebilir, tüm seçili aylara aynı tutarı yazabilir ya da satırı silebilirsin. Bu satırlar Aylık tablo, Günlük takvim ve kasa tahminine otomatik girer.</p></div>';
     return h;
   }
@@ -14114,7 +14137,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var n=!g, y=fpYear(); g=g||{name:"",day:1,cat:"diger",vals:{}};
     var sel=Array.isArray(g.months)?g.months:[0,1,2,3,4,5,6,7,8,9,10,11];
     var chips='<div class="fvgm">'+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){return '<button type="button" class="fvgmc" data-fva="gmtog" data-m="'+m+'" aria-pressed="'+(sel.indexOf(m)>-1)+'">'+AY[m].slice(0,3)+'</button>'}).join("")+'</div><div class="fvrow" style="gap:8px;margin-top:8px"><button type="button" class="btn ghost sm" data-fva="gmall">Tüm aylara koy</button><button type="button" class="btn ghost sm" data-fva="gmnone">Temizle</button></div>';
-    fvModal(n?(FV.gk==="in"?"Yeni gelir satırı":FV.gk==="ham"?"Yeni hammadde satırı":"Yeni nakit gider satırı"):g.name+" · düzenle",'<div class="fvgrid2">'+
+    fvModal(n?(FV.gk==="in"?"Yeni gelir satırı":FV.gk==="ham"?"Yeni hammadde / değişken gider satırı":"Yeni nakit gider satırı"):g.name+" · düzenle",'<div class="fvgrid2">'+
       fvF("Satır adı","fvg-name",g.name,'autocomplete="off" placeholder="örn. Yakıt"','w2')+
       '<div class="w2"><label class="fl">Hangi aylarda olsun?</label>'+chips+'</div>'+
       fvF("Tutar (₺) — boş bırakabilirsin","fvg-amt","",'inputmode="decimal" placeholder="boşsa satır boş gelir, sonra tabloda yazarsın"','w2')+
@@ -14136,10 +14159,10 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     var P=fpEnsure(), ev=[], b=sim.b, bStart=fpYm(b.idx)+"-01";
     sim.rows.forEach(function(r){
       if((r.sec!=="in"&&r.sec!=="out")||r.cat==="fv")return;
-      if(r.ev){r.ev.forEach(function(e){ev.push({d:fpYm(e.idx)+"-"+pad(e.day),title:r.label,sub:"Müşteri tahsilatı",amt:e.amt,plan:1,ref:r.cust,kind:"pcustedit"})}); return}
+      if(r.ev){r.ev.forEach(function(e){ev.push({d:fpYm(e.idx)+"-"+pad(e.day),title:r.label,sub:r.cust?"Müşteri tahsilatı":"Ciro tahsilatı · vadeli iş",amt:e.amt,plan:1,ref:r.cust||"",kind:r.cust?"pcustedit":""})}); return}
       var rf=r.ref, kind=r.grid?"pgedit":P.items.some(function(x){return x.id===r.ref})?"pedit":P.cons.some(function(x){return x.id===r.ref})?"pcedit":P.loans.some(function(x){return x.id===r.ref})?"pledit":"";
       for(var j=0;j<sim.L;j++){var v=r.v[j]; if(Math.abs(v)<0.005)continue; var idx=b.idx+j, dim=new Date(Math.floor(idx/12),idx%12+1,0).getDate(), dd=Math.min(dim,Math.max(1,+r.day||1));
-        ev.push({d:fpYm(idx)+"-"+pad(dd),title:r.label,sub:(r.grid?(r.sec==="in"?"Gelir tablosu":(r.cat==="hammadde"?"Hammadde gideri":"Nakit gider")):FP_CAT[r.cat]?FP_CAT[r.cat].n:(r.cat==="cek"?"Yıllık bağlantı":r.cat==="kredi"?"Kredi":r.cat==="ciro"?"Ciro tahsilatı":"Plan")),amt:r.sec==="out"?-v:v,plan:1,ref:r.grid||rf,kind:kind})}
+        ev.push({d:fpYm(idx)+"-"+pad(dd),title:r.label,sub:(r.grid?(r.sec==="in"?"Gelir tablosu":(r.cat==="hammadde"?"Hammadde ve değişken giderler":"Nakit gider")):FP_CAT[r.cat]?FP_CAT[r.cat].n:(r.cat==="cek"?"Yıllık bağlantı":r.cat==="kredi"?"Kredi":r.cat==="ciro"?"Ciro tahsilatı":"Plan")),amt:r.sec==="out"?-v:v,plan:1,ref:r.grid||rf,kind:kind})}
     });
     if(P.inc)fvEvents().forEach(function(e){if(!e.d)return; var d=e.d<bStart?bStart:e.d; ev.push({d:d,title:e.title,sub:e.sub,amt:e.amt,plan:0,k:e.k,id:e.id})});
     return ev;
@@ -14234,11 +14257,14 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     fvSave(); fvModalClose(); FV.msg="Kalem kaydedildi ✓"; fvRender();
   }
   /* ---- ciro ---- */
+  function fpSaleJobs(P,ym){var j=P.salesJ&&P.salesJ[ym]; if(j&&j.length)return j; var a=+P.sales[ym]||0; return a>0?[{a:a,d:(P.salesD&&P.salesD[ym])||null}]:[]}
+  function fpSaleAmt(P,ym){var t=0; fpSaleJobs(P,ym).forEach(function(j){t+=+j.a||0}); return t}
   function fpCiro(sim,y){
     var P=fpEnsure(), h='', tot=0, sum=0; P.coll.forEach(function(v){sum+=+v||0});
-    h+='<div class="fvcard"><h3>'+y+' ciro tahmini <small>aylık satış (₺)</small></h3><p class="fvp-t">Her ay kesilmesini beklediğin satış tutarını yaz. Parayı ne zaman alacağın aşağıdaki tahsilat dağılımına göre aylara yayılır.</p><div class="fvgrid2 fpsales">';
-    for(var m=0;m<12;m++){var k=y+"-"+pad(m+1), v=+P.sales[k]||0; tot+=v; h+='<div><label class="fl" for="fvps-'+k+'">'+AY[m]+'</label><input class="fin" id="fvps-'+k+'" inputmode="decimal" value="'+(v?esc(Math.round(v).toLocaleString("tr-TR")):"")+'" placeholder="0" data-fvpin="sales" data-ym="'+k+'"></div>'}
-    h+='</div><div class="fvrow" style="margin-top:10px"><b class="fvgrow">Yıllık toplam</b><b class="fva">'+fpIn(tot)+' ₺</b></div></div>';
+    h+='<div class="fvcard"><h3>'+y+' ciro tahmini <small>aylık satış (₺) ve vadesi</small></h3><p class="fvp-t">Her ay için satış tutarını yaz; altına o satışın <b>vadesini (gün)</b> yaz. Örnek: 2.000.000 ₺ ve 120 → para 120 gün sonra gelir. Çek gibi parçalıysa <b>60+90</b> yaz. Aynı ay birden fazla iş varsa <b>＋</b> ile ayrı ayrı gir. Vadeyi boş bırakırsan aşağıdaki tahsilat dağılımı geçerli olur.</p><div class="fvgrid2 fpsales">';
+    for(var m=0;m<12;m++){var k=y+"-"+pad(m+1), jb=(P.salesJ&&P.salesJ[k])||[], multi=jb.length>1, v=fpSaleAmt(P,k), dtx=multi?"":fpDays(P.salesD[k]).join("+"); tot+=v;
+      h+='<div><label class="fl" for="fvps-'+k+'">'+AY[m]+'</label><div class="fvjc"><input class="fin" id="fvps-'+k+'" inputmode="decimal" value="'+(v?esc(Math.round(v).toLocaleString("tr-TR")):"")+'" placeholder="0" data-fvpin="sales" data-ym="'+k+'"'+(multi?' readonly data-fva="sjob"':'')+'><div class="fvjd"><input class="fjd" inputmode="numeric" autocomplete="off" placeholder="vade (gün)" value="'+(multi?jb.length+' iş':(dtx?esc(dtx+" gün"):""))+'" data-fvpin="sdays" data-ym="'+k+'" aria-label="'+AY[m]+' vade günü"'+(multi?' readonly data-fva="sjob"':'')+'><button type="button" class="fjb" data-fva="sjob" data-ym="'+k+'" title="Bu ayın işlerini ayrı ayrı gir">＋</button></div></div></div>'}
+    h+='</div><div class="fvrow" style="margin-top:10px"><b class="fvgrow">Yıllık toplam</b><b class="fva" data-sy>'+fpIn(tot)+' ₺</b></div></div>';
     h+='<div class="fvcard"><h3>Hızlı doldur</h3><div class="fvgrid2"><div><label class="fl" for="fvp-ytot">Yıllık hedef (₺)</label><input class="fin" id="fvp-ytot" inputmode="decimal" placeholder="örn. 60.000.000"></div><div><label class="fl" for="fvp-grow">Aylık artış %</label><input class="fin" id="fvp-grow" inputmode="decimal" placeholder="örn. 2"></div></div>'+
       '<div class="fvrow" style="margin-top:10px"><button class="btn" data-fva="psalesdist">Aylara eşit böl</button><button class="btn ghost" data-fva="psalesgrow">Ocak\'tan büyüt</button><button class="btn ghost" data-fva="psalesclear">Temizle</button></div><p class="fvp-t">“Ocak\'tan büyüt”: Ocak ayına yazdığın tutarı her ay seçtiğin yüzdeyle artırarak diğer ayları doldurur. Yıllık hedef yazılıysa o toplama oturacak şekilde eşit bölünür.</p></div>';
     h+='<div class="fvcard"><h3>Tahsilat günü</h3><p class="fvp-t">Ciro tahsilatı günlük takvimde ayın kaçına yazılsın?</p><div style="max-width:200px"><label class="fl" for="fvp-cday">Ayın kaçı</label><input class="fin" id="fvp-cday" inputmode="numeric" value="'+esc(String(+P.collDay||15))+'" placeholder="15" data-fvpin="collday"></div></div>';
@@ -14320,7 +14346,10 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(k==="bym"){P.base.ym=t.value||""}
     else if(k==="bcash"){var v=String(t.value).trim(); P.base.cash=v===""?null:fpNum(v)}
     else if(k==="binc"){P.inc=!!t.checked}
-    else if(k==="sales"){var n=fpNum(t.value); if(n>0)P.sales[t.dataset.ym]=n; else delete P.sales[t.dataset.ym]}
+    else if(k==="sales"||k==="sdays"){var sym=t.dataset.ym; if(P.salesJ[sym]&&P.salesJ[sym].length>1)return;
+      if(k==="sales"){var n=fpNum(t.value); if(n>0)P.sales[sym]=n; else delete P.sales[sym]; t.value=n>0?Math.round(n).toLocaleString("tr-TR"):""}
+      else{var sd=fpDays(t.value); if(sd.length)P.salesD[sym]=sd.join("+"); else delete P.salesD[sym]; t.value=sd.length?sd.join("+")+" gün":""}
+      delete P.salesJ[sym]; fvSave(); var tt=0; for(var sm=0;sm<12;sm++)tt+=fpSaleAmt(P,fpYear()+"-"+pad(sm+1)); var sy=document.querySelector("#fv [data-sy]"); if(sy)sy.textContent=fpIn(tt)+" ₺"; return}
     else if(k==="ccell"||k==="cdays"){
       var cr2=P.cust.rows.filter(function(x){return x.id===t.dataset.r})[0]; if(!cr2)return; var ym0=t.dataset.ym, jb=cr2.jobs[ym0]||(cr2.jobs[ym0]=[]); if(jb.length>1)return;
       if(k==="ccell"){var cv=fpNum(t.value); if(cv>0){if(jb.length)jb[0].a=cv; else jb.push({a:cv,d:null})} else if(jb.length&&jb[0].d)jb[0].a=0; else jb.length=0; t.value=cv>0?Math.round(cv).toLocaleString("tr-TR")+" ₺":""}
@@ -14343,6 +14372,8 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(a==="cedit"||a==="pcustedit"){fpCustForm(P.cust.rows.filter(function(x){return x.id===id})[0]); return true}
     if(a==="csave"){fpCustSave(id); return true}
     if(a==="cdel"){if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return true} P.cust.rows=P.cust.rows.filter(function(x){return x.id!==id}); fvSave(); fvModalClose(); fvRender(); return true}
+    if(a==="sjob"){fpSJobForm(d.ym); return true}
+    if(a==="sjobsave"){fpSJobSave(d.ym); return true}
     if(a==="cjob"){var cj=P.cust.rows.filter(function(x){return x.id===d.r})[0]; if(cj)fpJobForm(cj,d.ym); return true}
     if(a==="cjobsave"){fpJobSave(d.r,d.ym); return true}
     if(a==="cup"||a==="cdown"){var cx=-1; P.cust.rows.forEach(function(x,i){if(x.id===id)cx=i}); var cy=cx+(a==="cdown"?1:-1); if(cx>=0&&cy>=0&&cy<P.cust.rows.length){var ct=P.cust.rows[cx]; P.cust.rows[cx]=P.cust.rows[cy]; P.cust.rows[cy]=ct; fvSave(); fvRender()} return true}
@@ -14377,9 +14408,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(a==="pldel"){if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return true} P.loans=P.loans.filter(function(x){return x.id!==id}); fvSave(); fvModalClose(); fvRender(); return true}
     var y=fpYear();
     if(a==="psalesdist"){var yt=fpNum(fvV("fvp-ytot")), gr=fpNum(fvV("fvp-grow"))/100; if(!(yt>0)){FV.msg="Yıllık hedefi yaz"; fvRender(); return true}
-      var w=[],sw=0; for(var m=0;m<12;m++){var wt=gr?Math.pow(1+gr,m):1; w.push(wt); sw+=wt} for(var m2=0;m2<12;m2++)P.sales[y+"-"+pad(m2+1)]=Math.round(yt*w[m2]/sw); fvSave(); FV.msg="Aylara bölündü ✓"; fvRender(); return true}
-    if(a==="psalesgrow"){var gr2=fpNum(fvV("fvp-grow"))/100, b0=+P.sales[y+"-01"]||0; if(!(b0>0)){FV.msg="Önce Ocak ayına tutar yaz"; fvRender(); return true} for(var m3=1;m3<12;m3++)P.sales[y+"-"+pad(m3+1)]=Math.round(b0*Math.pow(1+gr2,m3)); fvSave(); FV.msg="Aylar dolduruldu ✓"; fvRender(); return true}
-    if(a==="psalesclear"){if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return true} for(var m4=0;m4<12;m4++)delete P.sales[y+"-"+pad(m4+1)]; fvSave(); fvRender(); return true}
+      var w=[],sw=0; for(var m=0;m<12;m++){var wt=gr?Math.pow(1+gr,m):1; w.push(wt); sw+=wt} for(var m2=0;m2<12;m2++)P.sales[y+"-"+pad(m2+1)]=Math.round(yt*w[m2]/sw); delete P.salesJ[y+"-"+pad(m2+1)]; fvSave(); FV.msg="Aylara bölündü ✓"; fvRender(); return true}
+    if(a==="psalesgrow"){var gr2=fpNum(fvV("fvp-grow"))/100, b0=+P.sales[y+"-01"]||0; if(!(b0>0)){FV.msg="Önce Ocak ayına tutar yaz"; fvRender(); return true} for(var m3=1;m3<12;m3++){P.sales[y+"-"+pad(m3+1)]=Math.round(b0*Math.pow(1+gr2,m3)); delete P.salesJ[y+"-"+pad(m3+1)]} fvSave(); FV.msg="Aylar dolduruldu ✓"; fvRender(); return true}
+    if(a==="psalesclear"){if(t.dataset.arm!=="1"){t.dataset.arm="1"; t.textContent="Emin misin? Tekrar dokun"; return true} for(var m4=0;m4<12;m4++){delete P.sales[y+"-"+pad(m4+1)]; delete P.salesJ[y+"-"+pad(m4+1)]; delete P.salesD[y+"-"+pad(m4+1)]} fvSave(); fvRender(); return true}
     return false;
   }
   /* ---- olaylar ---- */
