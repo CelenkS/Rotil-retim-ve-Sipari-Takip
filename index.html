@@ -5787,7 +5787,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
   <div class="impnote" id="wipenote" hidden></div>
   </div>
   <div class="logoutrow"><button type="button" id="logoutBtn">Çıkış yap</button></div>
-  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 12:34</div>
+  <div style="text-align:center;color:var(--ink2);font:600 11px var(--font-ui);margin-top:14px;opacity:.55">Sürüm: 27.11 12:51</div>
 </div>
 <div class="wrap" id="app" hidden>
   <section class="hero">
@@ -13319,6 +13319,7 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
       '<label class="fvchk"><input type="checkbox" id="fvcfg-nv" '+(FV.F.cfg.netVadeli?'checked':'')+'><span>Vadeli / çekli alacakları (Excel alt tablosu) net duruma kat</span></label>'+
       '<label class="fvchk"><input type="checkbox" id="fvcfg-rem" '+(rem?'checked':'')+'><span>Bu cihazda kasa şifresini hatırla</span></label></div>'+
       '<div class="fvcard"><h3>Yedek</h3><p class="fvp-t">Verilerini şifresiz bir dosya olarak indirirsin — dosyayı güvenli yerde sakla.</p><div class="fvrow"><button class="btn ghost" data-fva="exportjson">Yedek indir (.json)</button><button class="btn ghost" data-fva="exportcsv">Borç + alacak (.csv)</button></div></div>'+
+      '<div class="fvcard"><h3>Tehlikeli bölge</h3><p class="fvp-t">Tüm finans verisini silip sıfırdan başlamak için. Önce yedek indirmeni öneririm.</p><div class="fvrow"><button class="btn ghost" style="color:var(--bad)" data-fva="wipe">Tüm kasayı boşalt</button></div></div>'+
       '<div class="fvcard"><h3>Güvenlik</h3><p class="fvp-t">Veriler cihazında AES-256 ile şifrelenir. Şifre sunucuya gitmez ve kimse sıfırlayamaz.</p><div class="fvrow"><button class="btn ghost" data-fva="passchg">Şifreyi değiştir</button><button class="btn ghost" data-fva="lock">Kasayı kilitle</button><button class="btn ghost" data-fva="lockforget">Kilitle ve bu cihazı unut</button></div></div>';
   }
   /* ---- pencere (modal) ---- */
@@ -13945,6 +13946,9 @@ html:root:root:root[data-ui="celsan"] #csbg{transform:translateZ(0)}
     if(a==="exportcsv"){fvDownload("borc-alacak-"+isoToday()+".csv",fvCsv(),"text/csv;charset=utf-8"); return}
     if(a==="passchg"){fvModal("Şifreyi değiştir",'<div class="fvgrid2">'+'<div class="w2"><label class="fl" for="fvpo">Eski şifre</label><input class="fin" id="fvpo" type="password" autocomplete="current-password"></div><div><label class="fl" for="fvpn1">Yeni şifre</label><input class="fin" id="fvpn1" type="password" autocomplete="new-password"></div><div><label class="fl" for="fvpn2">Yeni şifre (tekrar)</label><input class="fin" id="fvpn2" type="password" autocomplete="new-password"></div></div>','<button class="btn" data-fva="passdo">Değiştir</button>'); return}
     if(a==="passdo"){fvChangePass(); return}
+    if(a==="wipe"){fvModal("Tüm kasayı boşalt",'<p class="fvp-t"><b>Dikkat:</b> borçlar, alacaklar, çekler, hesaplar, hareketler, plan ve geçmiş kayıtların <b>hepsi kalıcı olarak silinir</b>, geri alınamaz. Kasa şifren aynı kalır.</p><p class="fvp-t">İstersen önce yedeğini indir (şifresiz dosya, güvenli yerde sakla).</p><div class="fvrow"><button type="button" class="btn ghost" data-fva="exportjson">Yedek indir (.json)</button></div><div style="margin-top:12px"><label class="fl" for="fvwipe-t">Onaylamak için SİL yaz</label><input class="fin" id="fvwipe-t" autocomplete="off" autocapitalize="characters"></div>','<button class="btn ghost" data-fva="mclose">Vazgeç</button><button class="btn" style="background:var(--bad);border-color:transparent;color:#fff" data-fva="wipedo">Hepsini sil</button>'); return}
+    if(a==="wipedo"){var tx=($("fvwipe-t")||{}).value||""; if(tx.trim().toLocaleUpperCase("tr-TR")!=="SİL"&&tx.trim().toUpperCase()!=="SIL"){var mm=$("fvmmsg"); if(mm)mm.textContent="Onaylamak için kutuya SİL yaz."; return}
+      FV.F=fvBlank(); FV.acct=null; FV.pt=undefined; fvSave(); try{fvFlush()}catch(e){} fvModalClose(); FV.tab="ozet"; fvRender(); return}
   });
   /* ---------- Genel Giderler (vida, elmas, küçük alımlar: ne · kimden · hangi bölüm · not) ----------
      "expenses" koleksiyonu bütün bölümler için ortak (Rotil yolu), Satın Alma gibi. */
